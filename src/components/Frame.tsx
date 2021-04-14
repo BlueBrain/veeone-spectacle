@@ -1,54 +1,62 @@
 import * as React from "react"
 import ContentBlock from "./ContentBlock"
 import reactable from "reactablejs"
+import {FrameSituation} from "../common/types"
 
 const ReactableContentBlock = reactable(ContentBlock)
 
 interface FrameProps {
-  initPosition: { x: number, y: number }
+  initialPosition: FrameSituation
 }
 
 const Frame: React.FC<FrameProps> = (props: FrameProps) => {
-  const [coordinate, setCoordinate] = React.useState({x: props.initPosition.x, y: props.initPosition.y})
-  return (<ReactableContentBlock
-    resizable={{
-      edges: {left: true, right: true, bottom: true, top: true},
+  const [framePosition, setFramePosition] = React.useState(props.initialPosition)
+  return (
+    <ReactableContentBlock
+      resizable={{
+        edges: {left: true, right: true, bottom: true, top: true},
+      }}
 
-    }}
-
-    onDoubleTap={() => {
-      setCoordinate(prev => ({
-        x: 0,
-        y: 0,
-        width: 2000,
-        height: 2000,
-      }))
-    }}
-
-    draggable={{
-      inertia: true,
-      onmove: event => {
-        const {dx, dy} = event
-        setCoordinate(prev => ({
-          x: prev.x + dx,
-          y: prev.y + dy,
+      onDoubleTap={() => {
+        setFramePosition(prev => ({
+          left: prev.left,
+          top: prev.top,
+          width: prev.width,
+          height: prev.height,
+          isFullscreen: !prev.isFullscreen,
+          cssTransitionEnabled: prev.isFullscreen,
         }))
-      }
-    }}
-    onResizeMove={e => {
-      const {width, height} = e.rect
-      const {left, top} = e.deltaRect
-      setCoordinate(prev => {
-        return {
-          x: prev.x + left,
-          y: prev.y + top,
-          width,
-          height,
+      }}
+
+      draggable={{
+        inertia: true,
+        onmove: event => {
+          const {dx, dy} = event
+          setFramePosition(prev => ({
+            left: prev.left + dx,
+            top: prev.top + dy,
+            width: prev.width,
+            height: prev.height,
+            cssTransitionEnabled: false,
+          }))
         }
-      })
-    }}
-    coordinate={coordinate}
-  />)
+      }}
+      onResizeMove={
+        event => {
+          const {width, height} = event.rect
+          const {left, top} = event.deltaRect
+          setFramePosition(prev => {
+            return {
+              left: prev.left + left,
+              top: prev.top + top,
+              width,
+              height,
+              cssTransitionEnabled: false,
+            }
+          })
+        }}
+      coordinate={framePosition}
+    />)
 }
 
 export default Frame

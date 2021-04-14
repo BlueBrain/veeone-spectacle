@@ -9,9 +9,9 @@ const Desk: React.FC = (props) => {
 
   return (
     <div className={styles.Desk} ref={props.getRef}>
-      <Frame initPosition={{x: 100, y: 200}}/>
-      <Frame initPosition={{x: 600, y: 400}}/>
-      <Frame initPosition={{x: 300, y: 600}}/>
+      <Frame initialPosition={{left: 100, top: 200, width: 300, height: 100}}/>
+      <Frame initialPosition={{left: 600, top: 400, width: 100, height: 100}}/>
+      <Frame initialPosition={{left: 300, top: 600, width: 50, height: 200}}/>
 
       <LauncherMenu/>
     </div>
