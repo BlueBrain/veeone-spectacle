@@ -7,6 +7,9 @@ html {
   box-sizing: border-box;
   overflow-y: scroll;
   height: 100%;
+  overflow: hidden;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;
 }
 
 body {
@@ -24,11 +27,13 @@ body {
   -webkit-font-feature-settings: "kern", "liga", "clig", "calt";
   font-feature-settings: "kern", "liga", "clig", "calt";
   user-select: none;
+  touch-action: none;
+  cursor: none;
 }
 
 .Spectacle {
   width: 100%;
   height: 100%;
   position: absolute;
-  background: rgba(red, .2);
+  //background: rgba(red, .2);
 }

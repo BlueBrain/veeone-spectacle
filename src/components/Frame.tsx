@@ -1,61 +1,108 @@
 import * as React from "react"
+import { useState } from "react"
 import ContentBlock from "./ContentBlock"
 import reactable from "reactablejs"
-import {FrameSituation} from "../common/types"
+import { FrameSituation } from "../common/types"
+import '@interactjs/modifiers'
+import interact from '@interactjs/interact'
 
 const ReactableContentBlock = reactable(ContentBlock)
 
 interface FrameProps {
-  initialPosition: FrameSituation
+  initialSituation: FrameSituation
 }
 
 const Frame: React.FC<FrameProps> = (props: FrameProps) => {
-  const [framePosition, setFramePosition] = React.useState(props.initialPosition)
+  const [frameSituation, setFrameSituation] = useState({
+    ...props.initialSituation,
+    scale: 1,
+    angle: 0,
+  })
+
+  let initialScale = 1
+  let fingerAngleOffset = 0
+
   return (
     <ReactableContentBlock
       resizable={{
-        edges: {left: true, right: true, bottom: true, top: true},
+        edges: { left: true, right: true, bottom: true, top: true },
+      }}
+
+      gesturable={{
+        onstart(event) {
+          setFrameSituation(prev => {
+
+            initialScale = prev.scale
+            fingerAngleOffset = event.angle - prev.angle
+            return {
+              ...prev,
+              isTransforming: true,
+              angle: prev.angle
+            }
+          })
+        },
+        onend(event) {
+          setFrameSituation(prev => ({...prev, isTransforming: false}))
+        },
+        preserveAspectRatio: false,
+        onmove(event) {
+          setFrameSituation(prev => {
+            const newAngle = event.angle - fingerAngleOffset
+            return {
+              ...prev,
+              angle: newAngle,
+              scale: event.scale * initialScale,
+            }
+          })
+        }
+      }}
+
+      draggable={{
+        inertia: true,
+        modifiers: [
+          interact.modifiers.restrictRect({
+            restriction: 'parent',
+            endOnly: true
+          })
+        ],
+        onstart: event => setFrameSituation(prev => ({...prev, isTransforming: true})),
+        onend: event => setFrameSituation(prev => ({...prev, isTransforming: false})),
+        onmove: event => {
+          const { dx, dy } = event
+          setFrameSituation(prev => ({
+            ...prev,
+            left: prev.left + dx,
+            top: prev.top + dy,
+            cssTransitionEnabled: false,
+          }))
+        }
       }}
 
       onDoubleTap={() => {
-        setFramePosition(prev => ({
-          left: prev.left,
-          top: prev.top,
-          width: prev.width,
-          height: prev.height,
+        setFrameSituation(prev => ({
+          ...prev,
           isFullscreen: !prev.isFullscreen,
           cssTransitionEnabled: prev.isFullscreen,
         }))
       }}
 
-      draggable={{
-        inertia: true,
-        onmove: event => {
-          const {dx, dy} = event
-          setFramePosition(prev => ({
-            left: prev.left + dx,
-            top: prev.top + dy,
-            width: prev.width,
-            height: prev.height,
-            cssTransitionEnabled: false,
-          }))
-        }
-      }}
       onResizeMove={
         event => {
-          const {width, height} = event.rect
-          const {left, top} = event.deltaRect
-          setFramePosition(prev => {
+          const { width, height } = event.rect
+          const { left, top } = event.deltaRect
+          console.debug("Resizing", event.rect, event.deltaRect)
+          setFrameSituation(prev => {
             return {
+              ...prev,
               left: prev.left + left,
               top: prev.top + top,
-              width,
-              height,
+              width: (width / prev.scale),
+              height: (height / prev.scale),
               cssTransitionEnabled: false,
             }
           })
         }}
-      coordinate={framePosition}
+      frameSituation={frameSituation}
     />)
 }
 

@@ -3,6 +3,9 @@ export type FrameSituation = {
   top: number
   width: number
   height: number
+  angle: number
+  scale: number
   isFullscreen?: boolean
+  isTransforming?: boolean
   cssTransitionEnabled?: boolean
 }

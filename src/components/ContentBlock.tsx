@@ -1,22 +1,37 @@
 import * as React from "react"
 
 import * as styles from "./ContentBlock.module.scss"
-import {FrameSituation} from "../common/types"
+import { FrameSituation } from "../common/types"
 
 
 interface ContentBlockProps {
-  coordinate: FrameSituation
+  frameSituation: FrameSituation
 }
 
 const ContentBlock = (props: ContentBlockProps) => {
+  const { isTransforming, isFullscreen, cssTransitionEnabled, angle, scale } = props.frameSituation
   return (
-    <div className={`${styles.ContentBlock} ${props.coordinate.isFullscreen ? styles.isFullscreen:``} ${props.coordinate.cssTransitionEnabled ? styles.afterFullscreen:``}`} ref={props.getRef} style={{
-      left: props.coordinate.isFullscreen ? `0` : `${props.coordinate.left}px`,
-      top: props.coordinate.isFullscreen ? `0` : `${props.coordinate.top}px`,
-      width: props.coordinate.isFullscreen ? `100%` : `${props.coordinate.width}px`,
-      height: props.coordinate.isFullscreen ? `100%` : `${props.coordinate.height}px`,
+    <div
+      className={`${styles.ContentBlock}
+        ${isFullscreen ? styles.IsFullscreen : ``}
+        ${cssTransitionEnabled ? styles.AfterFullscreen : ``}
+        ${isTransforming ? styles.IsTransforming : ``}`}
+      ref={props.getRef} style={{
+      left: isFullscreen ? `0` : `${props.frameSituation.left}px`,
+      top: isFullscreen ? `0` : `${props.frameSituation.top}px`,
+      width: isFullscreen ? `100%` : `${props.frameSituation.width}px`,
+      height: isFullscreen ? `100%` : `${props.frameSituation.height}px`,
+      transform: `rotate(${isFullscreen ? 0 : angle}deg) scale(${isFullscreen ? 1 : scale})`,
     }}>
-      HELLO I'M BLOCK
+      <div className={styles.Body}>
+        <div style={{
+          fontSize: "4rem", width: "100%", height: "100%", display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundImage: "https://actu.epfl.ch/image/72105/1108x622.jpg",
+          backgroundRepeat: "no-repeat",
+        }}>🧠</div>
+      </div>
     </div>
   )
 }
