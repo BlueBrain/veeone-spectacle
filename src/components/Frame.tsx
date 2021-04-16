@@ -13,11 +13,7 @@ interface FrameProps {
 }
 
 const Frame: React.FC<FrameProps> = (props: FrameProps) => {
-  const [frameSituation, setFrameSituation] = useState({
-    ...props.initialSituation,
-    scale: 1,
-    angle: 0,
-  })
+  const [frameSituation, setFrameSituation] = useState(props.initialSituation)
 
   let initialScale = 1
   let fingerAngleOffset = 0
