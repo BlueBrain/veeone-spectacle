@@ -2,31 +2,38 @@ import * as React from "react"
 
 import * as styles from "./Desk.module.scss"
 import Frame from "./Frame"
-import PresentationData from "../presentations/interfaces"
+import { FrameData, PresentationStateData } from "../presentations/interfaces"
+import LauncherMenu from "./LauncherMenu"
+import { connect } from "react-redux"
+import { getFrames } from "../redux/selectors"
 
-// import LauncherMenu from "./LauncherMenu"
-
+interface StateProps {
+  frames: Record<string, FrameData>
+}
 
 interface DeskProps {
-  presentationData: PresentationData
+  presentationData: PresentationStateData
 }
 
 
-const Desk: React.FC = (props: DeskProps) => {
+const Desk: React.FC = (props: DeskProps & StateProps) => {
 
   return (
     <div className={styles.Desk} ref={props.getRef}>
-      {Object.keys(props.presentationData.frames).map((frameId) => {
-          const frame = props.presentationData.frames[frameId]
+      {Object.keys(props.frames).map((frameId) => {
+          const frame = props.frames[frameId]
           return typeof frame !== "undefined" ?
             <Frame key={frameId}
+                   frameId={frameId}
                    initialSituation={frame.situation}/>
             : ``
         }
       )}
-      {/*<LauncherMenu/>*/}
+      <LauncherMenu/>
     </div>
   )
 }
 
-export default Desk
+export default connect((state: PresentationStateData) => ({
+  frames: getFrames(state),
+}))(Desk)

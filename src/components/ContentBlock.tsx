@@ -1,16 +1,30 @@
 import * as React from "react"
 
 import * as styles from "./ContentBlock.module.scss"
-import { FrameSituation } from "../common/types"
+import { FrameId, FrameSituation } from "../common/types"
 import FrameControlBar from "./FrameControlBar"
+import { connect } from "react-redux"
+import { closeFrame } from "../redux/actions"
 
+interface DispatchProps {
+  closeFrame(frameId: FrameId): void
+}
 
 interface ContentBlockProps {
+  frameId: FrameId
   frameSituation: FrameSituation
 }
 
-const ContentBlock = (props: ContentBlockProps) => {
+type Props = ContentBlockProps & DispatchProps
+
+const ContentBlock = (props: Props) => {
   const { left, top, isTransforming, isFullscreen, cssTransitionEnabled, angle } = props.frameSituation
+
+  const onCloseFrame = () => {
+    console.debug("Close this frame")
+    props.closeFrame(props.frameId)
+  }
+
   return (
     <div
       className={`${styles.ContentBlock}
@@ -22,7 +36,7 @@ const ContentBlock = (props: ContentBlockProps) => {
       height: isFullscreen ? `100%` : `${props.frameSituation.height}px`,
       transform: `${isFullscreen ? `` : `translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`}`,
     }}>
-      <FrameControlBar/>
+      <FrameControlBar onClose={onCloseFrame}/>
       <div className={styles.BodyWrapper}>
         <div className={styles.Body}>
           content body
@@ -32,4 +46,4 @@ const ContentBlock = (props: ContentBlockProps) => {
   )
 }
 
-export default ContentBlock
+export default connect(null, { closeFrame })(ContentBlock)

@@ -1,13 +1,28 @@
 import * as React from "react"
 
 import * as styles from "./LauncherMenu.module.scss"
+import { connect } from 'react-redux'
+import { addFrame } from '../redux/actions'
 
-const LauncherMenu = (props) => {
+interface DispatchProps {
+  addFrame
+}
+
+interface LauncherMenuProps {
+}
+
+type Props = LauncherMenuProps & DispatchProps
+
+const LauncherMenu = (props: Props) => {
+  const openFrame = () => {
+    props.addFrame()
+  }
+
   return (
     <div className={styles.LauncherMenu} ref={props.getRef}>
-      <button type={"button"}>Open frame</button>
+      <button type={"button"} onClick={openFrame}>Open frame</button>
     </div>
   )
 }
 
-export default LauncherMenu
+export default connect(null, { addFrame })(LauncherMenu)

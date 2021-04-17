@@ -9,3 +9,5 @@ export type FrameSituation = {
   isTransforming?: boolean
   cssTransitionEnabled?: boolean
 }
+
+export type FrameId = string

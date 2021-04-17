@@ -1,9 +1,15 @@
 import * as styles from './FrameControlBar.module.scss'
 import React from "react"
 
-const FrameControlBar: React.FC = () => {
+interface FrameControlBarProps {
+  onClose(): void
+}
+
+const FrameControlBar: React.FC<FrameControlBarProps> = (props: FrameControlBarProps) => {
+  const close = () => props.onClose()
+
   return <div className={styles.FrameControlBar}>
-    <button type={"button"} onClick={() => console.debug("EMIT: CLOSE ME")}>X</button>
+    <button type={"button"} onClick={close}>X</button>
     <button type={"button"}>---</button>
   </div>
 }

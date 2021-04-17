@@ -10,6 +10,7 @@
     "@interactjs/dev-tools": "^1.10.11",
     "@interactjs/interact": "^1.10.11",
     "@interactjs/modifiers": "^1.10.11",
+    "@types/react-redux": "^7.1.16",
     "gatsby": "^3.2.1",
     "gatsby-plugin-gatsby-cloud": "^2.2.0",
     "gatsby-plugin-image": "^1.2.1",
@@ -25,6 +26,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
+    "react-redux": "^7.2.3",
     "reactablejs": "^0.2.0",
     "sass": "^1.32.8"
   },

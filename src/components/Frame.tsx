@@ -2,18 +2,27 @@ import * as React from "react"
 import { useState } from "react"
 import ContentBlock from "./ContentBlock"
 import reactable from "reactablejs"
-import { FrameSituation } from "../common/types"
+import { FrameId, FrameSituation } from "../common/types"
 import '@interactjs/modifiers'
 import interact from '@interactjs/interact'
+import { connect } from "react-redux"
+import { setFrameSituation } from "../redux/actions"
 
 const ReactableContentBlock = reactable(ContentBlock)
 
-interface FrameProps {
-  initialSituation: FrameSituation
+interface DispatchProps {
+  setFrameSituation
 }
 
-const Frame: React.FC<FrameProps> = (props: FrameProps) => {
-  const [frameSituation, setFrameSituation] = useState(props.initialSituation)
+interface FrameProps {
+  // initialSituation: FrameSituation
+  frameId: FrameId
+}
+
+type Props = FrameProps & DispatchProps
+
+const Frame: React.FC<Props> = (props: Props) => {
+  const [frameSituation, setFrameSituationState] = useState(props.initialSituation)
 
   let gesturableStart: FrameSituation
   let fingerAngleOffset = 0
@@ -41,7 +50,7 @@ const Frame: React.FC<FrameProps> = (props: FrameProps) => {
 
       gesturable={{
         onstart(event) {
-          setFrameSituation(prev => {
+          setFrameSituationState(prev => {
             gesturableStart = { ...prev }
             fingerAngleOffset = event.angle - prev.angle
             return {
@@ -52,11 +61,11 @@ const Frame: React.FC<FrameProps> = (props: FrameProps) => {
           })
         },
         onend(event) {
-          setFrameSituation(prev => ({ ...prev, isTransforming: false }))
+          setFrameSituationState(prev => ({ ...prev, isTransforming: false }))
         },
         preserveAspectRatio: false,
         onmove(event) {
-          setFrameSituation(prev => {
+          setFrameSituationState(prev => {
             const newAngle = event.angle - fingerAngleOffset
             const newWidth = gesturableStart.width * event.scale
             const newHeight = gesturableStart.height * event.scale
@@ -83,11 +92,16 @@ const Frame: React.FC<FrameProps> = (props: FrameProps) => {
             endOnly: true
           }),
         ],
-        onstart: event => setFrameSituation(prev => ({ ...prev, isTransforming: true })),
-        onend: event => setFrameSituation(prev => ({ ...prev, isTransforming: false })),
+        onstart: event => setFrameSituationState(prev => ({ ...prev, isTransforming: true })),
+        onend: event => {
+          setFrameSituationState(prev => ({ ...prev, isTransforming: false }))
+          props.setFrameSituation(
+            props.frameId,
+          )
+        },
         onmove: event => {
           const { dx, dy } = event
-          setFrameSituation(prev => ({
+          setFrameSituationState(prev => ({
             ...prev,
             left: prev.left + dx,
             top: prev.top + dy,
@@ -97,7 +111,7 @@ const Frame: React.FC<FrameProps> = (props: FrameProps) => {
       }}
 
       onDoubleTap={() => {
-        setFrameSituation(prev => ({
+        setFrameSituationState(prev => ({
           ...prev,
           isFullscreen: !prev.isFullscreen,
           cssTransitionEnabled: prev.isFullscreen,
@@ -109,7 +123,7 @@ const Frame: React.FC<FrameProps> = (props: FrameProps) => {
           const { width, height } = event.rect
           const { left, top } = event.deltaRect
           // console.debug("Resizing", event.rect, event.deltaRect)
-          setFrameSituation(prev => {
+          setFrameSituationState(prev => {
             return {
               ...prev,
               cssTransitionEnabled: false,
@@ -121,7 +135,8 @@ const Frame: React.FC<FrameProps> = (props: FrameProps) => {
           })
         }}
       frameSituation={frameSituation}
+      frameId={props.frameId}
     />)
 }
 
-export default Frame
+export default connect(null, { setFrameSituation })(Frame)

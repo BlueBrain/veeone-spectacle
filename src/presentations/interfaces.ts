@@ -1,10 +1,10 @@
 import { FrameSituation } from "../common/types"
 
-interface FrameData {
+export interface FrameData {
   situation: FrameSituation
 }
 
-export default interface PresentationData {
+export interface PresentationStateData {
   frames: Record<string, FrameData>
 }
 
