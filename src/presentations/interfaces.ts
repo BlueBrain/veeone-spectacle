@@ -4,7 +4,11 @@ export interface FrameData {
   situation: FrameSituation
 }
 
+export interface FramesData {
+  [key: string]: FrameData
+}
+
 export interface PresentationStateData {
-  frames: Record<string, FrameData>
+  frames: FramesData
 }
 

@@ -12,7 +12,7 @@ interface StateProps {
 }
 
 interface DeskProps {
-  presentationData: PresentationStateData
+  // presentationData: PresentationStateData
 }
 
 

@@ -3,10 +3,10 @@ import { Helmet } from "react-helmet"
 import * as styles from "./Spectacle.module.scss"
 import Desk from "./Desk"
 import reactable from "reactablejs"
-import { PresentationStateData } from "../presentations/interfaces"
 import { Provider } from "react-redux"
 import { createStore } from "redux"
-import { presentationReducer } from "../redux/reducers"
+import { rootReducer } from "../redux/reducers"
+import { PresentationStateData } from "../presentations/interfaces"
 
 const ReactableDesk = reactable(Desk)
 
@@ -22,7 +22,7 @@ const initialSpectacleState: PresentationStateData = {
 }
 
 
-const spectacleStore = createStore(presentationReducer, initialSpectacleState)
+const spectacleStore = createStore(rootReducer, initialSpectacleState)
 
 const Spectacle = () => {
   return (
@@ -32,7 +32,7 @@ const Spectacle = () => {
           <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
         </Helmet>
         <ReactableDesk
-          presentationData={initialSpectacleState}
+          // presentationData={initialSpectacleState}
           onHold={() => {
             console.debug("Holding...")
           }}/>

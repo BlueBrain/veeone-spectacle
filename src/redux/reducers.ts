@@ -1,5 +1,5 @@
 import { Actions, ReduxAction } from "./actions"
-import { PresentationStateData } from "../presentations/interfaces"
+import { FramesData, PresentationStateData } from "../presentations/interfaces"
 
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 const charactersLength = characters.length
@@ -12,24 +12,21 @@ const generateFrameId = (length = 6) => {
   return result.join('')
 }
 
-export const presentationReducer = (state: PresentationStateData, action: ReduxAction) => {
+export const framesReducer = (state: FramesData, action: ReduxAction) => {
   console.debug("presentationReducer run", action.type)
   switch (action.type) {
     case Actions.AddFrame:
       const newFrameId = generateFrameId()
       const newState = {
         ...state,
-        frames: {
-          ...state.frames,
-          [newFrameId]: {
-            situation: {
-              left: 50,
-              top: 50,
-              width: 200,
-              height: 200,
-              angle: 0,
-              scale: 1
-            },
+        [newFrameId]: {
+          situation: {
+            left: 50,
+            top: 50,
+            width: 200,
+            height: 200,
+            angle: 0,
+            scale: 1
           }
         }
       }
@@ -40,22 +37,20 @@ export const presentationReducer = (state: PresentationStateData, action: ReduxA
       console.debug("SetFrameSituation")
       return {
         ...state,
-        frames: {
-          ...state.frames,
-          [action.payload.frameId]: {
-            ...state.frames[action.payload.frameId],
-            situation: action.payload.situation
-          }
+        [action.payload.frameId]: {
+          ...state[action.payload.frameId],
+          situation: action.payload.situation
         }
       }
     case Actions.CloseFrame:
       console.debug("Actions.CloseFrame")
-      const {[action.payload.frameId]: value, ...frames} = state.frames
-      return {
-        ...state,
-        frames: frames
-      }
+      const { [action.payload.frameId]: value, ...frames } = state
+      return frames
     default:
       return state
   }
 }
+
+export const rootReducer = (state: PresentationStateData, action: ReduxAction) => ({
+  frames: framesReducer(state.frames, action),
+})

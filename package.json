@@ -32,7 +32,8 @@
   },
   "devDependencies": {
     "@interactjs/types": "^1.10.11",
-    "prettier": "2.2.1"
+    "prettier": "2.2.1",
+    "redux-devtools-extension": "^2.13.9"
   },
   "keywords": [
     "gatsby"
