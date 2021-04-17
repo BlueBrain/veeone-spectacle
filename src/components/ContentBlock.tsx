@@ -21,7 +21,7 @@ const ContentBlock = (props: ContentBlockProps) => {
       top: isFullscreen ? `0` : ``,
       width: isFullscreen ? `100%` : `${props.frameSituation.width}px`,
       height: isFullscreen ? `100%` : `${props.frameSituation.height}px`,
-      transform: `${isFullscreen ? `` : `translate(${left}px, ${top}px)`} rotate(${isFullscreen ? 0 : angle}deg) scale(${isFullscreen ? 1 : scale})`,
+      transform: `${isFullscreen ? `` : `translateX(${left}px) translateY(${top}px)`} rotate(${isFullscreen ? 0 : angle}deg) scale(${isFullscreen ? 1 : scale})`,
     }}>
       <div className={styles.BodyWrapper}>
         <div className={styles.Body}
