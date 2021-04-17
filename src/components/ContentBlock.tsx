@@ -2,6 +2,7 @@ import * as React from "react"
 
 import * as styles from "./ContentBlock.module.scss"
 import { FrameSituation } from "../common/types"
+import FrameControlBar from "./FrameControlBar"
 
 
 interface ContentBlockProps {
@@ -9,7 +10,7 @@ interface ContentBlockProps {
 }
 
 const ContentBlock = (props: ContentBlockProps) => {
-  const { left, top, isTransforming, isFullscreen, cssTransitionEnabled, angle, scale } = props.frameSituation
+  const { left, top, isTransforming, isFullscreen, cssTransitionEnabled, angle } = props.frameSituation
   return (
     <div
       className={`${styles.ContentBlock}
@@ -17,19 +18,14 @@ const ContentBlock = (props: ContentBlockProps) => {
         ${cssTransitionEnabled ? styles.AfterFullscreen : ``}
         ${isTransforming ? styles.IsTransforming : ``}`}
       ref={props.getRef} style={{
-      left: isFullscreen ? `0` : ``,
-      top: isFullscreen ? `0` : ``,
       width: isFullscreen ? `100%` : `${props.frameSituation.width}px`,
       height: isFullscreen ? `100%` : `${props.frameSituation.height}px`,
-      transform: `${isFullscreen ? `` : `translateX(${left}px) translateY(${top}px)`} rotate(${isFullscreen ? 0 : angle}deg) scale(${isFullscreen ? 1 : scale})`,
+      transform: `${isFullscreen ? `` : `translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`}`,
     }}>
+      <FrameControlBar/>
       <div className={styles.BodyWrapper}>
-        <div className={styles.Body}
-             style={{
-               fontSize: "4rem", width: "100%", height: "100%", display: "flex",
-               alignItems: "center",
-               justifyContent: "center",
-             }}>🧠
+        <div className={styles.Body}>
+          content body
         </div>
       </div>
     </div>

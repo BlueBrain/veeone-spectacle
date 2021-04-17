@@ -1,0 +1,11 @@
+.FrameControlBar {
+  position :absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  background: red;
+  padding: 10px;
+  opacity: .5;
+  width: 100%;
+  box-sizing: border-box;
+}

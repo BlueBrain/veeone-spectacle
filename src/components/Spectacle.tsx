@@ -15,7 +15,7 @@ const INITIAL_FRAMES: PresentationData = {
     efgh: {
       situation: { left: 400, top: 100, width: 200, height: 200, angle: 0, scale: 1 }
     },
-  }
+  },
 }
 
 const Spectacle = () => {
