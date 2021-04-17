@@ -1,34 +1,67 @@
 import * as React from "react"
-import { useState } from "react"
+import { CSSProperties, useState } from "react"
 import ContentBlock from "./ContentBlock"
 import reactable from "reactablejs"
-import { FrameId, FrameSituation } from "../common/types"
+import { FrameId, FrameSituation, FrameSituationUpdate } from "../common/types"
 import '@interactjs/modifiers'
 import interact from '@interactjs/interact'
 import { connect } from "react-redux"
-import { setFrameSituation } from "../redux/actions"
+import { manipulateFrame } from "../redux/actions"
+import { FrameData, PresentationStateData } from "../presentations/interfaces"
+import { getFrame } from "../redux/selectors"
 
 const ReactableContentBlock = reactable(ContentBlock)
 
+interface StateProps {
+  frame: FrameData
+}
+
 interface DispatchProps {
-  setFrameSituation
+  manipulateFrame(frameId: FrameId, situation: FrameSituationUpdate): void
 }
 
 interface FrameProps {
-  // initialSituation: FrameSituation
-  frameId: FrameId
+  frameId: FrameId,
 }
 
-type Props = FrameProps & DispatchProps
+type Props = FrameProps & StateProps & DispatchProps
 
-const Frame: React.FC<Props> = (props: Props) => {
-  const [frameSituation, setFrameSituationState] = useState(props.initialSituation)
-
+const Frame: React.FC<Props> = (
+  {
+    frameId,
+    frame,
+    manipulateFrame,
+  }
+) => {
+  console.warn("frame props", frame.situation)
+  const [isFullscreen, setFullscreen] = useState(frame.situation.isFullscreen)
+  let { width, height, left, top, angle } = frame.situation
   let gesturableStart: FrameSituation
   let fingerAngleOffset = 0
 
+  const manipulate = (newSituation: FrameSituationUpdate) => {
+    manipulateFrame(frameId, newSituation)
+  }
+
+  const toggleFullscreen = () => {
+    setFullscreen(prev => {
+      const newValue = !prev
+      const data = { isFullscreen: newValue }
+      manipulate(data)
+      return newValue
+    })
+  }
+
+  const setFrameSituationProperties = (style: CSSProperties) => {
+    style.transform = `translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`
+    style.width = `${width}px`
+    style.height = `${height}px`
+  }
+
   return (
     <ReactableContentBlock
+      onDoubleTap={() => toggleFullscreen()}
+      frameId={frameId}
       resizable={{
         edges: {
           left: true,
@@ -37,49 +70,35 @@ const Frame: React.FC<Props> = (props: Props) => {
           top: true,
         },
         invert: "reposition",
-        // todo aspect ratio limit for scaling
-        // modifiers: [
-        //   interact.modifiers.aspectRatio({
-        //     ratio: 2,
-        //     modifiers: [
-        //       interact.modifiers.restrictSize({ max: 'parent' })
-        //     ]
-        //   })
-        // ]
+        onmove: event => {
+          const { width: rectWidth, height: rectHeight } = event.rect
+          const { left: deltaLeft, top: deltaTop } = event.deltaRect
+          left += deltaLeft
+          top += deltaTop
+          width = rectWidth
+          height = rectHeight
+          setFrameSituationProperties(event.target.style)
+        },
+        onend: () => manipulate({ left, top, width, height })
       }}
 
       gesturable={{
-        onstart(event) {
-          setFrameSituationState(prev => {
-            gesturableStart = { ...prev }
-            fingerAngleOffset = event.angle - prev.angle
-            return {
-              ...prev,
-              isTransforming: true,
-              angle: prev.angle
-            }
-          })
-        },
-        onend(event) {
-          setFrameSituationState(prev => ({ ...prev, isTransforming: false }))
-        },
         preserveAspectRatio: false,
-        onmove(event) {
-          setFrameSituationState(prev => {
-            const newAngle = event.angle - fingerAngleOffset
-            const newWidth = gesturableStart.width * event.scale
-            const newHeight = gesturableStart.height * event.scale
-            return {
-              ...prev,
-              angle: newAngle,
-              // scale: scale,
-              left: prev.left + (prev.width - newWidth) / 2,
-              top: prev.top + (prev.height - newHeight) / 2,
-              width: newWidth,
-              height: newHeight,
-            }
-          })
-        }
+        onstart: event => {
+          fingerAngleOffset = event.angle - angle
+          gesturableStart = { left, top, width, height, angle }
+        },
+        onmove: event => {
+          angle = event.angle - fingerAngleOffset
+          const newWidth = gesturableStart.width * event.scale
+          const newHeight = gesturableStart.height * event.scale
+          left += (width - newWidth) / 2
+          top += (height - newHeight) / 2
+          width = newWidth
+          height = newHeight
+          setFrameSituationProperties(event.target.style)
+        },
+        onend: () => manipulate({ width, height, left, top, angle }),
       }}
 
       draggable={{
@@ -92,51 +111,20 @@ const Frame: React.FC<Props> = (props: Props) => {
             endOnly: true
           }),
         ],
-        onstart: event => setFrameSituationState(prev => ({ ...prev, isTransforming: true })),
+        onstart: event => console.debug("frame start", left, top, frame.situation),
         onend: event => {
-          setFrameSituationState(prev => ({ ...prev, isTransforming: false }))
-          props.setFrameSituation(
-            props.frameId,
-          )
+          manipulate({ left, top })
         },
         onmove: event => {
           const { dx, dy } = event
-          setFrameSituationState(prev => ({
-            ...prev,
-            left: prev.left + dx,
-            top: prev.top + dy,
-            cssTransitionEnabled: false,
-          }))
+          left += dx
+          top += dy
+          setFrameSituationProperties(event.target.style)
         }
       }}
-
-      onDoubleTap={() => {
-        setFrameSituationState(prev => ({
-          ...prev,
-          isFullscreen: !prev.isFullscreen,
-          cssTransitionEnabled: prev.isFullscreen,
-        }))
-      }}
-
-      onResizeMove={
-        event => {
-          const { width, height } = event.rect
-          const { left, top } = event.deltaRect
-          // console.debug("Resizing", event.rect, event.deltaRect)
-          setFrameSituationState(prev => {
-            return {
-              ...prev,
-              cssTransitionEnabled: false,
-              left: prev.left + left,
-              top: prev.top + top,
-              width,
-              height,
-            }
-          })
-        }}
-      frameSituation={frameSituation}
-      frameId={props.frameId}
     />)
 }
-
-export default connect(null, { setFrameSituation })(Frame)
+const mapStateToProps = (state: PresentationStateData, ownProps: FrameProps) => ({
+  frame: getFrame(state, ownProps.frameId),
+})
+export default connect(mapStateToProps, { manipulateFrame })(Frame)

@@ -18,15 +18,6 @@
   //transition: box-shadow 500ms, transform 500ms;
 }
 
-.IsTransforming {
-  transition: none !important;
-
-  .Body {
-    //box-shadow: 5px 10px 20px rgba(black, .3) !important;
-    //transform: translate(0, -1%) !important;
-  }
-}
-
 .IsFullscreen {
   //transition: width 2s, height 2s, left 2s, top 2s;
   z-index: 99;

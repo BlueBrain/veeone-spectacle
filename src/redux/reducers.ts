@@ -12,13 +12,12 @@ const generateFrameId = (length = 6) => {
   return result.join('')
 }
 
-export const framesReducer = (state: FramesData, action: ReduxAction) => {
-  console.debug("presentationReducer run", action.type)
+export const framesReducer = (frames: FramesData, action: ReduxAction) => {
   switch (action.type) {
     case Actions.AddFrame:
       const newFrameId = generateFrameId()
       const newState = {
-        ...state,
+        ...frames,
         [newFrameId]: {
           situation: {
             left: 50,
@@ -30,24 +29,28 @@ export const framesReducer = (state: FramesData, action: ReduxAction) => {
           }
         }
       }
-      console.debug("Returning after AddFrame state", newState)
       return newState
 
-    case Actions.SetFrameSituation:
-      console.debug("SetFrameSituation")
-      return {
-        ...state,
+    case Actions.CloseFrame:
+      const { [action.payload.frameId]: value, ...newFrames } = frames
+      return newFrames
+
+    case Actions.ManipulateFrame:
+      const newSituation = {
+        ...frames[action.payload.frameId].situation,
+        ...action.payload.situationUpdate,
+      }
+      const manipulatedFrames = {
+        ...frames,
         [action.payload.frameId]: {
-          ...state[action.payload.frameId],
-          situation: action.payload.situation
+          ...frames[action.payload.frameId],
+          situation: { ...newSituation },
         }
       }
-    case Actions.CloseFrame:
-      console.debug("Actions.CloseFrame")
-      const { [action.payload.frameId]: value, ...frames } = state
-      return frames
+      return manipulatedFrames
+
     default:
-      return state
+      return frames
   }
 }
 

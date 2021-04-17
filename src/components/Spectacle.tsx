@@ -4,25 +4,9 @@ import * as styles from "./Spectacle.module.scss"
 import Desk from "./Desk"
 import reactable from "reactablejs"
 import { Provider } from "react-redux"
-import { createStore } from "redux"
-import { rootReducer } from "../redux/reducers"
-import { PresentationStateData } from "../presentations/interfaces"
+import { spectacleStore } from "../redux/store"
 
 const ReactableDesk = reactable(Desk)
-
-const initialSpectacleState: PresentationStateData = {
-  frames: {
-    abcdef: {
-      situation: { left: 100, top: 200, width: 300, height: 100, angle: 0, scale: 1 }
-    },
-    efghij: {
-      situation: { left: 400, top: 100, width: 200, height: 200, angle: 0, scale: 1 }
-    },
-  },
-}
-
-
-const spectacleStore = createStore(rootReducer, initialSpectacleState)
 
 const Spectacle = () => {
   return (

@@ -1,9 +1,9 @@
-import { FrameId, FrameSituation } from "../common/types"
+import { FrameId, FrameSituationUpdate } from "../common/types"
 
 export enum Actions {
   AddFrame = 'AddFrame',
+  ManipulateFrame = 'ManipulateFrame',
   CloseFrame = 'CloseFrame',
-  SetFrameSituation = 'SetFrameSituation',
 }
 
 export interface ReduxAction {
@@ -16,11 +16,11 @@ export const addFrame = () => ({
   payload: {},
 })
 
-export const setFrameSituation = (frameId: FrameId, situation: FrameSituation) => ({
-  type: Actions.SetFrameSituation,
+export const manipulateFrame = (frameId: FrameId, situationUpdate: FrameSituationUpdate) => ({
+  type: Actions.ManipulateFrame,
   payload: {
     frameId,
-    situation,
+    situationUpdate,
   }
 })
 

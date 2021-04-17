@@ -12,21 +12,16 @@ interface StateProps {
 }
 
 interface DeskProps {
-  // presentationData: PresentationStateData
 }
 
+type Props = DeskProps & StateProps
 
-const Desk: React.FC = (props: DeskProps & StateProps) => {
-
+const Desk: React.FC<Props> = (props: Props) => {
   return (
     <div className={styles.Desk} ref={props.getRef}>
       {Object.keys(props.frames).map((frameId) => {
           const frame = props.frames[frameId]
-          return typeof frame !== "undefined" ?
-            <Frame key={frameId}
-                   frameId={frameId}
-                   initialSituation={frame.situation}/>
-            : ``
+          return typeof frame !== "undefined" ? <Frame key={frameId} frameId={frameId}/> : ``
         }
       )}
       <LauncherMenu/>
