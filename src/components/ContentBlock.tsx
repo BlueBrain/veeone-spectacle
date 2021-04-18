@@ -18,6 +18,7 @@ interface StateProps {
 
 interface ContentBlockProps {
   frameId: FrameId
+  getRef(): HTMLElement
 }
 
 type Props = ContentBlockProps & StateProps & DispatchProps

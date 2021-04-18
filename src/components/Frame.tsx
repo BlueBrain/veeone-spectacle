@@ -1,5 +1,5 @@
 import * as React from "react"
-import { CSSProperties, useState } from "react"
+import { CSSProperties } from "react"
 import ContentBlock from "./ContentBlock"
 import reactable from "reactablejs"
 import { FrameId, FrameSituation, FrameSituationUpdate } from "../common/types"
@@ -108,8 +108,8 @@ const Frame: React.FC<Props> = (
             endOnly: true
           }),
         ],
-        onstart: event => console.debug("frame start", left, top, frame.situation),
-        onend: event => {
+        onstart: () => console.debug("frame start", left, top, frame.situation),
+        onend: () => {
           manipulate({ left, top })
         },
         onmove: event => {

@@ -1,0 +1,27 @@
+.LauncherMenuItem {
+  color: #fff;
+  font-size: 10pt;
+  font-weight: 700;
+  width: 50px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  text-shadow: 1px 1px 4px rgba(black, .5);
+}
+
+.Icon {
+  border: 1px solid red;
+}
+
+.IconWrapper {
+  overflow: hidden;
+
+  path {
+    $shadow: drop-shadow(6px 6px 10px rgba(black, .7));
+    //box-shadow: 2px 2px 4px rgba(black, .9);
+    fill: white;
+    -webkit-filter: $shadow;
+    filter: $shadow;
+  }
+
+}

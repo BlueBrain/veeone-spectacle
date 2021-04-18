@@ -4,6 +4,7 @@ import * as styles from "./LauncherMenu.module.scss"
 import { connect } from 'react-redux'
 import { addFrame, AddFramePayload, closeLauncherMenu } from '../redux/actions'
 import { Position } from "../common/types"
+import LauncherMenuItem from "./LauncherMenuItem"
 
 
 interface DispatchProps {
@@ -12,6 +13,7 @@ interface DispatchProps {
 }
 
 interface LauncherMenuProps {
+  getRef(): HTMLElement
   menuId: string
   position: Position
 }
@@ -34,8 +36,10 @@ const LauncherMenu = (props: Props) => {
 
   return (
     <div className={styles.LauncherMenu} ref={props.getRef}>
-      <button type={"button"} onClick={openFrame}>Open frame</button>
-      <button type={"button"} onClick={openMedia}>Open media</button>
+      <LauncherMenuItem label={"Open frame"}
+                        onSelected={() => openFrame()}/>
+      <LauncherMenuItem label={"Open media"}
+                        onSelected={() => openMedia()}/>
     </div>
   )
 }

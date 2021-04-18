@@ -14,6 +14,7 @@ interface StateProps {
 }
 
 interface DeskProps {
+  getRef(): HTMLElement
 }
 
 type Props = DeskProps & StateProps
@@ -37,7 +38,6 @@ const Desk: React.FC<Props> = (props: Props) => {
           <LauncherMenu
             menuId={launcherMenu.menuId}
             position={launcherMenu.position}/>
-          {JSON.stringify(launcherMenu.position)}
         </div>
       })}
     </div>
