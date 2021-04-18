@@ -10,7 +10,6 @@ const FrameControlBar: React.FC<FrameControlBarProps> = (props: FrameControlBarP
 
   return <div className={styles.FrameControlBar}>
     <button type={"button"} onClick={close}>X</button>
-    <button type={"button"}>---</button>
   </div>
 }
 

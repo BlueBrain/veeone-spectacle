@@ -8,3 +8,5 @@ export const getFrame = (store: PresentationStateData, frameId: FrameId) => {
   console.debug("getFrame selector", frameId, result.situation.isFullscreen)
   return result
 }
+
+export const getLauncherMenus = (store: PresentationStateData) => store.launcherMenus

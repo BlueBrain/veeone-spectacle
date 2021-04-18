@@ -1,9 +1,11 @@
-import { FrameId, FrameSituationUpdate } from "../common/types"
+import { FrameId, FrameSituationUpdate, Position } from "../common/types"
 
 export enum Actions {
-  AddFrame = 'AddFrame',
-  ManipulateFrame = 'ManipulateFrame',
-  CloseFrame = 'CloseFrame',
+  AddFrame,
+  ManipulateFrame,
+  CloseFrame,
+  OpenLauncherMenu,
+  CloseLauncherMenu,
 }
 
 export interface ReduxAction {
@@ -11,9 +13,13 @@ export interface ReduxAction {
   payload: any
 }
 
-export const addFrame = () => ({
+export interface AddFramePayload {
+  position: Position
+}
+
+export const addFrame = (payload: AddFramePayload) => ({
   type: Actions.AddFrame,
-  payload: {},
+  payload: payload,
 })
 
 export const manipulateFrame = (frameId: FrameId, situationUpdate: FrameSituationUpdate) => ({
@@ -29,4 +35,22 @@ export const closeFrame = (frameId: FrameId) => ({
   payload: {
     frameId
   }
+})
+
+interface OpenLauncherMenuPayload {
+  position: Position
+}
+
+export const openLauncherMenu = (payload: OpenLauncherMenuPayload) => ({
+  type: Actions.OpenLauncherMenu,
+  payload: payload
+})
+
+interface CloseLauncherMenuPayload {
+  menuId: string
+}
+
+export const closeLauncherMenu = (payload: CloseLauncherMenuPayload) => ({
+  type: Actions.CloseLauncherMenu,
+  payload: payload
 })

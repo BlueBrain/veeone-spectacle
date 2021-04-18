@@ -33,9 +33,9 @@ const Frame: React.FC<Props> = (
     manipulateFrame,
   }
 ) => {
-  console.warn("frame props", frame.situation)
-  const [isFullscreen, setFullscreen] = useState(frame.situation.isFullscreen)
-  let { width, height, left, top, angle } = frame.situation
+  // console.warn("frame props", frame.situation)
+  // const [isFullscreen, setFullscreen] = useState(frame.situation.isFullscreen)
+  let { width, height, left, top, angle, isFullscreen } = frame.situation
   let gesturableStart: FrameSituation
   let fingerAngleOffset = 0
 
@@ -44,12 +44,9 @@ const Frame: React.FC<Props> = (
   }
 
   const toggleFullscreen = () => {
-    setFullscreen(prev => {
-      const newValue = !prev
-      const data = { isFullscreen: newValue }
-      manipulate(data)
-      return newValue
-    })
+    isFullscreen = !isFullscreen
+    const data = { isFullscreen: isFullscreen }
+    manipulate(data)
   }
 
   const setFrameSituationProperties = (style: CSSProperties) => {

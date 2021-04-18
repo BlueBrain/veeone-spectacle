@@ -10,6 +10,7 @@
     "@interactjs/dev-tools": "^1.10.11",
     "@interactjs/interact": "^1.10.11",
     "@interactjs/modifiers": "^1.10.11",
+    "@reactivex/rxjs": "^6.6.7",
     "@types/react-redux": "^7.1.16",
     "gatsby": "^3.2.1",
     "gatsby-plugin-gatsby-cloud": "^2.2.0",

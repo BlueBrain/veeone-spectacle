@@ -2,13 +2,15 @@ import * as React from "react"
 
 import * as styles from "./Desk.module.scss"
 import Frame from "./Frame"
-import { FrameData, PresentationStateData } from "../presentations/interfaces"
+import { FrameData, LauncherMenuData, PresentationStateData } from "../presentations/interfaces"
 import LauncherMenu from "./LauncherMenu"
 import { connect } from "react-redux"
-import { getFrames } from "../redux/selectors"
+import { getFrames, getLauncherMenus } from "../redux/selectors"
+import { closeLauncherMenu } from "../redux/actions"
 
 interface StateProps {
   frames: Record<string, FrameData>
+  launcherMenus: LauncherMenuData[]
 }
 
 interface DeskProps {
@@ -24,11 +26,25 @@ const Desk: React.FC<Props> = (props: Props) => {
           return typeof frame !== "undefined" ? <Frame key={frameId} frameId={frameId}/> : ``
         }
       )}
-      <LauncherMenu/>
+      {props.launcherMenus.map((launcherMenu) => {
+        return <div
+          key={launcherMenu.menuId}
+          style={{
+            position: "absolute",
+            left: `${launcherMenu.position.left}px`,
+            top: `${launcherMenu.position.top}px`,
+          }}>
+          <LauncherMenu
+            menuId={launcherMenu.menuId}
+            position={launcherMenu.position}/>
+          {JSON.stringify(launcherMenu.position)}
+        </div>
+      })}
     </div>
   )
 }
 
 export default connect((state: PresentationStateData) => ({
   frames: getFrames(state),
-}))(Desk)
+  launcherMenus: getLauncherMenus(state),
+}), { closeLauncherMenu })(Desk)

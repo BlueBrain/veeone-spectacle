@@ -1,35 +1,32 @@
-import { Actions, ReduxAction } from "./actions"
-import { FramesData, PresentationStateData } from "../presentations/interfaces"
+import { Actions, AddFramePayload, ReduxAction } from "./actions"
+import { FramesData, LauncherMenuData, PresentationStateData } from "../presentations/interfaces"
+import { generateRandomId } from "../common/random"
 
-const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-const charactersLength = characters.length
-const generateFrameId = (length = 6) => {
-  let result = []
+const generateFrameId = () => generateRandomId(6)
 
-  for (let i = 0; i < length; i++) {
-    result.push(characters.charAt(Math.floor(Math.random() * charactersLength)))
-  }
-  return result.join('')
-}
-
-export const framesReducer = (frames: FramesData, action: ReduxAction) => {
+const framesReducer = (frames: FramesData, action: ReduxAction) => {
+  console.debug("Calling framesReducer")
   switch (action.type) {
     case Actions.AddFrame:
       const newFrameId = generateFrameId()
-      const newState = {
+      const addFramePayload = action.payload as AddFramePayload
+      const width = 200
+      const height = 200
+      const left = addFramePayload.position.left - width / 2
+      const top = addFramePayload.position.top - height / 2
+      return {
         ...frames,
         [newFrameId]: {
           situation: {
-            left: 50,
-            top: 50,
-            width: 200,
-            height: 200,
+            left: left,
+            top: top,
+            width: width,
+            height: height,
             angle: 0,
             scale: 1
           }
         }
       }
-      return newState
 
     case Actions.CloseFrame:
       const { [action.payload.frameId]: value, ...newFrames } = frames
@@ -40,20 +37,40 @@ export const framesReducer = (frames: FramesData, action: ReduxAction) => {
         ...frames[action.payload.frameId].situation,
         ...action.payload.situationUpdate,
       }
-      const manipulatedFrames = {
+      return {
         ...frames,
         [action.payload.frameId]: {
           ...frames[action.payload.frameId],
           situation: { ...newSituation },
         }
       }
-      return manipulatedFrames
 
     default:
       return frames
   }
 }
 
+const launcherMenuReducer = (launcherMenus: LauncherMenuData[], action: ReduxAction) => {
+  console.debug("Calling launcherMenuReducer")
+  switch (action.type) {
+    case Actions.OpenLauncherMenu:
+      const { left, top } = action.payload.position
+      const newLauncherMenu = {
+        menuId: generateRandomId(4),
+        position: { left, top },
+      }
+      console.debug("Run Actions.OpenLauncherMenu", newLauncherMenu)
+      return [...launcherMenus, newLauncherMenu]
+
+    case Actions.CloseLauncherMenu:
+      return launcherMenus.filter((menu) => menu.menuId !== action.payload.menuId)
+
+    default:
+      return launcherMenus
+  }
+}
+
 export const rootReducer = (state: PresentationStateData, action: ReduxAction) => ({
   frames: framesReducer(state.frames, action),
+  launcherMenus: launcherMenuReducer(state.launcherMenus, action),
 })

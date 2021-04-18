@@ -11,5 +11,6 @@ const initialSpectacleState: PresentationStateData = {
     //   situation: { left: 400, top: 100, width: 200, height: 200, angle: 0, scale: 1 }
     // },
   },
+  launcherMenus: []
 }
 export const spectacleStore = createStore(rootReducer, initialSpectacleState)

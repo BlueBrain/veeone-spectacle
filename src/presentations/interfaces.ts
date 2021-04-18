@@ -1,4 +1,4 @@
-import { FrameSituation } from "../common/types"
+import { FrameSituation, Position } from "../common/types"
 
 export interface FrameData {
   situation: FrameSituation
@@ -8,7 +8,13 @@ export interface FramesData {
   [key: string]: FrameData
 }
 
-export interface PresentationStateData {
-  frames: FramesData
+export interface LauncherMenuData {
+  menuId: string
+  position: Position
 }
 
+
+export interface PresentationStateData {
+  frames: FramesData
+  launcherMenus: LauncherMenuData[]
+}
