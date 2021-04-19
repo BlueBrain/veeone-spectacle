@@ -2,16 +2,10 @@ import * as React from "react"
 
 import * as styles from "./ContentBlock.module.scss"
 import { FrameId, FrameSituation } from "../common/types"
-import FrameControlBar from "./FrameControlBar"
 import { connect } from "react-redux"
-import { closeFrame } from "../redux/actions"
 import { getFrame } from "../redux/selectors"
 import { PresentationStateData } from "../presentations/interfaces"
 import styled from "styled-components"
-
-interface DispatchProps {
-  closeFrame(frameId: FrameId): void
-}
 
 interface StateProps {
   situation: FrameSituation
@@ -19,18 +13,15 @@ interface StateProps {
 
 interface ContentBlockProps {
   frameId: FrameId
-
-  getRef(): HTMLElement
 }
 
-type Props = ContentBlockProps & StateProps & DispatchProps
+type Props = ContentBlockProps & StateProps
 
-const StyledContentBlock = styled.div(({ isFullscreen, width, height, left, top, angle }) => `
+const StyledContentBlock = styled.div`
   position: absolute;
-  width: ${isFullscreen ? `100%` : `${width}px`};
-  height: ${isFullscreen ? `100%` : `${height}px`};
-  transform: ${isFullscreen ? `` : `translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`}
-`)
+  width: 100%;
+  height: 100%;
+`
 
 const ContentBlock = (props: Props) => {
   const { width, height, left, top, isFullscreen, angle } = props.situation
@@ -41,14 +32,7 @@ const ContentBlock = (props: Props) => {
   }
 
   return (
-    <StyledContentBlock
-      isFullscreen={isFullscreen}
-      width={width} height={height}
-      left={left} top={top}
-      angle={angle}
-      ref={props.getRef}>
-
-      <FrameControlBar onClose={onCloseFrame}/>
+    <StyledContentBlock>
 
       <div className={styles.BodyWrapper}>
         <div className={styles.Body}>
@@ -73,4 +57,4 @@ const mapStateToProps = (state: PresentationStateData, ownProps: ContentBlockPro
   }
 }
 
-export default connect(mapStateToProps, { closeFrame })(ContentBlock)
+export default connect(mapStateToProps)(ContentBlock)

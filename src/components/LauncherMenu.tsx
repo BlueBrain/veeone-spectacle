@@ -9,11 +9,11 @@ import LauncherMenuItem from "./LauncherMenuItem"
 
 interface DispatchProps {
   addFrame(payload: AddFramePayload): void
+
   closeLauncherMenu
 }
 
 interface LauncherMenuProps {
-  getRef(): HTMLElement
   menuId: string
   position: Position
 }
@@ -27,7 +27,7 @@ const LauncherMenu = (props: Props) => {
 
   const openFrame = () => {
     close()
-    props.addFrame({position: props.position})
+    props.addFrame({ position: props.position })
   }
 
   const openMedia = () => {
@@ -35,11 +35,13 @@ const LauncherMenu = (props: Props) => {
   }
 
   return (
-    <div className={styles.LauncherMenu} ref={props.getRef}>
-      <LauncherMenuItem label={"Open frame"}
-                        onSelected={() => openFrame()}/>
-      <LauncherMenuItem label={"Open media"}
-                        onSelected={() => openMedia()}/>
+    <div className={styles.LauncherMenu}>
+      <LauncherMenuItem
+        label={"Open frame"}
+        onSelected={() => openFrame()}/>
+      <LauncherMenuItem
+        label={"Open media"}
+        onSelected={() => openMedia()}/>
     </div>
   )
 }
