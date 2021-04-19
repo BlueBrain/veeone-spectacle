@@ -5,7 +5,7 @@ import { FrameId, FrameSituation, FrameSituationUpdate } from "../common/types"
 import '@interactjs/modifiers'
 import interact from 'interactjs'
 import { connect } from "react-redux"
-import { closeFrame, manipulateFrame } from "../redux/actions"
+import { closeFrame, manipulateFrame, bringFrameToFront } from "../redux/actions"
 import { FrameData, PresentationStateData } from "../presentations/interfaces"
 import { getFrame } from "../redux/selectors"
 import styled from "styled-components"
@@ -20,6 +20,8 @@ interface DispatchProps {
   manipulateFrame(frameId: FrameId, situation: FrameSituationUpdate): void
 
   closeFrame(frameId: FrameId): void
+
+  bringFrameToFront(frameId: FrameId): void
 }
 
 interface FrameProps {
@@ -41,6 +43,7 @@ const Frame: React.FC<Props> = (
     frame,
     manipulateFrame,
     closeFrame,
+    bringFrameToFront,
   }
 ) => {
   console.warn("frame props", frame.situation)
@@ -53,6 +56,11 @@ const Frame: React.FC<Props> = (
 
   const manipulate = (newSituation: FrameSituationUpdate) => {
     manipulateFrame(frameId, newSituation)
+  }
+
+  const bringToFront = () => {
+    console.debug("Bring me to the front")
+    bringFrameToFront(frameId)
   }
 
   const toggleFullscreen = () => {
@@ -165,6 +173,7 @@ const Frame: React.FC<Props> = (
 
   return (
     <StyledFrame
+      onPointerDown={bringToFront}
       ref={frameRef}
       isFullscreen={isFullscreen}
       width={width} height={height}
@@ -178,4 +187,4 @@ const Frame: React.FC<Props> = (
 const mapStateToProps = (state: PresentationStateData, ownProps: FrameProps) => ({
   frame: getFrame(state, ownProps.frameId),
 })
-export default connect(mapStateToProps, { manipulateFrame, closeFrame })(Frame)
+export default connect(mapStateToProps, { manipulateFrame, closeFrame, bringFrameToFront })(Frame)

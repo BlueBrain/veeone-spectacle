@@ -28,11 +28,12 @@ const framesReducer = (frames: FramesData, action: ReduxAction) => {
         }
       }
 
-    case Actions.CloseFrame:
+    case Actions.CloseFrame: {
       const { [action.payload.frameId]: value, ...newFrames } = frames
       return newFrames
+    }
 
-    case Actions.ManipulateFrame:
+    case Actions.ManipulateFrame: {
       const newSituation = {
         ...frames[action.payload.frameId].situation,
         ...action.payload.situationUpdate,
@@ -44,6 +45,12 @@ const framesReducer = (frames: FramesData, action: ReduxAction) => {
           situation: { ...newSituation },
         }
       }
+    }
+
+    case Actions.BringFrameToFront: {
+      const { [action.payload.frameId]: value, ...otherFrames } = frames
+      return {...otherFrames, [action.payload.frameId]: value}
+    }
 
     default:
       return frames

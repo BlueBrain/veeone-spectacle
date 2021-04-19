@@ -4,6 +4,7 @@ export enum Actions {
   AddFrame,
   ManipulateFrame,
   CloseFrame,
+  BringFrameToFront,
   OpenLauncherMenu,
   CloseLauncherMenu,
 }
@@ -28,6 +29,11 @@ export const manipulateFrame = (frameId: FrameId, situationUpdate: FrameSituatio
     frameId,
     situationUpdate,
   }
+})
+
+export const bringFrameToFront = (frameId) => ({
+  type: Actions.BringFrameToFront,
+  payload: { frameId }
 })
 
 export const closeFrame = (frameId: FrameId) => ({
