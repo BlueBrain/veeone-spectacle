@@ -31,7 +31,8 @@
     "react-helmet": "^6.1.0",
     "react-redux": "^7.2.3",
     "reactablejs": "^0.2.0",
-    "sass": "^1.32.8"
+    "sass": "^1.32.8",
+    "styled-components": "^5.2.3"
   },
   "devDependencies": {
     "@interactjs/types": "^1.10.11",

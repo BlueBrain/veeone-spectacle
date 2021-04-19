@@ -10,7 +10,7 @@ const framesReducer = (frames: FramesData, action: ReduxAction) => {
     case Actions.AddFrame:
       const newFrameId = generateFrameId()
       const addFramePayload = action.payload as AddFramePayload
-      const width = 200
+      const width = 300
       const height = 200
       const left = addFramePayload.position.left - width / 2
       const top = addFramePayload.position.top - height / 2

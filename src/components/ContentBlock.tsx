@@ -7,6 +7,7 @@ import { connect } from "react-redux"
 import { closeFrame } from "../redux/actions"
 import { getFrame } from "../redux/selectors"
 import { PresentationStateData } from "../presentations/interfaces"
+import styled from "styled-components"
 
 interface DispatchProps {
   closeFrame(frameId: FrameId): void
@@ -18,10 +19,18 @@ interface StateProps {
 
 interface ContentBlockProps {
   frameId: FrameId
+
   getRef(): HTMLElement
 }
 
 type Props = ContentBlockProps & StateProps & DispatchProps
+
+const StyledContentBlock = styled.div(({ isFullscreen, width, height, left, top, angle }) => `
+  position: absolute;
+  width: ${isFullscreen ? `100%` : `${width}px`};
+  height: ${isFullscreen ? `100%` : `${height}px`};
+  transform: ${isFullscreen ? `` : `translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`}
+`)
 
 const ContentBlock = (props: Props) => {
   const { width, height, left, top, isFullscreen, angle } = props.situation
@@ -32,14 +41,15 @@ const ContentBlock = (props: Props) => {
   }
 
   return (
-    <div
-      className={`${styles.ContentBlock} ${isFullscreen ? styles.IsFullscreen : ``}`}
-      ref={props.getRef} style={{
-      width: isFullscreen ? `100%` : `${width}px`,
-      height: isFullscreen ? `100%` : `${height}px`,
-      transform: `${isFullscreen ? `` : `translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`}`,
-    }}>
+    <StyledContentBlock
+      isFullscreen={isFullscreen}
+      width={width} height={height}
+      left={left} top={top}
+      angle={angle}
+      ref={props.getRef}>
+
       <FrameControlBar onClose={onCloseFrame}/>
+
       <div className={styles.BodyWrapper}>
         <div className={styles.Body}>
           content body
@@ -51,7 +61,8 @@ const ContentBlock = (props: Props) => {
           <div>fullscreen={isFullscreen ? "true" : "false"}</div>
         </div>
       </div>
-    </div>
+
+    </StyledContentBlock>
   )
 }
 
