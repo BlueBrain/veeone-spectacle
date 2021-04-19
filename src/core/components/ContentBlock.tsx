@@ -1,10 +1,10 @@
 import * as React from "react"
 
 import * as styles from "./ContentBlock.module.scss"
-import { FrameId, FrameSituation } from "../../common/types"
+import { FrameId, FrameSituation } from "../types"
 import { connect } from "react-redux"
-import { getFrame } from "../../redux/selectors"
-import { PresentationStateData } from "../../presentations/interfaces"
+import { getFrame } from "../redux/selectors"
+import { PresentationStateData } from "../presentations/interfaces"
 import styled from "styled-components"
 
 interface StateProps {

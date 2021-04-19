@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Spectacle } from "../core/components"
-import { spectacleStore } from "../redux/store"
+import { spectacleStore } from "../core/redux/store"
 import { Provider } from "react-redux"
 
 const isBrowser = typeof window !== "undefined"

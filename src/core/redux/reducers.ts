@@ -1,6 +1,6 @@
 import { Actions, AddFramePayload, ReduxAction } from "./actions"
 import { FramesData, LauncherMenuData, PresentationStateData } from "../presentations/interfaces"
-import { generateRandomId } from "../common/random"
+import { generateRandomId } from "../../common/random"
 
 const generateFrameId = () => generateRandomId(6)
 

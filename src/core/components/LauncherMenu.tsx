@@ -2,8 +2,8 @@ import * as React from "react"
 
 import * as styles from "./LauncherMenu.module.scss"
 import { connect } from 'react-redux'
-import { addFrame, AddFramePayload, closeLauncherMenu } from '../../redux/actions'
-import { Position } from "../../common/types"
+import { addFrame, AddFramePayload, closeLauncherMenu } from '../redux/actions'
+import { Position } from "../types"
 import LauncherMenuItem from "./LauncherMenuItem"
 
 

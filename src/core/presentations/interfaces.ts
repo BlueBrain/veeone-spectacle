@@ -1,4 +1,4 @@
-import { FrameSituation, Position } from "../common/types"
+import { FrameSituation, Position } from "../types"
 
 export interface FrameData {
   situation: FrameSituation

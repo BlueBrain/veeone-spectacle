@@ -1,5 +1,5 @@
 import { PresentationStateData } from "../presentations/interfaces"
-import { FrameId } from "../common/types"
+import { FrameId } from "../types"
 
 export const getFrames = (store: PresentationStateData) => store.frames
 

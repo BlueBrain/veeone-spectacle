@@ -1,4 +1,4 @@
-import { FrameId, FrameSituationUpdate, Position } from "../common/types"
+import { FrameId, FrameSituationUpdate, Position } from "../types"
 
 export enum Actions {
   AddFrame,
