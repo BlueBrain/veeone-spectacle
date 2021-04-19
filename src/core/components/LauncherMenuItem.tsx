@@ -1,6 +1,6 @@
 import * as React from "react"
 import * as styles from "./LauncherMenuItem.module.scss"
-import OpenIcon from "../assets/icons/open.inline.svg"
+import OpenIcon from "../../assets/icons/open.inline.svg"
 import { StaticImage } from "gatsby-plugin-image"
 
 interface LauncherMenuItemProps {

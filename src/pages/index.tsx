@@ -1,5 +1,5 @@
 import * as React from "react"
-import Spectacle from "../components/Spectacle"
+import { Spectacle } from "../core/components"
 import { spectacleStore } from "../redux/store"
 import { Provider } from "react-redux"
 

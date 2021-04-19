@@ -1,13 +1,13 @@
 import * as React from "react"
 import { CSSProperties, useEffect, useRef } from "react"
 import ContentBlock from "./ContentBlock"
-import { FrameId, FrameSituation, FrameSituationUpdate } from "../common/types"
+import { FrameId, FrameSituation, FrameSituationUpdate } from "../../common/types"
 import '@interactjs/modifiers'
 import interact from 'interactjs'
 import { connect } from "react-redux"
-import { closeFrame, manipulateFrame, bringFrameToFront } from "../redux/actions"
-import { FrameData, PresentationStateData } from "../presentations/interfaces"
-import { getFrame } from "../redux/selectors"
+import { closeFrame, manipulateFrame, bringFrameToFront } from "../../redux/actions"
+import { FrameData, PresentationStateData } from "../../presentations/interfaces"
+import { getFrame } from "../../redux/selectors"
 import styled from "styled-components"
 import FrameControlBar from "./FrameControlBar"
 import { Target } from "@interactjs/types/index"

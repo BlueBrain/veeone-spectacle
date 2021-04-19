@@ -8,7 +8,7 @@ interface SpectacleProps {}
 
 type Props = SpectacleProps
 
-const Spectacle = (props: Props) => {
+export const Spectacle = (props: Props) => {
   return (
     <div className={styles.Spectacle}>
       <Helmet>
@@ -18,5 +18,3 @@ const Spectacle = (props: Props) => {
     </div>
   )
 }
-
-export default Spectacle
