@@ -1,10 +1,10 @@
 import * as React from "react"
 
-import * as styles from "./LauncherMenu.module.scss"
 import { connect } from 'react-redux'
 import { addFrame, AddFramePayload, closeLauncherMenu } from '../redux/actions'
 import { Position } from "../types"
 import LauncherMenuItem from "./LauncherMenuItem"
+import styled from "styled-components"
 
 
 interface DispatchProps {
@@ -19,6 +19,13 @@ interface LauncherMenuProps {
 }
 
 type Props = LauncherMenuProps & DispatchProps
+
+const StyledLauncherMenu = styled.div`
+  display: flex;
+  flex-grow: 1;
+  position: absolute;
+  transform: translate(-50%, -50%);
+`
 
 const LauncherMenu = (props: Props) => {
   const close = () => {
@@ -35,14 +42,14 @@ const LauncherMenu = (props: Props) => {
   }
 
   return (
-    <div className={styles.LauncherMenu}>
+    <StyledLauncherMenu>
       <LauncherMenuItem
         label={"Open frame"}
         onSelected={() => openFrame()}/>
       <LauncherMenuItem
         label={"Open media"}
         onSelected={() => openMedia()}/>
-    </div>
+    </StyledLauncherMenu>
   )
 }
 
