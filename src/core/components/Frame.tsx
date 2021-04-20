@@ -32,9 +32,10 @@ type Props = FrameProps & StateProps & DispatchProps
 
 const StyledFrame = styled.div(({ isFullscreen, width, height, left, top, angle }) => `
   position: absolute;
+  will-change: transform;
   width: ${isFullscreen ? `100%` : `${width}px`};
   height: ${isFullscreen ? `100%` : `${height}px`};
-  transform: ${isFullscreen ? `` : `translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`}
+  transform: ${isFullscreen ? `` : `translateZ(0) translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`}
 `)
 
 const Frame: React.FC<Props> = (
