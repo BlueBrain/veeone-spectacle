@@ -1,16 +1,17 @@
 import * as React from "react"
-import { CSSProperties, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import ContentBlock from "./ContentBlock"
 import { FrameId, FrameSituation, FrameSituationUpdate } from "../types"
 import '@interactjs/modifiers'
 import interact from 'interactjs'
 import { connect } from "react-redux"
-import { closeFrame, manipulateFrame, bringFrameToFront } from "../redux/actions"
+import { bringFrameToFront, closeFrame, manipulateFrame } from "../redux/actions"
 import { FrameData, PresentationStateData } from "../presentations/interfaces"
 import { getFrame } from "../redux/selectors"
 import styled from "styled-components"
 import FrameControlBar from "./FrameControlBar"
 import { Target } from "@interactjs/types/index"
+import _ from "lodash"
 
 interface StateProps {
   frame: FrameData
@@ -33,9 +34,15 @@ type Props = FrameProps & StateProps & DispatchProps
 const StyledFrame = styled.div(({ isFullscreen, width, height, left, top, angle }) => `
   position: absolute;
   will-change: transform;
-  width: ${isFullscreen ? `100%` : `${width}px`};
-  height: ${isFullscreen ? `100%` : `${height}px`};
-  transform: ${isFullscreen ? `` : `translateZ(0) translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`}
+  width: ${isFullscreen
+  ? `100% !important`
+  : `${width}px`};
+  height: ${isFullscreen
+  ? `100% !important`
+  : `${height}px`};
+  transform: ${isFullscreen
+  ? `translateX(0) translateY(0) translateZ(0) !important`
+  : `translateZ(0) translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`}
 `)
 
 const Frame: React.FC<Props> = (
@@ -47,7 +54,6 @@ const Frame: React.FC<Props> = (
     bringFrameToFront,
   }
 ) => {
-  console.warn("frame props", frame.situation)
   let { width, height, left, top, angle, isFullscreen } = frame.situation
   let gesturableStart: FrameSituation
   let fingerAngleOffset = 0
@@ -59,10 +65,7 @@ const Frame: React.FC<Props> = (
     manipulateFrame(frameId, newSituation)
   }
 
-  const bringToFront = () => {
-    console.debug("Bring me to the front")
-    bringFrameToFront(frameId)
-  }
+  const bringToFront = () => bringFrameToFront(frameId)
 
   const toggleFullscreen = () => {
     isFullscreen = !isFullscreen
@@ -71,16 +74,16 @@ const Frame: React.FC<Props> = (
     manipulate(data)
   }
 
-  const setFrameSituationProperties = (style: CSSProperties) => {
-    style.transform = `translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`
-    style.width = `${width}px`
-    style.height = `${height}px`
+  const setFrameSituationProperties = () => {
+    frameRef.current.style.transform = `translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`
+    frameRef.current.style.width = `${width}px`
+    frameRef.current.style.height = `${height}px`
   }
 
-  const resetFrameSituationProperties = (style: CSSProperties) => {
-    style.transform = ``
-    style.width = ``
-    style.height = ``
+  const resetFrameSituationProperties = () => {
+    frameRef.current.style.transform = ``
+    frameRef.current.style.width = ``
+    frameRef.current.style.height = ``
   }
 
   // Toggle full screen on double tap
@@ -103,15 +106,15 @@ const Frame: React.FC<Props> = (
         }),
       ],
       onstart: () => console.debug("frame start", left, top, frame.situation),
-      onend: (event) => {
+      onend: () => {
         manipulate({ left, top })
-        resetFrameSituationProperties(event.target.style)
+        resetFrameSituationProperties()
       },
       onmove: event => {
         const { dx, dy } = event
         left += dx
         top += dy
-        setFrameSituationProperties(event.target.style)
+        setFrameSituationProperties()
       }
     })
   }, [frameRef, manipulate])
@@ -133,11 +136,11 @@ const Frame: React.FC<Props> = (
         top += deltaTop
         width = rectWidth
         height = rectHeight
-        setFrameSituationProperties(event.target.style)
+        setFrameSituationProperties()
       },
-      onend: (event) => {
+      onend: () => {
         manipulate({ left, top, width, height })
-        resetFrameSituationProperties(event.target.style)
+        resetFrameSituationProperties()
       }
     })
   }, [frameRef, manipulate])
@@ -172,9 +175,25 @@ const Frame: React.FC<Props> = (
     return () => interact(getTarget() ?? frameElement).unset()
   }, [frameRef, manipulate])
 
+  // Allow scaling frame on mouse wheel
+  const debouncedManipulateFrame = _.debounce(() => manipulate({ width, height, left, top }), 10)
+  const handleWheelScaling = (event) => {
+    if (isFullscreen) {
+      return
+    }
+    let scale = -event.deltaY * .3
+    width += scale
+    height += scale
+    left -= (scale / 2)
+    top -= (scale / 2)
+    setFrameSituationProperties()
+    debouncedManipulateFrame()
+  }
+
   return (
     <StyledFrame
       onPointerDown={bringToFront}
+      onWheel={handleWheelScaling}
       ref={frameRef}
       isFullscreen={isFullscreen}
       width={width} height={height}
