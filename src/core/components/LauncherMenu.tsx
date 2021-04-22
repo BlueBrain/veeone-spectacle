@@ -50,7 +50,9 @@ const LauncherMenu = (props: Props) => {
 
   const openImage = () => newFrame({ type: ContentBlockTypes.SampleImage })
 
-  const openVideo = () => newFrame({ type: ContentBlockTypes.Vimeo })
+  const openVideo = () => newFrame({ type: ContentBlockTypes.SampleVideo })
+
+  const openVimeo = () => newFrame({ type: ContentBlockTypes.Vimeo })
 
   const closeAllFrames = () => {
     close()
@@ -68,6 +70,9 @@ const LauncherMenu = (props: Props) => {
       <LauncherMenuItem
         label={"Open video"}
         onSelected={() => openVideo()}/>
+      <LauncherMenuItem
+        label={"Open Vimeo movie"}
+        onSelected={() => openVimeo()}/>
       <LauncherMenuItem
         label={"Cancel"}
         onSelected={close}/>
