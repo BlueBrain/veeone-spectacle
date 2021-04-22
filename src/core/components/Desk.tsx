@@ -10,6 +10,7 @@ import { getFrames, getFrameStack, getLauncherMenus } from "../redux/selectors"
 import { closeLauncherMenu, openLauncherMenu } from "../redux/actions"
 import interact from "interactjs"
 import { Target } from "@interactjs/types/index"
+import styled from "styled-components"
 
 interact.pointerMoveTolerance(4)
 
@@ -29,6 +30,14 @@ interface DeskProps {
 
 type Props = DeskProps & DispatchProps & StateProps
 
+const StyledDesk = styled.div`
+background: #666;
+width: 100%;
+height: 100%;
+contain: content;
+overflow: hidden;
+`
+
 const Desk: React.FC<Props> = (props: Props) => {
   const refObject = useRef()
 
@@ -46,8 +55,7 @@ const Desk: React.FC<Props> = (props: Props) => {
   }, [])
 
   return (
-    <div className={styles.Desk}
-         ref={refObject}>
+    <StyledDesk ref={refObject}>
       {Object.keys(props.frames).map((frameId) => {
           const frame = props.frames[frameId]
           return typeof frame !== "undefined"
@@ -71,7 +79,7 @@ const Desk: React.FC<Props> = (props: Props) => {
             position={launcherMenu.position}/>
         </div>
       })}
-    </div>
+    </StyledDesk>
   )
 }
 
