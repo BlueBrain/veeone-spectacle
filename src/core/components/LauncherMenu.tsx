@@ -47,6 +47,8 @@ const LauncherMenu = (props: Props) => {
 
   const openFrame = () => newFrame({ type: ContentBlockTypes.Dummy })
 
+  const openImage = () => newFrame({ type: ContentBlockTypes.SampleImage })
+
   const openVideo = () => newFrame({ type: ContentBlockTypes.Vimeo })
 
   return (
@@ -54,6 +56,9 @@ const LauncherMenu = (props: Props) => {
       <LauncherMenuItem
         label={"Open frame"}
         onSelected={() => openFrame()}/>
+      <LauncherMenuItem
+        label={"Open image"}
+        onSelected={() => openImage()}/>
       <LauncherMenuItem
         label={"Open video"}
         onSelected={() => openVideo()}/>
