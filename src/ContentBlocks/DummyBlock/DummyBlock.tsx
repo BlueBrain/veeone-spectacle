@@ -1,8 +1,7 @@
 import * as React from "react"
-import { FrameId, FrameSituation } from "../../core/types"
 import { connect } from "react-redux"
 import { getFrame } from "../../core/redux/selectors"
-import { PresentationStateData } from "../../core/presentations/interfaces"
+import { FrameId, FrameSituation, PresentationStateData } from "../../core/presentations/interfaces"
 import styled from "styled-components"
 import { useState } from "react"
 

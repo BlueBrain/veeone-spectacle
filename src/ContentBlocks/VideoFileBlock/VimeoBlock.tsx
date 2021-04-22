@@ -3,6 +3,9 @@ import styled from "styled-components"
 
 const StyledVimeoBlock = styled.div`
 background: #fff;
+width: 100%;
+height: 100%;
+box-shadow: 0px 5px 10px rgba(0, 0, 0, .3);
 `
 
 const StyledOverlay = styled.div`
@@ -12,7 +15,7 @@ top: 0;
 width: 100%;
 height: 100%;
 background: red;
-opacity: .3;`
+opacity: .5;`
 
 const VimeoBlock: React.FC = () => {
   const iframeStyle: CSSProperties = {

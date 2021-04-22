@@ -1,14 +1,13 @@
 import { Actions, AddFramePayload, ReduxAction } from "./actions"
-import { FramesData, LauncherMenuData, PresentationStateData } from "../presentations/interfaces"
+import { FrameId, FramesData, FrameStack, LauncherMenuData, PresentationStateData } from "../presentations/interfaces"
 import { generateRandomId } from "../../common/random"
 
-const generateFrameId = () => generateRandomId(6)
+
 
 const framesReducer = (frames: FramesData, action: ReduxAction) => {
   console.debug("Calling framesReducer")
   switch (action.type) {
     case Actions.AddFrame: {
-      const newFrameId = generateFrameId()
       const payload = action.payload as AddFramePayload
       const width = 300
       const height = 200
@@ -16,7 +15,7 @@ const framesReducer = (frames: FramesData, action: ReduxAction) => {
       const top = payload.position.top - height / 2
       return {
         ...frames,
-        [newFrameId]: {
+        [payload.frameId]: {
           type: payload.type,
           situation: {
             left: left,
@@ -48,13 +47,25 @@ const framesReducer = (frames: FramesData, action: ReduxAction) => {
       }
     }
 
-    case Actions.BringFrameToFront: {
-      const { [action.payload.frameId]: value, ...otherFrames } = frames
-      return {...otherFrames, [action.payload.frameId]: value}
-    }
-
     default:
       return frames
+  }
+}
+
+const frameStackReducer = (frameStack: FrameStack, action: ReduxAction) => {
+  switch(action.type) {
+    case Actions.AddFrame: {
+      return [...frameStack, (action.payload as AddFramePayload).frameId]
+    }
+    case Actions.CloseFrame: {
+      return [...frameStack.filter(id => id !== action.payload.frameId)]
+    }
+    case Actions.BringFrameToFront: {
+      const frameId = action.payload.frameId
+      return [...frameStack.filter(id => id !== frameId), frameId]
+    }
+    default:
+      return frameStack
   }
 }
 
@@ -80,5 +91,6 @@ const launcherMenuReducer = (launcherMenus: LauncherMenuData[], action: ReduxAct
 
 export const rootReducer = (state: PresentationStateData, action: ReduxAction) => ({
   frames: framesReducer(state.frames, action),
+  frameStack: frameStackReducer(state.frameStack, action),
   launcherMenus: launcherMenuReducer(state.launcherMenus, action),
 })

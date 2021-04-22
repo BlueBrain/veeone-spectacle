@@ -1,5 +1,6 @@
-import { FrameId, FrameSituationUpdate, Position } from "../types"
+import { Position } from "../types"
 import { ContentBlockTypes } from "../../ContentBlocks/register"
+import { FrameId, FrameSituationUpdate } from "../presentations/interfaces"
 
 export enum Actions {
   AddFrame,
@@ -16,6 +17,7 @@ export interface ReduxAction {
 }
 
 export interface AddFramePayload {
+  frameId: FrameId
   position: Position
   type: ContentBlockTypes
 }

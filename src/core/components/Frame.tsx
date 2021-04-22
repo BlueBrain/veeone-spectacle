@@ -23,13 +23,15 @@ interface DispatchProps {
 interface FrameProps {
   frame: FrameData
   frameId: FrameId
+  stackIndex: number
 }
 
 type Props = FrameProps & DispatchProps
 
-const StyledFrame = styled.div(({ isFullscreen, width, height, left, top, angle }) => `
+const StyledFrame = styled.div(({ isFullscreen, width, height, left, top, angle, stackIndex }) => `
   position: absolute;
   will-change: transform;
+  z-index: ${stackIndex};
   width: ${isFullscreen
   ? `100% !important`
   : `${width}px`};
@@ -45,6 +47,7 @@ const Frame: React.FC<Props> = (
   {
     frameId,
     frame,
+    stackIndex,
     manipulateFrame,
     closeFrame,
     bringFrameToFront,
@@ -80,6 +83,7 @@ const Frame: React.FC<Props> = (
     frameRef.current.style.transform = ``
     frameRef.current.style.width = ``
     frameRef.current.style.height = ``
+    frameRef.current.style.zIndex = ``
   }
 
   // Toggle full screen on double tap
@@ -101,9 +105,13 @@ const Frame: React.FC<Props> = (
           endOnly: true
         }),
       ],
-      onstart: () => console.debug("frame start", left, top, frame.situation),
+      onstart: () => {
+        frameRef.current.style.zIndex = "9999"
+        console.debug("frame start", left, top, frame.situation)
+      },
       onend: () => {
         manipulate({ left, top })
+        bringToFront()
         resetFrameSituationProperties()
       },
       onmove: event => {
@@ -191,12 +199,13 @@ const Frame: React.FC<Props> = (
 
   return (
     <StyledFrame
-      onPointerDown={bringToFront}
+      onClick={bringToFront}
       onWheel={handleWheelScaling}
       ref={frameRef}
       isFullscreen={isFullscreen}
       width={width} height={height}
       left={left} top={top}
+      stackIndex={stackIndex}
       angle={angle}>
       <FrameControlBar onClose={() => closeFrame(frameId)}/>
       <ContentBlockComponent frameId={frameId}/>

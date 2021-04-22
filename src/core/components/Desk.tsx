@@ -3,10 +3,10 @@ import { useEffect, useRef } from "react"
 
 import * as styles from "./Desk.module.scss"
 import Frame from "./Frame"
-import { FrameData, LauncherMenuData, PresentationStateData } from "../presentations/interfaces"
+import { FrameData, FrameStack, LauncherMenuData, PresentationStateData } from "../presentations/interfaces"
 import LauncherMenu from "./LauncherMenu"
 import { connect } from "react-redux"
-import { getFrames, getLauncherMenus } from "../redux/selectors"
+import { getFrames, getFrameStack, getLauncherMenus } from "../redux/selectors"
 import { closeLauncherMenu, openLauncherMenu } from "../redux/actions"
 import interact from "interactjs"
 import { Target } from "@interactjs/types/index"
@@ -20,6 +20,7 @@ interface DispatchProps {
 
 interface StateProps {
   frames: Record<string, FrameData>
+  frameStack: FrameStack
   launcherMenus: LauncherMenuData[]
 }
 
@@ -50,7 +51,10 @@ const Desk: React.FC<Props> = (props: Props) => {
       {Object.keys(props.frames).map((frameId) => {
           const frame = props.frames[frameId]
           return typeof frame !== "undefined"
-            ? <Frame frame={frame} key={frameId} frameId={frameId}/>
+            ? <Frame frame={frame}
+                     key={frameId}
+                     frameId={frameId}
+                     stackIndex={props.frameStack.indexOf(frameId)}/>
             : ``
         }
       )}
@@ -73,5 +77,6 @@ const Desk: React.FC<Props> = (props: Props) => {
 
 export default connect((state: PresentationStateData) => ({
   frames: getFrames(state),
+  frameStack: getFrameStack(state),
   launcherMenus: getLauncherMenus(state),
 }), { closeLauncherMenu, openLauncherMenu })(Desk)

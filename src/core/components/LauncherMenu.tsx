@@ -6,7 +6,7 @@ import { Position } from "../types"
 import LauncherMenuItem from "./LauncherMenuItem"
 import styled from "styled-components"
 import { ContentBlockTypes } from "../../ContentBlocks/register"
-
+import { generateRandomId } from "../../common/random"
 
 interface DispatchProps {
   addFrame(payload: AddFramePayload): void
@@ -21,27 +21,33 @@ interface LauncherMenuProps {
 
 type Props = LauncherMenuProps & DispatchProps
 
+
 const StyledLauncherMenu = styled.div`
   display: flex;
   flex-grow: 1;
   position: absolute;
   transform: translate(-50%, -50%);
+  z-index: 9999;
 `
-
 const LauncherMenu = (props: Props) => {
   const close = () => {
     props.closeLauncherMenu({ menuId: props.menuId })
   }
 
-  const openFrame = () => {
+  const generateFrameId = () => generateRandomId(6)
+
+  const newFrame = (payload) => {
     close()
-    props.addFrame({ position: props.position, type: ContentBlockTypes.Dummy })
+    props.addFrame({
+      frameId: generateFrameId(),
+      position: props.position,
+      ...payload
+    })
   }
 
-  const openVideo = () => {
-    close()
-    props.addFrame({ position: props.position, type: ContentBlockTypes.Vimeo })
-  }
+  const openFrame = () => newFrame({ type: ContentBlockTypes.Dummy })
+
+  const openVideo = () => newFrame({ type: ContentBlockTypes.Vimeo })
 
   return (
     <StyledLauncherMenu>
