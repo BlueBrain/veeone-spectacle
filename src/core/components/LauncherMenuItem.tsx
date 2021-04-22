@@ -23,6 +23,7 @@ const StyledLauncherMenuItem = styled.a`
 
 const StyledIconWrapper = styled.div`
   --shadow: drop-shadow(6px 6px 50px rgba(0, 0, 0, .7));
+
   path {
     fill: white;
     -webkit-filter: var(--shadow);
@@ -33,7 +34,7 @@ const StyledIconWrapper = styled.div`
 const LauncherMenuItem = (props: Props) => {
   return <StyledLauncherMenuItem onClick={props.onSelected}>
     <StyledIconWrapper>
-      <OpenIcon width={"100%"} height={"100%"}/>
+      <OpenIcon width={"100%"} height={"100%"} />
     </StyledIconWrapper>
     {props.label}
   </StyledLauncherMenuItem>
