@@ -1,16 +1,15 @@
 import * as React from "react"
 import { useEffect, useRef } from "react"
-import { FrameId, FrameSituation, FrameSituationUpdate } from "../types"
 import '@interactjs/modifiers'
 import interact from 'interactjs'
 import { connect } from "react-redux"
 import { bringFrameToFront, closeFrame, manipulateFrame } from "../redux/actions"
-import { FrameData } from "../presentations/interfaces"
+import { FrameData, FrameId, FrameSituation, FrameSituationUpdate } from "../presentations/interfaces"
 import styled from "styled-components"
 import FrameControlBar from "./FrameControlBar"
-import { Target } from "@interactjs/types/index"
-import _ from "lodash"
+import { GestureEvent, Target } from "@interactjs/types/index"
 import { contentBlockRegister } from "../../ContentBlocks/register"
+import _ from "lodash"
 
 interface DispatchProps {
   manipulateFrame(frameId: FrameId, situation: FrameSituationUpdate): void
@@ -156,7 +155,7 @@ const Frame: React.FC<Props> = (
         fingerAngleOffset = event.angle - angle
         gesturableStart = { left, top, width, height, angle }
       },
-      onmove: event => {
+      onmove: (event: GestureEvent) => {
         angle = event.angle - fingerAngleOffset
         const newWidth = gesturableStart.width * event.scale
         const newHeight = gesturableStart.height * event.scale
@@ -207,8 +206,8 @@ const Frame: React.FC<Props> = (
       left={left} top={top}
       stackIndex={stackIndex}
       angle={angle}>
-      <FrameControlBar onClose={() => closeFrame(frameId)}/>
-      <ContentBlockComponent frameId={frameId}/>
+      <FrameControlBar onClose={() => closeFrame(frameId)} />
+      <ContentBlockComponent frameId={frameId} />
     </StyledFrame>
   )
 }
