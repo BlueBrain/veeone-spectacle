@@ -1,21 +1,16 @@
 import * as React from "react"
 import { useEffect, useRef } from "react"
-import ContentBlock from "./ContentBlock"
 import { FrameId, FrameSituation, FrameSituationUpdate } from "../types"
 import '@interactjs/modifiers'
 import interact from 'interactjs'
 import { connect } from "react-redux"
 import { bringFrameToFront, closeFrame, manipulateFrame } from "../redux/actions"
-import { FrameData, PresentationStateData } from "../presentations/interfaces"
-import { getFrame } from "../redux/selectors"
+import { FrameData } from "../presentations/interfaces"
 import styled from "styled-components"
 import FrameControlBar from "./FrameControlBar"
 import { Target } from "@interactjs/types/index"
 import _ from "lodash"
-
-interface StateProps {
-  frame: FrameData
-}
+import { contentBlockRegister } from "../../ContentBlocks/register"
 
 interface DispatchProps {
   manipulateFrame(frameId: FrameId, situation: FrameSituationUpdate): void
@@ -26,10 +21,11 @@ interface DispatchProps {
 }
 
 interface FrameProps {
-  frameId: FrameId,
+  frame: FrameData
+  frameId: FrameId
 }
 
-type Props = FrameProps & StateProps & DispatchProps
+type Props = FrameProps & DispatchProps
 
 const StyledFrame = styled.div(({ isFullscreen, width, height, left, top, angle }) => `
   position: absolute;
@@ -160,11 +156,11 @@ const Frame: React.FC<Props> = (
         top += (height - newHeight) / 2
         width = newWidth
         height = newHeight
-        setFrameSituationProperties(event.target.style)
+        setFrameSituationProperties()
       },
       onend: (event) => {
         manipulate({ width, height, left, top, angle })
-        resetFrameSituationProperties(event.target.style)
+        resetFrameSituationProperties()
       },
     })
   }, [frameRef, manipulate])
@@ -181,14 +177,17 @@ const Frame: React.FC<Props> = (
     if (isFullscreen) {
       return
     }
-    let scale = -event.deltaY * .3
-    width += scale
-    height += scale
-    left -= (scale / 2)
-    top -= (scale / 2)
+    let diff = -event.deltaY * .5
+    const scale = diff / width
+    width += diff
+    height += scale * height
+    left -= (diff / 2)
+    top -= (diff / 2)
     setFrameSituationProperties()
     debouncedManipulateFrame()
   }
+
+  const ContentBlockComponent = contentBlockRegister[frame.type]
 
   return (
     <StyledFrame
@@ -200,11 +199,9 @@ const Frame: React.FC<Props> = (
       left={left} top={top}
       angle={angle}>
       <FrameControlBar onClose={() => closeFrame(frameId)}/>
-      <ContentBlock frameId={frameId}/>
+      <ContentBlockComponent frameId={frameId}/>
     </StyledFrame>
   )
 }
-const mapStateToProps = (state: PresentationStateData, ownProps: FrameProps) => ({
-  frame: getFrame(state, ownProps.frameId),
-})
-export default connect(mapStateToProps, { manipulateFrame, closeFrame, bringFrameToFront })(Frame)
+
+export default connect(null, { manipulateFrame, closeFrame, bringFrameToFront })(Frame)

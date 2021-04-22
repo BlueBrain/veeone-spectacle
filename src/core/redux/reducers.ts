@@ -7,26 +7,27 @@ const generateFrameId = () => generateRandomId(6)
 const framesReducer = (frames: FramesData, action: ReduxAction) => {
   console.debug("Calling framesReducer")
   switch (action.type) {
-    case Actions.AddFrame:
+    case Actions.AddFrame: {
       const newFrameId = generateFrameId()
-      const addFramePayload = action.payload as AddFramePayload
+      const payload = action.payload as AddFramePayload
       const width = 300
       const height = 200
-      const left = addFramePayload.position.left - width / 2
-      const top = addFramePayload.position.top - height / 2
+      const left = payload.position.left - width / 2
+      const top = payload.position.top - height / 2
       return {
         ...frames,
         [newFrameId]: {
+          type: payload.type,
           situation: {
             left: left,
             top: top,
             width: width,
             height: height,
-            angle: 0,
-            scale: 1
+            angle: 0
           }
         }
       }
+    }
 
     case Actions.CloseFrame: {
       const { [action.payload.frameId]: value, ...newFrames } = frames

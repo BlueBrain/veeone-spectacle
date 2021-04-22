@@ -49,7 +49,9 @@ const Desk: React.FC<Props> = (props: Props) => {
          ref={refObject}>
       {Object.keys(props.frames).map((frameId) => {
           const frame = props.frames[frameId]
-          return typeof frame !== "undefined" ? <Frame key={frameId} frameId={frameId}/> : ``
+          return typeof frame !== "undefined"
+            ? <Frame frame={frame} key={frameId} frameId={frameId}/>
+            : ``
         }
       )}
       {props.launcherMenus.map((launcherMenu) => {

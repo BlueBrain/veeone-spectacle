@@ -5,6 +5,7 @@ import { addFrame, AddFramePayload, closeLauncherMenu } from '../redux/actions'
 import { Position } from "../types"
 import LauncherMenuItem from "./LauncherMenuItem"
 import styled from "styled-components"
+import { ContentBlockTypes } from "../../ContentBlocks/register"
 
 
 interface DispatchProps {
@@ -34,11 +35,12 @@ const LauncherMenu = (props: Props) => {
 
   const openFrame = () => {
     close()
-    props.addFrame({ position: props.position })
+    props.addFrame({ position: props.position, type: ContentBlockTypes.Dummy })
   }
 
-  const openMedia = () => {
+  const openVideo = () => {
     close()
+    props.addFrame({ position: props.position, type: ContentBlockTypes.Vimeo })
   }
 
   return (
@@ -47,8 +49,11 @@ const LauncherMenu = (props: Props) => {
         label={"Open frame"}
         onSelected={() => openFrame()}/>
       <LauncherMenuItem
-        label={"Open media"}
-        onSelected={() => openMedia()}/>
+        label={"Open video"}
+        onSelected={() => openVideo()}/>
+      <LauncherMenuItem
+        label={"Cancel"}
+        onSelected={close}/>
     </StyledLauncherMenu>
   )
 }

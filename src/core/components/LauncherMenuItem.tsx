@@ -18,7 +18,7 @@ const StyledLauncherMenuItem = styled.a`
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  text-shadow: 0 0 3px rgba(black, .7);
+  text-shadow: 0 0 5px rgba(0, 0, 0, .7);
 `
 
 const StyledIconWrapper = styled.div`

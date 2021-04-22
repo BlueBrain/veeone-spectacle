@@ -1,4 +1,5 @@
 import { FrameId, FrameSituationUpdate, Position } from "../types"
+import { ContentBlockTypes } from "../../ContentBlocks/register"
 
 export enum Actions {
   AddFrame,
@@ -16,6 +17,7 @@ export interface ReduxAction {
 
 export interface AddFramePayload {
   position: Position
+  type: ContentBlockTypes
 }
 
 export const addFrame = (payload: AddFramePayload) => ({
@@ -43,7 +45,7 @@ export const closeFrame = (frameId: FrameId) => ({
   }
 })
 
-interface OpenLauncherMenuPayload {
+export interface OpenLauncherMenuPayload {
   position: Position
 }
 
@@ -52,7 +54,7 @@ export const openLauncherMenu = (payload: OpenLauncherMenuPayload) => ({
   payload: payload
 })
 
-interface CloseLauncherMenuPayload {
+export interface CloseLauncherMenuPayload {
   menuId: string
 }
 
