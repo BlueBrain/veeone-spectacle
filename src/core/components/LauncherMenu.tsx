@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { connect } from 'react-redux'
-import { addFrame, AddFramePayload, closeLauncherMenu } from '../redux/actions'
+import { addFrame, AddFramePayload, closeAllFrames, closeLauncherMenu } from '../redux/actions'
 import { Position } from "../types"
 import LauncherMenuItem from "./LauncherMenuItem"
 import styled from "styled-components"
@@ -12,6 +12,7 @@ interface DispatchProps {
   addFrame(payload: AddFramePayload): void
 
   closeLauncherMenu
+  closeAllFrames
 }
 
 interface LauncherMenuProps {
@@ -51,6 +52,11 @@ const LauncherMenu = (props: Props) => {
 
   const openVideo = () => newFrame({ type: ContentBlockTypes.Vimeo })
 
+  const closeAllFrames = () => {
+    close()
+    props.closeAllFrames()
+  }
+
   return (
     <StyledLauncherMenu>
       <LauncherMenuItem
@@ -65,8 +71,11 @@ const LauncherMenu = (props: Props) => {
       <LauncherMenuItem
         label={"Cancel"}
         onSelected={close}/>
+      <LauncherMenuItem
+        label={"Close all"}
+        onSelected={closeAllFrames}/>
     </StyledLauncherMenu>
   )
 }
 
-export default connect(null, { addFrame, closeLauncherMenu })(LauncherMenu)
+export default connect(null, { addFrame, closeLauncherMenu, closeAllFrames })(LauncherMenu)

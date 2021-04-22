@@ -9,6 +9,7 @@ export enum Actions {
   BringFrameToFront,
   OpenLauncherMenu,
   CloseLauncherMenu,
+  CloseAllFrames,
 }
 
 export interface ReduxAction {
@@ -45,6 +46,11 @@ export const closeFrame = (frameId: FrameId) => ({
   payload: {
     frameId
   }
+})
+
+export const closeAllFrames = () => ({
+  type: Actions.CloseAllFrames,
+  payload: {}
 })
 
 export interface OpenLauncherMenuPayload {

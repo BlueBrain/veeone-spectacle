@@ -33,6 +33,10 @@ const framesReducer = (frames: FramesData, action: ReduxAction) => {
       return newFrames
     }
 
+    case Actions.CloseAllFrames: {
+      return {}
+    }
+
     case Actions.ManipulateFrame: {
       const newSituation = {
         ...frames[action.payload.frameId].situation,
@@ -59,6 +63,9 @@ const frameStackReducer = (frameStack: FrameStack, action: ReduxAction) => {
     }
     case Actions.CloseFrame: {
       return [...frameStack.filter(id => id !== action.payload.frameId)]
+    }
+    case Actions.CloseAllFrames: {
+      return []
     }
     case Actions.BringFrameToFront: {
       const frameId = action.payload.frameId
