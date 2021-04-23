@@ -9,7 +9,6 @@ import styled from "styled-components"
 import FrameControlBar from "./FrameControlBar"
 import { GestureEvent, Target } from "@interactjs/types/index"
 import { contentBlockRegister } from "../../ContentBlocks/register"
-import _ from "lodash"
 
 interface DispatchProps {
   manipulateFrame(frameId: FrameId, situation: FrameSituationUpdate): void
@@ -179,7 +178,6 @@ const Frame: React.FC<Props> = (
   }, [frameRef, manipulate])
 
   // Allow scaling frame on mouse wheel
-  const debouncedManipulateFrame = _.debounce(() => manipulate({ width, height, left, top }), 10)
   const handleWheelScaling = (event) => {
     if (isFullscreen) {
       return
@@ -191,7 +189,7 @@ const Frame: React.FC<Props> = (
     left -= (diff / 2)
     top -= (diff / 2)
     setFrameSituationProperties()
-    debouncedManipulateFrame()
+    manipulate({ width, height, left, top })
   }
 
   const ContentBlockComponent = contentBlockRegister[frame.type]
