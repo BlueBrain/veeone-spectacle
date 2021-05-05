@@ -4,12 +4,14 @@ import ImageBlock from "./ImageBlock/ImageBlock"
 import VideoBlock from "./VideoBlock/VideoBlock"
 import React from "react"
 import { FrameId } from "../core/presentations/interfaces"
+import FileBrowserBlock from "../veedrive/components/FileBrowserBlock/FileBrowserBlock"
 
 export enum ContentBlockTypes {
   Dummy = "dummy",
   SampleImage = "sampleimage",
   SampleVideo = "video",
   Vimeo = "vimeo",
+  FileBrowser = "filebrowser",
 }
 
 interface ContentBlockProps {
@@ -22,4 +24,5 @@ export const contentBlockRegister: Record<string,
   [ContentBlockTypes.SampleImage]: ImageBlock,
   [ContentBlockTypes.SampleVideo]: VideoBlock,
   [ContentBlockTypes.Vimeo]: VimeoBlock,
+  [ContentBlockTypes.FileBrowser]: FileBrowserBlock,
 }

@@ -5,7 +5,7 @@ import { addFrame, AddFramePayload, closeAllFrames, closeLauncherMenu } from '..
 import { Position } from "../types"
 import LauncherMenuItem from "./LauncherMenuItem"
 import styled from "styled-components"
-import { ContentBlockTypes } from "../../ContentBlocks/register"
+import { ContentBlockTypes } from "../../contentblocks/register"
 import { generateRandomId } from "../../common/random"
 
 interface DispatchProps {
@@ -59,26 +59,31 @@ const LauncherMenu = (props: Props) => {
     props.closeAllFrames()
   }
 
+  const openFile = () => newFrame({ type: ContentBlockTypes.FileBrowser })
+
   return (
     <StyledLauncherMenu>
       <LauncherMenuItem
+        label={"Open..."}
+        onSelected={() => openFile()} />
+      <LauncherMenuItem
         label={"Open frame"}
-        onSelected={() => openFrame()}/>
+        onSelected={() => openFrame()} />
       <LauncherMenuItem
         label={"Open image"}
-        onSelected={() => openImage()}/>
+        onSelected={() => openImage()} />
       <LauncherMenuItem
         label={"Open video"}
-        onSelected={() => openVideo()}/>
+        onSelected={() => openVideo()} />
       <LauncherMenuItem
         label={"Open Vimeo movie"}
-        onSelected={() => openVimeo()}/>
+        onSelected={() => openVimeo()} />
       <LauncherMenuItem
         label={"Cancel"}
-        onSelected={close}/>
+        onSelected={close} />
       <LauncherMenuItem
         label={"Close all"}
-        onSelected={closeAllFrames}/>
+        onSelected={closeAllFrames} />
     </StyledLauncherMenu>
   )
 }

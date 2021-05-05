@@ -1,5 +1,5 @@
 import { Position } from "../types"
-import { ContentBlockTypes } from "../../ContentBlocks/register"
+import { ContentBlockTypes } from "../../contentblocks/register"
 
 export type FrameId = string
 
@@ -32,6 +32,7 @@ export type FrameSituation = {
   height: number
   angle: number
   isFullscreen?: boolean
+  disableWheelScaling: boolean
 }
 
 export type FrameSituationUpdate = {
