@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import React, { useEffect, useState } from "react"
 import FileBrowserDirectories from "./FileBrowserDirectories"
-import FileBrowserFileList from "./FileBrowserFileList"
+import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import fileService from "../../service"
 import { DirectoryItem, FileItem, VeeDriveListDirectoryFile } from "../../types"
 import FileBrowserTopbar from "./FileBrowserTopbar"
@@ -123,10 +123,20 @@ const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
     setCurrentDirs(dirs)
   }
 
-  const goToDirectoryByIndex = async (pathPartIndex: number) => {
+  const openUpperDirectory = async () => {
+    const upperPath = activePath.split('/').slice(0, -1).join("/")
+    await openDirectory(upperPath)
+  }
+
+  const openDirectoryByPathPartIndex = async (pathPartIndex: number) => {
     const path = activePath.split("/").slice(0, pathPartIndex).join("/")
     console.debug("goToDirectoryByIndex", pathPartIndex, `'${path}'`)
     return await openDirectory(path)
+  }
+
+  const openFile = (filename: string) => {
+    const filepath = `${activePath}/${filename}`
+    console.debug("REQUESTING FILE", filepath)
   }
 
   useEffect(() => {
@@ -136,16 +146,18 @@ const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
   return <StyledFileBrowserBlock onWheel={(event) => event.stopPropagation()}>
     <StyledBlockContent>
       <FileBrowserTopbar activePath={activePath}
-                         onSelectPathPart={goToDirectoryByIndex} />
+                         onSelectPathPart={openDirectoryByPathPartIndex} />
       activePath={activePath}
       <StyledMain>
         <FileBrowserDirectories
           dirs={directoryTree}
           activePath={activePath}
           onOpenDirectory={openDirectory} />
-        <FileBrowserFileList
+        <FileBrowserDirectoryContent
           dirs={currentDirs}
           files={currentFiles}
+          onOpenFile={openFile}
+          onOpenUpperDirectory={openUpperDirectory}
           onOpenDirectory={openDirectory}/>
       </StyledMain>
     </StyledBlockContent>

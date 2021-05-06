@@ -7,16 +7,21 @@ interface Props {
   dirs: DirectoryItem[]
 
   onOpenDirectory(dirPath: string)
+
+  onOpenUpperDirectory()
+
+  onOpenFile(filename: string)
 }
 
 const StyledFileBrowserFileList = styled.div`
   display: flex;
   flex: 2;
   overflow-y: scroll;
+  flex-direction: column;
 
   ul {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     grid-auto-rows: 100px;
     gap: 10px;
     margin: 0;
@@ -34,16 +39,28 @@ const StyledFileBrowserFileList = styled.div`
   }
 `
 
-const FileBrowserFileList: React.FC<Props> = ({ dirs = [], files = [], onOpenDirectory }) => {
+const FileBrowserDirectoryContent: React.FC<Props> = (
+  {
+    dirs = [],
+    files = [],
+    onOpenDirectory,
+    onOpenUpperDirectory,
+    onOpenFile,
+  }) => {
   const openDirectory = (dirPath) => {
     onOpenDirectory(dirPath)
   }
 
+  const openUpperDirectory = () => {
+    onOpenUpperDirectory()
+  }
+
   const openFile = (fileName) => {
-    console.debug("openFile", fileName)
+    onOpenFile(fileName)
   }
 
   return <StyledFileBrowserFileList>
+    <button type="button" onClick={openUpperDirectory}>UP</button>
     dir contents:
     <ul>
       {dirs.map((dir) =>
@@ -63,4 +80,4 @@ const FileBrowserFileList: React.FC<Props> = ({ dirs = [], files = [], onOpenDir
   </StyledFileBrowserFileList>
 }
 
-export default FileBrowserFileList
+export default FileBrowserDirectoryContent
