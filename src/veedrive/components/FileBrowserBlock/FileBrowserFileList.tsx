@@ -5,13 +5,15 @@ import styled from "styled-components"
 interface Props {
   files: VeeDriveListDirectoryFile[]
   dirs: DirectoryItem[]
+
+  onOpenDirectory(dirPath: string)
 }
 
 const StyledFileBrowserFileList = styled.div`
   display: flex;
   flex: 2;
   overflow-y: scroll;
-  
+
   ul {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -20,7 +22,7 @@ const StyledFileBrowserFileList = styled.div`
     margin: 0;
     padding: 0;
     list-style: none;
-    
+
     li {
       list-style: none;
       padding: 10px;
@@ -32,9 +34,9 @@ const StyledFileBrowserFileList = styled.div`
   }
 `
 
-const FileBrowserFileList: React.FC<Props> = ({ dirs = [], files = [] }) => {
-  const openDirectory = (dirName) => {
-    console.debug("openDirectory", dirName)
+const FileBrowserFileList: React.FC<Props> = ({ dirs = [], files = [], onOpenDirectory }) => {
+  const openDirectory = (dirPath) => {
+    onOpenDirectory(dirPath)
   }
 
   const openFile = (fileName) => {
@@ -42,14 +44,15 @@ const FileBrowserFileList: React.FC<Props> = ({ dirs = [], files = [] }) => {
   }
 
   return <StyledFileBrowserFileList>
-    {/*dir contents:*/}
-    {/*<ul>*/}
-    {/*  {dirs.map((dir) =>*/}
-    {/*    <li key={dir.name}>*/}
-    {/*      <a href={"#"} onClick={() => openDirectory(dir.path)}>/{dir.name}</a>*/}
-    {/*    </li>*/}
-    {/*  )}*/}
-    {/*</ul>*/}
+    dir contents:
+    <ul>
+      {dirs.map((dir) =>
+        <li key={dir.name}>
+          <a href={"#"} onClick={() => openDirectory(dir.path)}>/{dir.name}</a>
+        </li>
+      )}
+    </ul>
+    files
     <ul>
       {files.map((file) =>
         <li key={file.name}>

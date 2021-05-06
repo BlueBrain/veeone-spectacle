@@ -14,4 +14,10 @@ const initialSpectacleState: PresentationStateData = {
   frameStack: [],
   launcherMenus: []
 }
-export const spectacleStore = createStore(rootReducer, initialSpectacleState)
+export const spectacleStore = createStore(
+  rootReducer, initialSpectacleState,
+  (typeof window !== "undefined")
+    // @ts-ignore
+    ? window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    : undefined
+)

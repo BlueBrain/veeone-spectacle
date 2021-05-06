@@ -48,22 +48,56 @@ const StyledMain = styled.div`
 
 
 const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
-  const [dirs, setDirs] = useState([] as DirectoryItem[])
-  const [files, setFiles] = useState([] as VeeDriveListDirectoryFile[])
-  const [activePath, setActivePath] = useState("")
+  const [directoryTree, setDirectoryTree] = useState([] as DirectoryItem[])
+  const [currentFiles, setCurrenyFiles] = useState([] as VeeDriveListDirectoryFile[])
+  const [currentDirs, setCurrentDirs] = useState([] as DirectoryItem[])
+  // const [activePath, setActivePath] = useState("Downloads/SimpleDragging/Modernizr")
+  const [activePath, setActivePath] = useState("gitflow/gitflow")
 
   const load = async () => {
-    const response = await fileService.listDirectory({ path: activePath })
-    const dirs = response.directories.map((path) => new BrowserDirectory(path))
-    setDirs(_.sortBy(dirs, "name"))
-    setFiles(response.files)
+    const paths = activePath.split("/")
+    let path = ""
+    const tree = await listDirectory("")
+    let currentDirList = tree.dirs
+    let files = tree.files
+
+    for (const p of paths) {
+      if (p === "") {
+        break
+      }
+      path += `${p}/`
+      console.debug("load: path=", path)
+      const dirList = await listDirectory(path)
+      files = dirList.files
+      console.debug("loaded dirs", dirList)
+      const target = _.find(currentDirList, (dir) => dir.name === p)
+      if (target !== undefined) {
+        target.directories = dirList.dirs
+      }
+      currentDirList = dirList.dirs
+    }
+    console.debug("TREE=", tree)
+    setDirectoryTree(tree.dirs)
+
+    // const response = await fileService.listDirectory({ path: activePath })
+    // const dirs = response.directories.map((path) => new BrowserDirectory(path))
+    // setDirs(_.sortBy(dirs, "name"))
+    setCurrenyFiles(files)
   }
 
   const listDirectory = async (dirPath) => {
-    setActivePath(dirPath)
+    console.debug("listDirectory", dirPath)
     const response = await fileService.listDirectory({ path: dirPath })
-    const newDirs = response.directories.map((path) => new BrowserDirectory(`${dirPath}/${path}`))
-    const newDirTree = [...dirs]
+    const pathPrefix = dirPath !== "" ? `${dirPath}/` : ``
+    const dirsList = response.directories.map((path) => new BrowserDirectory(`${pathPrefix}${path}`))
+    const files = response.files
+    const dirs = _.sortBy(dirsList, 'name')
+    return { dirs, files }
+  }
+
+  const openDirectory = async (dirPath) => {
+    const { dirs, files } = await listDirectory(dirPath)
+    const newDirTree = [...directoryTree]
     const parts = dirPath.split("/") as string[]
     let targetDir: DirectoryItem[] = newDirTree
     let dir: DirectoryItem | undefined
@@ -76,21 +110,23 @@ const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
       }
     }
     if (dir !== undefined) {
-      if(dir.directories === undefined || dir.directories.length === 0) {
-        dir.directories = newDirs
+      if (dir.directories === undefined || dir.directories.length === 0) {
+        dir.directories = dirs
       } else {
         dir.directories = []
       }
-
-      setDirs(newDirTree)
-      setFiles(response.files)
+      setDirectoryTree(newDirTree)
     }
+
+    setActivePath(dirPath)
+    setCurrenyFiles(files)
+    setCurrentDirs(dirs)
   }
 
   const goToDirectoryByIndex = async (pathPartIndex: number) => {
     const path = activePath.split("/").slice(0, pathPartIndex).join("/")
-    console.debug("goToDirectoryByIndex", pathPartIndex, path)
-    return await listDirectory(path)
+    console.debug("goToDirectoryByIndex", pathPartIndex, `'${path}'`)
+    return await openDirectory(path)
   }
 
   useEffect(() => {
@@ -101,10 +137,16 @@ const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
     <StyledBlockContent>
       <FileBrowserTopbar activePath={activePath}
                          onSelectPathPart={goToDirectoryByIndex} />
-
+      activePath={activePath}
       <StyledMain>
-        <FileBrowserDirectories dirs={dirs} onOpenDirectory={listDirectory} />
-        <FileBrowserFileList dirs={dirs} files={files} />
+        <FileBrowserDirectories
+          dirs={directoryTree}
+          activePath={activePath}
+          onOpenDirectory={openDirectory} />
+        <FileBrowserFileList
+          dirs={currentDirs}
+          files={currentFiles}
+          onOpenDirectory={openDirectory}/>
       </StyledMain>
     </StyledBlockContent>
   </StyledFileBrowserBlock>
