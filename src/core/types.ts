@@ -3,3 +3,7 @@ export type Position = {
   top: number
 }
 
+export type Size = {
+  width: number
+  height: number
+}

@@ -17,9 +17,9 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: hsla(0, 0%, 0%, 0.8);
+  color: hsla(0, 0%, 0%, 0.7);
   font-family: "Titillium Web", serif;
-  font-weight: normal;
+  font-weight: 400;
   word-wrap: break-word;
   font-kerning: normal;
   -moz-font-feature-settings: "kern", "liga", "clig", "calt";
@@ -29,4 +29,8 @@ body {
   user-select: none;
   touch-action: none;
   //cursor: none;
+}
+
+a {
+  color: royalblue;
 }

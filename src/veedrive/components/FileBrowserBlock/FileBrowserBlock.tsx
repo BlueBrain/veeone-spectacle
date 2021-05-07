@@ -3,31 +3,17 @@ import React, { useEffect, useState } from "react"
 import FileBrowserDirectories from "./FileBrowserDirectories"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import fileService from "../../service"
-import { DirectoryItem, FileItem, VeeDriveListDirectoryFile } from "../../types"
+import { DirectoryItem, VeeDriveListDirectoryFile } from "../../types"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import _ from "lodash"
+import { BrowserDirectory, BrowserFile } from "../../common/models"
 
 interface FileBrowserBlockProps {
 }
 
-class BrowserFile implements FileItem {
-  name: string
-  size: number
-}
-
-class BrowserDirectory implements DirectoryItem {
-  public name: string
-  public directories: BrowserDirectory[]
-  public files: BrowserFile[]
-
-  constructor(public path: string) {
-    this.name = path.split("/").pop() as string
-  }
-}
-
 
 const StyledFileBrowserBlock = styled.div`
-  background: #fff;
+  background: #fafafa;
   width: 100%;
   height: 100%;
   box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
@@ -48,11 +34,10 @@ const StyledMain = styled.div`
 
 
 const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
-  const [directoryTree, setDirectoryTree] = useState([] as DirectoryItem[])
-  const [currentFiles, setCurrenyFiles] = useState([] as VeeDriveListDirectoryFile[])
-  const [currentDirs, setCurrentDirs] = useState([] as DirectoryItem[])
-  // const [activePath, setActivePath] = useState("Downloads/SimpleDragging/Modernizr")
-  const [activePath, setActivePath] = useState("gitflow/gitflow")
+  const [directoryTree, setDirectoryTree] = useState([] as BrowserDirectory[])
+  const [currentFiles, setCurrentFiles] = useState([] as BrowserFile[])
+  const [currentDirs, setCurrentDirs] = useState([] as BrowserDirectory[])
+  const [activePath, setActivePath] = useState("")
 
   const load = async () => {
     const paths = activePath.split("/")
@@ -78,20 +63,27 @@ const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
     }
     console.debug("TREE=", tree)
     setDirectoryTree(tree.dirs)
-
-    // const response = await fileService.listDirectory({ path: activePath })
-    // const dirs = response.directories.map((path) => new BrowserDirectory(path))
-    // setDirs(_.sortBy(dirs, "name"))
-    setCurrenyFiles(files)
+    setCurrentDirs(tree.dirs)
+    setCurrentFiles(mapBrowserFiles(files, activePath))
   }
+
+  const mapBrowserFiles = (fileList: VeeDriveListDirectoryFile[], dir: string) => fileList.map((f) =>
+    new BrowserFile({ name: f.name, size: f.size, dir: dir }))
 
   const listDirectory = async (dirPath) => {
     console.debug("listDirectory", dirPath)
     const response = await fileService.listDirectory({ path: dirPath })
     const pathPrefix = dirPath !== "" ? `${dirPath}/` : ``
-    const dirsList = response.directories.map((path) => new BrowserDirectory(`${pathPrefix}${path}`))
+    let dirs
+    try {
+      const dirsList = response.directories.map((path) => new BrowserDirectory(`${pathPrefix}${path}`))
+      dirs = _.sortBy(dirsList, 'name')
+    } catch (err) {
+      // todo this error should be logged/reported
+      console.error(err)
+      return { dirs: [], files: [] }
+    }
     const files = response.files
-    const dirs = _.sortBy(dirsList, 'name')
     return { dirs, files }
   }
 
@@ -119,7 +111,7 @@ const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
     }
 
     setActivePath(dirPath)
-    setCurrenyFiles(files)
+    setCurrentFiles(mapBrowserFiles(files, dirPath))
     setCurrentDirs(dirs)
   }
 
@@ -147,7 +139,6 @@ const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
     <StyledBlockContent>
       <FileBrowserTopbar activePath={activePath}
                          onSelectPathPart={openDirectoryByPathPartIndex} />
-      activePath={activePath}
       <StyledMain>
         <FileBrowserDirectories
           dirs={directoryTree}
@@ -158,7 +149,7 @@ const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
           files={currentFiles}
           onOpenFile={openFile}
           onOpenUpperDirectory={openUpperDirectory}
-          onOpenDirectory={openDirectory}/>
+          onOpenDirectory={openDirectory} />
       </StyledMain>
     </StyledBlockContent>
   </StyledFileBrowserBlock>

@@ -1,4 +1,4 @@
-import { Position } from "../types"
+import { Position, Size } from "../types"
 import { ContentBlockTypes } from "../../contentblocks/register"
 import { FrameId, FrameSituationUpdate } from "../presentations/interfaces"
 
@@ -18,9 +18,10 @@ export interface ReduxAction {
 }
 
 export interface AddFramePayload {
+  type: ContentBlockTypes
   frameId: FrameId
   position: Position
-  type: ContentBlockTypes
+  size?: Size
 }
 
 export const addFrame = (payload: AddFramePayload) => ({

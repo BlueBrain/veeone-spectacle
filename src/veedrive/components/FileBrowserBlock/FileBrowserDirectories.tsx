@@ -10,7 +10,7 @@ interface Props {
 }
 
 const StyledFileBrowserDirectories = styled.div`
-  overflow-y: scroll;
+  overflow: scroll;
 
   ul {
     list-style: none;

@@ -8,7 +8,7 @@ interface Props {
 }
 
 const StyledFileBrowserTopbar = styled.div`
-  background: #ddd;
+  //background: #ddd;
   padding: 10px;
   width: 100%;
   height: 50px;
@@ -17,10 +17,16 @@ const StyledFileBrowserTopbar = styled.div`
 `
 
 const StyledPathPart = styled.a`
-  background: rgba(0, 0, 0, .1);
-  border-radius: 20px;
+  //background: rgba(0, 0, 0, .05);
+  //border-radius: 20px;
   text-decoration: none;
-  padding: 0 10px;
+  padding: 0 .2rem;
+  margin-right: .4rem;
+  box-shadow: .1rem .1rem .2rem rgba(0, 0, 0, .1);
+
+  ::after {
+    content: "/";
+  }
 `
 
 const FileBrowserTopbar: React.FC<Props> = ({ activePath, onSelectPathPart }) => {
@@ -35,9 +41,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ activePath, onSelectPathPart }) =>
   }
 
   return <StyledFileBrowserTopbar>
-    <StyledPathPart onClick={() => onSelectPathPart(0)} href={"#"}>
-      /
-    </StyledPathPart>
+    <StyledPathPart onClick={() => onSelectPathPart(0)} href={"#"} />
     {makePathParts(activePath)}
 
   </StyledFileBrowserTopbar>

@@ -59,7 +59,10 @@ const LauncherMenu = (props: Props) => {
     props.closeAllFrames()
   }
 
-  const openFile = () => newFrame({ type: ContentBlockTypes.FileBrowser })
+  const openFile = () => newFrame({
+    type: ContentBlockTypes.FileBrowser,
+    size: { width: 700, height: 500 },
+  })
 
   return (
     <StyledLauncherMenu>
