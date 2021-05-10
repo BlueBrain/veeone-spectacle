@@ -12,16 +12,16 @@ type Props = LauncherMenuItemProps
 
 const StyledLauncherMenuItem = styled.a`
   color: #fff;
-  font-size: 10pt;
+  font-size: .7rem;
   font-weight: 700;
-  width: 50px;
-  padding: 1rem;
+  padding: .2rem .3rem;
   display: flex;
   flex-direction: column;
   text-shadow: 0 0 5px rgba(0, 0, 0, .7);
 `
 
 const StyledIconWrapper = styled.div`
+  padding: .2rem;
   --shadow: drop-shadow(6px 6px 50px rgba(0, 0, 0, .7));
 
   path {
