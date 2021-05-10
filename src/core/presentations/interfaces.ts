@@ -1,5 +1,5 @@
 import { Position } from "../types"
-import { ContentBlockTypes } from "../../contentblocks/register"
+import { ContentBlockTypes } from "../../ContentBlocks/content-block-register"
 
 export type FrameId = string
 

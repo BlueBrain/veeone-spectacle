@@ -1,28 +1,21 @@
-import * as React from "react"
-
-import { connect } from 'react-redux'
-import { addFrame, AddFramePayload, closeAllFrames, closeLauncherMenu } from '../redux/actions'
-import { Position } from "../types"
+import React from "react"
 import styled from "styled-components"
-import { ContentBlockTypes } from "../../contentblocks/register"
+import { Position } from "../types"
 import { generateRandomId } from "../../common/random"
-import { Swiper, SwiperSlide } from "swiper/react"
-import SwiperCore, { EffectCoverflow, Navigation, Pagination } from 'swiper/core'
-import 'swiper/swiper-bundle.min.css'
-import LauncherMenuItem from "./LauncherMenuItem"
-import {
-  faImage,
-  faFolderOpen,
-  faVideo,
-  faEraser,
-  faTimes,
-  faWindowMinimize,
-  faGlobe
-} from "@fortawesome/free-solid-svg-icons"
-import { faWindows } from "@fortawesome/free-brands-svg-icons"
+import { connect } from "react-redux"
+import { addFrame, AddFramePayload, closeAllFrames, closeLauncherMenu } from "../redux/actions"
+import LauncherPrimaryMenu from "./LauncherPrimaryMenu"
+import LauncherPagesNavigator from "./LauncherPagesNavigator"
+import { LauncherMenuAction } from "../launchermenu/launcher-menu-actions"
+import { ContentBlockTypes } from "../../ContentBlocks/content-block-register"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faTimes } from "@fortawesome/free-solid-svg-icons"
 
-SwiperCore.use([EffectCoverflow, Pagination, Navigation])
 
+interface LauncherMenuProps {
+  menuId: string
+  position: Position
+}
 
 interface DispatchProps {
   addFrame(payload: AddFramePayload): void
@@ -31,33 +24,28 @@ interface DispatchProps {
   closeAllFrames
 }
 
-interface LauncherMenuProps {
-  menuId: string
-  position: Position
-}
-
 type Props = LauncherMenuProps & DispatchProps
 
+const StyledCloseButton = styled.button`
+  background: rgba(255, 255, 255, .2);
+  border: none;
+  color: rgba(0, 0, 0, .7);
+  border-radius: 1rem;
+  aspect-ratio: 1;
+`
 
 const StyledLauncherMenu = styled.div`
-  display: flex;
-  flex-grow: 1;
-  width: 28rem;
   position: absolute;
   transform: translate(-50%, -50%);
+  width: 28rem;
+  display: flex;
+  flex-direction: column;
   z-index: 9999;
   overflow: hidden;
-  backdrop-filter: blur(10px);
-  -webkit-mask-image: -webkit-gradient(linear, left top, right top,
-  color-stop(0.00, rgba(0, 0, 0, 0)),
-  color-stop(0.40, rgba(0, 0, 0, 1)),
-  color-stop(0.60, rgba(0, 0, 0, 1)),
-  color-stop(1.00, rgba(0, 0, 0, 0)));
-
-  .swiper-button-prev, .swiper-button-next {
-    color: rgba(0, 0, 0, .8);
-  }
+  backdrop-filter: blur(8px);
+  padding: 1rem 3rem;
 `
+
 const LauncherMenu = (props: Props) => {
   const close = () => {
     props.closeLauncherMenu({ menuId: props.menuId })
@@ -74,103 +62,54 @@ const LauncherMenu = (props: Props) => {
     })
   }
 
-  const openFrame = () => newFrame({ type: ContentBlockTypes.Dummy })
-
-  const openImage = () => newFrame({ type: ContentBlockTypes.SampleImage })
-
-  const openVideo = () => newFrame({ type: ContentBlockTypes.SampleVideo })
-
-  const openVimeo = () => newFrame({ type: ContentBlockTypes.Vimeo })
-
-  const closeAllFrames = () => {
-    close()
-    props.closeAllFrames()
+  const handleAction = (action: LauncherMenuAction) => {
+    switch (action) {
+      case LauncherMenuAction.OpenMedia: {
+        newFrame({
+          type: ContentBlockTypes.FileBrowser,
+          size: { width: 700, height: 500 },
+        })
+        break
+      }
+      case LauncherMenuAction.OpenSampleImage: {
+        newFrame({
+          type: ContentBlockTypes.SampleImage,
+          size: { width: 400, height: 400 },
+        })
+        break
+      }
+      case LauncherMenuAction.OpenSampleVideo: {
+        newFrame({
+          type: ContentBlockTypes.SampleVideo,
+          size: { width: 800, height: 400 },
+        })
+        break
+      }
+      case LauncherMenuAction.OpenSampleVimeo: {
+        newFrame({
+          type: ContentBlockTypes.Vimeo,
+          size: { width: 800, height: 400 },
+        })
+        break
+      }
+      default: {
+        break
+      }
+    }
   }
 
-  const openFile = () => newFrame({
-    type: ContentBlockTypes.FileBrowser,
-    size: { width: 700, height: 500 },
-  })
+  return <StyledLauncherMenu>
 
-  return (
-    <StyledLauncherMenu>
-      <Swiper
-        effect={'coverflow'}
-        grabCursor={true}
-        centeredSlides={true}
-        slidesPerView={4}
-        coverflowEffect={{
-          "rotate": 35,
-          "stretch": 0,
-          "depth": 30,
-          "modifier": -.7,
-          "slideShadows": false,
-        }}
-        // pagination={true}
-        className="mySwiper"
-        spaceBetween={10}
-        loop={true}
-        navigation={true}
-        onSlideChange={() => console.log('slide change')}
-        onSwiper={(swiper) => console.log(swiper)}
-      >
-        <SwiperSlide zoom={true}>
-          <LauncherMenuItem
-            label={"Open..."}
-            faSvgIcon={faFolderOpen}
-            onSelected={() => openFile()} />
-        </SwiperSlide>
-        <SwiperSlide>
-          <LauncherMenuItem
-            label={"Open image"}
-            faSvgIcon={faImage}
-            onSelected={() => openImage()} />
-        </SwiperSlide>
-        <SwiperSlide>
-          <LauncherMenuItem
-            label={"Open video"}
-            faSvgIcon={faVideo}
-            onSelected={() => openVideo()} />
-        </SwiperSlide>
-        {/*<SwiperSlide>*/}
-        {/*  <LauncherMenuItem*/}
-        {/*    label={"Open Vimeo movie"}*/}
-        {/*    faSvgIcon={faVideo}*/}
-        {/*    onSelected={() => openVimeo()} />*/}
-        {/*</SwiperSlide>*/}
-        <SwiperSlide>
-          <LauncherMenuItem
-            label={"Web"}
-            faSvgIcon={faGlobe} />
-        </SwiperSlide>
-        {/*<SwiperSlide>*/}
-        {/*  <LauncherMenuItem*/}
-        {/*    label={"Close all"}*/}
-        {/*    faSvgIcon={faEraser}*/}
-        {/*    onSelected={closeAllFrames} />*/}
-        {/*</SwiperSlide>*/}
-      </Swiper>
+    <div>
+      <StyledCloseButton type="button" onClick={close}>
+        <FontAwesomeIcon icon={faTimes} />
+      </StyledCloseButton>
+    </div>
 
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Open frame"}*/}
-      {/*  onSelected={() => openFrame()} />*/}
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Open image"}*/}
-      {/*  onSelected={() => openImage()} />*/}
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Open video"}*/}
-      {/*  onSelected={() => openVideo()} />*/}
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Open Vimeo movie"}*/}
-      {/*  onSelected={() => openVimeo()} />*/}
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Cancel"}*/}
-      {/*  onSelected={close} />*/}
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Close all"}*/}
-      {/*  onSelected={closeAllFrames} />*/}
-    </StyledLauncherMenu>
-  )
+    <LauncherPrimaryMenu onActionSelected={handleAction} />
+    <LauncherPagesNavigator />
+
+  </StyledLauncherMenu>
 }
 
 export default connect(null, { addFrame, closeLauncherMenu, closeAllFrames })(LauncherMenu)

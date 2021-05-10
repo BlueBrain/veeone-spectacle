@@ -21,7 +21,7 @@ const StyledLauncherMenuItem = styled.a`
   color: #fff;
   font-size: .6rem;
   font-weight: 400;
-  padding: .5rem 0rem;
+  padding: .5rem 0;
   box-sizing: border-box;
   align-self: stretch;
   text-shadow: 0 0 3px rgba(0, 0, 0, .7);

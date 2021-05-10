@@ -1,5 +1,5 @@
 import { Position, Size } from "../types"
-import { ContentBlockTypes } from "../../contentblocks/register"
+import { ContentBlockTypes } from "../../ContentBlocks/content-block-register"
 import { FrameId, FrameSituationUpdate } from "../presentations/interfaces"
 
 export enum Actions {
