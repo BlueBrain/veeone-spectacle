@@ -9,11 +9,17 @@ import { generateRandomId } from "../../common/random"
 import { Swiper, SwiperSlide } from "swiper/react"
 import SwiperCore, { EffectCoverflow, Navigation, Pagination } from 'swiper/core'
 import 'swiper/swiper-bundle.min.css'
-// import 'swiper/components/zoom/zoom.scss'
-// import "swiper/components/effect-coverflow/effect-coverflow.scss"
-// import "swiper/components/pagination/pagination.scss"
-// import "swiper/components/navigation/navigation.scss"
 import LauncherMenuItem from "./LauncherMenuItem"
+import {
+  faImage,
+  faFolderOpen,
+  faVideo,
+  faEraser,
+  faTimes,
+  faWindowMinimize,
+  faGlobe
+} from "@fortawesome/free-solid-svg-icons"
+import { faWindows } from "@fortawesome/free-brands-svg-icons"
 
 SwiperCore.use([EffectCoverflow, Pagination, Navigation])
 
@@ -36,7 +42,7 @@ type Props = LauncherMenuProps & DispatchProps
 const StyledLauncherMenu = styled.div`
   display: flex;
   flex-grow: 1;
-  max-width: 25rem;
+  width: 28rem;
   position: absolute;
   transform: translate(-50%, -50%);
   z-index: 9999;
@@ -44,8 +50,8 @@ const StyledLauncherMenu = styled.div`
   backdrop-filter: blur(10px);
   -webkit-mask-image: -webkit-gradient(linear, left top, right top,
   color-stop(0.00, rgba(0, 0, 0, 0)),
-  color-stop(0.30, rgba(0, 0, 0, 1)),
-  color-stop(0.70, rgba(0, 0, 0, 1)),
+  color-stop(0.40, rgba(0, 0, 0, 1)),
+  color-stop(0.60, rgba(0, 0, 0, 1)),
   color-stop(1.00, rgba(0, 0, 0, 0)));
 
   .swiper-button-prev, .swiper-button-next {
@@ -92,11 +98,11 @@ const LauncherMenu = (props: Props) => {
         effect={'coverflow'}
         grabCursor={true}
         centeredSlides={true}
-        slidesPerView={5}
+        slidesPerView={4}
         coverflowEffect={{
           "rotate": 35,
           "stretch": 0,
-          "depth": 70,
+          "depth": 30,
           "modifier": -.7,
           "slideShadows": false,
         }}
@@ -111,33 +117,38 @@ const LauncherMenu = (props: Props) => {
         <SwiperSlide zoom={true}>
           <LauncherMenuItem
             label={"Open..."}
+            faSvgIcon={faFolderOpen}
             onSelected={() => openFile()} />
         </SwiperSlide>
         <SwiperSlide>
           <LauncherMenuItem
             label={"Open image"}
+            faSvgIcon={faImage}
             onSelected={() => openImage()} />
         </SwiperSlide>
         <SwiperSlide>
           <LauncherMenuItem
             label={"Open video"}
+            faSvgIcon={faVideo}
             onSelected={() => openVideo()} />
         </SwiperSlide>
+        {/*<SwiperSlide>*/}
+        {/*  <LauncherMenuItem*/}
+        {/*    label={"Open Vimeo movie"}*/}
+        {/*    faSvgIcon={faVideo}*/}
+        {/*    onSelected={() => openVimeo()} />*/}
+        {/*</SwiperSlide>*/}
         <SwiperSlide>
           <LauncherMenuItem
-            label={"Open Vimeo movie"}
-            onSelected={() => openVimeo()} />
+            label={"Web"}
+            faSvgIcon={faGlobe} />
         </SwiperSlide>
-        <SwiperSlide>
-          <LauncherMenuItem
-            label={"Cancel"}
-            onSelected={close} />
-        </SwiperSlide>
-        <SwiperSlide>
-          <LauncherMenuItem
-            label={"Close all"}
-            onSelected={closeAllFrames} />
-        </SwiperSlide>
+        {/*<SwiperSlide>*/}
+        {/*  <LauncherMenuItem*/}
+        {/*    label={"Close all"}*/}
+        {/*    faSvgIcon={faEraser}*/}
+        {/*    onSelected={closeAllFrames} />*/}
+        {/*</SwiperSlide>*/}
       </Swiper>
 
       {/*<LauncherMenuItem*/}

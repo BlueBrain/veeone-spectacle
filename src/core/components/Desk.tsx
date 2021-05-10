@@ -9,6 +9,7 @@ import { closeLauncherMenu, openLauncherMenu } from "../redux/actions"
 import interact from "interactjs"
 import { Target } from "@interactjs/types/index"
 import styled from "styled-components"
+import { CoffeeIcon } from "../../common/icons"
 
 interact.pointerMoveTolerance(4)
 
