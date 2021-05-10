@@ -14,7 +14,7 @@ left: 0;
 top: 0;
 width: 100%;
 height: 100%;
-background: red;
+//background: red;
 opacity: .5;`
 
 const VimeoBlock: React.FC = () => {
