@@ -8,12 +8,13 @@ import { faCog, faTimes } from "@fortawesome/free-solid-svg-icons"
 SwiperCore.use([EffectCoverflow, Pagination, Navigation])
 
 const StyledLauncherPagesNavigator = styled.div`
+  position: relative;
   display: flex;
   flex-grow: 1;
   width: 100%;
   align-self: center;
   flex-direction: column;
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 `
 
 const StyledSwiper = styled.div`
@@ -29,16 +30,20 @@ const StyledSwiper = styled.div`
 `
 
 const StyledPagePrev = styled.div`
-  background: #9a0036;
+  //background: rgba(0, 0, 0, .5);
+  background: #64b5f6;
   padding: 1rem;
-  height: 3rem;
+  height: 1.2rem;
   overflow: hidden;
   position: relative;
 `
 
 const StyledFakeFrame = styled.div`
   position: absolute;
-  background: rgba(255, 255, 255, .2);
+  //background: rgba(255, 255, 255, .2);
+  background: rgba(25, 118, 210, .5);
+
+, .2);
   width: 25%;
   height: 10%;
 `
@@ -47,6 +52,16 @@ const StyledOptionsBar = styled.div`
   width: 100%;
   text-align: right;
   font-size: .8rem;
+`
+
+const StyledPageTitle = styled.div`
+  font-size: .6rem;
+  font-weight: 300;
+  line-height: .8rem;
+  text-align: center;
+  padding-top: .5rem;
+  color: #fff;
+  text-shadow: 0 0 3px rgba(0, 0, 0, .7);
 `
 
 const PagePrev = () => {
@@ -62,16 +77,16 @@ const PagePrev = () => {
 const LauncherPagesNavigator = () => {
   return <StyledLauncherPagesNavigator>
 
-    <StyledOptionsBar>
-      1 of 4 pages
-      <FontAwesomeIcon icon={faCog} />
-    </StyledOptionsBar>
+    {/*<StyledOptionsBar>*/}
+    {/*  1 of 4 pages*/}
+    {/*  <FontAwesomeIcon icon={faCog} />*/}
+    {/*</StyledOptionsBar>*/}
 
     <StyledSwiper><Swiper
       effect={'coverflow'}
       grabCursor={true}
       centeredSlides={true}
-      slidesPerView={3}
+      slidesPerView={5}
       coverflowEffect={{
         "rotate": 35,
         "stretch": 0,
@@ -81,7 +96,7 @@ const LauncherPagesNavigator = () => {
       }}
       // pagination={true}
       className="mySwiper"
-      spaceBetween={10}
+      spaceBetween={30}
       loop={false}
       navigation={true}
       onSlideChange={() => console.log('slide change')}
@@ -89,19 +104,19 @@ const LauncherPagesNavigator = () => {
     >
       <SwiperSlide>
         <PagePrev />
-        Welcome screen
+        <StyledPageTitle>Welcome</StyledPageTitle>
       </SwiperSlide>
       <SwiperSlide>
         <PagePrev />
-        Page 2
+        <StyledPageTitle>Page 2</StyledPageTitle>
       </SwiperSlide>
       <SwiperSlide>
         <PagePrev />
-        Hippocampus
+        <StyledPageTitle>Hippocampus</StyledPageTitle>
       </SwiperSlide>
       <SwiperSlide>
         <PagePrev />
-        Neuron structure
+        <StyledPageTitle>Neuron str...</StyledPageTitle>
       </SwiperSlide>
     </Swiper></StyledSwiper>
   </StyledLauncherPagesNavigator>

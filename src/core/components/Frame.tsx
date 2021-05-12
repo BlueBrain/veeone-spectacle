@@ -155,7 +155,8 @@ const Frame: React.FC<Props> = (
         gesturableStart = { left, top, width, height, angle }
       },
       onmove: (event: GestureEvent) => {
-        angle = event.angle - fingerAngleOffset
+        // todo parametrize this (rotating frame)
+        // angle = event.angle - fingerAngleOffset
         const newWidth = gesturableStart.width * event.scale
         const newHeight = gesturableStart.height * event.scale
         left += (width - newWidth) / 2

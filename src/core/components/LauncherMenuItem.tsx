@@ -18,12 +18,12 @@ const StyledLauncherMenuItem = styled.a`
   background: #1976d2;
   flex-grow: 1;
   flex-direction: column;
-  color: #fff;
-  font-size: .6rem;
-  font-weight: 400;
+  font-size: .8rem;
+  font-weight: 600;
   padding: .5rem 0;
   box-sizing: border-box;
   align-self: stretch;
+  color: #fff;
   text-shadow: 0 0 3px rgba(0, 0, 0, .7);
   text-align: center;
 `
@@ -39,7 +39,7 @@ const StyledIconWrapper = styled.div`
     //display: flex;
     //align-self: center;
     box-sizing: border-box;
-    width: 60% !important;
+    width: 50% !important;
     height: auto !important;
   }
 

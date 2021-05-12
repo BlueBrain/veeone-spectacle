@@ -6,6 +6,7 @@ import 'swiper/swiper-bundle.min.css'
 import LauncherMenuItem from "./LauncherMenuItem"
 import { faFolderOpen, faGlobe, faImage, faVideo } from "@fortawesome/free-solid-svg-icons"
 import { LauncherMenuAction } from "../launchermenu/launcher-menu-actions"
+import { faVimeo } from "@fortawesome/free-brands-svg-icons"
 
 SwiperCore.use([EffectCoverflow, Pagination, Navigation])
 
@@ -108,8 +109,8 @@ const LauncherPrimaryMenu = (props: LauncherPrimaryMenuProps) => {
         </SwiperSlide>
         <SwiperSlide>
           <LauncherMenuItem
-            label={"Open Vimeo movie"}
-            faSvgIcon={faVideo}
+            label={"Vimeo sample"}
+            faSvgIcon={faVimeo}
             onSelected={() => props.onActionSelected(LauncherMenuAction.OpenSampleVimeo)} />
         </SwiperSlide>
         <SwiperSlide>

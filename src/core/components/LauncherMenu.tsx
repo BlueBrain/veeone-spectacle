@@ -41,9 +41,47 @@ const StyledLauncherMenu = styled.div`
   display: flex;
   flex-direction: column;
   z-index: 9999;
-  overflow: hidden;
-  backdrop-filter: blur(8px);
-  padding: 1rem 3rem;
+  overflow: visible;
+  padding: 1rem 1rem;
+  box-shadow: 2rem 2rem 4rem rgba(0, 0, 0, .3),
+  -2rem 2rem 4rem rgba(0, 0, 0, .3);
+  //border-radius: 2rem;
+`
+
+const StyledLauncherMenuBackground = styled.div`
+  position: absolute;
+  background: rgba(17, 82, 147, .8);
+  backdrop-filter: grayscale(100%) blur(10px);
+  box-sizing: content-box;
+  overflow: visible;
+  width: 100%;
+  height: 100%;
+  //transform: scale(1.2);
+  display: flex;
+  flex: 1;
+  left: 0;
+  top: 0;
+  //margin: 2rem;
+  //-webkit-mask-image: -webkit-gradient(linear, left top, right top,
+  //color-stop(0, rgba(0, 0, 0, 0)),
+  //color-stop(0.1, rgba(0, 0, 0, 1)),
+  //color-stop(0.9, rgba(0, 0, 0, 1)),
+  //color-stop(1, rgba(0, 0, 0, 0)));
+`
+
+const StyledSectionHeader = styled.h1`
+  position: relative;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: white;
+  margin: 1rem 0 0 0;
+  padding: 0;
+`
+
+const StyledTopControls = styled.div`
+  position: relative;
+  margin-bottom: 1rem;
+  margin-top: -2.7rem;
 `
 
 const LauncherMenu = (props: Props) => {
@@ -99,16 +137,15 @@ const LauncherMenu = (props: Props) => {
   }
 
   return <StyledLauncherMenu>
-
-    <div>
+    <StyledLauncherMenuBackground />
+    <StyledTopControls>
       <StyledCloseButton type="button" onClick={close}>
         <FontAwesomeIcon icon={faTimes} />
       </StyledCloseButton>
-    </div>
+    </StyledTopControls>
 
     <LauncherPrimaryMenu onActionSelected={handleAction} />
     <LauncherPagesNavigator />
-
   </StyledLauncherMenu>
 }
 

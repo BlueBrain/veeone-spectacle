@@ -28,7 +28,7 @@ const StyledFileBrowserFileList = styled.div`
 const StyledGridLayout = styled.div`
   //background: yellowgreen;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
   grid-gap: 1rem;
   margin-bottom: 1rem;
 `
@@ -67,8 +67,8 @@ const StyledDirElement = styled.div`
     align-items: flex-end;
     
     &:first-child {
-      margin-top: 1rem;
-      font-size: 4rem;
+      //margin-top: 1rem;
+      font-size: 3rem;
       align-items: center;
       justify-content: center;
     }
