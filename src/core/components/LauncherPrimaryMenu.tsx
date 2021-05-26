@@ -1,14 +1,14 @@
 import * as React from "react"
 import styled from "styled-components"
 import { Swiper, SwiperSlide } from "swiper/react"
-import SwiperCore, { EffectCoverflow, Navigation, Pagination } from 'swiper/core'
+import SwiperCore, { Navigation, Pagination } from 'swiper/core'
 import 'swiper/swiper-bundle.min.css'
 import LauncherMenuItem from "./LauncherMenuItem"
 import { faFolderOpen, faGlobe, faImage, faVideo } from "@fortawesome/free-solid-svg-icons"
 import { LauncherMenuAction } from "../launchermenu/launcher-menu-actions"
 import { faVimeo } from "@fortawesome/free-brands-svg-icons"
 
-SwiperCore.use([EffectCoverflow, Pagination, Navigation])
+SwiperCore.use([Pagination, Navigation])
 
 
 const StyledLauncherMenu = styled.div`
@@ -33,54 +33,12 @@ interface LauncherPrimaryMenuProps {
 }
 
 const LauncherPrimaryMenu = (props: LauncherPrimaryMenuProps) => {
-  // const close = () => {
-  //   props.closeLauncherMenu({ menuId: props.menuId })
-  // }
-  //
-  // const generateFrameId = () => generateRandomId(6)
-  //
-  // const newFrame = (payload) => {
-  //   close()
-  //   props.addFrame({
-  //     frameId: generateFrameId(),
-  //     position: props.position,
-  //     ...payload
-  //   })
-  // }
-
-  // const openFrame = () => newFrame({ type: ContentBlockTypes.Dummy })
-  //
-  // const openImage = () => newFrame({ type: ContentBlockTypes.SampleImage })
-  //
-  // const openVideo = () => newFrame({ type: ContentBlockTypes.SampleVideo })
-  //
-  // const openVimeo = () => newFrame({ type: ContentBlockTypes.Vimeo })
-  //
-  // const closeAllFrames = () => {
-  //   close()
-  //   props.closeAllFrames()
-  // }
-
-  // const openFile = () => newFrame({
-  //   type: ContentBlockTypes.FileBrowser,
-  //   size: { width: 700, height: 500 },
-  // })
-
   return (
     <StyledLauncherMenu>
       <Swiper
-        effect={'coverflow'}
         grabCursor={true}
         centeredSlides={true}
         slidesPerView={4}
-        coverflowEffect={{
-          "rotate": 35,
-          "stretch": 0,
-          "depth": 30,
-          "modifier": -.7,
-          "slideShadows": false,
-        }}
-        // pagination={true}
         className="mySwiper"
         spaceBetween={10}
         loop={true}
@@ -118,32 +76,7 @@ const LauncherPrimaryMenu = (props: LauncherPrimaryMenuProps) => {
             label={"Web"}
             faSvgIcon={faGlobe} />
         </SwiperSlide>
-        {/*<SwiperSlide>*/}
-        {/*  <LauncherMenuItem*/}
-        {/*    label={"Close all"}*/}
-        {/*    faSvgIcon={faEraser}*/}
-        {/*    onSelected={closeAllFrames} />*/}
-        {/*</SwiperSlide>*/}
       </Swiper>
-
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Open frame"}*/}
-      {/*  onSelected={() => openFrame()} />*/}
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Open image"}*/}
-      {/*  onSelected={() => openImage()} />*/}
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Open video"}*/}
-      {/*  onSelected={() => openVideo()} />*/}
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Open Vimeo movie"}*/}
-      {/*  onSelected={() => openVimeo()} />*/}
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Cancel"}*/}
-      {/*  onSelected={close} />*/}
-      {/*<LauncherMenuItem*/}
-      {/*  label={"Close all"}*/}
-      {/*  onSelected={closeAllFrames} />*/}
     </StyledLauncherMenu>
   )
 }
