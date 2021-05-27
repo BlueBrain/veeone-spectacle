@@ -1,5 +1,5 @@
 import { Position } from "../types"
-import { ContentBlockTypes } from "../../ContentBlocks/types"
+import { ContentBlockTypes } from "../../contentblocks/types"
 import { Json } from "../../veedrive/types"
 
 export type FrameId = string

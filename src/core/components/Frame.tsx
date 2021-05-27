@@ -8,7 +8,7 @@ import { FrameData, FrameId, FrameSituation, FrameSituationUpdate } from "../pre
 import styled from "styled-components"
 import FrameControlBar from "./FrameControlBar"
 import { GestureEvent, Target } from "@interactjs/types/index"
-import { contentBlockRegister } from "../../ContentBlocks/content-block-register"
+import { contentBlockRegister } from "../../contentblocks/content-block-register"
 
 interface DispatchProps {
   manipulateFrame(frameId: FrameId, situation: FrameSituationUpdate): void
