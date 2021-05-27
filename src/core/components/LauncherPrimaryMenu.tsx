@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react"
 import SwiperCore, { Navigation, Pagination } from 'swiper/core'
 import 'swiper/swiper-bundle.min.css'
 import LauncherMenuItem from "./LauncherMenuItem"
-import { faFolderOpen, faGlobe, faImage, faVideo } from "@fortawesome/free-solid-svg-icons"
+import { faFolderOpen, faGlobe } from "@fortawesome/free-solid-svg-icons"
 import { LauncherMenuAction } from "../launchermenu/launcher-menu-actions"
 import { faVimeo } from "@fortawesome/free-brands-svg-icons"
 
@@ -53,18 +53,18 @@ const LauncherPrimaryMenu = (props: LauncherPrimaryMenuProps) => {
             faSvgIcon={faFolderOpen}
             onSelected={() => props.onActionSelected(LauncherMenuAction.OpenMedia)} />
         </SwiperSlide>
-        <SwiperSlide>
-          <LauncherMenuItem
-            label={"Open image"}
-            faSvgIcon={faImage}
-            onSelected={() => props.onActionSelected(LauncherMenuAction.OpenSampleImage)} />
-        </SwiperSlide>
-        <SwiperSlide>
-          <LauncherMenuItem
-            label={"Open video"}
-            faSvgIcon={faVideo}
-            onSelected={() => props.onActionSelected(LauncherMenuAction.OpenSampleVideo)} />
-        </SwiperSlide>
+        {/*<SwiperSlide>*/}
+        {/*  <LauncherMenuItem*/}
+        {/*    label={"Open image"}*/}
+        {/*    faSvgIcon={faImage}*/}
+        {/*    onSelected={() => props.onActionSelected(LauncherMenuAction.OpenSampleImage)} />*/}
+        {/*</SwiperSlide>*/}
+        {/*<SwiperSlide>*/}
+        {/*  <LauncherMenuItem*/}
+        {/*    label={"Open video"}*/}
+        {/*    faSvgIcon={faVideo}*/}
+        {/*    onSelected={() => props.onActionSelected(LauncherMenuAction.OpenSampleVideo)} />*/}
+        {/*</SwiperSlide>*/}
         <SwiperSlide>
           <LauncherMenuItem
             label={"Vimeo sample"}

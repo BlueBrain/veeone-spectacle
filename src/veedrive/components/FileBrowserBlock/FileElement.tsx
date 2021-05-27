@@ -30,7 +30,7 @@ const FileElement: React.FC<FileElementProps> = ({ fileData }) => {
   useEffect(() => {
     const loadThumbnail = async () => {
       const response = await fileService.requestFile({ path: fileData.fullpath })
-      if (response !== undefined) {
+      if (response !== undefined && !!response.thumbnail) {
         setThumbnailUrl(response.thumbnail)
       }
     }

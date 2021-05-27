@@ -5,7 +5,7 @@ import { generateRandomId } from "../../common/random"
 
 
 const framesReducer = (frames: FramesData, action: ReduxAction) => {
-  console.debug("Calling framesReducer")
+  console.debug("Calling framesReducer", action)
   switch (action.type) {
     case Actions.AddFrame: {
       const payload = action.payload as AddFramePayload
@@ -23,7 +23,8 @@ const framesReducer = (frames: FramesData, action: ReduxAction) => {
             width: width,
             height: height,
             angle: 0
-          }
+          },
+          data: payload.contentData,
         }
       }
     }

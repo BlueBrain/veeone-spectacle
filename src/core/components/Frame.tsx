@@ -51,6 +51,7 @@ const Frame: React.FC<Props> = (
     bringFrameToFront,
   }
 ) => {
+  const frameContentData = frame.data
   let { width, height, left, top, angle, isFullscreen } = frame.situation
   let gesturableStart: FrameSituation
   let fingerAngleOffset = 0
@@ -206,7 +207,10 @@ const Frame: React.FC<Props> = (
       stackIndex={stackIndex}
       angle={angle}>
       <FrameControlBar onClose={() => closeFrame(frameId)} />
-      <ContentBlockComponent frameId={frameId} />
+      <ContentBlockComponent
+        frameId={frameId}
+        contentData={frameContentData}
+      />
     </StyledFrame>
   )
 }

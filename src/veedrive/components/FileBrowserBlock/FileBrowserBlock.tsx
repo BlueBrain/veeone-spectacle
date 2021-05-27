@@ -7,10 +7,12 @@ import { DirectoryItem, VeeDriveListDirectoryFile } from "../../types"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import _ from "lodash"
 import { BrowserDirectory, BrowserFile } from "../../common/models"
-
-interface FileBrowserBlockProps {
-}
-
+import { ContentBlockProps, ContentBlockTypes } from "../../../contentblocks/types"
+import { connect } from "react-redux"
+import { addFrame, AddFramePayload } from "../../../core/redux/actions"
+import { generateFrameId } from "../../../core/frames/utils"
+import { FrameSituation, PresentationStateData } from "../../../core/presentations/interfaces"
+import { getFrame } from "../../../core/redux/selectors"
 
 const StyledFileBrowserBlock = styled.div`
   background: #fafafa;
@@ -32,12 +34,35 @@ const StyledMain = styled.div`
   flex: 1;
 `
 
+interface StateProps {
+  situation: FrameSituation
+}
 
-const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
+interface DispatchProps {
+  addFrame(payload: AddFramePayload): void
+}
+
+type Props = ContentBlockProps & DispatchProps & StateProps
+
+const FileBrowserBlock: React.FC<Props> = ({ frameId, addFrame, situation }) => {
   const [directoryTree, setDirectoryTree] = useState([] as BrowserDirectory[])
   const [currentFiles, setCurrentFiles] = useState([] as BrowserFile[])
   const [currentDirs, setCurrentDirs] = useState([] as BrowserDirectory[])
   const [activePath, setActivePath] = useState("")
+
+  const newImageFrame = (filePath) => {
+    addFrame({
+      type: ContentBlockTypes.Image,
+      frameId: generateFrameId(),
+      position: {
+        top: situation.top + situation.height / 2,
+        left: situation.left + situation.width / 2,
+      },
+      contentData: {
+        path: filePath
+      }
+    })
+  }
 
   const load = async () => {
     const paths = activePath.split("/")
@@ -127,8 +152,10 @@ const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
   }
 
   const openFile = (filename: string) => {
-    const filepath = `${activePath}/${filename}`
-    console.debug("REQUESTING FILE", filepath)
+    const filePath = `${activePath}/${filename}`
+    console.debug(`Requesting a file from frame=${frameId}`, filePath)
+    // todo handle different file types (currently all will open an image frame)
+    setTimeout(() => newImageFrame(filePath))
   }
 
   useEffect(() => {
@@ -155,4 +182,11 @@ const FileBrowserBlock: React.FC<FileBrowserBlockProps> = () => {
   </StyledFileBrowserBlock>
 }
 
-export default FileBrowserBlock
+
+const mapStateToProps = (state: PresentationStateData, ownProps: Props): StateProps => {
+  return {
+    situation: getFrame(state, ownProps.frameId).situation,
+  }
+}
+
+export default connect(mapStateToProps, { addFrame })(FileBrowserBlock)

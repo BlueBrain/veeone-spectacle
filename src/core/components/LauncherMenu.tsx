@@ -7,9 +7,10 @@ import { addFrame, AddFramePayload, closeAllFrames, closeLauncherMenu } from "..
 import LauncherPrimaryMenu from "./LauncherPrimaryMenu"
 import LauncherPagesNavigator from "./LauncherPagesNavigator"
 import { LauncherMenuAction } from "../launchermenu/launcher-menu-actions"
-import { ContentBlockTypes } from "../../ContentBlocks/content-block-register"
+import { ContentBlockTypes } from "../../ContentBlocks/types"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTimes } from "@fortawesome/free-solid-svg-icons"
+import { generateFrameId } from "../frames/utils"
 
 
 interface LauncherMenuProps {
@@ -89,8 +90,6 @@ const LauncherMenu = (props: Props) => {
     props.closeLauncherMenu({ menuId: props.menuId })
   }
 
-  const generateFrameId = () => generateRandomId(6)
-
   const newFrame = (payload) => {
     close()
     props.addFrame({
@@ -109,14 +108,14 @@ const LauncherMenu = (props: Props) => {
         })
         break
       }
-      case LauncherMenuAction.OpenSampleImage: {
+      case LauncherMenuAction.OpenImage: {
         newFrame({
-          type: ContentBlockTypes.SampleImage,
+          type: ContentBlockTypes.Image,
           size: { width: 400, height: 400 },
         })
         break
       }
-      case LauncherMenuAction.OpenSampleVideo: {
+      case LauncherMenuAction.OpenVideo: {
         newFrame({
           type: ContentBlockTypes.SampleVideo,
           size: { width: 800, height: 400 },
