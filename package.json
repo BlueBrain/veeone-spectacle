@@ -4,6 +4,10 @@
   "description": "",
   "version": "0.1.0",
   "author": "Blue Brain Project",
+  "engines": {
+    "node": "14.15.5",
+    "npm": "7.5.4"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-brands-svg-icons": "^5.15.3",
