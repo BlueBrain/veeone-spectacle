@@ -1,13 +1,17 @@
 import { Position } from "../types"
-import { ContentBlockTypes } from "../../contentblocks/register"
+import { ContentBlockTypes } from "../../contentblocks/types"
+import { Json } from "../../veedrive/types"
 
 export type FrameId = string
 
 export type FrameStack = FrameId[]
 
+export type FrameDataDict = { [key: string]: Json }
+
 export interface FrameData {
   type: ContentBlockTypes
   situation: FrameSituation
+  data: FrameDataDict
 }
 
 export interface FramesData {

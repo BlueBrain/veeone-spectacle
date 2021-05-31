@@ -8,7 +8,7 @@ import { FrameData, FrameId, FrameSituation, FrameSituationUpdate } from "../pre
 import styled from "styled-components"
 import FrameControlBar from "./FrameControlBar"
 import { GestureEvent, Target } from "@interactjs/types/index"
-import { contentBlockRegister } from "../../contentblocks/register"
+import { contentBlockRegister } from "../../contentblocks/content-block-register"
 
 interface DispatchProps {
   manipulateFrame(frameId: FrameId, situation: FrameSituationUpdate): void
@@ -51,6 +51,7 @@ const Frame: React.FC<Props> = (
     bringFrameToFront,
   }
 ) => {
+  const frameContentData = frame.data
   let { width, height, left, top, angle, isFullscreen } = frame.situation
   let gesturableStart: FrameSituation
   let fingerAngleOffset = 0
@@ -155,7 +156,8 @@ const Frame: React.FC<Props> = (
         gesturableStart = { left, top, width, height, angle }
       },
       onmove: (event: GestureEvent) => {
-        angle = event.angle - fingerAngleOffset
+        // todo parametrize this (rotating frame)
+        // angle = event.angle - fingerAngleOffset
         const newWidth = gesturableStart.width * event.scale
         const newHeight = gesturableStart.height * event.scale
         left += (width - newWidth) / 2
@@ -205,7 +207,10 @@ const Frame: React.FC<Props> = (
       stackIndex={stackIndex}
       angle={angle}>
       <FrameControlBar onClose={() => closeFrame(frameId)} />
-      <ContentBlockComponent frameId={frameId} />
+      <ContentBlockComponent
+        frameId={frameId}
+        contentData={frameContentData}
+      />
     </StyledFrame>
   )
 }

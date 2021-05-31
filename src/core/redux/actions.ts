@@ -1,6 +1,6 @@
 import { Position, Size } from "../types"
-import { ContentBlockTypes } from "../../contentblocks/register"
-import { FrameId, FrameSituationUpdate } from "../presentations/interfaces"
+import { ContentBlockTypes } from "../../contentblocks/types"
+import { FrameDataDict, FrameId, FrameSituationUpdate } from "../presentations/interfaces"
 
 export enum Actions {
   AddFrame,
@@ -22,6 +22,7 @@ export interface AddFramePayload {
   frameId: FrameId
   position: Position
   size?: Size
+  contentData: FrameDataDict
 }
 
 export const addFrame = (payload: AddFramePayload) => ({

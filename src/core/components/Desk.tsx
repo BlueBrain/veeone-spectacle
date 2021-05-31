@@ -1,7 +1,5 @@
 import * as React from "react"
 import { useEffect, useRef } from "react"
-
-import * as styles from "./Desk.module.scss"
 import Frame from "./Frame"
 import { FrameData, FrameStack, LauncherMenuData, PresentationStateData } from "../presentations/interfaces"
 import LauncherMenu from "./LauncherMenu"
@@ -31,11 +29,12 @@ interface DeskProps {
 type Props = DeskProps & DispatchProps & StateProps
 
 const StyledDesk = styled.div`
-background: #666;
-width: 100%;
-height: 100%;
-contain: content;
-overflow: hidden;
+  background: rgb(102, 102, 102);
+  background: radial-gradient(circle, rgba(102, 102, 102, 1) 0%, rgba(68, 68, 68, 1) 100%);
+  width: 100%;
+  height: 100%;
+  contain: content;
+  overflow: hidden;
 `
 
 const Desk: React.FC<Props> = (props: Props) => {
@@ -62,7 +61,7 @@ const Desk: React.FC<Props> = (props: Props) => {
             ? <Frame frame={frame}
                      key={frameId}
                      frameId={frameId}
-                     stackIndex={props.frameStack.indexOf(frameId)}/>
+                     stackIndex={props.frameStack.indexOf(frameId)} />
             : ``
         }
       )}
@@ -76,7 +75,7 @@ const Desk: React.FC<Props> = (props: Props) => {
           }}>
           <LauncherMenu
             menuId={launcherMenu.menuId}
-            position={launcherMenu.position}/>
+            position={launcherMenu.position} />
         </div>
       })}
     </StyledDesk>

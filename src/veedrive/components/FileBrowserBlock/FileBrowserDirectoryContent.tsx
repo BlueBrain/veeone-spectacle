@@ -2,6 +2,8 @@ import React from "react"
 import { DirectoryItem, VeeDriveListDirectoryFile } from "../../types"
 import styled from "styled-components"
 import FileElement from "./FileElement"
+import { faFolder, faTimes } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 interface Props {
   files: VeeDriveListDirectoryFile[]
@@ -26,7 +28,7 @@ const StyledFileBrowserFileList = styled.div`
 const StyledGridLayout = styled.div`
   //background: yellowgreen;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
   grid-gap: 1rem;
   margin-bottom: 1rem;
 `
@@ -65,8 +67,8 @@ const StyledDirElement = styled.div`
     align-items: flex-end;
     
     &:first-child {
-      margin-top: 1rem;
-      font-size: 4rem;
+      //margin-top: 1rem;
+      font-size: 3rem;
       align-items: center;
       justify-content: center;
     }
@@ -99,7 +101,9 @@ const FileBrowserDirectoryContent: React.FC<Props> = (
       {dirs.map((dir) =>
         <StyledGridElement key={dir.name}  onClick={() => openDirectory(dir.path)}>
           <StyledDirElement>
-            <div>📁</div>
+            <div style={{color: "#aaa"}}>
+              <FontAwesomeIcon icon={faFolder} />
+            </div>
             <div>{dir.name}</div>
           </StyledDirElement>
         </StyledGridElement>

@@ -1,28 +1,47 @@
 import * as React from "react"
-import OpenIcon from "../../assets/icons/open.inline.svg"
 import styled from "styled-components"
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 interface LauncherMenuItemProps {
   label: string
+  faSvgIcon?: IconDefinition
 
-  onSelected()
+  onSelected?()
 }
 
 type Props = LauncherMenuItemProps
 
 const StyledLauncherMenuItem = styled.a`
-  color: #fff;
-  font-size: 10pt;
-  font-weight: 700;
-  width: 50px;
-  padding: 1rem;
+  height: 100%;
   display: flex;
+  background: #1976d2;
+  flex-grow: 1;
   flex-direction: column;
-  text-shadow: 0 0 5px rgba(0, 0, 0, .7);
+  font-size: .8rem;
+  font-weight: 600;
+  padding: .5rem 0;
+  box-sizing: border-box;
+  align-self: stretch;
+  color: #fff;
+  text-shadow: 0 0 3px rgba(0, 0, 0, .7);
+  text-align: center;
 `
 
 const StyledIconWrapper = styled.div`
-  --shadow: drop-shadow(6px 6px 50px rgba(0, 0, 0, .7));
+  width: 100%;
+  height: 100%;
+  min-height: 3rem;
+  padding: .3rem;
+  --shadow: drop-shadow(0 .2rem 20px rgba(0, 0, 0, .4));
+
+  svg {
+    //display: flex;
+    //align-self: center;
+    box-sizing: border-box;
+    width: 50% !important;
+    height: auto !important;
+  }
 
   path {
     fill: white;
@@ -32,9 +51,9 @@ const StyledIconWrapper = styled.div`
 `
 
 const LauncherMenuItem = (props: Props) => {
-  return <StyledLauncherMenuItem onClick={props.onSelected}>
+  return <StyledLauncherMenuItem onClick={!!props.onSelected ? props.onSelected : null}>
     <StyledIconWrapper>
-      <OpenIcon width={"100%"} height={"100%"} />
+      {!!props.faSvgIcon ? <FontAwesomeIcon icon={props.faSvgIcon} /> : null}
     </StyledIconWrapper>
     {props.label}
   </StyledLauncherMenuItem>

@@ -1,37 +1,44 @@
 import React, { CSSProperties, useEffect, useState } from "react"
-import _ from "lodash"
-import Image1 from "../../assets/tmp/column_layer2_7680x3240.png"
-import Image2 from "../../assets/tmp/hippocampus_collage_4k_v3.png"
-import Image3 from "../../assets/tmp/hippocampus_collage_4k_v6a.png"
-import Image4 from "../../assets/tmp/hippocampus_collage_4k_v8.png"
-import Image5 from "../../assets/tmp/20120417cell18_a.CNG-7.png"
-import Image6 from "../../assets/tmp/20120417cell18_a.CNG-5 2.png"
 import styled from "styled-components"
-
-const sampleImagePaths = [Image1, Image2, Image3, Image4, Image5, Image6]
+import { ContentBlockProps } from "../types"
+import fileService from "../../veedrive/service"
 
 const StyledImageBlock = styled.div`
-width: 100%;
-height: 100%;
-background: black;
-box-shadow: 0px 5px 10px rgba(0, 0, 0, .3);
+  width: 100%;
+  height: 100%;
+  background: black;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
 `
 
-const ImageBlock: React.FC = () => {
-  const [img, setImg] = useState<JSX.Element>()
-  const imgStyle: CSSProperties = {
-    width: "100%",
-    height: "100%",
-    objectFit: "contain",
-  }
+interface ImageBlockParams {
+  path: string
+}
+
+const imgStyle: CSSProperties = {
+  width: "100%",
+  height: "100%",
+  objectFit: "contain",
+}
+
+const ImageBlock: React.FC<ContentBlockProps> = (props) => {
+  const [ imageUrl, setImageUrl ] = useState<string>("")
+  const { path: imagePath } = props.contentData as unknown as ImageBlockParams
 
   useEffect(() => {
-    const imgPath = _.sample(sampleImagePaths)
-    setImg(() => <img src={imgPath} style={imgStyle} alt={""}/>)
-  }, [])
+    const loadThumbnail = async () => {
+      const response = await fileService.requestFile({ path: imagePath })
+      if (response !== undefined && !!response.thumbnail) {
+        console.debug("Got image", response)
+        setImageUrl(response.url)
+      } else {
+        // todo handle invalid images/paths/responses
+      }
+    }
+    void loadThumbnail()
+  })
 
   return <StyledImageBlock>
-    {img}
+    <img src={imageUrl} style={imgStyle} alt={""} />
   </StyledImageBlock>
 }
 
