@@ -10,4 +10,5 @@ export const getFrame = (store: PresentationStateData, frameId: FrameId) => {
   return result
 }
 
-export const getLauncherMenus = (store: PresentationStateData) => store.launcherMenus
+export const getLauncherMenus = (store: PresentationStateData) =>
+  store.launcherMenus

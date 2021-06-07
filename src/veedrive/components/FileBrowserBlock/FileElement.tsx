@@ -24,23 +24,24 @@ const StyledLabel = styled.a`
   font-weight: 600;
 `
 
-
 const FileElement: React.FC<FileElementProps> = ({ fileData }) => {
   const [thumbnailUrl, setThumbnailUrl] = useState("")
   useEffect(() => {
     const loadThumbnail = async () => {
-      const response = await fileService.requestFile({ path: fileData.fullpath })
+      const response = await fileService.requestFile({
+        path: fileData.fullpath,
+      })
       if (response !== undefined && !!response.thumbnail) {
         setThumbnailUrl(response.thumbnail)
       }
     }
     void loadThumbnail()
   })
-  return <StyledFileElement>
-    {!!thumbnailUrl
-      ? <StyledImage src={thumbnailUrl} />
-      : null}
-    <StyledLabel>{fileData.name}</StyledLabel>
-  </StyledFileElement>
+  return (
+    <StyledFileElement>
+      {!!thumbnailUrl ? <StyledImage src={thumbnailUrl} /> : null}
+      <StyledLabel>{fileData.name}</StyledLabel>
+    </StyledFileElement>
+  )
 }
 export default FileElement

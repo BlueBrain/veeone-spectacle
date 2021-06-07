@@ -1,6 +1,10 @@
 import { Position, Size } from "../types"
 import { ContentBlockTypes } from "../../contentblocks/types"
-import { FrameDataDict, FrameId, FrameSituationUpdate } from "../presentations/interfaces"
+import {
+  FrameDataDict,
+  FrameId,
+  FrameSituationUpdate,
+} from "../presentations/interfaces"
 
 export enum Actions {
   AddFrame,
@@ -30,29 +34,32 @@ export const addFrame = (payload: AddFramePayload) => ({
   payload: payload,
 })
 
-export const manipulateFrame = (frameId: FrameId, situationUpdate: FrameSituationUpdate) => ({
+export const manipulateFrame = (
+  frameId: FrameId,
+  situationUpdate: FrameSituationUpdate
+) => ({
   type: Actions.ManipulateFrame,
   payload: {
     frameId,
     situationUpdate,
-  }
+  },
 })
 
-export const bringFrameToFront = (frameId) => ({
+export const bringFrameToFront = frameId => ({
   type: Actions.BringFrameToFront,
-  payload: { frameId }
+  payload: { frameId },
 })
 
 export const closeFrame = (frameId: FrameId) => ({
   type: Actions.CloseFrame,
   payload: {
-    frameId
-  }
+    frameId,
+  },
 })
 
 export const closeAllFrames = () => ({
   type: Actions.CloseAllFrames,
-  payload: {}
+  payload: {},
 })
 
 export interface OpenLauncherMenuPayload {
@@ -61,7 +68,7 @@ export interface OpenLauncherMenuPayload {
 
 export const openLauncherMenu = (payload: OpenLauncherMenuPayload) => ({
   type: Actions.OpenLauncherMenu,
-  payload: payload
+  payload: payload,
 })
 
 export interface CloseLauncherMenuPayload {
@@ -70,5 +77,5 @@ export interface CloseLauncherMenuPayload {
 
 export const closeLauncherMenu = (payload: CloseLauncherMenuPayload) => ({
   type: Actions.CloseLauncherMenu,
-  payload: payload
+  payload: payload,
 })

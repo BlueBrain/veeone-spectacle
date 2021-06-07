@@ -35,17 +35,19 @@ const StyledGridLayout = styled.div`
 
 const StyledGridElement = styled.div`
   display: grid;
-  padding: .5rem;
+  padding: 0.5rem;
   background: #fff;
   cursor: pointer;
   //border: 1px solid magenta;
   box-sizing: border-box;
   font-size: 8pt;
   line-height: 1em;
-  box-shadow: -.2rem .3rem .5rem rgba(0, 0, 0, .04), .2rem .3rem .5rem rgba(0, 0, 0, .04);
-  border-radius: .3rem;
+  box-shadow: -0.2rem 0.3rem 0.5rem rgba(0, 0, 0, 0.04),
+    0.2rem 0.3rem 0.5rem rgba(0, 0, 0, 0.04);
+  border-radius: 0.3rem;
 
-  ::before, div {
+  ::before,
+  div {
     width: 100%;
     height: 100%;
     grid-area: 1 / 1 / 2 / 2;
@@ -61,11 +63,11 @@ const StyledGridElement = styled.div`
 const StyledDirElement = styled.div`
   display: flex;
   flex-direction: column;
-  
+
   div {
     display: flex;
     align-items: flex-end;
-    
+
     &:first-child {
       //margin-top: 1rem;
       font-size: 3rem;
@@ -75,15 +77,14 @@ const StyledDirElement = styled.div`
   }
 `
 
-const FileBrowserDirectoryContent: React.FC<Props> = (
-  {
-    dirs = [],
-    files = [],
-    onOpenDirectory,
-    onOpenUpperDirectory,
-    onOpenFile,
-  }) => {
-  const openDirectory = (dirPath) => {
+const FileBrowserDirectoryContent: React.FC<Props> = ({
+  dirs = [],
+  files = [],
+  onOpenDirectory,
+  onOpenUpperDirectory,
+  onOpenFile,
+}) => {
+  const openDirectory = dirPath => {
     onOpenDirectory(dirPath)
   }
 
@@ -91,32 +92,42 @@ const FileBrowserDirectoryContent: React.FC<Props> = (
     onOpenUpperDirectory()
   }
 
-  const openFile = (fileName) => {
+  const openFile = fileName => {
     onOpenFile(fileName)
   }
 
-  return <StyledFileBrowserFileList>
-    <button type="button" onClick={openUpperDirectory}>UP</button>
-    <StyledGridLayout>
-      {dirs.map((dir) =>
-        <StyledGridElement key={dir.name}  onClick={() => openDirectory(dir.path)}>
-          <StyledDirElement>
-            <div style={{color: "#aaa"}}>
-              <FontAwesomeIcon icon={faFolder} />
-            </div>
-            <div>{dir.name}</div>
-          </StyledDirElement>
-        </StyledGridElement>
-      )}
-    </StyledGridLayout>
-    <StyledGridLayout>
-      {files.map((file) =>
-        <StyledGridElement key={file.name} onClick={() => openFile(file.name)}>
-          <FileElement fileData={file} />
-        </StyledGridElement>
-      )}
-    </StyledGridLayout>
-  </StyledFileBrowserFileList>
+  return (
+    <StyledFileBrowserFileList>
+      <button type="button" onClick={openUpperDirectory}>
+        UP
+      </button>
+      <StyledGridLayout>
+        {dirs.map(dir => (
+          <StyledGridElement
+            key={dir.name}
+            onClick={() => openDirectory(dir.path)}
+          >
+            <StyledDirElement>
+              <div style={{ color: "#aaa" }}>
+                <FontAwesomeIcon icon={faFolder} />
+              </div>
+              <div>{dir.name}</div>
+            </StyledDirElement>
+          </StyledGridElement>
+        ))}
+      </StyledGridLayout>
+      <StyledGridLayout>
+        {files.map(file => (
+          <StyledGridElement
+            key={file.name}
+            onClick={() => openFile(file.name)}
+          >
+            <FileElement fileData={file} />
+          </StyledGridElement>
+        ))}
+      </StyledGridLayout>
+    </StyledFileBrowserFileList>
+  )
 }
 
 export default FileBrowserDirectoryContent

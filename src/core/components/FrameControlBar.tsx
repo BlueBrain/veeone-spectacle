@@ -18,21 +18,25 @@ const StyledFrameControlBar = styled.div`
 `
 
 const StyledCloseButton = styled.button`
-  background: rgba(255, 255, 255, .2);
-  color: rgba(0, 0, 0, .7);
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.7);
   border: none;
   border-radius: 3rem;
   aspect-ratio: 1;
 `
 
-const FrameControlBar: React.FC<FrameControlBarProps> = (props: FrameControlBarProps) => {
+const FrameControlBar: React.FC<FrameControlBarProps> = (
+  props: FrameControlBarProps
+) => {
   const close = () => props.onClose()
 
-  return <StyledFrameControlBar>
-    <StyledCloseButton type={"button"} onClick={close}>
-      <FontAwesomeIcon icon={faTimes} />
-    </StyledCloseButton>
-  </StyledFrameControlBar>
+  return (
+    <StyledFrameControlBar>
+      <StyledCloseButton type={"button"} onClick={close}>
+        <FontAwesomeIcon icon={faTimes} />
+      </StyledCloseButton>
+    </StyledFrameControlBar>
+  )
 }
 
 export default FrameControlBar

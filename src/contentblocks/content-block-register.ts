@@ -6,9 +6,10 @@ import React from "react"
 import FileBrowserBlock from "../veedrive/components/FileBrowserBlock"
 import { ContentBlockProps, ContentBlockTypes } from "./types"
 
-
-export const contentBlockRegister: Record<string,
-  React.FC<ContentBlockProps> | React.NamedExoticComponent<ContentBlockProps>> = {
+export const contentBlockRegister: Record<
+  string,
+  React.FC<ContentBlockProps> | React.NamedExoticComponent<ContentBlockProps>
+> = {
   [ContentBlockTypes.Dummy]: DummyBlock,
   [ContentBlockTypes.Image]: ImageBlock,
   [ContentBlockTypes.SampleVideo]: VideoBlock,

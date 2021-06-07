@@ -1,8 +1,12 @@
 import { Actions, AddFramePayload, ReduxAction } from "./actions"
-import { FrameId, FramesData, FrameStack, LauncherMenuData, PresentationStateData } from "../presentations/interfaces"
+import {
+  FrameId,
+  FramesData,
+  FrameStack,
+  LauncherMenuData,
+  PresentationStateData,
+} from "../presentations/interfaces"
 import { generateRandomId } from "../../common/random"
-
-
 
 const framesReducer = (frames: FramesData, action: ReduxAction) => {
   console.debug("Calling framesReducer", action)
@@ -22,10 +26,10 @@ const framesReducer = (frames: FramesData, action: ReduxAction) => {
             top: top,
             width: width,
             height: height,
-            angle: 0
+            angle: 0,
           },
           data: payload.contentData,
-        }
+        },
       }
     }
 
@@ -48,7 +52,7 @@ const framesReducer = (frames: FramesData, action: ReduxAction) => {
         [action.payload.frameId]: {
           ...frames[action.payload.frameId],
           situation: { ...newSituation },
-        }
+        },
       }
     }
 
@@ -58,7 +62,7 @@ const framesReducer = (frames: FramesData, action: ReduxAction) => {
 }
 
 const frameStackReducer = (frameStack: FrameStack, action: ReduxAction) => {
-  switch(action.type) {
+  switch (action.type) {
     case Actions.AddFrame: {
       return [...frameStack, (action.payload as AddFramePayload).frameId]
     }
@@ -77,7 +81,10 @@ const frameStackReducer = (frameStack: FrameStack, action: ReduxAction) => {
   }
 }
 
-const launcherMenuReducer = (launcherMenus: LauncherMenuData[], action: ReduxAction) => {
+const launcherMenuReducer = (
+  launcherMenus: LauncherMenuData[],
+  action: ReduxAction
+) => {
   console.debug("Calling launcherMenuReducer")
   switch (action.type) {
     case Actions.OpenLauncherMenu:
@@ -90,14 +97,17 @@ const launcherMenuReducer = (launcherMenus: LauncherMenuData[], action: ReduxAct
       return [...launcherMenus, newLauncherMenu]
 
     case Actions.CloseLauncherMenu:
-      return launcherMenus.filter((menu) => menu.menuId !== action.payload.menuId)
+      return launcherMenus.filter(menu => menu.menuId !== action.payload.menuId)
 
     default:
       return launcherMenus
   }
 }
 
-export const rootReducer = (state: PresentationStateData, action: ReduxAction) => ({
+export const rootReducer = (
+  state: PresentationStateData,
+  action: ReduxAction
+) => ({
   frames: framesReducer(state.frames, action),
   frameStack: frameStackReducer(state.frameStack, action),
   launcherMenus: launcherMenuReducer(state.launcherMenus, action),

@@ -22,49 +22,47 @@ const StyledFileBrowserDirectories = styled.div`
       padding: 0;
 
       a {
-        font-size: .7rem;
+        font-size: 0.7rem;
         display: flex;
         flex-grow: 1;
         padding: 0px 5px;
         text-decoration: none;
 
         &:hover {
-          background: rgba(0, 0, 0, .1);
+          background: rgba(0, 0, 0, 0.1);
         }
       }
     }
   }
 `
 
-const FileBrowserDirectories: React.FC<Props> = (
-  {
-    activePath,
-    dirs = [],
-    onOpenDirectory,
-  }) => {
-  const openDirectory = (dirPath) => onOpenDirectory(dirPath)
+const FileBrowserDirectories: React.FC<Props> = ({
+  activePath,
+  dirs = [],
+  onOpenDirectory,
+}) => {
+  const openDirectory = dirPath => onOpenDirectory(dirPath)
 
-  return <StyledFileBrowserDirectories>
-
-    <ul>
-
-      {dirs.map((dir) =>
-        <li key={dir.name}>
-          <a href={"#"}
-             onClick={() => openDirectory(dir.path)}>
-            {dir.name}
-          </a>
-          {dir.directories !== undefined
-            ? <FileBrowserDirectories
-              activePath={activePath}
-              dirs={dir.directories}
-              onOpenDirectory={openDirectory} />
-            : null}
-        </li>
-      )}
-    </ul>
-
-  </StyledFileBrowserDirectories>
+  return (
+    <StyledFileBrowserDirectories>
+      <ul>
+        {dirs.map(dir => (
+          <li key={dir.name}>
+            <a href={"#"} onClick={() => openDirectory(dir.path)}>
+              {dir.name}
+            </a>
+            {dir.directories !== undefined ? (
+              <FileBrowserDirectories
+                activePath={activePath}
+                dirs={dir.directories}
+                onOpenDirectory={openDirectory}
+              />
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </StyledFileBrowserDirectories>
+  )
 }
 
 export default FileBrowserDirectories
