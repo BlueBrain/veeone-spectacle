@@ -19,6 +19,7 @@
     "@interactjs/dev-tools": "^1.10.11",
     "@interactjs/interact": "^1.10.11",
     "@interactjs/modifiers": "^1.10.11",
+    "@material-ui/core": "^4.11.4",
     "@reactivex/rxjs": "^6.6.7",
     "@types/react": "^17.0.3",
     "@types/react-redux": "^7.1.16",
