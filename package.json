@@ -54,6 +54,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-unicorn": "^30.0.0",
+    "husky": "^6.0.0",
     "prettier": "2.2.1",
     "redux-devtools-extension": "^2.13.9",
     "sass": "^1.32.12"
@@ -70,7 +71,8 @@
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "lint": "eslint -c .eslintrc.yaml 'src/**/*.ts' 'src/**/*.tsx'",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
