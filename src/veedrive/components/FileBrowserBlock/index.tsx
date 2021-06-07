@@ -12,13 +12,18 @@ import {
   ContentBlockTypes,
 } from "../../../contentblocks/types"
 import { useDispatch, useSelector } from "react-redux"
-import { addFrame } from "../../../core/redux/actions"
+import { addFrame, updateFrameData } from "../../../core/redux/actions"
 import { generateFrameId } from "../../../core/frames/utils"
 import {
-  FrameSituation,
+  FrameEntry,
   PresentationStateData,
 } from "../../../core/presentations/interfaces"
 import { getFrame } from "../../../core/redux/selectors"
+import {
+  FileBrowserContext,
+  FileBrowserContextProps,
+} from "../../contexts/filebrowser-context"
+import { FileBrowserBlockPayload } from "../../common/types"
 
 const StyledFileBrowserBlock = styled.div`
   background: #fafafa;
@@ -41,16 +46,21 @@ const StyledMain = styled.div`
 `
 
 const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
+  const dispatch = useDispatch()
+
+  const frameData = (useSelector<PresentationStateData>(state =>
+    getFrame(state, frameId)
+  ) as unknown) as FrameEntry
+
+  const situation = frameData.situation
+  const blockData = (frameData.data as unknown) as FileBrowserBlockPayload
+  const history = blockData?.history ?? [""]
+  const historyIndex = blockData?.historyIndex ?? 0
+  const activePath = history[historyIndex]
+
   const [directoryTree, setDirectoryTree] = useState([] as BrowserDirectory[])
   const [currentFiles, setCurrentFiles] = useState([] as BrowserFile[])
   const [currentDirs, setCurrentDirs] = useState([] as BrowserDirectory[])
-  const [activePath, setActivePath] = useState("")
-
-  const situation = (useSelector<PresentationStateData>(
-    state => getFrame(state, frameId).situation
-  ) as unknown) as FrameSituation
-
-  const dispatch = useDispatch()
 
   const newImageFrame = filePath => {
     dispatch(
@@ -144,12 +154,23 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
       setDirectoryTree(newDirTree)
     }
 
-    setActivePath(dirPath)
+    addToBrowsingHistory(dirPath)
     setCurrentFiles(mapBrowserFiles(files, dirPath))
     setCurrentDirs(dirs)
   }
 
-  const openUpperDirectory = async () => {
+  const addToBrowsingHistory = dirPath => {
+    const newHistory = [dirPath, ...history.slice(historyIndex)]
+    const newHistoryIndex = 0
+    const newFrameData: FileBrowserBlockPayload = {
+      history: newHistory,
+      historyIndex: newHistoryIndex,
+    }
+    console.debug("addToBrowsingHistory", newFrameData)
+    dispatch(updateFrameData(frameId, newFrameData))
+  }
+
+  const openParentDirectory = async () => {
     const upperPath = activePath.split("/").slice(0, -1).join("/")
     await openDirectory(upperPath)
   }
@@ -158,6 +179,29 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     const path = activePath.split("/").slice(0, pathPartIndex).join("/")
     console.debug("goToDirectoryByIndex", pathPartIndex, `'${path}'`)
     return await openDirectory(path)
+  }
+
+  const moveBrowsingHistoryIndex = (delta: number) => {
+    let newHistoryIndex = historyIndex + delta
+    if (newHistoryIndex < 0) {
+      newHistoryIndex = 0
+    }
+    if (newHistoryIndex + 1 >= history.length) {
+      newHistoryIndex = history.length - 1
+    }
+    const newFrameData: FileBrowserBlockPayload = {
+      history: history,
+      historyIndex: newHistoryIndex,
+    }
+    dispatch(updateFrameData(frameId, newFrameData))
+  }
+
+  const openPreviousDirectory = async () => {
+    moveBrowsingHistoryIndex(1)
+  }
+
+  const openNextDirectory = async () => {
+    moveBrowsingHistoryIndex(-1)
   }
 
   const openFile = (filename: string) => {
@@ -171,29 +215,43 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     return void load()
   }, [])
 
+  const fileBrowserContextProvider: FileBrowserContextProps = {
+    navigateUp() {
+      void openParentDirectory()
+    },
+    navigateBack() {
+      void openPreviousDirectory()
+    },
+    navigateForward() {
+      void openNextDirectory()
+    },
+  }
+
   return (
-    <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
-      <StyledBlockContent>
-        <FileBrowserTopbar
-          activePath={activePath}
-          onSelectPathPart={openDirectoryByPathPartIndex}
-        />
-        <StyledMain>
-          <FileBrowserDirectories
-            dirs={directoryTree}
+    <FileBrowserContext.Provider value={fileBrowserContextProvider}>
+      <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
+        <StyledBlockContent>
+          <FileBrowserTopbar
             activePath={activePath}
-            onOpenDirectory={openDirectory}
+            onSelectPathPart={openDirectoryByPathPartIndex}
           />
-          <FileBrowserDirectoryContent
-            dirs={currentDirs}
-            files={currentFiles}
-            onOpenFile={openFile}
-            onOpenUpperDirectory={openUpperDirectory}
-            onOpenDirectory={openDirectory}
-          />
-        </StyledMain>
-      </StyledBlockContent>
-    </StyledFileBrowserBlock>
+          <StyledMain>
+            <FileBrowserDirectories
+              dirs={directoryTree}
+              activePath={activePath}
+              onOpenDirectory={openDirectory}
+            />
+            <FileBrowserDirectoryContent
+              dirs={currentDirs}
+              files={currentFiles}
+              onOpenFile={openFile}
+              onOpenUpperDirectory={openParentDirectory}
+              onOpenDirectory={openDirectory}
+            />
+          </StyledMain>
+        </StyledBlockContent>
+      </StyledFileBrowserBlock>
+    </FileBrowserContext.Provider>
   )
 }
 

@@ -1,7 +1,7 @@
 import { Position, Size } from "../types"
 import { ContentBlockTypes } from "../../contentblocks/types"
 import {
-  FrameDataDict,
+  FrameData,
   FrameId,
   FrameSituationUpdate,
 } from "../presentations/interfaces"
@@ -14,11 +14,7 @@ export enum Actions {
   OpenLauncherMenu,
   CloseLauncherMenu,
   CloseAllFrames,
-}
-
-export interface ReduxAction {
-  type: Actions
-  payload: any
+  UpdateFrameData,
 }
 
 export interface AddFramePayload {
@@ -26,7 +22,7 @@ export interface AddFramePayload {
   frameId: FrameId
   position: Position
   size?: Size
-  contentData: FrameDataDict
+  contentData: FrameData
 }
 
 export const addFrame = (payload: AddFramePayload) => ({
@@ -43,6 +39,16 @@ export const manipulateFrame = (
     frameId,
     situationUpdate,
   },
+})
+
+export interface UpdateFrameDataPayload {
+  frameId: FrameId
+  data: FrameData
+}
+
+export const updateFrameData = (frameId: FrameId, data: FrameData) => ({
+  type: Actions.UpdateFrameData,
+  payload: { frameId, data } as UpdateFrameDataPayload,
 })
 
 export const bringFrameToFront = frameId => ({

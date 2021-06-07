@@ -9,7 +9,7 @@ import {
   manipulateFrame,
 } from "../redux/actions"
 import {
-  FrameData,
+  FrameEntry,
   FrameId,
   FrameSituation,
   FrameSituationUpdate,
@@ -28,7 +28,7 @@ interface DispatchProps {
 }
 
 interface FrameProps {
-  frame: FrameData
+  frame: FrameEntry
   frameId: FrameId
   stackIndex: number
 }

@@ -2,7 +2,7 @@ import * as React from "react"
 import { useEffect, useRef } from "react"
 import Frame from "./Frame"
 import {
-  FrameData,
+  FrameEntry,
   FrameStack,
   LauncherMenuData,
   PresentationStateData,
@@ -23,7 +23,7 @@ interface DispatchProps {
 }
 
 interface StateProps {
-  frames: Record<string, FrameData>
+  frames: Record<string, FrameEntry>
   frameStack: FrameStack
   launcherMenus: LauncherMenuData[]
 }

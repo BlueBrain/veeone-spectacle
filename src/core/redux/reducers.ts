@@ -1,14 +1,14 @@
-import { Actions, AddFramePayload, ReduxAction } from "./actions"
+import { Actions, AddFramePayload, UpdateFrameDataPayload } from "./actions"
 import {
-  FrameId,
-  FramesData,
+  FrameData,
+  FramesRegister,
   FrameStack,
   LauncherMenuData,
-  PresentationStateData,
 } from "../presentations/interfaces"
 import { generateRandomId } from "../../common/random"
+import { ReduxAction } from "../../redux/actions"
 
-const framesReducer = (frames: FramesData, action: ReduxAction) => {
+export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
   console.debug("Calling framesReducer", action)
   switch (action.type) {
     case Actions.AddFrame: {
@@ -56,12 +56,26 @@ const framesReducer = (frames: FramesData, action: ReduxAction) => {
       }
     }
 
+    case Actions.UpdateFrameData: {
+      const { frameId, data } = action.payload as UpdateFrameDataPayload
+      return {
+        ...frames,
+        [frameId]: {
+          ...frames[frameId],
+          data: data,
+        },
+      }
+    }
+
     default:
       return frames
   }
 }
 
-const frameStackReducer = (frameStack: FrameStack, action: ReduxAction) => {
+export const frameStackReducer = (
+  frameStack: FrameStack,
+  action: ReduxAction
+) => {
   switch (action.type) {
     case Actions.AddFrame: {
       return [...frameStack, (action.payload as AddFramePayload).frameId]
@@ -81,7 +95,7 @@ const frameStackReducer = (frameStack: FrameStack, action: ReduxAction) => {
   }
 }
 
-const launcherMenuReducer = (
+export const launcherMenuReducer = (
   launcherMenus: LauncherMenuData[],
   action: ReduxAction
 ) => {
@@ -103,12 +117,3 @@ const launcherMenuReducer = (
       return launcherMenus
   }
 }
-
-export const rootReducer = (
-  state: PresentationStateData,
-  action: ReduxAction
-) => ({
-  frames: framesReducer(state.frames, action),
-  frameStack: frameStackReducer(state.frameStack, action),
-  launcherMenus: launcherMenuReducer(state.launcherMenus, action),
-})

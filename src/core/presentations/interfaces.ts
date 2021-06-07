@@ -6,16 +6,18 @@ export type FrameId = string
 
 export type FrameStack = FrameId[]
 
-export type FrameDataDict = { [key: string]: Json }
-
 export interface FrameData {
-  type: ContentBlockTypes
-  situation: FrameSituation
-  data: FrameDataDict
+  [key: string]: Json
 }
 
-export interface FramesData {
-  [key: string]: FrameData
+export interface FrameEntry {
+  type: ContentBlockTypes
+  situation: FrameSituation
+  data: FrameData
+}
+
+export interface FramesRegister {
+  [key: string]: FrameEntry
 }
 
 export interface LauncherMenuData {
@@ -24,7 +26,7 @@ export interface LauncherMenuData {
 }
 
 export interface PresentationStateData {
-  frames: FramesData
+  frames: FramesRegister
   frameStack: FrameStack
   launcherMenus: LauncherMenuData[]
 }

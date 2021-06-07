@@ -1,15 +1,8 @@
 import React from "react"
 import styled from "styled-components"
 import { Grid, IconButton, Tooltip } from "@material-ui/core"
-import {
-  ArrowBack,
-  ArrowForward,
-  ArrowUpward,
-  FilterList,
-  History,
-  Search,
-} from "@material-ui/icons"
-import ViewTypeSelector from "./ViewTypeSelector"
+import { ArrowBack, ArrowForward, ArrowUpward } from "@material-ui/icons"
+import { FileBrowserContext } from "../../contexts/filebrowser-context"
 
 interface Props {
   activePath: string
@@ -54,66 +47,66 @@ const FileBrowserTopbar: React.FC<Props> = ({
       ))
   }
 
-  const moveToPreviousDirectory = () => {}
-
-  const moveToNextDirectory = () => {}
-
-  const moveToParentDirectory = () => {}
-
   const searchFilesystem = () => {}
 
   const openFilterList = () => {}
 
   const openLastDirectories = () => {}
 
+  const refreshDirectories = () => {}
+
   return (
-    <StyledFileBrowserTopbar>
-      <Grid container alignItems="center">
-        <Grid item>
-          <Tooltip title="Back">
-            <IconButton onClick={moveToPreviousDirectory}>
-              <ArrowBack />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Forward">
-            <IconButton onClick={moveToNextDirectory}>
-              <ArrowForward />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Show recently visited directories">
-            <IconButton onClick={openLastDirectories}>
-              <History />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Move to the parent directory">
-            <IconButton onClick={moveToParentDirectory}>
-              <ArrowUpward />
-            </IconButton>
-          </Tooltip>
-        </Grid>
+    <FileBrowserContext.Consumer>
+      {({ navigateUp, navigateBack, navigateForward }) => (
+        <StyledFileBrowserTopbar>
+          <Grid container alignItems="center">
+            <Grid item>
+              <Tooltip title="Back">
+                <IconButton onClick={navigateBack}>
+                  <ArrowBack />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Forward">
+                <IconButton onClick={navigateForward}>
+                  <ArrowForward />
+                </IconButton>
+              </Tooltip>
+              {/*<Tooltip title="Show recently visited directories">*/}
+              {/*  <IconButton onClick={openLastDirectories}>*/}
+              {/*    <History />*/}
+              {/*  </IconButton>*/}
+              {/*</Tooltip>*/}
+              <Tooltip title="Move to the parent directory">
+                <IconButton onClick={navigateUp}>
+                  <ArrowUpward />
+                </IconButton>
+              </Tooltip>
+            </Grid>
 
-        <Grid item xs>
-          <StyledPathPart onClick={() => onSelectPathPart(0)} href={"#"} />
-          {makePathParts(activePath)}
-        </Grid>
+            <Grid item xs>
+              <StyledPathPart onClick={() => onSelectPathPart(0)} href={"#"} />
+              {makePathParts(activePath)}
+            </Grid>
 
-        <Grid item>
-          <Tooltip title="Filter view">
-            <IconButton onClick={openFilterList}>
-              <FilterList />
-            </IconButton>
-          </Tooltip>
+            <Grid item>
+              {/*<Tooltip title="Filter view">*/}
+              {/*  <IconButton onClick={openFilterList}>*/}
+              {/*    <FilterList />*/}
+              {/*  </IconButton>*/}
+              {/*</Tooltip>*/}
 
-          <ViewTypeSelector />
+              {/*<ViewTypeSelector />*/}
 
-          <Tooltip title="Search files and directories">
-            <IconButton onClick={searchFilesystem}>
-              <Search />
-            </IconButton>
-          </Tooltip>
-        </Grid>
-      </Grid>
-    </StyledFileBrowserTopbar>
+              {/*<Tooltip title="Search files and directories">*/}
+              {/*  <IconButton onClick={searchFilesystem}>*/}
+              {/*    <Search />*/}
+              {/*  </IconButton>*/}
+              {/*</Tooltip>*/}
+            </Grid>
+          </Grid>
+        </StyledFileBrowserTopbar>
+      )}
+    </FileBrowserContext.Consumer>
   )
 }
 
