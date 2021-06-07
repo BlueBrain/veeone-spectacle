@@ -29,7 +29,7 @@ const StyledFileBrowserBlock = styled.div`
 
 const StyledBlockContent = styled.div`
   width: 100%;
-  height: calc(100% - 50px);
+  height: calc(100% - 4.5rem);
 `
 
 const StyledMain = styled.div`

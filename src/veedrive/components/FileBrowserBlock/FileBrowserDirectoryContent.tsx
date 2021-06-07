@@ -22,11 +22,10 @@ const StyledFileBrowserFileList = styled.div`
   overflow-y: scroll;
   overflow-x: visible;
   flex-direction: column;
-  padding: 2rem;
+  padding: 0 1rem;
 `
 
 const StyledGridLayout = styled.div`
-  //background: yellowgreen;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
   grid-gap: 1rem;
@@ -38,7 +37,6 @@ const StyledGridElement = styled.div`
   padding: 0.5rem;
   background: #fff;
   cursor: pointer;
-  //border: 1px solid magenta;
   box-sizing: border-box;
   font-size: 8pt;
   line-height: 1em;
@@ -81,15 +79,10 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
   dirs = [],
   files = [],
   onOpenDirectory,
-  onOpenUpperDirectory,
   onOpenFile,
 }) => {
   const openDirectory = dirPath => {
     onOpenDirectory(dirPath)
-  }
-
-  const openUpperDirectory = () => {
-    onOpenUpperDirectory()
   }
 
   const openFile = fileName => {
@@ -98,9 +91,6 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
 
   return (
     <StyledFileBrowserFileList>
-      <button type="button" onClick={openUpperDirectory}>
-        UP
-      </button>
       <StyledGridLayout>
         {dirs.map(dir => (
           <StyledGridElement
