@@ -3,7 +3,7 @@ import DummyBlock from "./DummyBlock/DummyBlock"
 import ImageBlock from "./ImageBlock/ImageBlock"
 import VideoBlock from "./VideoBlock/VideoBlock"
 import React from "react"
-import FileBrowserBlock from "../veedrive/components/FileBrowserBlock/FileBrowserBlock"
+import FileBrowserBlock from "../veedrive/components/FileBrowserBlock"
 import { ContentBlockProps, ContentBlockTypes } from "./types"
 
 

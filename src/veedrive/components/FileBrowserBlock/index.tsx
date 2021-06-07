@@ -7,18 +7,24 @@ import { DirectoryItem, VeeDriveListDirectoryFile } from "../../types"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import _ from "lodash"
 import { BrowserDirectory, BrowserFile } from "../../common/models"
-import { ContentBlockProps, ContentBlockTypes } from "../../../contentblocks/types"
-import { connect } from "react-redux"
-import { addFrame, AddFramePayload } from "../../../core/redux/actions"
+import {
+  ContentBlockProps,
+  ContentBlockTypes,
+} from "../../../contentblocks/types"
+import { useDispatch, useSelector } from "react-redux"
+import { addFrame } from "../../../core/redux/actions"
 import { generateFrameId } from "../../../core/frames/utils"
-import { FrameSituation, PresentationStateData } from "../../../core/presentations/interfaces"
+import {
+  FrameSituation,
+  PresentationStateData,
+} from "../../../core/presentations/interfaces"
 import { getFrame } from "../../../core/redux/selectors"
 
 const StyledFileBrowserBlock = styled.div`
   background: #fafafa;
   width: 100%;
   height: 100%;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 `
 
 const StyledBlockContent = styled.div`
@@ -34,34 +40,32 @@ const StyledMain = styled.div`
   flex: 1;
 `
 
-interface StateProps {
-  situation: FrameSituation
-}
-
-interface DispatchProps {
-  addFrame(payload: AddFramePayload): void
-}
-
-type Props = ContentBlockProps & DispatchProps & StateProps
-
-const FileBrowserBlock: React.FC<Props> = ({ frameId, addFrame, situation }) => {
+const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const [directoryTree, setDirectoryTree] = useState([] as BrowserDirectory[])
   const [currentFiles, setCurrentFiles] = useState([] as BrowserFile[])
   const [currentDirs, setCurrentDirs] = useState([] as BrowserDirectory[])
   const [activePath, setActivePath] = useState("")
 
-  const newImageFrame = (filePath) => {
-    addFrame({
-      type: ContentBlockTypes.Image,
-      frameId: generateFrameId(),
-      position: {
-        top: situation.top + situation.height / 2,
-        left: situation.left + situation.width / 2,
-      },
-      contentData: {
-        path: filePath
-      }
-    })
+  const situation = (useSelector<PresentationStateData>(
+    state => getFrame(state, frameId).situation
+  ) as unknown) as FrameSituation
+
+  const dispatch = useDispatch()
+
+  const newImageFrame = filePath => {
+    dispatch(
+      addFrame({
+        type: ContentBlockTypes.Image,
+        frameId: generateFrameId(),
+        position: {
+          top: situation.top + situation.height / 2,
+          left: situation.left + situation.width / 2,
+        },
+        contentData: {
+          path: filePath,
+        },
+      })
+    )
   }
 
   const load = async () => {
@@ -80,7 +84,7 @@ const FileBrowserBlock: React.FC<Props> = ({ frameId, addFrame, situation }) => 
       const dirList = await listDirectory(path)
       files = dirList.files
       console.debug("loaded dirs", dirList)
-      const target = _.find(currentDirList, (dir) => dir.name === p)
+      const target = _.find(currentDirList, dir => dir.name === p)
       if (target !== undefined) {
         target.directories = dirList.dirs
       }
@@ -92,17 +96,22 @@ const FileBrowserBlock: React.FC<Props> = ({ frameId, addFrame, situation }) => 
     setCurrentFiles(mapBrowserFiles(files, activePath))
   }
 
-  const mapBrowserFiles = (fileList: VeeDriveListDirectoryFile[], dir: string) => fileList.map((f) =>
-    new BrowserFile({ name: f.name, size: f.size, dir: dir }))
+  const mapBrowserFiles = (
+    fileList: VeeDriveListDirectoryFile[],
+    dir: string
+  ) =>
+    fileList.map(f => new BrowserFile({ name: f.name, size: f.size, dir: dir }))
 
-  const listDirectory = async (dirPath) => {
+  const listDirectory = async dirPath => {
     console.debug("listDirectory", dirPath)
     const response = await fileService.listDirectory({ path: dirPath })
     const pathPrefix = dirPath !== "" ? `${dirPath}/` : ``
     let dirs
     try {
-      const dirsList = response.directories.map((path) => new BrowserDirectory(`${pathPrefix}${path}`))
-      dirs = _.sortBy(dirsList, 'name')
+      const dirsList = response.directories.map(
+        path => new BrowserDirectory(`${pathPrefix}${path}`)
+      )
+      dirs = _.sortBy(dirsList, "name")
     } catch (err) {
       // todo this error should be logged/reported
       console.error(err)
@@ -112,14 +121,14 @@ const FileBrowserBlock: React.FC<Props> = ({ frameId, addFrame, situation }) => 
     return { dirs, files }
   }
 
-  const openDirectory = async (dirPath) => {
+  const openDirectory = async dirPath => {
     const { dirs, files } = await listDirectory(dirPath)
     const newDirTree = [...directoryTree]
     const parts = dirPath.split("/") as string[]
     let targetDir: DirectoryItem[] = newDirTree
     let dir: DirectoryItem | undefined
     for (const part of parts) {
-      dir = _.find(targetDir, (dir) => dir.name === part)
+      dir = _.find(targetDir, dir => dir.name === part)
       if (dir !== undefined) {
         targetDir = dir.directories
       } else {
@@ -141,7 +150,7 @@ const FileBrowserBlock: React.FC<Props> = ({ frameId, addFrame, situation }) => 
   }
 
   const openUpperDirectory = async () => {
-    const upperPath = activePath.split('/').slice(0, -1).join("/")
+    const upperPath = activePath.split("/").slice(0, -1).join("/")
     await openDirectory(upperPath)
   }
 
@@ -162,31 +171,30 @@ const FileBrowserBlock: React.FC<Props> = ({ frameId, addFrame, situation }) => 
     return void load()
   }, [])
 
-  return <StyledFileBrowserBlock onWheel={(event) => event.stopPropagation()}>
-    <StyledBlockContent>
-      <FileBrowserTopbar activePath={activePath}
-                         onSelectPathPart={openDirectoryByPathPartIndex} />
-      <StyledMain>
-        <FileBrowserDirectories
-          dirs={directoryTree}
+  return (
+    <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
+      <StyledBlockContent>
+        <FileBrowserTopbar
           activePath={activePath}
-          onOpenDirectory={openDirectory} />
-        <FileBrowserDirectoryContent
-          dirs={currentDirs}
-          files={currentFiles}
-          onOpenFile={openFile}
-          onOpenUpperDirectory={openUpperDirectory}
-          onOpenDirectory={openDirectory} />
-      </StyledMain>
-    </StyledBlockContent>
-  </StyledFileBrowserBlock>
+          onSelectPathPart={openDirectoryByPathPartIndex}
+        />
+        <StyledMain>
+          <FileBrowserDirectories
+            dirs={directoryTree}
+            activePath={activePath}
+            onOpenDirectory={openDirectory}
+          />
+          <FileBrowserDirectoryContent
+            dirs={currentDirs}
+            files={currentFiles}
+            onOpenFile={openFile}
+            onOpenUpperDirectory={openUpperDirectory}
+            onOpenDirectory={openDirectory}
+          />
+        </StyledMain>
+      </StyledBlockContent>
+    </StyledFileBrowserBlock>
+  )
 }
 
-
-const mapStateToProps = (state: PresentationStateData, ownProps: Props): StateProps => {
-  return {
-    situation: getFrame(state, ownProps.frameId).situation,
-  }
-}
-
-export default connect(mapStateToProps, { addFrame })(FileBrowserBlock)
+export default FileBrowserBlock
