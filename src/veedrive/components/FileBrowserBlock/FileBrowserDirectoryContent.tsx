@@ -1,19 +1,14 @@
-import React from "react"
+import React, { useContext } from "react"
 import { DirectoryItem, VeeDriveListDirectoryFile } from "../../types"
 import styled from "styled-components"
 import FileElement from "./FileElement"
 import { faFolder } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { FileBrowserContext } from "../../contexts/filebrowser-context"
 
 interface Props {
   files: VeeDriveListDirectoryFile[]
   dirs: DirectoryItem[]
-
-  onOpenDirectory(dirPath: string)
-
-  onOpenUpperDirectory()
-
-  onOpenFile(filename: string)
 }
 
 const StyledFileBrowserFileList = styled.div`
@@ -67,7 +62,6 @@ const StyledDirElement = styled.div`
     align-items: flex-end;
 
     &:first-child {
-      //margin-top: 1rem;
       font-size: 3rem;
       align-items: center;
       justify-content: center;
@@ -78,15 +72,15 @@ const StyledDirElement = styled.div`
 const FileBrowserDirectoryContent: React.FC<Props> = ({
   dirs = [],
   files = [],
-  onOpenDirectory,
-  onOpenFile,
 }) => {
+  const { navigateDirectory, requestFile } = useContext(FileBrowserContext)
+
   const openDirectory = dirPath => {
-    onOpenDirectory(dirPath)
+    navigateDirectory(dirPath)
   }
 
   const openFile = fileName => {
-    onOpenFile(fileName)
+    requestFile(fileName)
   }
 
   return (

@@ -1,12 +1,10 @@
-import React from "react"
+import React, { useContext } from "react"
 import { DirectoryItem } from "../../types"
 import styled from "styled-components"
+import { FileBrowserContext } from "../../contexts/filebrowser-context"
 
 interface Props {
-  activePath: string
   dirs: DirectoryItem[]
-
-  onOpenDirectory(dirPath: string)
 }
 
 const StyledFileBrowserDirectories = styled.div`
@@ -36,12 +34,9 @@ const StyledFileBrowserDirectories = styled.div`
   }
 `
 
-const FileBrowserDirectories: React.FC<Props> = ({
-  activePath,
-  dirs = [],
-  onOpenDirectory,
-}) => {
-  const openDirectory = dirPath => onOpenDirectory(dirPath)
+const FileBrowserDirectories: React.FC<Props> = ({ dirs = [] }) => {
+  const { navigateDirectory } = useContext(FileBrowserContext)
+  const openDirectory = dirPath => navigateDirectory(dirPath)
 
   return (
     <StyledFileBrowserDirectories>
@@ -49,14 +44,10 @@ const FileBrowserDirectories: React.FC<Props> = ({
         {dirs.map(dir => (
           <li key={dir.name}>
             <a href={"#"} onClick={() => openDirectory(dir.path)}>
-              {dir.name}
+              {dir.path}
             </a>
             {dir.directories !== undefined ? (
-              <FileBrowserDirectories
-                activePath={activePath}
-                dirs={dir.directories}
-                onOpenDirectory={openDirectory}
-              />
+              <FileBrowserDirectories dirs={dir.directories} />
             ) : null}
           </li>
         ))}

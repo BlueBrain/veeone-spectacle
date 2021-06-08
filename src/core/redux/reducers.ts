@@ -9,7 +9,6 @@ import { generateRandomId } from "../../common/random"
 import { ReduxAction } from "../../redux/actions"
 
 export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
-  console.debug("Calling framesReducer", action)
   switch (action.type) {
     case Actions.AddFrame: {
       const payload = action.payload as AddFramePayload
@@ -99,7 +98,6 @@ export const launcherMenuReducer = (
   launcherMenus: LauncherMenuData[],
   action: ReduxAction
 ) => {
-  console.debug("Calling launcherMenuReducer")
   switch (action.type) {
     case Actions.OpenLauncherMenu:
       const { left, top } = action.payload.position
@@ -107,7 +105,6 @@ export const launcherMenuReducer = (
         menuId: generateRandomId(4),
         position: { left, top },
       }
-      console.debug("Run Actions.OpenLauncherMenu", newLauncherMenu)
       return [...launcherMenus, newLauncherMenu]
 
     case Actions.CloseLauncherMenu:

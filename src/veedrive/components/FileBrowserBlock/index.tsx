@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import FileBrowserDirectories from "./FileBrowserDirectories"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import fileService from "../../service"
-import { DirectoryItem, VeeDriveListDirectoryFile } from "../../types"
+import { VeeDriveListDirectoryFile } from "../../types"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import _ from "lodash"
 import { BrowserDirectory, BrowserFile } from "../../common/models"
@@ -45,6 +45,25 @@ const StyledMain = styled.div`
   flex: 1;
 `
 
+const fetchDirectoryContents = async dirPath => {
+  // todo implement cache for not directly affected/loaded dirs
+  const response = await fileService.listDirectory({ path: dirPath })
+  const pathPrefix = dirPath !== "" ? `${dirPath}/` : ``
+  let dirs
+  try {
+    const dirsList = response.directories.map(
+      path => new BrowserDirectory(`${pathPrefix}${path}`)
+    )
+    dirs = _.sortBy(dirsList, "name")
+  } catch (err) {
+    // todo this error should be logged/reported
+    console.error(err)
+    return { dirs: [], files: [] }
+  }
+  const files = response.files
+  return { dirs, files }
+}
+
 const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const dispatch = useDispatch()
 
@@ -58,9 +77,11 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const historyIndex = blockData?.historyIndex ?? 0
   const activePath = history[historyIndex]
 
-  const [directoryTree, setDirectoryTree] = useState([] as BrowserDirectory[])
-  const [currentFiles, setCurrentFiles] = useState([] as BrowserFile[])
-  const [currentDirs, setCurrentDirs] = useState([] as BrowserDirectory[])
+  const [globalDirectoryTree, setGlobalDirectoryTree] = useState(
+    [] as BrowserDirectory[]
+  )
+  const [activePathFiles, setActivePathFiles] = useState([] as BrowserFile[])
+  const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
 
   const newImageFrame = filePath => {
     dispatch(
@@ -78,10 +99,10 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     )
   }
 
-  const load = async () => {
+  const initializeTree = async () => {
     const paths = activePath.split("/")
+    const tree = await fetchDirectoryContents("")
     let path = ""
-    const tree = await listDirectory("")
     let currentDirList = tree.dirs
     let files = tree.files
 
@@ -89,75 +110,35 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
       if (p === "") {
         break
       }
-      path += `${p}/`
-      console.debug("load: path=", path)
-      const dirList = await listDirectory(path)
+
+      if (path.length > 0) {
+        path += "/"
+      }
+
+      path += p
+
+      const dirList = await fetchDirectoryContents(path)
       files = dirList.files
-      console.debug("loaded dirs", dirList)
       const target = _.find(currentDirList, dir => dir.name === p)
       if (target !== undefined) {
         target.directories = dirList.dirs
       }
       currentDirList = dirList.dirs
     }
-    console.debug("TREE=", tree)
-    setDirectoryTree(tree.dirs)
-    setCurrentDirs(tree.dirs)
-    setCurrentFiles(mapBrowserFiles(files, activePath))
+    setGlobalDirectoryTree(tree.dirs)
+    setActivePathDirs(currentDirList)
+    setActivePathFiles(mapBrowserFiles(files, activePath))
   }
+
+  useEffect(() => {
+    void initializeTree()
+  }, [activePath])
 
   const mapBrowserFiles = (
     fileList: VeeDriveListDirectoryFile[],
     dir: string
   ) =>
     fileList.map(f => new BrowserFile({ name: f.name, size: f.size, dir: dir }))
-
-  const listDirectory = async dirPath => {
-    console.debug("listDirectory", dirPath)
-    const response = await fileService.listDirectory({ path: dirPath })
-    const pathPrefix = dirPath !== "" ? `${dirPath}/` : ``
-    let dirs
-    try {
-      const dirsList = response.directories.map(
-        path => new BrowserDirectory(`${pathPrefix}${path}`)
-      )
-      dirs = _.sortBy(dirsList, "name")
-    } catch (err) {
-      // todo this error should be logged/reported
-      console.error(err)
-      return { dirs: [], files: [] }
-    }
-    const files = response.files
-    return { dirs, files }
-  }
-
-  const openDirectory = async dirPath => {
-    const { dirs, files } = await listDirectory(dirPath)
-    const newDirTree = [...directoryTree]
-    const parts = dirPath.split("/") as string[]
-    let targetDir: DirectoryItem[] = newDirTree
-    let dir: DirectoryItem | undefined
-    for (const part of parts) {
-      dir = _.find(targetDir, dir => dir.name === part)
-      if (dir !== undefined) {
-        targetDir = dir.directories
-      } else {
-        break
-      }
-    }
-    if (dir !== undefined) {
-      if (dir.directories === undefined || dir.directories.length === 0) {
-        dir.directories = dirs
-      } else {
-        dir.directories = []
-      }
-      setDirectoryTree(newDirTree)
-    }
-
-    addToBrowsingHistory(dirPath)
-    setCurrentFiles(mapBrowserFiles(files, dirPath))
-    setCurrentDirs(dirs)
-  }
 
   const addToBrowsingHistory = dirPath => {
     const newHistory = [dirPath, ...history.slice(historyIndex)]
@@ -172,16 +153,15 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
 
   const openParentDirectory = async () => {
     const upperPath = activePath.split("/").slice(0, -1).join("/")
-    await openDirectory(upperPath)
+    addToBrowsingHistory(upperPath)
   }
 
   const openDirectoryByPathPartIndex = async (pathPartIndex: number) => {
     const path = activePath.split("/").slice(0, pathPartIndex).join("/")
-    console.debug("goToDirectoryByIndex", pathPartIndex, `'${path}'`)
-    return await openDirectory(path)
+    return addToBrowsingHistory(path)
   }
 
-  const moveBrowsingHistoryIndex = (delta: number) => {
+  const moveBrowsingHistoryIndex = async (delta: number) => {
     let newHistoryIndex = historyIndex + delta
     if (newHistoryIndex < 0) {
       newHistoryIndex = 0
@@ -197,11 +177,11 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   }
 
   const openPreviousDirectory = async () => {
-    moveBrowsingHistoryIndex(1)
+    await moveBrowsingHistoryIndex(1)
   }
 
   const openNextDirectory = async () => {
-    moveBrowsingHistoryIndex(-1)
+    await moveBrowsingHistoryIndex(-1)
   }
 
   const openFile = (filename: string) => {
@@ -211,11 +191,8 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     setTimeout(() => newImageFrame(filePath))
   }
 
-  useEffect(() => {
-    return void load()
-  }, [])
-
   const fileBrowserContextProvider: FileBrowserContextProps = {
+    activePath: activePath,
     navigateUp() {
       void openParentDirectory()
     },
@@ -224,6 +201,13 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     },
     navigateForward() {
       void openNextDirectory()
+    },
+    navigateDirectory(dirPath: string) {
+      console.debug("navigateDirectory", dirPath)
+      void addToBrowsingHistory(dirPath)
+    },
+    requestFile(fileName: string) {
+      void openFile(fileName)
     },
   }
 
@@ -236,17 +220,10 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
             onSelectPathPart={openDirectoryByPathPartIndex}
           />
           <StyledMain>
-            <FileBrowserDirectories
-              dirs={directoryTree}
-              activePath={activePath}
-              onOpenDirectory={openDirectory}
-            />
+            <FileBrowserDirectories dirs={globalDirectoryTree} />
             <FileBrowserDirectoryContent
-              dirs={currentDirs}
-              files={currentFiles}
-              onOpenFile={openFile}
-              onOpenUpperDirectory={openParentDirectory}
-              onOpenDirectory={openDirectory}
+              dirs={activePathDirs}
+              files={activePathFiles}
             />
           </StyledMain>
         </StyledBlockContent>

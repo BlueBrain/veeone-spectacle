@@ -94,13 +94,13 @@ const Frame: React.FC<Props> = ({
 
   // Toggle full screen on double tap
   useEffect(() => {
-    console.debug("Frame useLayoutEffect", frameRef)
+    // console.debug("Frame useLayoutEffect", frameRef)
     interact(getTarget()).on("doubletap", toggleFullscreen)
   }, [frameRef, toggleFullscreen])
 
   // Allow dragging
   useEffect(() => {
-    console.debug("Frame bind draggable", frameRef)
+    // console.debug("Frame bind draggable", frameRef)
     interact(getTarget()).draggable({
       inertia: {
         resistance: 8,
