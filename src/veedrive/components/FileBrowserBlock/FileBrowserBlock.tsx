@@ -206,6 +206,8 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const fileBrowserContextProvider: FileBrowserContextProps = {
     frameId: frameId,
     activePath: activePath,
+    historyIndex: historyIndex,
+    history: history,
     navigateUp() {
       void openParentDirectory()
     },

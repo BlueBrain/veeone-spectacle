@@ -1,10 +1,14 @@
 import React from "react"
-import {FrameId} from "../../core/presentations/interfaces";
+import { FrameId } from "../../core/presentations/interfaces"
 
 export interface FileBrowserContextProps {
   frameId?: FrameId
 
   activePath: string
+
+  historyIndex: number
+
+  history: string[]
 
   navigateUp(): void
 
@@ -21,6 +25,8 @@ export interface FileBrowserContextProps {
 
 export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
   activePath: "",
+  historyIndex: 0,
+  history: [""],
   navigateUp: () => {
     throw new Error("Not implemented")
   },
