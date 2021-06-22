@@ -1,8 +1,14 @@
 import React from "react"
 import styled from "styled-components"
 import { Grid, IconButton, Tooltip } from "@material-ui/core"
-import { ArrowBack, ArrowForward, ArrowUpward } from "@material-ui/icons"
+import {
+  ArrowBack,
+  ArrowForward,
+  ArrowUpward,
+  History,
+} from "@material-ui/icons"
 import { FileBrowserContext } from "../../contexts/filebrowser-context"
+import BrowsingHistorySelector from "./BrowsingHistorySelector"
 
 interface Props {
   activePath: string
@@ -71,11 +77,9 @@ const FileBrowserTopbar: React.FC<Props> = ({
                   <ArrowForward />
                 </IconButton>
               </Tooltip>
-              {/*<Tooltip title="Show recently visited directories">*/}
-              {/*  <IconButton onClick={openLastDirectories}>*/}
-              {/*    <History />*/}
-              {/*  </IconButton>*/}
-              {/*</Tooltip>*/}
+              <Tooltip title="Show recently visited directories">
+                <BrowsingHistorySelector />
+              </Tooltip>
               <Tooltip title="Move to the parent directory">
                 <IconButton onClick={navigateUp}>
                   <ArrowUpward />
