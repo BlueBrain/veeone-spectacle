@@ -30,9 +30,11 @@ const BrowsingHistorySelector: React.FC<BrowsingHistorySelectorProps> = () => {
   return (
     <>
       <Tooltip title="Show recently visited folders">
-        <IconButton onClick={openMenu} disabled={shouldDisableButton}>
-          <History />
-        </IconButton>
+        <span>
+          <IconButton onClick={openMenu} disabled={shouldDisableButton}>
+            <History />
+          </IconButton>
+        </span>
       </Tooltip>
       <Menu
         id="viewType"

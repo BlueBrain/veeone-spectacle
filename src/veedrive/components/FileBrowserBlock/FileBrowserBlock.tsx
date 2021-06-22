@@ -233,7 +233,6 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
       <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
         <StyledBlockContent>
           <FileBrowserTopbar
-            activePath={activePath}
             onSelectPathPart={openDirectoryByPathPartIndex}
           />
           <StyledMain>

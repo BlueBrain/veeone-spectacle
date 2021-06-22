@@ -6,8 +6,6 @@ import { FileBrowserContext } from "../../contexts/filebrowser-context"
 import BrowsingHistorySelector from "./BrowsingHistorySelector"
 
 interface Props {
-  activePath: string
-
   onSelectPathPart(pathPart: number)
 }
 
@@ -29,11 +27,9 @@ const StyledPathPart = styled.a`
   }
 `
 
-const FileBrowserTopbar: React.FC<Props> = ({
-  activePath,
-  onSelectPathPart,
-}) => {
+const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
   const {
+    activePath,
     history,
     historyIndex,
     navigateBack,
@@ -41,18 +37,22 @@ const FileBrowserTopbar: React.FC<Props> = ({
     navigateUp,
   } = useContext(FileBrowserContext)
   const makePathParts = (path: string) => {
-    return path
-      .split("/")
-      .filter(part => part !== "")
-      .map((part, index, all) => (
-        <StyledPathPart
-          key={index}
-          onClick={() => onSelectPathPart(index + 1)}
-          href={"#"}
-        >
-          {part}
-        </StyledPathPart>
-      ))
+    return (
+      <>
+        {path
+          .split("/")
+          .filter(part => part !== "")
+          .map((part, index, all) => (
+            <StyledPathPart
+              key={index}
+              onClick={() => onSelectPathPart(index + 1)}
+              href={"#"}
+            >
+              {part}
+            </StyledPathPart>
+          ))}
+      </>
+    )
   }
 
   // const searchFilesystem = () => {}
@@ -66,31 +66,38 @@ const FileBrowserTopbar: React.FC<Props> = ({
   const disableForwardButton = historyIndex === 0
 
   const disableBackButton = historyIndex === history.length - 1
+  const disableUpButton = activePath.length === 0
 
   return (
     <StyledFileBrowserTopbar>
       <Grid container alignItems="center">
         <Grid item>
           <Tooltip title="Back">
-            <IconButton onClick={navigateBack} disabled={disableBackButton}>
-              <ArrowBack />
-            </IconButton>
+            <span>
+              <IconButton onClick={navigateBack} disabled={disableBackButton}>
+                <ArrowBack />
+              </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title="Forward">
-            <IconButton
-              onClick={navigateForward}
-              disabled={disableForwardButton}
-            >
-              <ArrowForward />
-            </IconButton>
+            <span>
+              <IconButton
+                onClick={navigateForward}
+                disabled={disableForwardButton}
+              >
+                <ArrowForward />
+              </IconButton>
+            </span>
           </Tooltip>
-          <Tooltip title="Show recently visited directories">
-            <BrowsingHistorySelector />
-          </Tooltip>
+
+          <BrowsingHistorySelector />
+
           <Tooltip title="Move to the parent directory">
-            <IconButton onClick={navigateUp}>
-              <ArrowUpward />
-            </IconButton>
+            <span>
+              <IconButton onClick={navigateUp} disabled={disableUpButton}>
+                <ArrowUpward />
+              </IconButton>
+            </span>
           </Tooltip>
         </Grid>
 
