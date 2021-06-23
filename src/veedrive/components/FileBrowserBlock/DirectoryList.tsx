@@ -1,5 +1,4 @@
 import React, { useContext } from "react"
-import { GridColDef } from "@material-ui/data-grid"
 import { DirectoryItem, VeeDriveListDirectoryFile } from "../../types"
 import styled from "styled-components"
 import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core"
@@ -23,24 +22,15 @@ const StyledListItem = styled.div`
 `
 
 const DirectoryList: React.FC<DirectoryListProps> = ({ dirs, files }) => {
-  const { navigateDirectory, requestFile, viewType } = useContext(
+  const { navigateDirectory } = useContext(
     FileBrowserContext
   )
-
-  const columns: GridColDef[] = [{ field: "name", headerName: "Name" }]
-
-  const rows = [
-    ...dirs.map((dir, index) => ({
-      id: index,
-      ...dir,
-    })),
-  ]
 
   return (
     <StyledDataGrid>
       <List>
-        {dirs.map(dir => (
-          <StyledListItem>
+        {dirs.map((dir, i) => (
+          <StyledListItem key={i}>
             <ListItem
               key={dir.path}
               button
@@ -53,8 +43,8 @@ const DirectoryList: React.FC<DirectoryListProps> = ({ dirs, files }) => {
             </ListItem>
           </StyledListItem>
         ))}
-        {files.map(file => (
-          <StyledListItem>
+        {files.map((file, i) => (
+          <StyledListItem key={i}>
             <ListItem
               key={file.name}
               button
