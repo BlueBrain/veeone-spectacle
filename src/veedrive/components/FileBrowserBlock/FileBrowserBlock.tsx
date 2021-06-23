@@ -78,7 +78,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const history = blockData?.history ?? [""]
   const historyIndex = blockData?.historyIndex ?? 0
   const activePath = history[historyIndex]
-  const viewType = blockData?.viewType
+  const viewType = blockData?.viewType ?? FileBrowserViewTypes.Thumbnails
 
   const [globalDirectoryTree, setGlobalDirectoryTree] = useState(
     [] as BrowserDirectory[]

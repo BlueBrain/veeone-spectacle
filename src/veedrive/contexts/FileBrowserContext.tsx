@@ -11,7 +11,7 @@ export interface FileBrowserContextProps {
 
   history: string[]
 
-  viewType?: FileBrowserViewTypes
+  viewType: FileBrowserViewTypes
 
   navigateUp(): void
 
@@ -32,6 +32,7 @@ export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
   activePath: "",
   historyIndex: 0,
   history: [""],
+  viewType: FileBrowserViewTypes.Thumbnails,
   navigateUp: () => {
     throw new Error("Not implemented")
   },

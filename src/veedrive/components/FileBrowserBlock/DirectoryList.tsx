@@ -22,9 +22,7 @@ const StyledListItem = styled.div`
 `
 
 const DirectoryList: React.FC<DirectoryListProps> = ({ dirs, files }) => {
-  const { navigateDirectory } = useContext(
-    FileBrowserContext
-  )
+  const { navigateDirectory } = useContext(FileBrowserContext)
 
   return (
     <StyledDataGrid>

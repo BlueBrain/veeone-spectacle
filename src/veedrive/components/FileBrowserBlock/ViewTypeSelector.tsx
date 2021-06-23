@@ -1,53 +1,36 @@
-import React, { useContext, useState } from "react"
-import { IconButton, Menu, MenuItem, Tooltip } from "@material-ui/core"
-import { ViewColumn } from "@material-ui/icons"
+import React, { useContext } from "react"
+import { IconButton, Tooltip } from "@material-ui/core"
+import { ViewColumn, ViewComfy } from "@material-ui/icons"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
 import { FileBrowserViewTypes } from "../../common/types"
 
-interface ViewTypeSelectorProps {}
+const VIEW_TYPES = {
+  [FileBrowserViewTypes.Thumbnails]: {
+    icon: <ViewColumn />,
+    tooltip: "Switch to list",
+    switchTo: FileBrowserViewTypes.List,
+  },
+  [FileBrowserViewTypes.List]: {
+    icon: <ViewComfy />,
+    tooltip: "Switch to thumbnails",
+    switchTo: FileBrowserViewTypes.Thumbnails,
+  },
+}
 
-const ViewTypeSelector: React.FC<ViewTypeSelectorProps> = () => {
-  const { changeViewType } = useContext(FileBrowserContext)
-  const [
-    viewTypeAnchorElement,
-    setViewTypeAnchorElement,
-  ] = useState<null | HTMLElement>(null)
+const ViewTypeSelector: React.FC = () => {
+  const { changeViewType, viewType } = useContext(FileBrowserContext)
 
-  const openChangeViewTypeMenu = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    setViewTypeAnchorElement(event.currentTarget)
-  }
-
-  const onCloseMenu = () => {
-    setViewTypeAnchorElement(null)
-  }
-
-  const setViewToList = () => {
-    changeViewType(FileBrowserViewTypes.List)
-    onCloseMenu()
-  }
-  const setViewToThumbnails = () => {
-    changeViewType(FileBrowserViewTypes.Thumbnails)
-    onCloseMenu()
+  const toggleViewType = () => {
+    changeViewType(VIEW_TYPES[viewType].switchTo)
   }
 
   return (
     <>
-      <Tooltip title="Switch view between list and thumbnails">
-        <IconButton onClick={openChangeViewTypeMenu}>
-          <ViewColumn />
+      <Tooltip title={VIEW_TYPES[viewType].tooltip}>
+        <IconButton onClick={toggleViewType}>
+          {VIEW_TYPES[viewType].icon}
         </IconButton>
       </Tooltip>
-      <Menu
-        id="viewType"
-        anchorEl={viewTypeAnchorElement}
-        open={Boolean(viewTypeAnchorElement)}
-        onClose={onCloseMenu}
-      >
-        <MenuItem onClick={setViewToList}>List</MenuItem>
-        <MenuItem onClick={setViewToThumbnails}>Thumbnails</MenuItem>
-      </Menu>
     </>
   )
 }
