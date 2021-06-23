@@ -2,8 +2,9 @@ import React, { useContext } from "react"
 import styled from "styled-components"
 import { Grid, IconButton, Tooltip } from "@material-ui/core"
 import { ArrowBack, ArrowForward, ArrowUpward } from "@material-ui/icons"
-import { FileBrowserContext } from "../../contexts/filebrowser-context"
+import { FileBrowserContext } from "../../contexts/FileBrowserContext"
 import BrowsingHistorySelector from "./BrowsingHistorySelector"
+import ViewTypeSelector from "./ViewTypeSelector"
 
 interface Props {
   onSelectPathPart(pathPart: number)
@@ -113,7 +114,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
           {/*  </IconButton>*/}
           {/*</Tooltip>*/}
 
-          {/*<ViewTypeSelector />*/}
+          <ViewTypeSelector />
 
           {/*<Tooltip title="Search files and directories">*/}
           {/*  <IconButton onClick={searchFilesystem}>*/}

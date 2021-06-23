@@ -1,6 +1,5 @@
 import styled from "styled-components"
 import React, { useEffect, useState } from "react"
-import FileBrowserDirectories from "./FileBrowserDirectories"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import fileService from "../../service"
 import { VeeDriveListDirectoryFile } from "../../types"
@@ -22,8 +21,11 @@ import { getFrame } from "../../../core/redux/selectors"
 import {
   FileBrowserContext,
   FileBrowserContextProps,
-} from "../../contexts/filebrowser-context"
-import { FileBrowserBlockPayload } from "../../common/types"
+} from "../../contexts/FileBrowserContext"
+import {
+  FileBrowserBlockPayload,
+  FileBrowserViewTypes,
+} from "../../common/types"
 
 const StyledFileBrowserBlock = styled.div`
   background: #fafafa;
@@ -76,6 +78,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const history = blockData?.history ?? [""]
   const historyIndex = blockData?.historyIndex ?? 0
   const activePath = history[historyIndex]
+  const viewType = blockData?.viewType
 
   const [globalDirectoryTree, setGlobalDirectoryTree] = useState(
     [] as BrowserDirectory[]
@@ -188,6 +191,13 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     dispatch(updateFrameData(frameId, newFrameData))
   }
 
+  const changeViewType = async (newType: FileBrowserViewTypes) => {
+    const newFrameData = {
+      viewType: newType,
+    }
+    dispatch(updateFrameData(frameId, newFrameData))
+  }
+
   const openPreviousDirectory = async () => {
     await moveBrowsingHistoryIndex(1)
   }
@@ -208,6 +218,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     activePath: activePath,
     historyIndex: historyIndex,
     history: history,
+    viewType: viewType,
     navigateUp() {
       void openParentDirectory()
     },
@@ -226,17 +237,18 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     requestFile(fileName: string) {
       void openFile(fileName)
     },
+    changeViewType(newViewType: FileBrowserViewTypes) {
+      void changeViewType(newViewType)
+    },
   }
 
   return (
     <FileBrowserContext.Provider value={fileBrowserContextProvider}>
       <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
         <StyledBlockContent>
-          <FileBrowserTopbar
-            onSelectPathPart={openDirectoryByPathPartIndex}
-          />
+          <FileBrowserTopbar onSelectPathPart={openDirectoryByPathPartIndex} />
           <StyledMain>
-            <FileBrowserDirectories dirs={globalDirectoryTree} />
+            {/*<FileBrowserDirectories dirs={globalDirectoryTree} />*/}
             <FileBrowserDirectoryContent
               dirs={activePathDirs}
               files={activePathFiles}

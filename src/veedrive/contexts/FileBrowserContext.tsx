@@ -1,5 +1,6 @@
 import React from "react"
 import { FrameId } from "../../core/presentations/interfaces"
+import { FileBrowserViewTypes } from "../common/types"
 
 export interface FileBrowserContextProps {
   frameId?: FrameId
@@ -9,6 +10,8 @@ export interface FileBrowserContextProps {
   historyIndex: number
 
   history: string[]
+
+  viewType?: FileBrowserViewTypes
 
   navigateUp(): void
 
@@ -21,6 +24,8 @@ export interface FileBrowserContextProps {
   navigateDirectory(dirPath: string): void
 
   requestFile(fileName: string): void
+  
+  changeViewType(newViewType: FileBrowserViewTypes): void
 }
 
 export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
@@ -43,6 +48,9 @@ export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
     throw new Error("Not implemented")
   },
   requestFile: () => {
+    throw new Error("Not implemented")
+  },
+  changeViewType(newViewType: FileBrowserViewTypes) {
     throw new Error("Not implemented")
   },
 })

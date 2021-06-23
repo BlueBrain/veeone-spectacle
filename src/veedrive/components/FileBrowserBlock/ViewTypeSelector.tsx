@@ -1,11 +1,13 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { IconButton, Menu, MenuItem, Tooltip } from "@material-ui/core"
 import { ViewColumn } from "@material-ui/icons"
+import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import { FileBrowserViewTypes } from "../../common/types"
 
 interface ViewTypeSelectorProps {}
 
 const ViewTypeSelector: React.FC<ViewTypeSelectorProps> = () => {
-  // TODO needs implementation
+  const { changeViewType } = useContext(FileBrowserContext)
   const [
     viewTypeAnchorElement,
     setViewTypeAnchorElement,
@@ -17,8 +19,17 @@ const ViewTypeSelector: React.FC<ViewTypeSelectorProps> = () => {
     setViewTypeAnchorElement(event.currentTarget)
   }
 
-  const closeChangeViewTypeMenu = () => {
+  const onCloseMenu = () => {
     setViewTypeAnchorElement(null)
+  }
+  
+  const setViewToList = () => {
+    changeViewType(FileBrowserViewTypes.List)
+    onCloseMenu()
+  }
+  const setViewToThumbnails = () => {
+    changeViewType(FileBrowserViewTypes.Thumbnails)
+    onCloseMenu()
   }
 
   return (
@@ -32,10 +43,10 @@ const ViewTypeSelector: React.FC<ViewTypeSelectorProps> = () => {
         id="viewType"
         anchorEl={viewTypeAnchorElement}
         open={Boolean(viewTypeAnchorElement)}
-        onClose={closeChangeViewTypeMenu}
+        onClose={onCloseMenu}
       >
-        <MenuItem>List</MenuItem>
-        <MenuItem>Thumbnails</MenuItem>
+        <MenuItem onClick={setViewToList}>List</MenuItem>
+        <MenuItem onClick={setViewToThumbnails}>Thumbnails</MenuItem>
       </Menu>
     </>
   )

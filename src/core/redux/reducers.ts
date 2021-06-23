@@ -61,7 +61,10 @@ export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
         ...frames,
         [frameId]: {
           ...frames[frameId],
-          data: data,
+          data: {
+            ...frames[frameId].data,
+            ...data,
+          },
         },
       }
     }

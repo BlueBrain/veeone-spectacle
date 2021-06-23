@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import { DirectoryItem } from "../../types"
 import styled from "styled-components"
-import { FileBrowserContext } from "../../contexts/filebrowser-context"
+import { FileBrowserContext } from "../../contexts/FileBrowserContext"
 
 interface Props {
   dirs: DirectoryItem[]
