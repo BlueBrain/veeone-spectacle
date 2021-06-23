@@ -11,45 +11,6 @@ interface DirectoryThumbnailsProps {
   dirs: DirectoryItem[]
 }
 
-// const StyledGridLayout = styled.div`
-//   display: grid;
-//   grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
-//   grid-gap: 1rem;
-//   margin-bottom: 1rem;
-// `
-//
-// const StyledGridElement = styled.div`
-//   display: grid;
-//   padding: 0.5rem;
-//   background: #fff;
-//   cursor: pointer;
-//   box-sizing: border-box;
-//   font-size: 8pt;
-//   line-height: 1em;
-//   // box-shadow: -0.2rem 0.3rem 0.5rem rgba(0, 0, 0, 0.04),
-//   //   0.2rem 0.3rem 0.5rem rgba(0, 0, 0, 0.04);
-//   // border-radius: 0.3rem;
-//
-//   ::before,
-//   div {
-//     width: 100%;
-//     height: 100%;
-//     grid-area: 1 / 1 / 2 / 2;
-//   }
-//
-//   ::before {
-//     content: "";
-//     padding-bottom: 100%;
-//     display: block;
-//   }
-// `
-
-// const StyledDirElement = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//
-// `
-
 const useStyles = makeStyles(theme =>
   createStyles({
     root: {
@@ -67,7 +28,6 @@ const useStyles = makeStyles(theme =>
     },
     gridTile: {
       display: "grid",
-      // padding: "0.1rem",
       // background: "rgba(255,0,0,.1)",
       cursor: "pointer",
       boxSizing: "border-box",
@@ -109,7 +69,7 @@ const useStyles = makeStyles(theme =>
     gridTileIcon: {
       width: "1.5em",
       height: "1.5em",
-    }
+    },
   })
 )
 

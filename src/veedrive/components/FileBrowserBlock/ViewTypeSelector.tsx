@@ -22,7 +22,7 @@ const ViewTypeSelector: React.FC<ViewTypeSelectorProps> = () => {
   const onCloseMenu = () => {
     setViewTypeAnchorElement(null)
   }
-  
+
   const setViewToList = () => {
     changeViewType(FileBrowserViewTypes.List)
     onCloseMenu()

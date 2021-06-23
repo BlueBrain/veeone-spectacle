@@ -3,7 +3,7 @@ import { GridColDef } from "@material-ui/data-grid"
 import { DirectoryItem, VeeDriveListDirectoryFile } from "../../types"
 import styled from "styled-components"
 import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core"
-import {Folder, InsertDriveFile} from "@material-ui/icons"
+import { Folder, InsertDriveFile } from "@material-ui/icons"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
 
 interface DirectoryListProps {

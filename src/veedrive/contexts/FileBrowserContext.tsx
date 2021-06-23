@@ -24,7 +24,7 @@ export interface FileBrowserContextProps {
   navigateDirectory(dirPath: string): void
 
   requestFile(fileName: string): void
-  
+
   changeViewType(newViewType: FileBrowserViewTypes): void
 }
 
