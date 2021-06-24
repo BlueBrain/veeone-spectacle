@@ -1,10 +1,16 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
 import { Grid, IconButton, Tooltip } from "@material-ui/core"
-import { ArrowBack, ArrowForward, ArrowUpward } from "@material-ui/icons"
+import {
+  ArrowBack,
+  ArrowForward,
+  ArrowUpward,
+  Search,
+} from "@material-ui/icons"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
 import BrowsingHistorySelector from "./BrowsingHistorySelector"
 import ViewTypeSelector from "./ViewTypeSelector"
+import SearchFilesBar from "./SearchFilesBar"
 
 interface Props {
   onSelectPathPart(pathPart: number)
@@ -36,7 +42,10 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
     navigateBack,
     navigateForward,
     navigateUp,
+    setSearchMode,
+    searchModeOn,
   } = useContext(FileBrowserContext)
+
   const makePathParts = (path: string) => {
     return (
       <>
@@ -56,73 +65,67 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
     )
   }
 
-  // const searchFilesystem = () => {}
-
-  // const openFilterList = () => {}
-
-  // const openLastDirectories = () => {}
-
-  // const refreshDirectories = () => {}
-
   const disableForwardButton = historyIndex === 0
-
   const disableBackButton = historyIndex === history.length - 1
   const disableUpButton = activePath.length === 0
 
   return (
     <StyledFileBrowserTopbar>
-      <Grid container alignItems="center">
-        <Grid item>
-          <Tooltip title="Back">
-            <span>
-              <IconButton onClick={navigateBack} disabled={disableBackButton}>
-                <ArrowBack />
+      {searchModeOn ? (
+        <SearchFilesBar />
+      ) : (
+        <Grid container alignItems="center">
+          <Grid item>
+            <Tooltip title="Back">
+              <span>
+                <IconButton onClick={navigateBack} disabled={disableBackButton}>
+                  <ArrowBack />
+                </IconButton>
+              </span>
+            </Tooltip>
+            <Tooltip title="Forward">
+              <span>
+                <IconButton
+                  onClick={navigateForward}
+                  disabled={disableForwardButton}
+                >
+                  <ArrowForward />
+                </IconButton>
+              </span>
+            </Tooltip>
+
+            <BrowsingHistorySelector />
+
+            <Tooltip title="Move to the parent directory">
+              <span>
+                <IconButton onClick={navigateUp} disabled={disableUpButton}>
+                  <ArrowUpward />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </Grid>
+
+          <Grid item xs>
+            <StyledPathPart onClick={() => onSelectPathPart(0)} href={"#"} />
+            {makePathParts(activePath)}
+          </Grid>
+
+          <Grid item>
+            {/*<Tooltip title="Filter view">*/}
+            {/*  <IconButton onClick={openFilterList}>*/}
+            {/*    <FilterList />*/}
+            {/*  </IconButton>*/}
+            {/*</Tooltip>*/}
+            <Tooltip title="Search files and directories">
+              <IconButton onClick={() => setSearchMode(true)}>
+                <Search />
               </IconButton>
-            </span>
-          </Tooltip>
-          <Tooltip title="Forward">
-            <span>
-              <IconButton
-                onClick={navigateForward}
-                disabled={disableForwardButton}
-              >
-                <ArrowForward />
-              </IconButton>
-            </span>
-          </Tooltip>
+            </Tooltip>
 
-          <BrowsingHistorySelector />
-
-          <Tooltip title="Move to the parent directory">
-            <span>
-              <IconButton onClick={navigateUp} disabled={disableUpButton}>
-                <ArrowUpward />
-              </IconButton>
-            </span>
-          </Tooltip>
+            <ViewTypeSelector />
+          </Grid>
         </Grid>
-
-        <Grid item xs>
-          <StyledPathPart onClick={() => onSelectPathPart(0)} href={"#"} />
-          {makePathParts(activePath)}
-        </Grid>
-
-        <Grid item>
-          {/*<Tooltip title="Filter view">*/}
-          {/*  <IconButton onClick={openFilterList}>*/}
-          {/*    <FilterList />*/}
-          {/*  </IconButton>*/}
-          {/*</Tooltip>*/}
-
-          <ViewTypeSelector />
-
-          {/*<Tooltip title="Search files and directories">*/}
-          {/*  <IconButton onClick={searchFilesystem}>*/}
-          {/*    <Search />*/}
-          {/*  </IconButton>*/}
-          {/*</Tooltip>*/}
-        </Grid>
-      </Grid>
+      )}
     </StyledFileBrowserTopbar>
   )
 }

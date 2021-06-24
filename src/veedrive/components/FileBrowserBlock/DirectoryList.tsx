@@ -1,13 +1,13 @@
 import React, { useContext } from "react"
-import { DirectoryItem, VeeDriveListDirectoryFile } from "../../types"
 import styled from "styled-components"
 import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core"
 import { Folder, InsertDriveFile } from "@material-ui/icons"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import { BrowserDirectory, BrowserFile } from "../../common/models"
 
 interface DirectoryListProps {
-  files: VeeDriveListDirectoryFile[]
-  dirs: DirectoryItem[]
+  files: BrowserFile[]
+  dirs: BrowserDirectory[]
 }
 
 const StyledDataGrid = styled.div`

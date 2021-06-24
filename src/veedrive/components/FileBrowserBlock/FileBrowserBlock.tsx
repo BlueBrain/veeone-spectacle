@@ -1,11 +1,15 @@
 import styled from "styled-components"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import fileService from "../../service"
-import { VeeDriveListDirectoryFile } from "../../types"
+import { VeeDriveSearchFileSystemRequest } from "../../types"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import _ from "lodash"
-import { BrowserDirectory, BrowserFile } from "../../common/models"
+import {
+  BrowserContents,
+  BrowserDirectory,
+  BrowserFile,
+} from "../../common/models"
 import {
   ContentBlockProps,
   ContentBlockTypes,
@@ -26,6 +30,8 @@ import {
   FileBrowserBlockPayload,
   FileBrowserViewTypes,
 } from "../../common/types"
+import VeeDriveConfig from "../../config"
+import debounce from "lodash.debounce"
 
 const StyledFileBrowserBlock = styled.div`
   background: #fafafa;
@@ -51,7 +57,7 @@ const fetchDirectoryContents = async dirPath => {
   // todo implement cache for not directly affected/loaded dirs
   const response = await fileService.listDirectory({ path: dirPath })
   const pathPrefix = dirPath !== "" ? `${dirPath}/` : ``
-  let dirs
+  let dirs: BrowserDirectory[]
   try {
     const dirsList = response.directories.map(
       path => new BrowserDirectory(`${pathPrefix}${path}`)
@@ -62,8 +68,21 @@ const fetchDirectoryContents = async dirPath => {
     console.error(err)
     return { dirs: [], files: [] }
   }
-  const files = response.files
+  const files = response.files.map(
+    file => new BrowserFile(file.name, file.size)
+  )
   return { dirs, files }
+}
+
+const searchFilesystem = async (query: string): Promise<BrowserContents> => {
+  const payload: VeeDriveSearchFileSystemRequest = {
+    name: query,
+  }
+  const { files, directories } = await fileService.searchFileSystem(payload)
+  return {
+    files: files.map(file => new BrowserFile(file.name, file.size)),
+    directories: directories.map(dirPath => new BrowserDirectory(dirPath)),
+  }
 }
 
 const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
@@ -79,6 +98,13 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const historyIndex = blockData?.historyIndex ?? 0
   const activePath = history[historyIndex]
   const viewType = blockData?.viewType ?? FileBrowserViewTypes.Thumbnails
+
+  const [searchMode, setSearchMode] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [searchResults, setSearchResults] = useState<BrowserContents>({
+    files: [],
+    directories: [],
+  })
 
   const [globalDirectoryTree, setGlobalDirectoryTree] = useState(
     [] as BrowserDirectory[]
@@ -130,18 +156,12 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     }
     setGlobalDirectoryTree(tree.dirs)
     setActivePathDirs(currentDirList)
-    setActivePathFiles(mapBrowserFiles(files, activePath))
+    setActivePathFiles(files)
   }
 
   useEffect(() => {
     void initializeTree()
   }, [activePath])
-
-  const mapBrowserFiles = (
-    fileList: VeeDriveListDirectoryFile[],
-    dir: string
-  ) =>
-    fileList.map(f => new BrowserFile({ name: f.name, size: f.size, dir: dir }))
 
   const addToBrowsingHistory = dirPath => {
     const newHistory = [dirPath, ...history.slice(historyIndex)]
@@ -206,12 +226,25 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     await moveBrowsingHistoryIndex(-1)
   }
 
-  const openFile = (filename: string) => {
-    const filePath = `${activePath}/${filename}`
-    console.debug(`Requesting a file from frame=${frameId}`, filePath)
+  const openFile = (filePath: string) => {
+    // const filePath = `${activePath}/${filename}`
+    console.debug(`Requesting ${filePath} from frame=${frameId}`)
     // todo handle different file types (currently all will open an image frame)
     setTimeout(() => newImageFrame(filePath))
   }
+
+  const performSearch = useCallback(async () => {
+    if (searchQuery.length >= VeeDriveConfig.minSearchQueryLength) {
+      const { directories, files } = await searchFilesystem(searchQuery)
+      setSearchResults({ files, directories })
+    }
+  }, [searchQuery])
+
+  const onSearchQueryChange = useMemo(() => debounce(performSearch, 1000), [
+    performSearch,
+  ])
+
+  useEffect(onSearchQueryChange, [searchQuery, onSearchQueryChange])
 
   const fileBrowserContextProvider: FileBrowserContextProps = {
     frameId: frameId,
@@ -240,7 +273,18 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     changeViewType(newViewType: FileBrowserViewTypes) {
       void changeViewType(newViewType)
     },
+    searchModeOn: searchMode,
+    searchQuery: searchQuery,
+    setSearchMode(enabled: boolean) {
+      setSearchMode(enabled)
+    },
+    async requestSearch(query: string) {
+      setSearchQuery(query)
+    },
   }
+
+  const shouldDisplaySearchResults =
+    searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
 
   return (
     <FileBrowserContext.Provider value={fileBrowserContextProvider}>
@@ -249,10 +293,17 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
           <FileBrowserTopbar onSelectPathPart={openDirectoryByPathPartIndex} />
           <StyledMain>
             {/*<FileBrowserDirectories dirs={globalDirectoryTree} />*/}
-            <FileBrowserDirectoryContent
-              dirs={activePathDirs}
-              files={activePathFiles}
-            />
+            {shouldDisplaySearchResults ? (
+              <FileBrowserDirectoryContent
+                dirs={searchResults.directories}
+                files={searchResults.files}
+              />
+            ) : (
+              <FileBrowserDirectoryContent
+                dirs={activePathDirs}
+                files={activePathFiles}
+              />
+            )}
           </StyledMain>
         </StyledBlockContent>
       </StyledFileBrowserBlock>

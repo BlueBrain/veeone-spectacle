@@ -1,14 +1,13 @@
 import React, { useContext } from "react"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
-import { DirectoryItem } from "../../types"
 import { createStyles, makeStyles } from "@material-ui/core"
-import { BrowserFile } from "../../common/models"
+import { BrowserDirectory, BrowserFile } from "../../common/models"
 import { Folder } from "@material-ui/icons"
 import FileElement from "./FileElement"
 
 interface DirectoryThumbnailsProps {
   files: BrowserFile[]
-  dirs: DirectoryItem[]
+  dirs: BrowserDirectory[]
 }
 
 const useStyles = makeStyles(theme =>

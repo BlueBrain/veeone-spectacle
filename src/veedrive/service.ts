@@ -5,6 +5,8 @@ import {
   VeeDriveImageResponse,
   VeeDriveListDirectoryRequest,
   VeeDriveListDirectoryResponse,
+  VeeDriveSearchFileSystemRequest,
+  VeeDriveSearchFileSystemResponse,
 } from "./types"
 import WebsocketAdapter from "./adapters"
 import NetworkFileBrowsingServiceBase from "./base-service"
@@ -29,6 +31,11 @@ class VeeDriveService extends NetworkFileBrowsingServiceBase {
     params: VeeDriveImageRequest
   ): Promise<VeeDriveImageResponse> =>
     this.sendRequest(VeeDriveConfig.endpointNames.requestImage, params)
+
+  public readonly searchFileSystem = async (
+    params: VeeDriveSearchFileSystemRequest
+  ): Promise<VeeDriveSearchFileSystemResponse> =>
+    this.sendRequest(VeeDriveConfig.endpointNames.searchFiles, params)
 }
 
 export default new VeeDriveService()

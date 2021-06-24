@@ -43,14 +43,25 @@ export interface VeeDriveImageResponse extends VeeDriveFileResponse {
   scaled?: string
 }
 
-export interface FileItem {
+export interface VeeDriveSearchFileSystemRequest {
+  name: string
+}
+
+export interface VeeDriveSearchFileSystemResponse {
+  files: VeeDriveFile[]
+  directories: VeeDriveSearchResultDirectory[]
+}
+
+export interface VeeDriveFile {
   name: string
   size: number
 }
 
-export interface DirectoryItem {
+export interface VeeDriveDirectory {
   name: string
   path: string
-  directories: DirectoryItem[]
-  files: FileItem[]
+  directories: VeeDriveDirectory[]
+  files: VeeDriveFile[]
 }
+
+export type VeeDriveSearchResultDirectory = string

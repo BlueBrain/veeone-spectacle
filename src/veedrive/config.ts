@@ -4,7 +4,9 @@ const VeeDriveConfig = {
     listDirectory: "ListDirectory",
     requestFile: "RequestFile",
     requestImage: "RequestImage",
+    searchFiles: "Search",
   },
+  minSearchQueryLength: 3,
 }
 
 export default VeeDriveConfig

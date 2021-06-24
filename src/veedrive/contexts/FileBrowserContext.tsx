@@ -26,6 +26,11 @@ export interface FileBrowserContextProps {
   requestFile(fileName: string): void
 
   changeViewType(newViewType: FileBrowserViewTypes): void
+
+  searchModeOn: boolean
+  searchQuery: string
+  setSearchMode(enabled: boolean): void
+  requestSearch(query: string): void
 }
 
 export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
@@ -52,6 +57,14 @@ export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
     throw new Error("Not implemented")
   },
   changeViewType(newViewType: FileBrowserViewTypes) {
+    throw new Error("Not implemented")
+  },
+  searchModeOn: false,
+  searchQuery: "",
+  setSearchMode(enabled: boolean) {
+    throw new Error("Not implemented")
+  },
+  requestSearch(query: string) {
     throw new Error("Not implemented")
   },
 })

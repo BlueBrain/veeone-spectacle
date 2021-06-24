@@ -1,15 +1,14 @@
 import React, { useContext } from "react"
-import { DirectoryItem } from "../../types"
 import styled from "styled-components"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
 import { FileBrowserViewTypes } from "../../common/types"
 import DirectoryThumbnails from "./DirectoryThumbnails"
 import DirectoryList from "./DirectoryList"
-import { BrowserFile } from "../../common/models"
+import { BrowserDirectory, BrowserFile } from "../../common/models"
 
 interface Props {
   files: BrowserFile[]
-  dirs: DirectoryItem[]
+  dirs: BrowserDirectory[]
 }
 
 const StyledFileBrowserFileList = styled.div`

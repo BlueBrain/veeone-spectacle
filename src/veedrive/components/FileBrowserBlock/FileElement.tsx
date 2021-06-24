@@ -35,14 +35,14 @@ const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
     <div
       className={classes.gridTile}
       onClick={() => requestFile(file.name)}
-      title={file.name}
+      title={file.fileName}
     >
       <div className={classes.gridTileThumbnail}>
         <div className={classes.gridTileThumbnailBody}>
           {!!thumbnailUrl ? <StyledImage src={thumbnailUrl} /> : null}
         </div>
       </div>
-      <div className={classes.gridTileLabel}>{file.name}</div>
+      <div className={classes.gridTileLabel}>{file.fileName}</div>
     </div>
   )
 }
