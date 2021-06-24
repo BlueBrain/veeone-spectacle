@@ -5,6 +5,7 @@ import {
   ArrowBack,
   ArrowForward,
   ArrowUpward,
+  Home,
   Search,
 } from "@material-ui/icons"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
@@ -42,9 +43,14 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
     navigateBack,
     navigateForward,
     navigateUp,
+    navigateDirectory,
     setSearchMode,
     searchModeOn,
   } = useContext(FileBrowserContext)
+
+  const navigateHome = () => {
+    void navigateDirectory("/")
+  }
 
   const makePathParts = (path: string) => {
     return (
@@ -96,6 +102,14 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
 
             <BrowsingHistorySelector />
 
+            <Tooltip title="Move to the home directory">
+              <span>
+                <IconButton onClick={navigateHome}>
+                  <Home />
+                </IconButton>
+              </span>
+            </Tooltip>
+
             <Tooltip title="Move to the parent directory">
               <span>
                 <IconButton onClick={navigateUp} disabled={disableUpButton}>
@@ -106,7 +120,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
           </Grid>
 
           <Grid item xs>
-            <StyledPathPart onClick={() => onSelectPathPart(0)} href={"#"} />
+            {/*<StyledPathPart onClick={() => onSelectPathPart(0)} href={"#"} />*/}
             {makePathParts(activePath)}
           </Grid>
 
