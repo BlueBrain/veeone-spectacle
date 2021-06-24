@@ -73,7 +73,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
 
   const disableForwardButton = historyIndex === 0
   const disableBackButton = historyIndex === history.length - 1
-  const disableUpButton = activePath.length === 0
+  const hideUpButton = activePath.length === 0
 
   return (
     <StyledFileBrowserTopbar>
@@ -104,19 +104,21 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
 
             <Tooltip title="Move to the home directory">
               <span>
-                <IconButton onClick={navigateHome}>
+                <IconButton onClick={navigateHome} disabled={hideUpButton}>
                   <Home />
                 </IconButton>
               </span>
             </Tooltip>
 
-            <Tooltip title="Move to the parent directory">
-              <span>
-                <IconButton onClick={navigateUp} disabled={disableUpButton}>
-                  <ArrowUpward />
-                </IconButton>
-              </span>
-            </Tooltip>
+            {!hideUpButton ? (
+              <Tooltip title="Move to the parent directory">
+                <span>
+                  <IconButton onClick={navigateUp}>
+                    <ArrowUpward />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            ) : null}
           </Grid>
 
           <Grid item xs>
