@@ -49,7 +49,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
   } = useContext(FileBrowserContext)
 
   const navigateHome = () => {
-    void navigateDirectory("/")
+    void navigateDirectory("")
   }
 
   const makePathParts = (path: string) => {
