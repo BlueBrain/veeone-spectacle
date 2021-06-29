@@ -1,6 +1,13 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
-import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core"
+import {
+  createStyles,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+} from "@material-ui/core"
 import { Folder, InsertDriveFile } from "@material-ui/icons"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
 import { BrowserDirectory, BrowserFile } from "../../common/models"
@@ -21,8 +28,22 @@ const StyledListItem = styled.div`
   break-inside: avoid;
 `
 
+const useStyles = makeStyles(theme =>
+  createStyles({
+    listItem: {
+      overflow: "hidden",
+    },
+    listItemText: {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
+  })
+)
+
 const DirectoryList: React.FC<DirectoryListProps> = ({ dirs, files }) => {
-  const { navigateDirectory } = useContext(FileBrowserContext)
+  const classes = useStyles()
+  const { navigateDirectory, requestFile } = useContext(FileBrowserContext)
 
   return (
     <StyledDataGrid>
@@ -30,28 +51,38 @@ const DirectoryList: React.FC<DirectoryListProps> = ({ dirs, files }) => {
         {dirs.map((dir, i) => (
           <StyledListItem key={i}>
             <ListItem
+              className={classes.listItem}
               key={dir.path}
               button
               onClick={() => navigateDirectory(dir.path)}
+              title={dir.name}
             >
               <ListItemIcon>
                 <Folder />
               </ListItemIcon>
-              <ListItemText primary={dir.name} />
+              <ListItemText
+                classes={{ primary: classes.listItemText }}
+                primary={dir.name}
+              />
             </ListItem>
           </StyledListItem>
         ))}
         {files.map((file, i) => (
           <StyledListItem key={i}>
             <ListItem
+              className={classes.listItem}
               key={file.name}
               button
-              onClick={() => navigateDirectory(file.name)}
+              onClick={() => requestFile(file.name)}
+              title={file.name}
             >
               <ListItemIcon>
                 <InsertDriveFile />
               </ListItemIcon>
-              <ListItemText primary={file.name} />
+              <ListItemText
+                classes={{ primary: classes.listItemText }}
+                primary={file.name}
+              />
             </ListItem>
           </StyledListItem>
         ))}
