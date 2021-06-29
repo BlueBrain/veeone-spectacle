@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme =>
     },
     grid: {
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fill, minmax(5rem, 1fr))",
+      gridTemplateColumns: "repeat(auto-fill, minmax(7rem, 1fr))",
       gridGap: ".2rem",
       marginBottom: "1rem",
     },
@@ -97,8 +97,8 @@ const DirectoryThumbnails: React.FC<DirectoryThumbnailsProps> = ({
             <div className={classes.gridTileLabel}>{dir.name}</div>
           </div>
         ))}
-        {files.map((file, i) => (
-          <FileElement key={i} file={file} classes={classes} />
+        {files.map(file => (
+          <FileElement key={file.fullpath} file={file} classes={classes} />
         ))}
       </div>
     </>
