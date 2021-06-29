@@ -97,8 +97,8 @@ const DirectoryThumbnails: React.FC<DirectoryThumbnailsProps> = ({
             <div className={classes.gridTileLabel}>{dir.name}</div>
           </div>
         ))}
-        {files.map(file => (
-          <FileElement key={file.fullpath} file={file} classes={classes} />
+        {files.map((file: BrowserFile) => (
+          <FileElement key={file.path} file={file} classes={classes} />
         ))}
       </div>
     </>

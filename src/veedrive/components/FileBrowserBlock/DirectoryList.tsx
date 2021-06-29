@@ -73,7 +73,7 @@ const DirectoryList: React.FC<DirectoryListProps> = ({ dirs, files }) => {
               className={classes.listItem}
               key={file.name}
               button
-              onClick={() => requestFile(file.name)}
+              onClick={() => requestFile(file.path)}
               title={file.name}
             >
               <ListItemIcon>

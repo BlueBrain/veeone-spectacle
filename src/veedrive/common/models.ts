@@ -1,21 +1,17 @@
 import { VeeDriveDirectory, VeeDriveFile } from "../types"
 
 export class BrowserFile implements VeeDriveFile {
-  name: string
+  path: string
   size: number
   dir: string
 
-  constructor(name, size) {
-    this.name = name
+  constructor(path, size) {
+    this.path = path
     this.size = size
   }
 
-  public get fileName(): string {
-    return `${this.name.split("/").pop()}`
-  }
-
-  public get fullpath(): string {
-    return this.name
+  public get name(): string {
+    return `${this.path.split("/").pop()}`
   }
 }
 

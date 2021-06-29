@@ -23,7 +23,7 @@ const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
   useEffect(() => {
     const loadThumbnail = async () => {
       const response = await fileService.requestFile({
-        path: file.fullpath,
+        path: file.path,
       })
       if (response !== undefined && !!response.thumbnail) {
         setThumbnailUrl(response.thumbnail)
@@ -34,15 +34,15 @@ const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
   return (
     <div
       className={classes.gridTile}
-      onClick={() => requestFile(file.name)}
-      title={file.fileName}
+      onClick={() => requestFile(file.path)}
+      title={file.name}
     >
       <div className={classes.gridTileThumbnail}>
         <div className={classes.gridTileThumbnailBody}>
           {!!thumbnailUrl ? <StyledImage src={thumbnailUrl} /> : null}
         </div>
       </div>
-      <div className={classes.gridTileLabel}>{file.fileName}</div>
+      <div className={classes.gridTileLabel}>{file.name}</div>
     </div>
   )
 }
