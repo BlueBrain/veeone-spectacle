@@ -69,7 +69,7 @@ const fetchDirectoryContents = async dirPath => {
     return { dirs: [], files: [] }
   }
   const files = response.files.map(
-    file => new BrowserFile(file.name, file.size)
+    file => new BrowserFile(`${pathPrefix}${file.name}`, file.size)
   )
   return { dirs, files }
 }
