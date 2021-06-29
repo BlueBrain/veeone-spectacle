@@ -48,7 +48,7 @@ const DirectoryList: React.FC<DirectoryListProps> = ({ dirs, files }) => {
   return (
     <StyledDataGrid>
       <List>
-        {dirs.map((dir) => (
+        {dirs.map(dir => (
           <StyledListItem key={dir.path}>
             <ListItem
               className={classes.listItem}
