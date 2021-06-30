@@ -103,8 +103,8 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
 
   // View filters
   const isShowingSupportedFilesOnly =
-    blockData?.isShowingSupportedFilesOnly || true
-  const isShowingHiddenFiles = blockData?.isShowingHiddenFiles || false
+    blockData?.isShowingSupportedFilesOnly ?? true
+  const isShowingHiddenFiles = blockData?.isShowingHiddenFiles ?? false
 
   const [searchMode, setSearchMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -259,6 +259,8 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     historyIndex: historyIndex,
     history: history,
     viewType: viewType,
+    isShowingHiddenFiles: isShowingHiddenFiles,
+    isShowingSupportedFilesOnly: isShowingSupportedFilesOnly,
     navigateUp() {
       void openParentDirectory()
     },
@@ -288,6 +290,20 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     async requestSearch(query: string) {
       setSearchQuery(query)
     },
+    toggleShowHiddenFilesFilter: () => {
+      dispatch(
+        updateFrameData(frameId, {
+          isShowingHiddenFiles: !isShowingHiddenFiles,
+        } as FileBrowserBlockPayload)
+      )
+    },
+    toggleShowSupportedFilesOnlyFilter: () => {
+      dispatch(
+        updateFrameData(frameId, {
+          isShowingSupportedFilesOnly: !isShowingSupportedFilesOnly,
+        } as FileBrowserBlockPayload)
+      )
+    },
   }
 
   const shouldDisplaySearchResults =
@@ -300,7 +316,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const supportedContentFilter = (element: BrowserFile) =>
     !isShowingSupportedFilesOnly ||
     SUPPORTED_FILE_EXTENSIONS.some(fileExtension =>
-      element.name.endsWith(fileExtension)
+      element.name.endsWith(`.${fileExtension}`)
     )
 
   return (

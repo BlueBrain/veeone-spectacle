@@ -5,6 +5,7 @@ import {
   ArrowBack,
   ArrowForward,
   ArrowUpward,
+  FilterList,
   Home,
   Search,
 } from "@material-ui/icons"
@@ -12,6 +13,7 @@ import { FileBrowserContext } from "../../contexts/FileBrowserContext"
 import BrowsingHistorySelector from "./BrowsingHistorySelector"
 import ViewTypeSelector from "./ViewTypeSelector"
 import SearchFilesBar from "./SearchFilesBar"
+import FiltersSelector from "./FiltersSelector"
 
 interface Props {
   onSelectPathPart(pathPart: number)
@@ -127,11 +129,8 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
           </Grid>
 
           <Grid item>
-            {/*<Tooltip title="Filter view">*/}
-            {/*  <IconButton onClick={openFilterList}>*/}
-            {/*    <FilterList />*/}
-            {/*  </IconButton>*/}
-            {/*</Tooltip>*/}
+            <FiltersSelector />
+
             <Tooltip title="Search files and directories">
               <IconButton onClick={() => setSearchMode(true)}>
                 <Search />

@@ -13,6 +13,14 @@ export interface FileBrowserContextProps {
 
   viewType: FileBrowserViewTypes
 
+  isShowingSupportedFilesOnly: boolean
+
+  isShowingHiddenFiles: boolean
+
+  toggleShowHiddenFilesFilter(): void
+
+  toggleShowSupportedFilesOnlyFilter(): void
+
   navigateUp(): void
 
   navigateBack(): void
@@ -38,6 +46,14 @@ export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
   historyIndex: 0,
   history: [""],
   viewType: FileBrowserViewTypes.Thumbnails,
+  isShowingHiddenFiles: false,
+  isShowingSupportedFilesOnly: true,
+  toggleShowHiddenFilesFilter: () => {
+    throw new Error("Not implemented")
+  },
+  toggleShowSupportedFilesOnlyFilter: () => {
+    throw new Error("Not implemented")
+  },
   navigateUp: () => {
     throw new Error("Not implemented")
   },
