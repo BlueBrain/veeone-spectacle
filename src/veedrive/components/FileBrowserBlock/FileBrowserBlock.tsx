@@ -33,6 +33,8 @@ import {
 import VeeDriveConfig from "../../config"
 import debounce from "lodash.debounce"
 
+const SUPPORTED_FILE_EXTENSIONS = ["jpg", "png", "jpeg", "gif"]
+
 const StyledFileBrowserBlock = styled.div`
   background: #fafafa;
   width: 100%;
@@ -98,6 +100,11 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const historyIndex = blockData?.historyIndex ?? 0
   const activePath = history[historyIndex]
   const viewType = blockData?.viewType ?? FileBrowserViewTypes.Thumbnails
+
+  // View filters
+  const isShowingSupportedFilesOnly =
+    blockData?.isShowingSupportedFilesOnly || true
+  const isShowingHiddenFiles = blockData?.isShowingHiddenFiles || false
 
   const [searchMode, setSearchMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -286,6 +293,16 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const shouldDisplaySearchResults =
     searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
 
+  const hiddenFileOrDirectoryFilter = (
+    element: BrowserFile | BrowserDirectory
+  ) => isShowingHiddenFiles || !element.name.startsWith(".")
+
+  const supportedContentFilter = (element: BrowserFile) =>
+    !isShowingSupportedFilesOnly ||
+    SUPPORTED_FILE_EXTENSIONS.some(fileExtension =>
+      element.name.endsWith(fileExtension)
+    )
+
   return (
     <FileBrowserContext.Provider value={fileBrowserContextProvider}>
       <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
@@ -295,13 +312,19 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
             {/*<FileBrowserDirectories dirs={globalDirectoryTree} />*/}
             {shouldDisplaySearchResults ? (
               <FileBrowserDirectoryContent
-                dirs={searchResults.directories}
-                files={searchResults.files}
+                dirs={searchResults.directories.filter(
+                  hiddenFileOrDirectoryFilter
+                )}
+                files={searchResults.files
+                  .filter(hiddenFileOrDirectoryFilter)
+                  .filter(supportedContentFilter)}
               />
             ) : (
               <FileBrowserDirectoryContent
-                dirs={activePathDirs}
-                files={activePathFiles}
+                dirs={activePathDirs.filter(hiddenFileOrDirectoryFilter)}
+                files={activePathFiles
+                  .filter(hiddenFileOrDirectoryFilter)
+                  .filter(supportedContentFilter)}
               />
             )}
           </StyledMain>

@@ -12,14 +12,9 @@ export interface VeeDriveListDirectoryRequest {
   filters?: string[]
 }
 
-export interface VeeDriveListDirectoryFile {
-  name: string
-  size: number
-}
-
 export interface VeeDriveListDirectoryResponse {
-  directories: string[]
-  files: VeeDriveListDirectoryFile[]
+  directories: VeeDriveSearchResultDirectory[]
+  files: VeeDriveFile[]
 }
 
 export interface VeeDriveFileRequest {
@@ -47,10 +42,7 @@ export interface VeeDriveSearchFileSystemRequest {
   name: string
 }
 
-export interface VeeDriveSearchFileSystemResponse {
-  files: VeeDriveFile[]
-  directories: VeeDriveSearchResultDirectory[]
-}
+export type VeeDriveSearchFileSystemResponse = VeeDriveListDirectoryResponse
 
 export interface VeeDriveFile {
   name: string
