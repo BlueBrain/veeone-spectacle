@@ -39,6 +39,9 @@ export interface FileBrowserContextProps {
   searchQuery: string
   setSearchMode(enabled: boolean): void
   requestSearch(query: string): void
+
+  nameFilterQuery: string
+  filterByName(query: string): void
 }
 
 export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
@@ -81,6 +84,10 @@ export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
     throw new Error("Not implemented")
   },
   requestSearch(query: string) {
+    throw new Error("Not implemented")
+  },
+  nameFilterQuery: "",
+  filterByName(query: string) {
     throw new Error("Not implemented")
   },
 })

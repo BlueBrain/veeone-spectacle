@@ -1,4 +1,5 @@
 import {
+  Divider,
   IconButton,
   ListItemIcon,
   Menu,
@@ -9,6 +10,7 @@ import {
 import { Check, FilterList } from "@material-ui/icons"
 import React, { useContext, useState } from "react"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import NameFilterMenuItem from "./NameFilterMenuItem"
 
 const FiltersSelector: React.FC = () => {
   const {
@@ -59,10 +61,12 @@ const FiltersSelector: React.FC = () => {
         </MenuItem>
         <MenuItem onClick={handleSupportedFilesToggle}>
           <ListItemIcon>
-            {isShowingSupportedFilesOnly ? <Check /> : null}
+            {!isShowingSupportedFilesOnly ? <Check /> : null}
           </ListItemIcon>
-          <Typography>Show supported files only</Typography>
+          <Typography>Show unsupported files</Typography>
         </MenuItem>
+        <Divider />
+        <NameFilterMenuItem />
       </Menu>
     </>
   )

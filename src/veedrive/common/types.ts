@@ -8,6 +8,7 @@ export interface FileBrowserBlockPayload {
   viewType?: FileBrowserViewTypes
   isShowingHiddenFiles?: boolean
   isShowingSupportedFilesOnly?: boolean
+  nameFilterQuery?: string
 }
 
 export enum FileBrowserViewTypes {

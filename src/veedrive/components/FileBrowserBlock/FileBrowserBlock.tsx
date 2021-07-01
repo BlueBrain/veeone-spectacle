@@ -34,6 +34,10 @@ import VeeDriveConfig from "../../config"
 import debounce from "lodash.debounce"
 import FileBrowserFooter from "./FileBrowserFooter"
 
+type FilterableElement = BrowserFile | BrowserDirectory
+
+type FilterFunction = (element: FilterableElement) => boolean
+
 const SUPPORTED_FILE_EXTENSIONS = ["jpg", "png", "jpeg", "gif"]
 
 const StyledFileBrowserBlock = styled.div`
@@ -106,6 +110,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const isShowingSupportedFilesOnly =
     blockData?.isShowingSupportedFilesOnly ?? true
   const isShowingHiddenFiles = blockData?.isShowingHiddenFiles ?? false
+  const nameFilterQuery = blockData?.nameFilterQuery ?? ""
 
   const [searchMode, setSearchMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -305,27 +310,48 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
         } as FileBrowserBlockPayload)
       )
     },
+    nameFilterQuery: nameFilterQuery,
+    filterByName(query: string) {
+      dispatch(
+        updateFrameData(frameId, {
+          nameFilterQuery: query,
+        } as FileBrowserBlockPayload)
+      )
+    },
   }
 
   const shouldDisplaySearchResults =
     searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
 
-  const hiddenFileOrDirectoryFilter = (
-    element: BrowserFile | BrowserDirectory
-  ) => isShowingHiddenFiles || !element.name.startsWith(".")
+  const hiddenFileOrDirectoryFilter: FilterFunction = element =>
+    isShowingHiddenFiles || !element.name.startsWith(".")
 
-  const supportedContentFilter = (element: BrowserFile) =>
+  const supportedContentFilter: FilterFunction = element =>
     !isShowingSupportedFilesOnly ||
     SUPPORTED_FILE_EXTENSIONS.some(fileExtension =>
       element.name.endsWith(`.${fileExtension}`)
     )
 
+  const nameFilter: FilterFunction = element =>
+    element.name.toLowerCase().includes(nameFilterQuery.toLowerCase())
+
+  const combinedFileFilter: FilterFunction = element =>
+    hiddenFileOrDirectoryFilter(element) &&
+    supportedContentFilter(element) &&
+    nameFilter(element)
+
+  const combinedDirFilter: FilterFunction = element =>
+    hiddenFileOrDirectoryFilter(element) && nameFilter(element)
+
   const filteredFiles = (shouldDisplaySearchResults
     ? searchResults.files
     : activePathFiles
-  )
-    .filter(hiddenFileOrDirectoryFilter)
-    .filter(supportedContentFilter)
+  ).filter(combinedFileFilter)
+
+  const filteredDirs = (shouldDisplaySearchResults
+    ? searchResults.directories
+    : activePathDirs
+  ).filter(combinedDirFilter)
 
   const totalFilesCount = activePathFiles.length
   const hiddenFilesCount = totalFilesCount - filteredFiles.length
@@ -339,14 +365,12 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
             {/*<FileBrowserDirectories dirs={globalDirectoryTree} />*/}
             {shouldDisplaySearchResults ? (
               <FileBrowserDirectoryContent
-                dirs={searchResults.directories.filter(
-                  hiddenFileOrDirectoryFilter
-                )}
+                dirs={filteredDirs}
                 files={filteredFiles}
               />
             ) : (
               <FileBrowserDirectoryContent
-                dirs={activePathDirs.filter(hiddenFileOrDirectoryFilter)}
+                dirs={filteredDirs}
                 files={filteredFiles}
               />
             )}
