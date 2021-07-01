@@ -61,7 +61,7 @@ const FiltersSelector: React.FC = () => {
           <ListItemIcon>
             {isShowingSupportedFilesOnly ? <Check /> : null}
           </ListItemIcon>
-          <Typography>Hide unsupported files</Typography>
+          <Typography>Show supported files only</Typography>
         </MenuItem>
       </Menu>
     </>
