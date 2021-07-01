@@ -49,7 +49,7 @@ const StyledFileBrowserBlock = styled.div`
 
 const StyledBlockContent = styled.div`
   width: 100%;
-  height: calc(100% - 5.5rem);
+  height: calc(100% - 6rem);
 `
 
 const StyledMain = styled.div`
@@ -107,8 +107,8 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const viewType = blockData?.viewType ?? FileBrowserViewTypes.Thumbnails
 
   // View filters
-  const isShowingSupportedFilesOnly =
-    blockData?.isShowingSupportedFilesOnly ?? true
+  const isShowingUnsupportedFiles =
+    blockData?.isShowingUnsupportedFiles ?? false
   const isShowingHiddenFiles = blockData?.isShowingHiddenFiles ?? false
   const nameFilterQuery = blockData?.nameFilterQuery ?? ""
 
@@ -266,7 +266,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     history: history,
     viewType: viewType,
     isShowingHiddenFiles: isShowingHiddenFiles,
-    isShowingSupportedFilesOnly: isShowingSupportedFilesOnly,
+    isShowingUnsupportedFiles: isShowingUnsupportedFiles,
     navigateUp() {
       void openParentDirectory()
     },
@@ -303,10 +303,10 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
         } as FileBrowserBlockPayload)
       )
     },
-    toggleShowSupportedFilesOnlyFilter: () => {
+    toggleShowUnsupportedFilesFilter: () => {
       dispatch(
         updateFrameData(frameId, {
-          isShowingSupportedFilesOnly: !isShowingSupportedFilesOnly,
+          isShowingUnsupportedFiles: !isShowingUnsupportedFiles,
         } as FileBrowserBlockPayload)
       )
     },
@@ -327,7 +327,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     isShowingHiddenFiles || !element.name.startsWith(".")
 
   const supportedContentFilter: FilterFunction = element =>
-    !isShowingSupportedFilesOnly ||
+    isShowingUnsupportedFiles ||
     SUPPORTED_FILE_EXTENSIONS.some(fileExtension =>
       element.name.endsWith(`.${fileExtension}`)
     )

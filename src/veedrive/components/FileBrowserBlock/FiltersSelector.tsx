@@ -1,4 +1,5 @@
 import {
+  Badge,
   Divider,
   IconButton,
   ListItemIcon,
@@ -7,7 +8,7 @@ import {
   Tooltip,
   Typography,
 } from "@material-ui/core"
-import { Check, FilterList } from "@material-ui/icons"
+import { Check, Clear, FilterList } from "@material-ui/icons"
 import React, { useContext, useState } from "react"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
 import NameFilterMenuItem from "./NameFilterMenuItem"
@@ -15,9 +16,10 @@ import NameFilterMenuItem from "./NameFilterMenuItem"
 const FiltersSelector: React.FC = () => {
   const {
     isShowingHiddenFiles,
-    isShowingSupportedFilesOnly,
+    isShowingUnsupportedFiles,
     toggleShowHiddenFilesFilter,
-    toggleShowSupportedFilesOnlyFilter,
+    toggleShowUnsupportedFilesFilter,
+    nameFilterQuery,
   } = useContext(FileBrowserContext)
   const [
     viewTypeAnchorElement,
@@ -37,16 +39,25 @@ const FiltersSelector: React.FC = () => {
     toggleShowHiddenFilesFilter()
   }
 
-  const handleSupportedFilesToggle = () => {
+  const handleUnsupportedFilesToggle = () => {
     onCloseMenu()
-    toggleShowSupportedFilesOnlyFilter()
+    toggleShowUnsupportedFilesFilter()
   }
+
+  const clearAllFilters = () => {}
+
+  const activeFiltersCount: number =
+    (isShowingHiddenFiles ? 1 : 0) +
+    (isShowingUnsupportedFiles ? 1 : 0) +
+    (nameFilterQuery.length > 0 ? 1 : 0)
 
   return (
     <>
       <Tooltip title="Filter view">
         <IconButton onClick={openMenu}>
-          <FilterList />
+          <Badge badgeContent={activeFiltersCount} color={"error"}>
+            <FilterList />
+          </Badge>
         </IconButton>
       </Tooltip>
       <Menu
@@ -59,9 +70,9 @@ const FiltersSelector: React.FC = () => {
           <ListItemIcon>{isShowingHiddenFiles ? <Check /> : null}</ListItemIcon>
           <Typography>Show hidden files</Typography>
         </MenuItem>
-        <MenuItem onClick={handleSupportedFilesToggle}>
+        <MenuItem onClick={handleUnsupportedFilesToggle}>
           <ListItemIcon>
-            {!isShowingSupportedFilesOnly ? <Check /> : null}
+            {isShowingUnsupportedFiles ? <Check /> : null}
           </ListItemIcon>
           <Typography>Show unsupported files</Typography>
         </MenuItem>

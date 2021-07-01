@@ -1,6 +1,8 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import { IconButton, Tooltip } from "@material-ui/core"
+import { Clear } from "@material-ui/icons"
 
 const StyledFooter = styled.div`
   font-size: 0.8rem;
@@ -23,7 +25,12 @@ const FileBrowserFooter: React.FC<FileBrowserFooterProps> = ({
   totalFilesCount,
   hiddenFilesCount,
 }) => {
-  const { nameFilterQuery } = useContext(FileBrowserContext)
+  const { nameFilterQuery, filterByName } = useContext(FileBrowserContext)
+
+  const clearFilters = () => {
+    filterByName("")
+  }
+
   return (
     <StyledFooter>
       Total: {totalFilesCount} {totalFilesCount === 1 ? "file" : "files"}{" "}
@@ -31,6 +38,11 @@ const FileBrowserFooter: React.FC<FileBrowserFooterProps> = ({
       {nameFilterQuery.length > 0 ? (
         <StyledNameFilterInfo>
           Filtering by name is active: `{nameFilterQuery}`
+          <Tooltip title="Clear filtering by name">
+            <IconButton onClick={clearFilters} size="small">
+              <Clear />
+            </IconButton>
+          </Tooltip>
         </StyledNameFilterInfo>
       ) : null}
     </StyledFooter>
