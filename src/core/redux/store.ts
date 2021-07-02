@@ -1,6 +1,6 @@
 import { createStore } from "redux"
-import { rootReducer } from "./reducers"
 import { PresentationStateData } from "../presentations/interfaces"
+import { rootReducer } from "../../redux/root"
 
 const initialSpectacleState: PresentationStateData = {
   frames: {
@@ -12,12 +12,15 @@ const initialSpectacleState: PresentationStateData = {
     // }
   },
   frameStack: [],
-  launcherMenus: []
+  launcherMenus: [],
 }
 export const spectacleStore = createStore(
-  rootReducer, initialSpectacleState,
-  (typeof window !== "undefined")
-    // @ts-ignore
-    ? window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  rootReducer,
+  initialSpectacleState,
+  typeof window !== "undefined"
+    ? // @ts-ignore
+      window.__REDUX_DEVTOOLS_EXTENSION__ &&
+        // @ts-ignore
+        window.__REDUX_DEVTOOLS_EXTENSION__()
     : undefined
 )

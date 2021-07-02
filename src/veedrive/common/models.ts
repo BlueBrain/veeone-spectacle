@@ -1,22 +1,21 @@
-import { DirectoryItem, FileItem } from "../types"
+import { VeeDriveDirectory, VeeDriveFile } from "../types"
 
-export class BrowserFile implements FileItem {
-  name: string
+export class BrowserFile implements VeeDriveFile {
+  path: string
   size: number
   dir: string
 
-  constructor({ name, size, dir }) {
-    this.name = name
+  constructor(path, size) {
+    this.path = path
     this.size = size
-    this.dir = dir
   }
 
-  public get fullpath(): string {
-    return `${this.dir}/${this.name}`
+  public get name(): string {
+    return `${this.path.split("/").pop()}`
   }
 }
 
-export class BrowserDirectory implements DirectoryItem {
+export class BrowserDirectory implements VeeDriveDirectory {
   public name: string
   public directories: BrowserDirectory[]
   public files: BrowserFile[]
@@ -24,4 +23,9 @@ export class BrowserDirectory implements DirectoryItem {
   constructor(public path: string) {
     this.name = path.split("/").pop() as string
   }
+}
+
+export interface BrowserContents {
+  files: BrowserFile[]
+  directories: BrowserDirectory[]
 }

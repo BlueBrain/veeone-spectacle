@@ -7,7 +7,7 @@ const StyledImageBlock = styled.div`
   width: 100%;
   height: 100%;
   background: black;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 `
 
 interface ImageBlockParams {
@@ -20,9 +20,9 @@ const imgStyle: CSSProperties = {
   objectFit: "contain",
 }
 
-const ImageBlock: React.FC<ContentBlockProps> = (props) => {
-  const [ imageUrl, setImageUrl ] = useState<string>("")
-  const { path: imagePath } = props.contentData as unknown as ImageBlockParams
+const ImageBlock: React.FC<ContentBlockProps> = props => {
+  const [imageUrl, setImageUrl] = useState<string>("")
+  const { path: imagePath } = (props.contentData as unknown) as ImageBlockParams
 
   useEffect(() => {
     const loadThumbnail = async () => {
@@ -37,9 +37,11 @@ const ImageBlock: React.FC<ContentBlockProps> = (props) => {
     void loadThumbnail()
   })
 
-  return <StyledImageBlock>
-    <img src={imageUrl} style={imgStyle} alt={""} />
-  </StyledImageBlock>
+  return (
+    <StyledImageBlock>
+      <img src={imageUrl} style={imgStyle} alt={""} />
+    </StyledImageBlock>
+  )
 }
 
 export default ImageBlock

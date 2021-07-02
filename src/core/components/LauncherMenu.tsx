@@ -2,7 +2,12 @@ import React from "react"
 import styled from "styled-components"
 import { Position } from "../types"
 import { connect } from "react-redux"
-import { addFrame, AddFramePayload, closeAllFrames, closeLauncherMenu } from "../redux/actions"
+import {
+  addFrame,
+  AddFramePayload,
+  closeAllFrames,
+  closeLauncherMenu,
+} from "../redux/actions"
 import LauncherPrimaryMenu from "./LauncherPrimaryMenu"
 import LauncherPagesNavigator from "./LauncherPagesNavigator"
 import { LauncherMenuAction } from "../launchermenu/launcher-menu-actions"
@@ -10,7 +15,6 @@ import { ContentBlockTypes } from "../../contentblocks/types"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTimes } from "@fortawesome/free-solid-svg-icons"
 import { generateFrameId } from "../frames/utils"
-
 
 interface LauncherMenuProps {
   menuId: string
@@ -27,9 +31,9 @@ interface DispatchProps {
 type Props = LauncherMenuProps & DispatchProps
 
 const StyledCloseButton = styled.button`
-  background: rgba(255, 255, 255, .2);
+  background: rgba(255, 255, 255, 0.2);
   border: none;
-  color: rgba(0, 0, 0, .7);
+  color: rgba(0, 0, 0, 0.7);
   border-radius: 1rem;
   aspect-ratio: 1;
 `
@@ -43,14 +47,14 @@ const StyledLauncherMenu = styled.div`
   z-index: 9999;
   overflow: visible;
   padding: 1rem 1rem;
-  box-shadow: 2rem 2rem 4rem rgba(0, 0, 0, .3),
-  -2rem 2rem 4rem rgba(0, 0, 0, .3);
+  box-shadow: 2rem 2rem 4rem rgba(0, 0, 0, 0.3),
+    -2rem 2rem 4rem rgba(0, 0, 0, 0.3);
   //border-radius: 2rem;
 `
 
 const StyledLauncherMenuBackground = styled.div`
   position: absolute;
-  background: rgba(17, 82, 147, .8);
+  background: rgba(17, 82, 147, 0.8);
   backdrop-filter: grayscale(100%) blur(10px);
   box-sizing: content-box;
   overflow: visible;
@@ -89,12 +93,12 @@ const LauncherMenu = (props: Props) => {
     props.closeLauncherMenu({ menuId: props.menuId })
   }
 
-  const newFrame = (payload) => {
+  const newFrame = payload => {
     close()
     props.addFrame({
       frameId: generateFrameId(),
       position: props.position,
-      ...payload
+      ...payload,
     })
   }
 
@@ -134,17 +138,21 @@ const LauncherMenu = (props: Props) => {
     }
   }
 
-  return <StyledLauncherMenu>
-    <StyledLauncherMenuBackground />
-    <StyledTopControls>
-      <StyledCloseButton type="button" onClick={close}>
-        <FontAwesomeIcon icon={faTimes} />
-      </StyledCloseButton>
-    </StyledTopControls>
+  return (
+    <StyledLauncherMenu>
+      <StyledLauncherMenuBackground />
+      <StyledTopControls>
+        <StyledCloseButton type="button" onClick={close}>
+          <FontAwesomeIcon icon={faTimes} />
+        </StyledCloseButton>
+      </StyledTopControls>
 
-    <LauncherPrimaryMenu onActionSelected={handleAction} />
-    <LauncherPagesNavigator />
-  </StyledLauncherMenu>
+      <LauncherPrimaryMenu onActionSelected={handleAction} />
+      <LauncherPagesNavigator />
+    </StyledLauncherMenu>
+  )
 }
 
-export default connect(null, { addFrame, closeLauncherMenu, closeAllFrames })(LauncherMenu)
+export default connect(null, { addFrame, closeLauncherMenu, closeAllFrames })(
+  LauncherMenu
+)

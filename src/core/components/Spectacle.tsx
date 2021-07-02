@@ -3,9 +3,7 @@ import { Helmet } from "react-helmet"
 import Desk from "./Desk"
 import styled from "styled-components"
 
-interface SpectacleProps {
-}
-
+interface SpectacleProps {}
 
 type Props = SpectacleProps
 
@@ -18,7 +16,10 @@ export const Spectacle = (props: Props) => {
   return (
     <StyledSpectacle>
       <Helmet>
-        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta
+          name="viewport"
+          content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
       </Helmet>
       <Desk />
     </StyledSpectacle>

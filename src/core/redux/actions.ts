@@ -1,6 +1,10 @@
 import { Position, Size } from "../types"
 import { ContentBlockTypes } from "../../contentblocks/types"
-import { FrameDataDict, FrameId, FrameSituationUpdate } from "../presentations/interfaces"
+import {
+  FrameData,
+  FrameId,
+  FrameSituationUpdate,
+} from "../presentations/interfaces"
 
 export enum Actions {
   AddFrame,
@@ -10,11 +14,7 @@ export enum Actions {
   OpenLauncherMenu,
   CloseLauncherMenu,
   CloseAllFrames,
-}
-
-export interface ReduxAction {
-  type: Actions
-  payload: any
+  UpdateFrameData,
 }
 
 export interface AddFramePayload {
@@ -22,7 +22,7 @@ export interface AddFramePayload {
   frameId: FrameId
   position: Position
   size?: Size
-  contentData: FrameDataDict
+  contentData: FrameData
 }
 
 export const addFrame = (payload: AddFramePayload) => ({
@@ -30,29 +30,42 @@ export const addFrame = (payload: AddFramePayload) => ({
   payload: payload,
 })
 
-export const manipulateFrame = (frameId: FrameId, situationUpdate: FrameSituationUpdate) => ({
+export const manipulateFrame = (
+  frameId: FrameId,
+  situationUpdate: FrameSituationUpdate
+) => ({
   type: Actions.ManipulateFrame,
   payload: {
     frameId,
     situationUpdate,
-  }
+  },
 })
 
-export const bringFrameToFront = (frameId) => ({
+export interface UpdateFrameDataPayload {
+  frameId: FrameId
+  data: FrameData
+}
+
+export const updateFrameData = (frameId: FrameId, data: FrameData) => ({
+  type: Actions.UpdateFrameData,
+  payload: { frameId, data } as UpdateFrameDataPayload,
+})
+
+export const bringFrameToFront = frameId => ({
   type: Actions.BringFrameToFront,
-  payload: { frameId }
+  payload: { frameId },
 })
 
 export const closeFrame = (frameId: FrameId) => ({
   type: Actions.CloseFrame,
   payload: {
-    frameId
-  }
+    frameId,
+  },
 })
 
 export const closeAllFrames = () => ({
   type: Actions.CloseAllFrames,
-  payload: {}
+  payload: {},
 })
 
 export interface OpenLauncherMenuPayload {
@@ -61,7 +74,7 @@ export interface OpenLauncherMenuPayload {
 
 export const openLauncherMenu = (payload: OpenLauncherMenuPayload) => ({
   type: Actions.OpenLauncherMenu,
-  payload: payload
+  payload: payload,
 })
 
 export interface CloseLauncherMenuPayload {
@@ -70,5 +83,5 @@ export interface CloseLauncherMenuPayload {
 
 export const closeLauncherMenu = (payload: CloseLauncherMenuPayload) => ({
   type: Actions.CloseLauncherMenu,
-  payload: payload
+  payload: payload,
 })

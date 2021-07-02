@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
 import fileService from "../../service"
 import { BrowserFile } from "../../common/models"
+import { FileBrowserContext } from "../../contexts/FileBrowserContext"
 
 interface FileElementProps {
-  fileData: BrowserFile
+  classes: any
+  file: BrowserFile
 }
-
-const StyledFileElement = styled.div``
 
 const StyledImage = styled.img`
   width: 100%;
@@ -16,31 +16,34 @@ const StyledImage = styled.img`
   overflow: hidden;
 `
 
-const StyledLabel = styled.a`
-  position: relative;
-  word-wrap: anywhere;
-  text-align: center;
-  display: block;
-  font-weight: 600;
-`
-
-
-const FileElement: React.FC<FileElementProps> = ({ fileData }) => {
+const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
   const [thumbnailUrl, setThumbnailUrl] = useState("")
+  const { requestFile } = useContext(FileBrowserContext)
+
   useEffect(() => {
     const loadThumbnail = async () => {
-      const response = await fileService.requestFile({ path: fileData.fullpath })
+      const response = await fileService.requestFile({
+        path: file.path,
+      })
       if (response !== undefined && !!response.thumbnail) {
         setThumbnailUrl(response.thumbnail)
       }
     }
     void loadThumbnail()
   })
-  return <StyledFileElement>
-    {!!thumbnailUrl
-      ? <StyledImage src={thumbnailUrl} />
-      : null}
-    <StyledLabel>{fileData.name}</StyledLabel>
-  </StyledFileElement>
+  return (
+    <div
+      className={classes.gridTile}
+      onClick={() => requestFile(file.path)}
+      title={file.name}
+    >
+      <div className={classes.gridTileThumbnail}>
+        <div className={classes.gridTileThumbnailBody}>
+          {!!thumbnailUrl ? <StyledImage src={thumbnailUrl} /> : null}
+        </div>
+      </div>
+      <div className={classes.gridTileLabel}>{file.name}</div>
+    </div>
+  )
 }
 export default FileElement

@@ -1,29 +1,50 @@
 import styled from "styled-components"
-import React, { useEffect, useState } from "react"
-import FileBrowserDirectories from "./FileBrowserDirectories"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import fileService from "../../service"
-import { DirectoryItem, VeeDriveListDirectoryFile } from "../../types"
+import { VeeDriveSearchFileSystemRequest } from "../../types"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import _ from "lodash"
-import { BrowserDirectory, BrowserFile } from "../../common/models"
-import { ContentBlockProps, ContentBlockTypes } from "../../../contentblocks/types"
-import { connect } from "react-redux"
-import { addFrame, AddFramePayload } from "../../../core/redux/actions"
+import {
+  BrowserContents,
+  BrowserDirectory,
+  BrowserFile,
+} from "../../common/models"
+import {
+  ContentBlockProps,
+  ContentBlockTypes,
+} from "../../../contentblocks/types"
+import { useDispatch, useSelector } from "react-redux"
+import { addFrame, updateFrameData } from "../../../core/redux/actions"
 import { generateFrameId } from "../../../core/frames/utils"
-import { FrameSituation, PresentationStateData } from "../../../core/presentations/interfaces"
+import {
+  FrameEntry,
+  PresentationStateData,
+} from "../../../core/presentations/interfaces"
 import { getFrame } from "../../../core/redux/selectors"
+import {
+  FileBrowserContext,
+  FileBrowserContextProps,
+} from "../../contexts/FileBrowserContext"
+import {
+  FileBrowserBlockPayload,
+  FileBrowserViewTypes,
+} from "../../common/types"
+import VeeDriveConfig from "../../config"
+import debounce from "lodash.debounce"
+
+const SUPPORTED_FILE_EXTENSIONS = ["jpg", "png", "jpeg", "gif"]
 
 const StyledFileBrowserBlock = styled.div`
   background: #fafafa;
   width: 100%;
   height: 100%;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 `
 
 const StyledBlockContent = styled.div`
   width: 100%;
-  height: calc(100% - 50px);
+  height: calc(100% - 4.5rem);
 `
 
 const StyledMain = styled.div`
@@ -34,40 +55,90 @@ const StyledMain = styled.div`
   flex: 1;
 `
 
-interface StateProps {
-  situation: FrameSituation
+const fetchDirectoryContents = async dirPath => {
+  // todo implement cache for not directly affected/loaded dirs
+  const response = await fileService.listDirectory({ path: dirPath })
+  const pathPrefix = dirPath !== "" ? `${dirPath}/` : ``
+  let dirs: BrowserDirectory[]
+  try {
+    const dirsList = response.directories.map(
+      path => new BrowserDirectory(`${pathPrefix}${path}`)
+    )
+    dirs = _.sortBy(dirsList, "name")
+  } catch (err) {
+    // todo this error should be logged/reported
+    console.error(err)
+    return { dirs: [], files: [] }
+  }
+  const files = response.files.map(
+    file => new BrowserFile(`${pathPrefix}${file.name}`, file.size)
+  )
+  return { dirs, files }
 }
 
-interface DispatchProps {
-  addFrame(payload: AddFramePayload): void
+const searchFilesystem = async (query: string): Promise<BrowserContents> => {
+  const payload: VeeDriveSearchFileSystemRequest = {
+    name: query,
+  }
+  const { files, directories } = await fileService.searchFileSystem(payload)
+  return {
+    files: files.map(file => new BrowserFile(file.name, file.size)),
+    directories: directories.map(dirPath => new BrowserDirectory(dirPath)),
+  }
 }
 
-type Props = ContentBlockProps & DispatchProps & StateProps
+const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
+  const dispatch = useDispatch()
 
-const FileBrowserBlock: React.FC<Props> = ({ frameId, addFrame, situation }) => {
-  const [directoryTree, setDirectoryTree] = useState([] as BrowserDirectory[])
-  const [currentFiles, setCurrentFiles] = useState([] as BrowserFile[])
-  const [currentDirs, setCurrentDirs] = useState([] as BrowserDirectory[])
-  const [activePath, setActivePath] = useState("")
+  const frameData = (useSelector<PresentationStateData>(state =>
+    getFrame(state, frameId)
+  ) as unknown) as FrameEntry
 
-  const newImageFrame = (filePath) => {
-    addFrame({
-      type: ContentBlockTypes.Image,
-      frameId: generateFrameId(),
-      position: {
-        top: situation.top + situation.height / 2,
-        left: situation.left + situation.width / 2,
-      },
-      contentData: {
-        path: filePath
-      }
-    })
+  const situation = frameData.situation
+  const blockData = (frameData.data as unknown) as FileBrowserBlockPayload
+  const history = blockData?.history ?? [""]
+  const historyIndex = blockData?.historyIndex ?? 0
+  const activePath = history[historyIndex]
+  const viewType = blockData?.viewType ?? FileBrowserViewTypes.Thumbnails
+
+  // View filters
+  const isShowingSupportedFilesOnly =
+    blockData?.isShowingSupportedFilesOnly ?? true
+  const isShowingHiddenFiles = blockData?.isShowingHiddenFiles ?? false
+
+  const [searchMode, setSearchMode] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [searchResults, setSearchResults] = useState<BrowserContents>({
+    files: [],
+    directories: [],
+  })
+
+  const [globalDirectoryTree, setGlobalDirectoryTree] = useState(
+    [] as BrowserDirectory[]
+  )
+  const [activePathFiles, setActivePathFiles] = useState([] as BrowserFile[])
+  const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
+
+  const newImageFrame = filePath => {
+    dispatch(
+      addFrame({
+        type: ContentBlockTypes.Image,
+        frameId: generateFrameId(),
+        position: {
+          top: situation.top + situation.height / 2,
+          left: situation.left + situation.width / 2,
+        },
+        contentData: {
+          path: filePath,
+        },
+      })
+    )
   }
 
-  const load = async () => {
+  const initializeTree = async () => {
     const paths = activePath.split("/")
+    const tree = await fetchDirectoryContents("")
     let path = ""
-    const tree = await listDirectory("")
     let currentDirList = tree.dirs
     let files = tree.files
 
@@ -75,118 +146,208 @@ const FileBrowserBlock: React.FC<Props> = ({ frameId, addFrame, situation }) => 
       if (p === "") {
         break
       }
-      path += `${p}/`
-      console.debug("load: path=", path)
-      const dirList = await listDirectory(path)
+
+      if (path.length > 0) {
+        path += "/"
+      }
+
+      path += p
+
+      const dirList = await fetchDirectoryContents(path)
       files = dirList.files
-      console.debug("loaded dirs", dirList)
-      const target = _.find(currentDirList, (dir) => dir.name === p)
+      const target = _.find(currentDirList, dir => dir.name === p)
       if (target !== undefined) {
         target.directories = dirList.dirs
       }
       currentDirList = dirList.dirs
     }
-    console.debug("TREE=", tree)
-    setDirectoryTree(tree.dirs)
-    setCurrentDirs(tree.dirs)
-    setCurrentFiles(mapBrowserFiles(files, activePath))
+    setGlobalDirectoryTree(tree.dirs)
+    setActivePathDirs(currentDirList)
+    setActivePathFiles(files)
   }
 
-  const mapBrowserFiles = (fileList: VeeDriveListDirectoryFile[], dir: string) => fileList.map((f) =>
-    new BrowserFile({ name: f.name, size: f.size, dir: dir }))
+  useEffect(() => {
+    void initializeTree()
+  }, [activePath])
 
-  const listDirectory = async (dirPath) => {
-    console.debug("listDirectory", dirPath)
-    const response = await fileService.listDirectory({ path: dirPath })
-    const pathPrefix = dirPath !== "" ? `${dirPath}/` : ``
-    let dirs
-    try {
-      const dirsList = response.directories.map((path) => new BrowserDirectory(`${pathPrefix}${path}`))
-      dirs = _.sortBy(dirsList, 'name')
-    } catch (err) {
-      // todo this error should be logged/reported
-      console.error(err)
-      return { dirs: [], files: [] }
+  const addToBrowsingHistory = dirPath => {
+    const newHistory = [dirPath, ...history.slice(historyIndex)]
+    const newHistoryIndex = 0
+    const newFrameData: FileBrowserBlockPayload = {
+      history: newHistory,
+      historyIndex: newHistoryIndex,
     }
-    const files = response.files
-    return { dirs, files }
+    console.debug("addToBrowsingHistory", newFrameData)
+    dispatch(updateFrameData(frameId, newFrameData))
   }
 
-  const openDirectory = async (dirPath) => {
-    const { dirs, files } = await listDirectory(dirPath)
-    const newDirTree = [...directoryTree]
-    const parts = dirPath.split("/") as string[]
-    let targetDir: DirectoryItem[] = newDirTree
-    let dir: DirectoryItem | undefined
-    for (const part of parts) {
-      dir = _.find(targetDir, (dir) => dir.name === part)
-      if (dir !== undefined) {
-        targetDir = dir.directories
-      } else {
-        break
-      }
-    }
-    if (dir !== undefined) {
-      if (dir.directories === undefined || dir.directories.length === 0) {
-        dir.directories = dirs
-      } else {
-        dir.directories = []
-      }
-      setDirectoryTree(newDirTree)
-    }
-
-    setActivePath(dirPath)
-    setCurrentFiles(mapBrowserFiles(files, dirPath))
-    setCurrentDirs(dirs)
-  }
-
-  const openUpperDirectory = async () => {
-    const upperPath = activePath.split('/').slice(0, -1).join("/")
-    await openDirectory(upperPath)
+  const openParentDirectory = async () => {
+    const upperPath = activePath.split("/").slice(0, -1).join("/")
+    addToBrowsingHistory(upperPath)
   }
 
   const openDirectoryByPathPartIndex = async (pathPartIndex: number) => {
     const path = activePath.split("/").slice(0, pathPartIndex).join("/")
-    console.debug("goToDirectoryByIndex", pathPartIndex, `'${path}'`)
-    return await openDirectory(path)
+    return addToBrowsingHistory(path)
   }
 
-  const openFile = (filename: string) => {
-    const filePath = `${activePath}/${filename}`
-    console.debug(`Requesting a file from frame=${frameId}`, filePath)
+  const setBrowsingHistoryIndex = async (newIndex: number) => {
+    let newHistoryIndex = newIndex
+    if (newHistoryIndex + 1 >= history.length) {
+      newHistoryIndex = history.length - 1
+    }
+    const newFrameData: FileBrowserBlockPayload = {
+      history: history,
+      historyIndex: newHistoryIndex,
+    }
+    dispatch(updateFrameData(frameId, newFrameData))
+  }
+
+  const moveBrowsingHistoryIndex = async (delta: number) => {
+    let newHistoryIndex = historyIndex + delta
+    if (newHistoryIndex < 0) {
+      newHistoryIndex = 0
+    }
+    if (newHistoryIndex + 1 >= history.length) {
+      newHistoryIndex = history.length - 1
+    }
+    const newFrameData: FileBrowserBlockPayload = {
+      history: history,
+      historyIndex: newHistoryIndex,
+    }
+    dispatch(updateFrameData(frameId, newFrameData))
+  }
+
+  const changeViewType = async (newType: FileBrowserViewTypes) => {
+    const newFrameData = {
+      viewType: newType,
+    }
+    dispatch(updateFrameData(frameId, newFrameData))
+  }
+
+  const openPreviousDirectory = async () => {
+    await moveBrowsingHistoryIndex(1)
+  }
+
+  const openNextDirectory = async () => {
+    await moveBrowsingHistoryIndex(-1)
+  }
+
+  const openFile = (filePath: string) => {
+    // const filePath = `${activePath}/${filename}`
+    console.debug(`Requesting ${filePath} from frame=${frameId}`)
     // todo handle different file types (currently all will open an image frame)
     setTimeout(() => newImageFrame(filePath))
   }
 
-  useEffect(() => {
-    return void load()
-  }, [])
+  const performSearch = useCallback(async () => {
+    if (searchQuery.length >= VeeDriveConfig.minSearchQueryLength) {
+      const { directories, files } = await searchFilesystem(searchQuery)
+      setSearchResults({ files, directories })
+    }
+  }, [searchQuery])
 
-  return <StyledFileBrowserBlock onWheel={(event) => event.stopPropagation()}>
-    <StyledBlockContent>
-      <FileBrowserTopbar activePath={activePath}
-                         onSelectPathPart={openDirectoryByPathPartIndex} />
-      <StyledMain>
-        <FileBrowserDirectories
-          dirs={directoryTree}
-          activePath={activePath}
-          onOpenDirectory={openDirectory} />
-        <FileBrowserDirectoryContent
-          dirs={currentDirs}
-          files={currentFiles}
-          onOpenFile={openFile}
-          onOpenUpperDirectory={openUpperDirectory}
-          onOpenDirectory={openDirectory} />
-      </StyledMain>
-    </StyledBlockContent>
-  </StyledFileBrowserBlock>
-}
+  const onSearchQueryChange = useMemo(() => debounce(performSearch, 1000), [
+    performSearch,
+  ])
 
+  useEffect(onSearchQueryChange, [searchQuery, onSearchQueryChange])
 
-const mapStateToProps = (state: PresentationStateData, ownProps: Props): StateProps => {
-  return {
-    situation: getFrame(state, ownProps.frameId).situation,
+  const fileBrowserContextProvider: FileBrowserContextProps = {
+    frameId: frameId,
+    activePath: activePath,
+    historyIndex: historyIndex,
+    history: history,
+    viewType: viewType,
+    isShowingHiddenFiles: isShowingHiddenFiles,
+    isShowingSupportedFilesOnly: isShowingSupportedFilesOnly,
+    navigateUp() {
+      void openParentDirectory()
+    },
+    navigateBack() {
+      void openPreviousDirectory()
+    },
+    navigateForward() {
+      void openNextDirectory()
+    },
+    navigateToIndex(historyIndex: number) {
+      void setBrowsingHistoryIndex(historyIndex)
+    },
+    navigateDirectory(dirPath: string) {
+      void addToBrowsingHistory(dirPath)
+    },
+    requestFile(fileName: string) {
+      void openFile(fileName)
+    },
+    changeViewType(newViewType: FileBrowserViewTypes) {
+      void changeViewType(newViewType)
+    },
+    searchModeOn: searchMode,
+    searchQuery: searchQuery,
+    setSearchMode(enabled: boolean) {
+      setSearchMode(enabled)
+    },
+    async requestSearch(query: string) {
+      setSearchQuery(query)
+    },
+    toggleShowHiddenFilesFilter: () => {
+      dispatch(
+        updateFrameData(frameId, {
+          isShowingHiddenFiles: !isShowingHiddenFiles,
+        } as FileBrowserBlockPayload)
+      )
+    },
+    toggleShowSupportedFilesOnlyFilter: () => {
+      dispatch(
+        updateFrameData(frameId, {
+          isShowingSupportedFilesOnly: !isShowingSupportedFilesOnly,
+        } as FileBrowserBlockPayload)
+      )
+    },
   }
+
+  const shouldDisplaySearchResults =
+    searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
+
+  const hiddenFileOrDirectoryFilter = (
+    element: BrowserFile | BrowserDirectory
+  ) => isShowingHiddenFiles || !element.name.startsWith(".")
+
+  const supportedContentFilter = (element: BrowserFile) =>
+    !isShowingSupportedFilesOnly ||
+    SUPPORTED_FILE_EXTENSIONS.some(fileExtension =>
+      element.name.endsWith(`.${fileExtension}`)
+    )
+
+  return (
+    <FileBrowserContext.Provider value={fileBrowserContextProvider}>
+      <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
+        <StyledBlockContent>
+          <FileBrowserTopbar onSelectPathPart={openDirectoryByPathPartIndex} />
+          <StyledMain>
+            {/*<FileBrowserDirectories dirs={globalDirectoryTree} />*/}
+            {shouldDisplaySearchResults ? (
+              <FileBrowserDirectoryContent
+                dirs={searchResults.directories.filter(
+                  hiddenFileOrDirectoryFilter
+                )}
+                files={searchResults.files
+                  .filter(hiddenFileOrDirectoryFilter)
+                  .filter(supportedContentFilter)}
+              />
+            ) : (
+              <FileBrowserDirectoryContent
+                dirs={activePathDirs.filter(hiddenFileOrDirectoryFilter)}
+                files={activePathFiles
+                  .filter(hiddenFileOrDirectoryFilter)
+                  .filter(supportedContentFilter)}
+              />
+            )}
+          </StyledMain>
+        </StyledBlockContent>
+      </StyledFileBrowserBlock>
+    </FileBrowserContext.Provider>
+  )
 }
 
-export default connect(mapStateToProps, { addFrame })(FileBrowserBlock)
+export default FileBrowserBlock

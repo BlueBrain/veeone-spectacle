@@ -10,7 +10,11 @@ const IndexPage = () => {
   if (isBrowser) {
     window.oncontextmenu = event => event.preventDefault()
   }
-  return <Provider store={spectacleStore}><Spectacle /></Provider>
+  return (
+    <Provider store={spectacleStore}>
+      <Spectacle />
+    </Provider>
+  )
 }
 
 export default IndexPage

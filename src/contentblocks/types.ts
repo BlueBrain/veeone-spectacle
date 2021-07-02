@@ -12,5 +12,5 @@ export enum ContentBlockTypes {
 
 export interface ContentBlockProps {
   frameId: FrameId
-  contentData: {[key: string]: Json}
+  contentData: { [key: string]: Json } | any
 }

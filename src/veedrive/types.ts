@@ -1,18 +1,20 @@
-export type Json = string | number | boolean | null | Json[] | { [key: string]: Json }
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | Json[]
+  | { [key: string]: Json }
 
 export interface VeeDriveListDirectoryRequest {
   path: string
   filters?: string[]
 }
 
-export interface VeeDriveListDirectoryFile {
-  name: string
-  size: number
-}
-
 export interface VeeDriveListDirectoryResponse {
-  directories: string[]
-  files: VeeDriveListDirectoryFile[]
+  directories: VeeDriveSearchResultDirectory[]
+  files: VeeDriveFile[]
 }
 
 export interface VeeDriveFileRequest {
@@ -36,14 +38,22 @@ export interface VeeDriveImageResponse extends VeeDriveFileResponse {
   scaled?: string
 }
 
-export interface FileItem {
+export interface VeeDriveSearchFileSystemRequest {
+  name: string
+}
+
+export type VeeDriveSearchFileSystemResponse = VeeDriveListDirectoryResponse
+
+export interface VeeDriveFile {
   name: string
   size: number
 }
 
-export interface DirectoryItem {
+export interface VeeDriveDirectory {
   name: string
   path: string
-  directories: DirectoryItem[]
-  files: FileItem[]
+  directories: VeeDriveDirectory[]
+  files: VeeDriveFile[]
 }
+
+export type VeeDriveSearchResultDirectory = string
