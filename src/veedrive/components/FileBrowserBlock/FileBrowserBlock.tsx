@@ -32,6 +32,7 @@ import {
 } from "../../common/types"
 import VeeDriveConfig from "../../config"
 import debounce from "lodash.debounce"
+import FileBrowserFooter from "./FileBrowserFooter"
 
 const SUPPORTED_FILE_EXTENSIONS = ["jpg", "png", "jpeg", "gif"]
 
@@ -44,7 +45,7 @@ const StyledFileBrowserBlock = styled.div`
 
 const StyledBlockContent = styled.div`
   width: 100%;
-  height: calc(100% - 4.5rem);
+  height: calc(100% - 5.5rem);
 `
 
 const StyledMain = styled.div`
@@ -319,6 +320,16 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
       element.name.endsWith(`.${fileExtension}`)
     )
 
+  const filteredFiles = (shouldDisplaySearchResults
+    ? searchResults.files
+    : activePathFiles
+  )
+    .filter(hiddenFileOrDirectoryFilter)
+    .filter(supportedContentFilter)
+
+  const totalFilesCount = activePathFiles.length
+  const hiddenFilesCount = totalFilesCount - filteredFiles.length
+
   return (
     <FileBrowserContext.Provider value={fileBrowserContextProvider}>
       <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
@@ -331,19 +342,19 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
                 dirs={searchResults.directories.filter(
                   hiddenFileOrDirectoryFilter
                 )}
-                files={searchResults.files
-                  .filter(hiddenFileOrDirectoryFilter)
-                  .filter(supportedContentFilter)}
+                files={filteredFiles}
               />
             ) : (
               <FileBrowserDirectoryContent
                 dirs={activePathDirs.filter(hiddenFileOrDirectoryFilter)}
-                files={activePathFiles
-                  .filter(hiddenFileOrDirectoryFilter)
-                  .filter(supportedContentFilter)}
+                files={filteredFiles}
               />
             )}
           </StyledMain>
+          <FileBrowserFooter
+            totalFilesCount={totalFilesCount}
+            hiddenFilesCount={hiddenFilesCount}
+          />
         </StyledBlockContent>
       </StyledFileBrowserBlock>
     </FileBrowserContext.Provider>
