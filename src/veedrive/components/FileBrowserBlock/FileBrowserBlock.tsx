@@ -34,6 +34,10 @@ import VeeDriveConfig from "../../config"
 import debounce from "lodash.debounce"
 import FileBrowserFooter from "./FileBrowserFooter"
 
+type FilterableElement = BrowserFile | BrowserDirectory
+
+type FilterFunction = (element: FilterableElement) => boolean
+
 const SUPPORTED_FILE_EXTENSIONS = ["jpg", "png", "jpeg", "gif"]
 
 const StyledFileBrowserBlock = styled.div`
@@ -45,7 +49,7 @@ const StyledFileBrowserBlock = styled.div`
 
 const StyledBlockContent = styled.div`
   width: 100%;
-  height: calc(100% - 5.5rem);
+  height: calc(100% - 6rem);
 `
 
 const StyledMain = styled.div`
@@ -103,9 +107,10 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const viewType = blockData?.viewType ?? FileBrowserViewTypes.Thumbnails
 
   // View filters
-  const isShowingSupportedFilesOnly =
-    blockData?.isShowingSupportedFilesOnly ?? true
+  const isShowingUnsupportedFiles =
+    blockData?.isShowingUnsupportedFiles ?? false
   const isShowingHiddenFiles = blockData?.isShowingHiddenFiles ?? false
+  const nameFilterQuery = blockData?.nameFilterQuery ?? ""
 
   const [searchMode, setSearchMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -261,7 +266,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     history: history,
     viewType: viewType,
     isShowingHiddenFiles: isShowingHiddenFiles,
-    isShowingSupportedFilesOnly: isShowingSupportedFilesOnly,
+    isShowingUnsupportedFiles: isShowingUnsupportedFiles,
     navigateUp() {
       void openParentDirectory()
     },
@@ -298,10 +303,18 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
         } as FileBrowserBlockPayload)
       )
     },
-    toggleShowSupportedFilesOnlyFilter: () => {
+    toggleShowUnsupportedFilesFilter: () => {
       dispatch(
         updateFrameData(frameId, {
-          isShowingSupportedFilesOnly: !isShowingSupportedFilesOnly,
+          isShowingUnsupportedFiles: !isShowingUnsupportedFiles,
+        } as FileBrowserBlockPayload)
+      )
+    },
+    nameFilterQuery: nameFilterQuery,
+    filterByName(query: string) {
+      dispatch(
+        updateFrameData(frameId, {
+          nameFilterQuery: query,
         } as FileBrowserBlockPayload)
       )
     },
@@ -310,22 +323,35 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const shouldDisplaySearchResults =
     searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
 
-  const hiddenFileOrDirectoryFilter = (
-    element: BrowserFile | BrowserDirectory
-  ) => isShowingHiddenFiles || !element.name.startsWith(".")
+  const hiddenFileOrDirectoryFilter: FilterFunction = element =>
+    isShowingHiddenFiles || !element.name.startsWith(".")
 
-  const supportedContentFilter = (element: BrowserFile) =>
-    !isShowingSupportedFilesOnly ||
+  const supportedContentFilter: FilterFunction = element =>
+    isShowingUnsupportedFiles ||
     SUPPORTED_FILE_EXTENSIONS.some(fileExtension =>
       element.name.endsWith(`.${fileExtension}`)
     )
 
+  const nameFilter: FilterFunction = element =>
+    element.name.toLowerCase().includes(nameFilterQuery.toLowerCase())
+
+  const combinedFileFilter: FilterFunction = element =>
+    hiddenFileOrDirectoryFilter(element) &&
+    supportedContentFilter(element) &&
+    nameFilter(element)
+
+  const combinedDirFilter: FilterFunction = element =>
+    hiddenFileOrDirectoryFilter(element) && nameFilter(element)
+
   const filteredFiles = (shouldDisplaySearchResults
     ? searchResults.files
     : activePathFiles
-  )
-    .filter(hiddenFileOrDirectoryFilter)
-    .filter(supportedContentFilter)
+  ).filter(combinedFileFilter)
+
+  const filteredDirs = (shouldDisplaySearchResults
+    ? searchResults.directories
+    : activePathDirs
+  ).filter(combinedDirFilter)
 
   const totalFilesCount = activePathFiles.length
   const hiddenFilesCount = totalFilesCount - filteredFiles.length
@@ -339,14 +365,12 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
             {/*<FileBrowserDirectories dirs={globalDirectoryTree} />*/}
             {shouldDisplaySearchResults ? (
               <FileBrowserDirectoryContent
-                dirs={searchResults.directories.filter(
-                  hiddenFileOrDirectoryFilter
-                )}
+                dirs={filteredDirs}
                 files={filteredFiles}
               />
             ) : (
               <FileBrowserDirectoryContent
-                dirs={activePathDirs.filter(hiddenFileOrDirectoryFilter)}
+                dirs={filteredDirs}
                 files={filteredFiles}
               />
             )}
