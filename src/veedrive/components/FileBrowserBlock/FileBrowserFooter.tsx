@@ -16,16 +16,15 @@ const StyledNameFilterInfo = styled.span`
   padding-left: 0.5rem;
 `
 
-interface FileBrowserFooterProps {
-  totalFilesCount: number
-  hiddenFilesCount: number
-}
+interface FileBrowserFooterProps {}
 
-const FileBrowserFooter: React.FC<FileBrowserFooterProps> = ({
-  totalFilesCount,
-  hiddenFilesCount,
-}) => {
-  const { nameFilterQuery, filterByName } = useContext(FileBrowserContext)
+const FileBrowserFooter: React.FC<FileBrowserFooterProps> = () => {
+  const {
+    nameFilterQuery,
+    filterByName,
+    totalFilesCount,
+    hiddenFilesCount,
+  } = useContext(FileBrowserContext)
 
   const clearFilters = () => {
     filterByName("")

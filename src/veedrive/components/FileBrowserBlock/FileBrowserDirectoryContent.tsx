@@ -5,6 +5,7 @@ import { FileBrowserViewTypes } from "../../common/types"
 import DirectoryThumbnails from "./DirectoryThumbnails"
 import DirectoryList from "./DirectoryList"
 import { BrowserDirectory, BrowserFile } from "../../common/models"
+import EmptyResults from "./EmptyResults"
 
 interface Props {
   files: BrowserFile[]
@@ -28,9 +29,13 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
 
   const displayType = viewType ?? FileBrowserViewTypes.Thumbnails
 
+  const isEmpty = !dirs.length && !files.length
+
   return (
     <StyledFileBrowserFileList>
-      {displayType === FileBrowserViewTypes.Thumbnails ? (
+      {isEmpty ? (
+        <EmptyResults />
+      ) : displayType === FileBrowserViewTypes.Thumbnails ? (
         <DirectoryThumbnails dirs={dirs} files={files} />
       ) : (
         <DirectoryList dirs={dirs} files={files} />

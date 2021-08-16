@@ -21,6 +21,8 @@ export interface FileBrowserContextProps {
 
   toggleShowUnsupportedFilesFilter(): void
 
+  resetFilters(): void
+
   navigateUp(): void
 
   navigateBack(): void
@@ -42,6 +44,11 @@ export interface FileBrowserContextProps {
 
   nameFilterQuery: string
   filterByName(query: string): void
+
+  hiddenFilesCount: number
+  totalFilesCount: number
+
+  displayAllHiddenFiles(): void
 }
 
 export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
@@ -88,6 +95,14 @@ export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
   },
   nameFilterQuery: "",
   filterByName(query: string) {
+    throw new Error("Not implemented")
+  },
+  resetFilters() {
+    throw new Error("Not implemented")
+  },
+  hiddenFilesCount: 0,
+  totalFilesCount: 0,
+  displayAllHiddenFiles() {
     throw new Error("Not implemented")
   },
 })

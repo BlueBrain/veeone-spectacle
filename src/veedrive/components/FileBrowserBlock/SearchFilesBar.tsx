@@ -25,7 +25,9 @@ const useStyles = makeStyles(theme =>
 
 const SearchFilesBar: React.FC = () => {
   const classes = useStyles()
-  const { setSearchMode, requestSearch } = useContext(FileBrowserContext)
+  const { setSearchMode, requestSearch, searchQuery } = useContext(
+    FileBrowserContext
+  )
 
   const onSearchQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     void requestSearch(event.target.value)
@@ -41,6 +43,7 @@ const SearchFilesBar: React.FC = () => {
             </InputLabel>
             <FilledInput
               onChange={onSearchQueryChange}
+              value={searchQuery}
               autoFocus={true}
               type={"text"}
               endAdornment={
