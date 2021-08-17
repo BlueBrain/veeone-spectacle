@@ -1,6 +1,14 @@
 import React, { useContext } from "react"
-import { Button, createStyles, makeStyles } from "@material-ui/core"
+import {
+  Button,
+  createStyles,
+  IconButton,
+  makeStyles,
+  Tooltip,
+} from "@material-ui/core"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import { ArrowUpward } from "@material-ui/icons"
+
 const useStyles = makeStyles(theme =>
   createStyles({
     container: {
@@ -9,6 +17,7 @@ const useStyles = makeStyles(theme =>
       justifyContent: "center",
       height: "100%",
       alignItems: "center",
+      textAlign: "center",
     },
     searchQuery: {
       fontStyle: "italic",
@@ -25,6 +34,7 @@ const EmptyResults: React.FC = () => {
     totalFilesCount,
     hiddenFilesCount,
     displayAllHiddenFiles,
+    navigateUp,
   } = useContext(FileBrowserContext)
   let message
 
@@ -33,6 +43,7 @@ const EmptyResults: React.FC = () => {
   const resetMySearchQuery = () => requestSearch("")
   const deactivateNameFiltering = () => filterByName("")
   const showAllFiles = () => displayAllHiddenFiles()
+  const goToParentDirectory = () => navigateUp()
 
   if (!!searchQuery.length && searchModeOn) {
     message = (
@@ -71,7 +82,18 @@ const EmptyResults: React.FC = () => {
       </div>
     )
   } else if (!totalFilesCount) {
-    message = "This directory is empty."
+    message = (
+      <div>
+        <Tooltip title="Move to the parent directory">
+          <span>
+            <IconButton onClick={goToParentDirectory}>
+              <ArrowUpward />
+            </IconButton>
+          </span>
+        </Tooltip>
+        <div>This directory is empty.</div>
+      </div>
+    )
   }
 
   return <div className={classes.container}>{message}</div>
