@@ -259,6 +259,42 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
 
   useEffect(onSearchQueryChange, [searchQuery, onSearchQueryChange])
 
+  const shouldDisplaySearchResults =
+    searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
+
+  const hiddenFileOrDirectoryFilter: FilterFunction = element =>
+    isShowingHiddenFiles || !element.name.startsWith(".")
+
+  const supportedContentFilter: FilterFunction = element =>
+    isShowingUnsupportedFiles ||
+    SUPPORTED_FILE_EXTENSIONS.some(fileExtension =>
+      element.name.endsWith(`.${fileExtension}`)
+    )
+
+  const nameFilter: FilterFunction = element =>
+    element.name.toLowerCase().includes(nameFilterQuery.toLowerCase())
+
+  const combinedFileFilter: FilterFunction = element =>
+    hiddenFileOrDirectoryFilter(element) &&
+    supportedContentFilter(element) &&
+    nameFilter(element)
+
+  const combinedDirFilter: FilterFunction = element =>
+    hiddenFileOrDirectoryFilter(element) && nameFilter(element)
+
+  const filteredFiles = (shouldDisplaySearchResults
+    ? searchResults.files
+    : activePathFiles
+  ).filter(combinedFileFilter)
+
+  const filteredDirs = (shouldDisplaySearchResults
+    ? searchResults.directories
+    : activePathDirs
+  ).filter(combinedDirFilter)
+
+  const totalFilesCount = activePathFiles.length
+  const hiddenFilesCount = totalFilesCount - filteredFiles.length
+
   const fileBrowserContextProvider: FileBrowserContextProps = {
     frameId: frameId,
     activePath: activePath,
@@ -318,43 +354,26 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
         } as FileBrowserBlockPayload)
       )
     },
+    resetFilters() {
+      dispatch(
+        updateFrameData(frameId, {
+          nameFilterQuery: "",
+          isShowingHiddenFiles: false,
+          isShowingUnsupportedFiles: false,
+        } as FileBrowserBlockPayload)
+      )
+    },
+    totalFilesCount: totalFilesCount,
+    hiddenFilesCount: hiddenFilesCount,
+    displayAllHiddenFiles() {
+      dispatch(
+        updateFrameData(frameId, {
+          isShowingHiddenFiles: true,
+          isShowingUnsupportedFiles: true,
+        } as FileBrowserBlockPayload)
+      )
+    },
   }
-
-  const shouldDisplaySearchResults =
-    searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
-
-  const hiddenFileOrDirectoryFilter: FilterFunction = element =>
-    isShowingHiddenFiles || !element.name.startsWith(".")
-
-  const supportedContentFilter: FilterFunction = element =>
-    isShowingUnsupportedFiles ||
-    SUPPORTED_FILE_EXTENSIONS.some(fileExtension =>
-      element.name.endsWith(`.${fileExtension}`)
-    )
-
-  const nameFilter: FilterFunction = element =>
-    element.name.toLowerCase().includes(nameFilterQuery.toLowerCase())
-
-  const combinedFileFilter: FilterFunction = element =>
-    hiddenFileOrDirectoryFilter(element) &&
-    supportedContentFilter(element) &&
-    nameFilter(element)
-
-  const combinedDirFilter: FilterFunction = element =>
-    hiddenFileOrDirectoryFilter(element) && nameFilter(element)
-
-  const filteredFiles = (shouldDisplaySearchResults
-    ? searchResults.files
-    : activePathFiles
-  ).filter(combinedFileFilter)
-
-  const filteredDirs = (shouldDisplaySearchResults
-    ? searchResults.directories
-    : activePathDirs
-  ).filter(combinedDirFilter)
-
-  const totalFilesCount = activePathFiles.length
-  const hiddenFilesCount = totalFilesCount - filteredFiles.length
 
   return (
     <FileBrowserContext.Provider value={fileBrowserContextProvider}>
@@ -362,23 +381,12 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
         <StyledBlockContent>
           <FileBrowserTopbar onSelectPathPart={openDirectoryByPathPartIndex} />
           <StyledMain>
-            {/*<FileBrowserDirectories dirs={globalDirectoryTree} />*/}
-            {shouldDisplaySearchResults ? (
-              <FileBrowserDirectoryContent
-                dirs={filteredDirs}
-                files={filteredFiles}
-              />
-            ) : (
-              <FileBrowserDirectoryContent
-                dirs={filteredDirs}
-                files={filteredFiles}
-              />
-            )}
+            <FileBrowserDirectoryContent
+              dirs={filteredDirs}
+              files={filteredFiles}
+            />
           </StyledMain>
-          <FileBrowserFooter
-            totalFilesCount={totalFilesCount}
-            hiddenFilesCount={hiddenFilesCount}
-          />
+          <FileBrowserFooter />
         </StyledBlockContent>
       </StyledFileBrowserBlock>
     </FileBrowserContext.Provider>
