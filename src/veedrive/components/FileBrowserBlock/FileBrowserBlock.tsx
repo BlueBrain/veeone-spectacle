@@ -177,7 +177,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   }, [activePath])
 
   const addToBrowsingHistory = dirPath => {
-    const recentPath = history.length > 0 ? history[0] : ""
+    const recentPath = history.length > 0 ? history[historyIndex] : ""
     if (dirPath === recentPath) {
       return
     }
