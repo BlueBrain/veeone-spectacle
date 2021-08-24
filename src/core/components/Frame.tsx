@@ -111,7 +111,12 @@ const Frame: React.FC<Props> = ({
           endOnly: true,
         }),
       ],
-      onstart: () => {
+      onstart: event => {
+        event.target.addEventListener(
+          "click",
+          event => event.stopImmediatePropagation(),
+          { capture: true, once: true }
+        )
         frameRef.current.style.zIndex = "9999"
         console.debug("frame start", left, top, frame.situation)
       },
