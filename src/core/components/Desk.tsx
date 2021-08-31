@@ -14,6 +14,7 @@ import { closeLauncherMenu, openLauncherMenu } from "../redux/actions"
 import interact from "interactjs"
 import { Target } from "@interactjs/types/index"
 import styled from "styled-components"
+import LoadSaveButtons from "./LoadSaveButtons"
 
 interact.pointerMoveTolerance(4)
 
@@ -63,6 +64,7 @@ const Desk: React.FC<Props> = (props: Props) => {
 
   return (
     <StyledDesk ref={refObject}>
+      <LoadSaveButtons />
       {Object.keys(props.frames).map(frameId => {
         const frame = props.frames[frameId]
         return typeof frame !== "undefined" ? (

@@ -49,3 +49,8 @@ export type FrameSituationUpdate = {
   angle?: number
   isFullscreen?: boolean
 }
+
+export interface PresentationDataPayload {
+  id: string
+  state: PresentationStateData
+}

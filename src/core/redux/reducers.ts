@@ -1,6 +1,5 @@
 import { Actions, AddFramePayload, UpdateFrameDataPayload } from "./actions"
 import {
-  FrameData,
   FramesRegister,
   FrameStack,
   LauncherMenuData,
@@ -69,8 +68,13 @@ export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
       }
     }
 
-    default:
+    case Actions.LoadPresentation: {
+      return action.payload.state.frames
+    }
+
+    default: {
       return frames
+    }
   }
 }
 
@@ -92,6 +96,9 @@ export const frameStackReducer = (
       const frameId = action.payload.frameId
       return [...frameStack.filter(id => id !== frameId), frameId]
     }
+    case Actions.LoadPresentation: {
+      return action.payload.state.frameStack
+    }
     default:
       return frameStack
   }
@@ -112,6 +119,10 @@ export const launcherMenuReducer = (
 
     case Actions.CloseLauncherMenu:
       return launcherMenus.filter(menu => menu.menuId !== action.payload.menuId)
+
+    case Actions.LoadPresentation: {
+      return action.payload.state.launcherMenus
+    }
 
     default:
       return launcherMenus

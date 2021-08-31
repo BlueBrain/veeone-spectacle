@@ -4,9 +4,12 @@ import {
   FrameData,
   FrameId,
   FrameSituationUpdate,
+  PresentationDataPayload,
+  PresentationStateData,
 } from "../presentations/interfaces"
 
 export enum Actions {
+  LoadPresentation,
   AddFrame,
   ManipulateFrame,
   CloseFrame,
@@ -83,5 +86,10 @@ export interface CloseLauncherMenuPayload {
 
 export const closeLauncherMenu = (payload: CloseLauncherMenuPayload) => ({
   type: Actions.CloseLauncherMenu,
+  payload: payload,
+})
+
+export const loadPresentation = (payload: PresentationDataPayload) => ({
+  type: Actions.LoadPresentation,
   payload: payload,
 })
