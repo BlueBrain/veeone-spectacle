@@ -70,3 +70,4 @@ yarn-error.log
 .yarn-integrity
 
 src/assets/tmp/
+package-lock.json
