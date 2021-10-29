@@ -15,7 +15,11 @@ const LoadSaveButtons: React.FC = () => {
       localStorage.getItem("presentation") ?? "{}"
     )
     console.debug("Load state from local storage", loadedPresentation)
-    dispatch(loadPresentation(loadedPresentation))
+    if (Object.keys(loadedPresentation).length > 0) {
+      dispatch(loadPresentation(loadedPresentation))
+    } else {
+      console.warn("No presentation data available in storage")
+    }
   }
 
   const save = () => {

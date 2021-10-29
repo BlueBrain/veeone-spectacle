@@ -43,6 +43,7 @@
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
     "react-redux": "^7.2.3",
+    "react-simple-keyboard": "^3.2.66",
     "styled-components": "^5.2.3",
     "swiper": "^6.5.9",
     "typescript": "^4.2.4"
