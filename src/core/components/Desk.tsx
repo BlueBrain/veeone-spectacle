@@ -35,11 +35,11 @@ interface DeskProps {}
 type Props = DeskProps & DispatchProps & StateProps
 
 const StyledDesk = styled.div`
-  background: rgb(102, 102, 102);
+  background: rgb(5, 10, 86);
   background: radial-gradient(
     circle,
-    rgba(102, 102, 102, 1) 0%,
-    rgba(68, 68, 68, 1) 100%
+    rgba(3, 86, 150, 1) 0%,
+    rgba(5, 10, 86, 1) 80%
   );
   width: 100%;
   height: 100%;

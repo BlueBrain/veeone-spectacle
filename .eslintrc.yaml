@@ -1,5 +1,6 @@
 env:
   browser: true
+  jest/globals: true
 rules:
   strict: off
   import/no-anonymous-default-export:
@@ -8,8 +9,11 @@ rules:
   react/prop-types: "off"
 extends:
   - "react-app"
+  - "react-app/jest"
   - "prettier"
+  - "eslint:recommended"
   - "plugin:react/recommended"
+  - "plugin:jest/recommended"
 parser: "@typescript-eslint/parser"
 parserOptions:
   project: "./tsconfig.eslint.json"
@@ -20,4 +24,5 @@ plugins:
   - "eslint-plugin-no-null"
   - "eslint-plugin-unicorn"
   - "eslint-plugin-jsdoc"
+  - "eslint-plugin-jest"
   - "@typescript-eslint/eslint-plugin"

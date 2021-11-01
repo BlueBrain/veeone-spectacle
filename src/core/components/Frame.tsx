@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useEffect, useRef } from "react"
+import { MutableRefObject, useEffect, useRef } from "react"
 import "@interactjs/modifiers"
 import interact from "interactjs"
 import { connect } from "react-redux"
@@ -62,7 +62,7 @@ const Frame: React.FC<Props> = ({
   let { width, height, left, top, angle, isFullscreen } = frame.situation
   let gesturableStart: FrameSituation
   let fingerAngleOffset = 0
-  const frameRef = useRef()
+  const frameRef = useRef<any>()
 
   const getTarget = () => (frameRef.current as unknown) as Target
 
@@ -165,7 +165,14 @@ const Frame: React.FC<Props> = ({
     interact(getTarget()).gesturable({
       onstart: event => {
         fingerAngleOffset = event.angle - angle
-        gesturableStart = { left, top, width, height, angle }
+        gesturableStart = {
+          left,
+          top,
+          width,
+          height,
+          angle,
+          disableWheelScaling: false,
+        }
       },
       onmove: (event: GestureEvent) => {
         // todo parametrize this (rotating frame)

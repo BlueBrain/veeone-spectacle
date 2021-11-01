@@ -1,13 +1,11 @@
-# Build ReactJS application
 ARG SPECTACLE_NODE_IMAGE_VERSION=17.0.1
 ARG SPECTACLE_NGINX_IMAGE_VERSION=stable-alpine
 
-# Build React app
 FROM node:${SPECTACLE_NODE_IMAGE_VERSION} as builder
 WORKDIR /app
 ADD . /app
 RUN npm install && \
-#    npm run test && \
+    npm run test && \
     npm run build
 
 # Build Nginx server
@@ -19,7 +17,7 @@ FROM nginx:${SPECTACLE_NGINX_IMAGE_VERSION}
 ARG SPECTACLE_BASE_PATH=""
 
 ARG SPECTACLE_NGINX_HTML_ROOT=/usr/share/nginx/html
-ARG SPECTACLE_BUILD_PATH=/app/build
+ARG SPECTACLE_BUILD_PATH=/app/dist
 
 # Copy app artifacts
 COPY --from=builder ${SPECTACLE_BUILD_PATH} ${SPECTACLE_NGINX_HTML_ROOT}
