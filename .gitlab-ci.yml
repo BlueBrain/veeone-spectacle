@@ -10,4 +10,7 @@ docker:
 publish-spectacle:
   extends: .publish-image-using-kaniko
   variables:
+    REGISTRY_IMAGE_TAG: latest
     CI_REGISTRY_IMAGE: docker-registry-default.ocp.bbp.epfl.ch/bbp-ou-visualization/veeone-spectacle
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
