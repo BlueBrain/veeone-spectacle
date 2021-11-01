@@ -58,7 +58,7 @@ interface VisualKeyboardProps {
   onInputChange: (button) => void
 }
 
-const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
+export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
   onEscape,
   initialValue = "",
   identifier,
@@ -170,5 +170,3 @@ const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
     </StyledKeyboard>
   )
 }
-
-export default VisualKeyboard
