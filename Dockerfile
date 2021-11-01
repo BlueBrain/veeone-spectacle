@@ -4,6 +4,9 @@ ARG SPECTACLE_NGINX_IMAGE_VERSION=stable-alpine
 FROM node:${SPECTACLE_NODE_IMAGE_VERSION} as builder
 WORKDIR /app
 ADD . /app
+
+RUN npm install -g npm@8.1.2
+
 RUN npm install && \
     npm run test && \
     npm run build
