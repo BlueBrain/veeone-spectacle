@@ -1,0 +1,16 @@
+include:
+  - project: viz/ci/gitlabpipelines
+    file: index.yml
+
+build:
+  extends: .build-ts
+
+docker:
+  variables:
+    CI_REGISTRY_IMAGE: docker-registry-default.ocp.bbp.epfl.ch/bbp-ou-visualization/veeone-spectacle
+  extends: .build-image-using-kaniko
+
+publish-spectacle:
+  extends: .publish-image-using-kaniko
+  variables:
+    CI_REGISTRY_IMAGE: docker-registry-default.ocp.bbp.epfl.ch/bbp-ou-visualization/veeone-spectacle

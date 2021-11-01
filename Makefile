@@ -1,3 +1,2 @@
 build:
-	npm install
-	gatsby build
+	docker build -t spectacle:latest .
