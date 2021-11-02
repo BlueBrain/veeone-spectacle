@@ -5,6 +5,7 @@ FROM bbpgitlab.epfl.ch:5050/viz/veeone/spectacle/base:latest as builder
 WORKDIR /app
 ADD . /app
 
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run test && \
     npm run build
 
