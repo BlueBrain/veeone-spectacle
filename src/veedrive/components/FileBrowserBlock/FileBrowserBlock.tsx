@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import fileService from "../../service"
 import { VeeDriveSearchFileSystemRequest } from "../../types"
@@ -122,6 +122,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
 
   const newImageFrame = filePath => {
+    console.log("newImageFrame", filePath)
     dispatch(
       addFrame({
         type: ContentBlockTypes.Image,

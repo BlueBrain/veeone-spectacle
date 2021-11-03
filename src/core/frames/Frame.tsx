@@ -18,6 +18,8 @@ import styled from "styled-components"
 import FrameControlBar from "./FrameControlBar"
 import { GestureEvent, Target } from "@interactjs/types/index"
 import { contentBlockRegister } from "../../contentblocks/content-block-register"
+import { FrameContextProps } from "./types"
+import { FrameContext } from "./index"
 
 interface FrameProps {
   frame: FrameEntry
@@ -201,6 +203,14 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     manipulate({ width, height, left, top })
   }
 
+  const frameContextProvider: FrameContextProps = {
+    updateAspectRatio: (aspectRatio: number) => {
+      const newWidth = width
+      const newHeight = width / aspectRatio
+      manipulate({ width: newWidth, height: newHeight })
+    },
+  }
+
   const ContentBlockComponent = contentBlockRegister[frame.type]
 
   return (
@@ -216,8 +226,13 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
       stackIndex={stackIndex}
       angle={angle}
     >
-      <FrameControlBar onClose={() => dispatch(closeFrame(frameId))} />
-      <ContentBlockComponent frameId={frameId} contentData={frameContentData} />
+      <FrameContext.Provider value={frameContextProvider}>
+        <FrameControlBar onClose={() => dispatch(closeFrame(frameId))} />
+        <ContentBlockComponent
+          frameId={frameId}
+          contentData={frameContentData}
+        />
+      </FrameContext.Provider>
     </StyledFrame>
   )
 }
