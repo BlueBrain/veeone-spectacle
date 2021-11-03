@@ -94,8 +94,12 @@ const Frame: React.FC<Props> = ({
 
   // Toggle full screen on double tap
   useEffect(() => {
-    // console.debug("Frame useLayoutEffect", frameRef)
-    interact(getTarget()).on("doubletap", toggleFullscreen)
+    interact(getTarget()).on("doubletap", event => {
+      const disabledFullscreenFrameTypes = ["filebrowser"]
+      if (!disabledFullscreenFrameTypes.includes(frame.type)) {
+        toggleFullscreen()
+      }
+    })
   }, [frameRef, toggleFullscreen])
 
   // Allow dragging
