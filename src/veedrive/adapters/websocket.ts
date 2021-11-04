@@ -1,6 +1,7 @@
 import CommunicationAdapterBase from "./base"
 import { JsonRPCRequest, JsonRPCResponse } from "../json-rpc"
 import { Json } from "../types"
+import { delay } from "../../common/asynchronous"
 
 export class PendingRequest {
   constructor(
@@ -87,9 +88,22 @@ export default class WebsocketAdapter extends CommunicationAdapterBase {
     method: string,
     params?: Json,
     id?: string
-  ): Promise<any> =>
-    new Promise(async (resolve, reject) => {
+  ): Promise<any> => {
+    const connectedPromise = new Promise(async (resolve, reject) => {
+      await this.connect()
+      // todo some timeout limits
+      for (let i = 0; i < 100; i++) {
+        if (this.connection.readyState) {
+          resolve(this.connection)
+          break
+        }
+        await delay(500)
+      }
+    })
+    await connectedPromise
+    return new Promise(async (resolve, reject) => {
       const request = await this.sendWebsocketMessage(method, params, id)
       this.addToQueue(this.getNewPendingRequest(request, resolve, reject))
     })
+  }
 }

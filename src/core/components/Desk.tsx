@@ -14,6 +14,8 @@ import { closeLauncherMenu, openLauncherMenu } from "../redux/actions"
 import interact from "interactjs"
 import { Target } from "@interactjs/types/index"
 import styled from "styled-components"
+import LoadSaveButtons from "./LoadSaveButtons"
+import SandboxVisualKeyboard from "../../sandbox/components/SandboxVisualKeyboard/SandboxVisualKeyboard"
 
 interact.pointerMoveTolerance(4)
 
@@ -33,11 +35,11 @@ interface DeskProps {}
 type Props = DeskProps & DispatchProps & StateProps
 
 const StyledDesk = styled.div`
-  background: rgb(102, 102, 102);
+  background: rgb(5, 10, 86);
   background: radial-gradient(
     circle,
-    rgba(102, 102, 102, 1) 0%,
-    rgba(68, 68, 68, 1) 100%
+    rgba(3, 86, 150, 1) 0%,
+    rgba(5, 10, 86, 1) 80%
   );
   width: 100%;
   height: 100%;
@@ -63,6 +65,8 @@ const Desk: React.FC<Props> = (props: Props) => {
 
   return (
     <StyledDesk ref={refObject}>
+      <SandboxVisualKeyboard />
+      <LoadSaveButtons />
       {Object.keys(props.frames).map(frameId => {
         const frame = props.frames[frameId]
         return typeof frame !== "undefined" ? (

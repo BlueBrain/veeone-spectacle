@@ -25,11 +25,11 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "strict": false,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "target": "es5"
   },
   "output": ["./dist"],
-  "files": ["src/pages/index.tsx"],
+  "files": ["src/index.tsx"],
   "include": [
     "./src/**/*.ts",
     "./src/**/*.tsx",

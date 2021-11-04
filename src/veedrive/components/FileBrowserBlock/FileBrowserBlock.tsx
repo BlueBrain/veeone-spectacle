@@ -31,7 +31,6 @@ import {
   FileBrowserViewTypes,
 } from "../../common/types"
 import VeeDriveConfig from "../../config"
-import debounce from "lodash.debounce"
 import FileBrowserFooter from "./FileBrowserFooter"
 
 type FilterableElement = BrowserFile | BrowserDirectory
@@ -257,11 +256,11 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     }
   }, [searchQuery])
 
-  const onSearchQueryChange = useMemo(() => debounce(performSearch, 1000), [
-    performSearch,
-  ])
-
-  useEffect(onSearchQueryChange, [searchQuery, onSearchQueryChange])
+  // const onSearchQueryChange = useMemo(() => _.debounce(performSearch, 1000), [
+  //   performSearch,
+  // ])
+  //
+  // useEffect(onSearchQueryChange, [searchQuery, onSearchQueryChange])
 
   const shouldDisplaySearchResults =
     searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
