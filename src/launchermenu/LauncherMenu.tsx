@@ -1,13 +1,8 @@
 import React from "react"
 import styled from "styled-components"
 import { Position } from "../core/types"
-import { connect } from "react-redux"
-import {
-  addFrame,
-  AddFramePayload,
-  closeAllFrames,
-  closeLauncherMenu,
-} from "../core/redux/actions"
+import { useDispatch } from "react-redux"
+import { addFrame, closeLauncherMenu } from "../core/redux/actions"
 import LauncherPrimaryMenu from "./LauncherPrimaryMenu"
 import LauncherPagesNavigator from "./LauncherPagesNavigator"
 import { LauncherMenuAction } from "./launcher-menu-actions"
@@ -20,15 +15,6 @@ interface LauncherMenuProps {
   menuId: string
   position: Position
 }
-
-interface DispatchProps {
-  addFrame(payload: AddFramePayload): void
-
-  closeLauncherMenu
-  closeAllFrames
-}
-
-type Props = LauncherMenuProps & DispatchProps
 
 const StyledCloseButton = styled.button`
   background: rgba(255, 255, 255, 0.2);
@@ -49,7 +35,6 @@ const StyledLauncherMenu = styled.div`
   padding: 1rem 1rem;
   box-shadow: 2rem 2rem 4rem rgba(0, 0, 0, 0.3),
     -2rem 2rem 4rem rgba(0, 0, 0, 0.3);
-  //border-radius: 2rem;
 `
 
 const StyledLauncherMenuBackground = styled.div`
@@ -60,26 +45,10 @@ const StyledLauncherMenuBackground = styled.div`
   overflow: visible;
   width: 100%;
   height: 100%;
-  //transform: scale(1.2);
   display: flex;
   flex: 1;
   left: 0;
   top: 0;
-  //margin: 2rem;
-  //-webkit-mask-image: -webkit-gradient(linear, left top, right top,
-  //color-stop(0, rgba(0, 0, 0, 0)),
-  //color-stop(0.1, rgba(0, 0, 0, 1)),
-  //color-stop(0.9, rgba(0, 0, 0, 1)),
-  //color-stop(1, rgba(0, 0, 0, 0)));
-`
-
-const StyledSectionHeader = styled.h1`
-  position: relative;
-  font-size: 1.2rem;
-  font-weight: 300;
-  color: white;
-  margin: 1rem 0 0 0;
-  padding: 0;
 `
 
 const StyledTopControls = styled.div`
@@ -88,18 +57,25 @@ const StyledTopControls = styled.div`
   margin-top: -2.7rem;
 `
 
-const LauncherMenu = (props: Props) => {
+const LauncherMenu: React.FC<LauncherMenuProps> = ({
+  menuId,
+  position,
+  children,
+}) => {
+  const dispatch = useDispatch()
   const close = () => {
-    props.closeLauncherMenu({ menuId: props.menuId })
+    dispatch(closeLauncherMenu({ menuId }))
   }
 
   const newFrame = payload => {
     close()
-    props.addFrame({
-      frameId: generateFrameId(),
-      position: props.position,
-      ...payload,
-    })
+    dispatch(
+      addFrame({
+        frameId: generateFrameId(),
+        position: position,
+        ...payload,
+      })
+    )
   }
 
   const handleAction = (action: LauncherMenuAction) => {
@@ -153,6 +129,4 @@ const LauncherMenu = (props: Props) => {
   )
 }
 
-export default connect(null, { addFrame, closeLauncherMenu, closeAllFrames })(
-  LauncherMenu
-)
+export default LauncherMenu
