@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Position } from "../core/types"
+import { Position } from "../common/types"
 import { useDispatch } from "react-redux"
 import { addFrame, closeLauncherMenu } from "../core/redux/actions"
 import LauncherPrimaryMenu from "./LauncherPrimaryMenu"

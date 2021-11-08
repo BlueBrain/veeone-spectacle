@@ -1,5 +1,5 @@
 import { FrameId } from "../core/scenes/interfaces"
-import { Json } from "../veedrive/types"
+import { Json } from "../common/types"
 
 export enum ContentBlockTypes {
   Dummy = "dummy",

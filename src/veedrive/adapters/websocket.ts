@@ -1,7 +1,7 @@
 import CommunicationAdapterBase from "./base"
 import { JsonRPCRequest, JsonRPCResponse } from "../json-rpc"
-import { Json } from "../types"
 import { delay } from "../../common/asynchronous"
+import { Json } from "../../common/types"
 
 export class PendingRequest {
   constructor(

@@ -1,4 +1,4 @@
-import { Json } from "../types"
+import { Json } from "../../common/types"
 
 export interface FileBrowserBlockPayload {
   [key: string]: Json

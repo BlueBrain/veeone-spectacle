@@ -1,5 +1,5 @@
 import { v4 as uuid4 } from "uuid"
-import { Json } from "./types"
+import { Json } from "../common/types"
 
 export class JsonRPCRequest {
   readonly jsonrpc = "2.0"

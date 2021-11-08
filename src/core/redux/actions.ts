@@ -1,4 +1,4 @@
-import { Position, Size } from "../types"
+import { Position, Size } from "../../common/types"
 import { ContentBlockTypes } from "../../contentblocks/types"
 import {
   FrameData,

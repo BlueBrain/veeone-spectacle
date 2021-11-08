@@ -1,6 +1,5 @@
-import { Position } from "../types"
+import { Json, Position } from "../../common/types"
 import { ContentBlockTypes } from "../../contentblocks/types"
-import { Json } from "../../veedrive/types"
 
 export type FrameId = string
 

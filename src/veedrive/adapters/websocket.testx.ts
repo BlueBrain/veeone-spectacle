@@ -1,6 +1,5 @@
 import WebsocketAdapter, { PendingRequest } from "./websocket"
 import { JsonRPCRequest } from "../json-rpc"
-// tslint:disable-next-line:no-implicit-dependencies
 import WS from "jest-websocket-mock"
 
 let adapter: WebsocketAdapter
