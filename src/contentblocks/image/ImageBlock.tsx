@@ -55,7 +55,7 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
 
   return (
     <StyledImageBlock>
-      {!!imageUrl ? <img src={imageUrl} style={imgStyle} alt={""} /> : null}
+      {imageUrl ? <img src={imageUrl} style={imgStyle} alt={""} /> : null}
     </StyledImageBlock>
   )
 }

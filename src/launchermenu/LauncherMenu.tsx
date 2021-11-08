@@ -57,11 +57,7 @@ const StyledTopControls = styled.div`
   margin-top: -2.7rem;
 `
 
-const LauncherMenu: React.FC<LauncherMenuProps> = ({
-  menuId,
-  position,
-  children,
-}) => {
+const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
   const dispatch = useDispatch()
   const close = () => {
     dispatch(closeLauncherMenu({ menuId }))

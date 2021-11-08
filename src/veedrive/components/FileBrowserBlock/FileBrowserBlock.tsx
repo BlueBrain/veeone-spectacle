@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import fileService from "../../service"
 import { VeeDriveSearchFileSystemRequest } from "../../types"
@@ -254,11 +254,13 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     }
   }, [searchQuery])
 
-  // const onSearchQueryChange = useMemo(() => _.debounce(performSearch, 1000), [
-  //   performSearch,
-  // ])
-  //
-  // useEffect(onSearchQueryChange, [searchQuery, onSearchQueryChange])
+  const onSearchQueryChange = useMemo(() => _.debounce(performSearch, 1000), [
+    performSearch,
+  ])
+
+  useEffect(() => {
+    onSearchQueryChange()
+  }, [searchQuery, onSearchQueryChange])
 
   const shouldDisplaySearchResults =
     searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength

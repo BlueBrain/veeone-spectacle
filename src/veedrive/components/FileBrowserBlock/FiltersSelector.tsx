@@ -8,7 +8,7 @@ import {
   Tooltip,
   Typography,
 } from "@material-ui/core"
-import { Check, Clear, FilterList } from "@material-ui/icons"
+import { Check, FilterList } from "@material-ui/icons"
 import React, { useContext, useState } from "react"
 import { FileBrowserContext } from "../../contexts/FileBrowserContext"
 import NameFilterMenuItem from "./NameFilterMenuItem"
@@ -43,8 +43,6 @@ const FiltersSelector: React.FC = () => {
     onCloseMenu()
     toggleShowUnsupportedFilesFilter()
   }
-
-  const clearAllFilters = () => {}
 
   const activeFiltersCount: number =
     (isShowingHiddenFiles ? 1 : 0) +

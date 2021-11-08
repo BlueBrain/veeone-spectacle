@@ -11,8 +11,8 @@ export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
   switch (action.type) {
     case Actions.AddFrame: {
       const payload = action.payload as AddFramePayload
-      const width = !!payload.size ? payload.size.width : 400
-      const height = !!payload.size ? payload.size.height : 400
+      const width = payload.size ? payload.size.width : 400
+      const height = payload.size ? payload.size.height : 400
       const left = payload.position.left - width / 2
       const top = payload.position.top - height / 2
       return {

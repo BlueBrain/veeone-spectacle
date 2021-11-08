@@ -53,10 +53,10 @@ const StyledIconWrapper = styled.div`
 const LauncherMenuItem = (props: Props) => {
   return (
     <StyledLauncherMenuItem
-      onClick={!!props.onSelected ? props.onSelected : null}
+      onClick={props.onSelected ? props.onSelected : null}
     >
       <StyledIconWrapper>
-        {!!props.faSvgIcon ? <FontAwesomeIcon icon={props.faSvgIcon} /> : null}
+        {props.faSvgIcon ? <FontAwesomeIcon icon={props.faSvgIcon} /> : null}
       </StyledIconWrapper>
       {props.label}
     </StyledLauncherMenuItem>

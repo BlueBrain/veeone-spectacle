@@ -5,7 +5,6 @@ import {
   ArrowBack,
   ArrowForward,
   ArrowUpward,
-  FilterList,
   Home,
   Search,
 } from "@material-ui/icons"
