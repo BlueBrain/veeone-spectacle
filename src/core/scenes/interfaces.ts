@@ -1,6 +1,5 @@
-import { Position } from "../types"
+import { Json, Position } from "../../common/types"
 import { ContentBlockTypes } from "../../contentblocks/types"
-import { Json } from "../../veedrive/types"
 
 export type FrameId = string
 
@@ -25,7 +24,7 @@ export interface LauncherMenuData {
   position: Position
 }
 
-export interface PresentationStateData {
+export interface SceneStateData {
   frames: FramesRegister
   frameStack: FrameStack
   launcherMenus: LauncherMenuData[]
@@ -50,7 +49,7 @@ export type FrameSituationUpdate = {
   isFullscreen?: boolean
 }
 
-export interface PresentationDataPayload {
+export interface SceneDataPayload {
   id: string
-  state: PresentationStateData
+  state: SceneStateData
 }

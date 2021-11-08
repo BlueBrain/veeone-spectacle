@@ -22,15 +22,21 @@ const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
   const { requestFile } = useContext(FileBrowserContext)
 
   useEffect(() => {
+    let isMounted = true
     const loadThumbnail = async () => {
       const response = await fileService.requestFile({
         path: file.path,
       })
       if (response !== undefined && !!response.thumbnail) {
-        setThumbnailUrl(response.thumbnail)
+        if (isMounted) {
+          setThumbnailUrl(response.thumbnail)
+        }
       }
     }
     void loadThumbnail()
+    return () => {
+      isMounted = false
+    }
   })
   return (
     <div

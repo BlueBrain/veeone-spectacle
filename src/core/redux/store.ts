@@ -1,8 +1,8 @@
 import { createStore } from "redux"
-import { PresentationStateData } from "../presentations/interfaces"
+import { SceneStateData } from "../scenes/interfaces"
 import { rootReducer } from "../../redux/root"
 
-const initialSpectacleState: PresentationStateData = {
+const initialSpectacleState: SceneStateData = {
   frames: {
     // abcdef: {
     //   situation: { left: 100, top: 200, width: 500, height: 400, angle: 0 }

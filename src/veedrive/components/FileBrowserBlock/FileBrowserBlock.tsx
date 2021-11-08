@@ -17,10 +17,7 @@ import {
 import { useDispatch, useSelector } from "react-redux"
 import { addFrame, updateFrameData } from "../../../core/redux/actions"
 import { generateFrameId } from "../../../core/frames/utils"
-import {
-  FrameEntry,
-  PresentationStateData,
-} from "../../../core/presentations/interfaces"
+import { FrameEntry, SceneStateData } from "../../../core/scenes/interfaces"
 import { getFrame } from "../../../core/redux/selectors"
 import {
   FileBrowserContext,
@@ -94,7 +91,7 @@ const searchFilesystem = async (query: string): Promise<BrowserContents> => {
 const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const dispatch = useDispatch()
 
-  const frameData = (useSelector<PresentationStateData>(state =>
+  const frameData = (useSelector<SceneStateData>(state =>
     getFrame(state, frameId)
   ) as unknown) as FrameEntry
 
@@ -125,6 +122,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
 
   const newImageFrame = filePath => {
+    console.log("newImageFrame", filePath)
     dispatch(
       addFrame({
         type: ContentBlockTypes.Image,
@@ -256,11 +254,13 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     }
   }, [searchQuery])
 
-  // const onSearchQueryChange = useMemo(() => _.debounce(performSearch, 1000), [
-  //   performSearch,
-  // ])
-  //
-  // useEffect(onSearchQueryChange, [searchQuery, onSearchQueryChange])
+  const onSearchQueryChange = useMemo(() => _.debounce(performSearch, 1000), [
+    performSearch,
+  ])
+
+  useEffect(() => {
+    onSearchQueryChange()
+  }, [searchQuery, onSearchQueryChange])
 
   const shouldDisplaySearchResults =
     searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength

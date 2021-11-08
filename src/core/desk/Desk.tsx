@@ -1,38 +1,15 @@
 import * as React from "react"
 import { useEffect, useRef } from "react"
-import Frame from "./Frame"
-import {
-  FrameEntry,
-  FrameStack,
-  LauncherMenuData,
-  PresentationStateData,
-} from "../presentations/interfaces"
-import LauncherMenu from "./LauncherMenu"
-import { connect } from "react-redux"
+import Frame from "../frames/Frame"
+import { LauncherMenu } from "../../launchermenu"
+import { useDispatch, useSelector } from "react-redux"
 import { getFrames, getFrameStack, getLauncherMenus } from "../redux/selectors"
-import { closeLauncherMenu, openLauncherMenu } from "../redux/actions"
+import { openLauncherMenu } from "../redux/actions"
 import interact from "interactjs"
-import { Target } from "@interactjs/types/index"
+import { Target } from "@interactjs/types"
 import styled from "styled-components"
-import LoadSaveButtons from "./LoadSaveButtons"
-import SandboxVisualKeyboard from "../../sandbox/components/SandboxVisualKeyboard/SandboxVisualKeyboard"
 
 interact.pointerMoveTolerance(4)
-
-interface DispatchProps {
-  closeLauncherMenu
-  openLauncherMenu
-}
-
-interface StateProps {
-  frames: Record<string, FrameEntry>
-  frameStack: FrameStack
-  launcherMenus: LauncherMenuData[]
-}
-
-interface DeskProps {}
-
-type Props = DeskProps & DispatchProps & StateProps
 
 const StyledDesk = styled.div`
   background: rgb(5, 10, 86);
@@ -47,12 +24,16 @@ const StyledDesk = styled.div`
   overflow: hidden;
 `
 
-const Desk: React.FC<Props> = (props: Props) => {
+const Desk: React.FC = () => {
   const refObject = useRef()
+  const dispatch = useDispatch()
+  const frames = useSelector(getFrames)
+  const frameStack = useSelector(getFrameStack)
+  const launcherMenus = useSelector(getLauncherMenus)
 
   const handleHold = event => {
     console.debug("Holding...", event)
-    props.openLauncherMenu({ position: { left: event.x, top: event.y } })
+    dispatch(openLauncherMenu({ position: { left: event.x, top: event.y } }))
   }
 
   useEffect(() => {
@@ -65,22 +46,20 @@ const Desk: React.FC<Props> = (props: Props) => {
 
   return (
     <StyledDesk ref={refObject}>
-      <SandboxVisualKeyboard />
-      <LoadSaveButtons />
-      {Object.keys(props.frames).map(frameId => {
-        const frame = props.frames[frameId]
+      {Object.keys(frames).map(frameId => {
+        const frame = frames[frameId]
         return typeof frame !== "undefined" ? (
           <Frame
             frame={frame}
             key={frameId}
             frameId={frameId}
-            stackIndex={props.frameStack.indexOf(frameId)}
+            stackIndex={frameStack.indexOf(frameId)}
           />
         ) : (
           ``
         )
       })}
-      {props.launcherMenus.map(launcherMenu => {
+      {launcherMenus.map(launcherMenu => {
         return (
           <div
             key={launcherMenu.menuId}
@@ -101,11 +80,4 @@ const Desk: React.FC<Props> = (props: Props) => {
   )
 }
 
-export default connect(
-  (state: PresentationStateData) => ({
-    frames: getFrames(state),
-    frameStack: getFrameStack(state),
-    launcherMenus: getLauncherMenus(state),
-  }),
-  { closeLauncherMenu, openLauncherMenu }
-)(Desk)
+export default Desk

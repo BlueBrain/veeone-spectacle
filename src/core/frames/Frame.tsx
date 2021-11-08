@@ -1,8 +1,8 @@
 import * as React from "react"
-import { MutableRefObject, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import "@interactjs/modifiers"
 import interact from "interactjs"
-import { connect } from "react-redux"
+import { useDispatch } from "react-redux"
 import {
   bringFrameToFront,
   closeFrame,
@@ -13,27 +13,19 @@ import {
   FrameId,
   FrameSituation,
   FrameSituationUpdate,
-} from "../presentations/interfaces"
+} from "../scenes/interfaces"
 import styled from "styled-components"
 import FrameControlBar from "./FrameControlBar"
 import { GestureEvent, Target } from "@interactjs/types/index"
 import { contentBlockRegister } from "../../contentblocks/content-block-register"
-
-interface DispatchProps {
-  manipulateFrame(frameId: FrameId, situation: FrameSituationUpdate): void
-
-  closeFrame(frameId: FrameId): void
-
-  bringFrameToFront(frameId: FrameId): void
-}
+import { FrameContextProps } from "./types"
+import { FrameContext } from "./index"
 
 interface FrameProps {
   frame: FrameEntry
   frameId: FrameId
   stackIndex: number
 }
-
-type Props = FrameProps & DispatchProps
 
 const StyledFrame = styled.div(
   ({ isFullscreen, width, height, left, top, angle, stackIndex }) => `
@@ -50,27 +42,21 @@ const StyledFrame = styled.div(
 `
 )
 
-const Frame: React.FC<Props> = ({
-  frameId,
-  frame,
-  stackIndex,
-  manipulateFrame,
-  closeFrame,
-  bringFrameToFront,
-}) => {
+const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
+  const dispatch = useDispatch()
   const frameContentData = frame.data
+  const frameRef = useRef<any>()
   let { width, height, left, top, angle, isFullscreen } = frame.situation
   let gesturableStart: FrameSituation
   let fingerAngleOffset = 0
-  const frameRef = useRef<any>()
 
   const getTarget = () => (frameRef.current as unknown) as Target
 
   const manipulate = (newSituation: FrameSituationUpdate) => {
-    manipulateFrame(frameId, newSituation)
+    dispatch(manipulateFrame(frameId, newSituation))
   }
 
-  const bringToFront = () => bringFrameToFront(frameId)
+  const bringToFront = () => dispatch(bringFrameToFront(frameId))
 
   const toggleFullscreen = () => {
     isFullscreen = !isFullscreen
@@ -217,6 +203,14 @@ const Frame: React.FC<Props> = ({
     manipulate({ width, height, left, top })
   }
 
+  const frameContextProvider: FrameContextProps = {
+    updateAspectRatio: (aspectRatio: number) => {
+      const newWidth = width
+      const newHeight = width / aspectRatio
+      manipulate({ width: newWidth, height: newHeight })
+    },
+  }
+
   const ContentBlockComponent = contentBlockRegister[frame.type]
 
   return (
@@ -232,14 +226,15 @@ const Frame: React.FC<Props> = ({
       stackIndex={stackIndex}
       angle={angle}
     >
-      <FrameControlBar onClose={() => closeFrame(frameId)} />
-      <ContentBlockComponent frameId={frameId} contentData={frameContentData} />
+      <FrameContext.Provider value={frameContextProvider}>
+        <FrameControlBar onClose={() => dispatch(closeFrame(frameId))} />
+        <ContentBlockComponent
+          frameId={frameId}
+          contentData={frameContentData}
+        />
+      </FrameContext.Provider>
     </StyledFrame>
   )
 }
 
-export default connect(null, {
-  manipulateFrame,
-  closeFrame,
-  bringFrameToFront,
-})(Frame)
+export default Frame

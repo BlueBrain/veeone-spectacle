@@ -5,7 +5,7 @@ import SwiperCore, { Navigation, Pagination } from "swiper/core"
 import "swiper/swiper-bundle.min.css"
 import LauncherMenuItem from "./LauncherMenuItem"
 import { faFolderOpen, faGlobe } from "@fortawesome/free-solid-svg-icons"
-import { LauncherMenuAction } from "../launchermenu/launcher-menu-actions"
+import { LauncherMenuAction } from "./launcher-menu-actions"
 import { faVimeo } from "@fortawesome/free-brands-svg-icons"
 
 SwiperCore.use([Pagination, Navigation])

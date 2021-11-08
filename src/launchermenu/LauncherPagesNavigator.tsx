@@ -6,8 +6,6 @@ import SwiperCore, {
   Navigation,
   Pagination,
 } from "swiper/core"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCog, faTimes } from "@fortawesome/free-solid-svg-icons"
 
 SwiperCore.use([EffectCoverflow, Pagination, Navigation])
 
@@ -55,12 +53,6 @@ const StyledFakeFrame = styled.div`
 , .2);
   width: 25%;
   height: 10%;
-`
-
-const StyledOptionsBar = styled.div`
-  width: 100%;
-  text-align: right;
-  font-size: 0.8rem;
 `
 
 const StyledPageTitle = styled.div`

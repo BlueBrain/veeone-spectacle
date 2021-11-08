@@ -1,12 +1,3 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
-  | Json[]
-  | { [key: string]: Json }
-
 export interface VeeDriveListDirectoryRequest {
   path: string
   filters?: string[]
