@@ -1,20 +1,20 @@
 import React from "react"
 import styled from "styled-components"
-import { Position } from "../types"
+import { Position } from "../core/types"
 import { connect } from "react-redux"
 import {
   addFrame,
   AddFramePayload,
   closeAllFrames,
   closeLauncherMenu,
-} from "../redux/actions"
+} from "../core/redux/actions"
 import LauncherPrimaryMenu from "./LauncherPrimaryMenu"
 import LauncherPagesNavigator from "./LauncherPagesNavigator"
-import { LauncherMenuAction } from "../launchermenu/launcher-menu-actions"
-import { ContentBlockTypes } from "../../contentblocks/types"
+import { LauncherMenuAction } from "./launcher-menu-actions"
+import { ContentBlockTypes } from "../contentblocks/types"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTimes } from "@fortawesome/free-solid-svg-icons"
-import { generateFrameId } from "../frames/utils"
+import { generateFrameId } from "../core/frames/utils"
 
 interface LauncherMenuProps {
   menuId: string
