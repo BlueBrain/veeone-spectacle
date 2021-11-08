@@ -13,7 +13,7 @@ import {
   FrameId,
   FrameSituation,
   FrameSituationUpdate,
-} from "../presentations/interfaces"
+} from "../scenes/interfaces"
 import styled from "styled-components"
 import FrameControlBar from "./FrameControlBar"
 import { GestureEvent, Target } from "@interactjs/types/index"

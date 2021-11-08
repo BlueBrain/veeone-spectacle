@@ -4,8 +4,8 @@ import { getFrame } from "../../core/redux/selectors"
 import {
   FrameId,
   FrameSituation,
-  PresentationStateData,
-} from "../../core/presentations/interfaces"
+  SceneStateData,
+} from "../../core/scenes/interfaces"
 import styled from "styled-components"
 import { useState } from "react"
 
@@ -65,7 +65,7 @@ const DummyBlock = (props: Props) => {
 }
 
 const mapStateToProps = (
-  state: PresentationStateData,
+  state: SceneStateData,
   ownProps: DummyBlockProps
 ) => {
   console.debug("state", state, "ownProps", ownProps)

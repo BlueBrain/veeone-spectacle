@@ -1,4 +1,4 @@
-import { FrameId } from "../core/presentations/interfaces"
+import { FrameId } from "../core/scenes/interfaces"
 import { Json } from "../veedrive/types"
 
 export enum ContentBlockTypes {

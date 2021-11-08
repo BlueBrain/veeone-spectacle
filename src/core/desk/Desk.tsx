@@ -1,13 +1,18 @@
 import * as React from "react"
 import { useEffect, useRef } from "react"
 import Frame from "../frames/Frame"
-import { FrameEntry, FrameStack, LauncherMenuData, PresentationStateData } from "../presentations/interfaces"
+import {
+  FrameEntry,
+  FrameStack,
+  LauncherMenuData,
+  SceneStateData,
+} from "../scenes/interfaces"
 import { LauncherMenu } from "../../launchermenu"
 import { connect } from "react-redux"
 import { getFrames, getFrameStack, getLauncherMenus } from "../redux/selectors"
 import { closeLauncherMenu, openLauncherMenu } from "../redux/actions"
 import interact from "interactjs"
-import { Target } from "@interactjs/types/index"
+import { Target } from "@interactjs/types"
 import styled from "styled-components"
 
 interact.pointerMoveTolerance(4)
@@ -93,7 +98,7 @@ const Desk: React.FC<Props> = (props: Props) => {
 }
 
 export default connect(
-  (state: PresentationStateData) => ({
+  (state: SceneStateData) => ({
     frames: getFrames(state),
     frameStack: getFrameStack(state),
     launcherMenus: getLauncherMenus(state),

@@ -1,4 +1,4 @@
-import { PresentationStateData } from "../core/presentations/interfaces"
+import { SceneStateData } from "../core/scenes/interfaces"
 import { ReduxAction } from "./actions"
 import {
   framesReducer,
@@ -7,7 +7,7 @@ import {
 } from "../core/redux/reducers"
 
 export const rootReducer = (
-  state: PresentationStateData,
+  state: SceneStateData,
   action: ReduxAction
 ) => ({
   frames: framesReducer(state.frames, action),

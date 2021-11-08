@@ -3,7 +3,7 @@ import {
   FramesRegister,
   FrameStack,
   LauncherMenuData,
-} from "../presentations/interfaces"
+} from "../scenes/interfaces"
 import { generateRandomId } from "../../common/random"
 import { ReduxAction } from "../../redux/actions"
 
@@ -68,7 +68,7 @@ export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
       }
     }
 
-    case Actions.LoadPresentation: {
+    case Actions.LoadScene: {
       return action.payload.state.frames
     }
 
@@ -96,7 +96,7 @@ export const frameStackReducer = (
       const frameId = action.payload.frameId
       return [...frameStack.filter(id => id !== frameId), frameId]
     }
-    case Actions.LoadPresentation: {
+    case Actions.LoadScene: {
       return action.payload.state.frameStack
     }
     default:
@@ -120,7 +120,7 @@ export const launcherMenuReducer = (
     case Actions.CloseLauncherMenu:
       return launcherMenus.filter(menu => menu.menuId !== action.payload.menuId)
 
-    case Actions.LoadPresentation: {
+    case Actions.LoadScene: {
       return action.payload.state.launcherMenus
     }
 
