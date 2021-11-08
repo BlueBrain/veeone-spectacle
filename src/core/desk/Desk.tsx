@@ -11,12 +11,13 @@ import styled from "styled-components"
 
 interact.pointerMoveTolerance(4)
 
-
 const StyledDesk = styled.div`
   background: rgb(5, 10, 86);
-  background: radial-gradient(circle,
-  rgba(3, 86, 150, 1) 0%,
-  rgba(5, 10, 86, 1) 80%);
+  background: radial-gradient(
+    circle,
+    rgba(3, 86, 150, 1) 0%,
+    rgba(5, 10, 86, 1) 80%
+  );
   width: 100%;
   height: 100%;
   contain: content;
@@ -32,9 +33,7 @@ const Desk: React.FC = () => {
 
   const handleHold = event => {
     console.debug("Holding...", event)
-    dispatch(
-      openLauncherMenu({ position: { left: event.x, top: event.y } })
-    )
+    dispatch(openLauncherMenu({ position: { left: event.x, top: event.y } }))
   }
 
   useEffect(() => {
@@ -67,7 +66,7 @@ const Desk: React.FC = () => {
             style={{
               position: "absolute",
               left: `${launcherMenu.position.left}px`,
-              top: `${launcherMenu.position.top}px`
+              top: `${launcherMenu.position.top}px`,
             }}
           >
             <LauncherMenu
