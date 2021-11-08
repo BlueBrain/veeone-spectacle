@@ -6,10 +6,7 @@ import {
   launcherMenuReducer,
 } from "../core/redux/reducers"
 
-export const rootReducer = (
-  state: SceneStateData,
-  action: ReduxAction
-) => ({
+export const rootReducer = (state: SceneStateData, action: ReduxAction) => ({
   frames: framesReducer(state.frames, action),
   frameStack: frameStackReducer(state.frameStack, action),
   launcherMenus: launcherMenuReducer(state.launcherMenus, action),

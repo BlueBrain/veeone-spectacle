@@ -17,10 +17,7 @@ import {
 import { useDispatch, useSelector } from "react-redux"
 import { addFrame, updateFrameData } from "../../../core/redux/actions"
 import { generateFrameId } from "../../../core/frames/utils"
-import {
-  FrameEntry,
-  SceneStateData,
-} from "../../../core/scenes/interfaces"
+import { FrameEntry, SceneStateData } from "../../../core/scenes/interfaces"
 import { getFrame } from "../../../core/redux/selectors"
 import {
   FileBrowserContext,
