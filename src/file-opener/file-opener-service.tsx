@@ -39,6 +39,18 @@ class FileOpenerService {
       this.openerRegistry[ext.toLowerCase()] = openerClass
     })
   }
+
+  public getSupportedFileExtensions() {
+    console.debug(
+      "getSupportedFileExtensions",
+      Object.keys(this.openerRegistry)
+    )
+    return Object.keys(this.openerRegistry)
+  }
+
+  public doesSupportFileExtension(extension: string) {
+    return this.getSupportedFileExtensions().includes(extension.toLowerCase())
+  }
 }
 
 const fileOpenerService = new FileOpenerService()

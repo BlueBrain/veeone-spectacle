@@ -42,8 +42,6 @@ type FilterableElement = BrowserFile | BrowserDirectory
 
 type FilterFunction = (element: FilterableElement) => boolean
 
-const SUPPORTED_FILE_EXTENSIONS = ["jpg", "png", "jpeg", "gif"]
-
 const StyledFileBrowserBlock = styled.div`
   background: #fafafa;
   width: 100%;
@@ -279,9 +277,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
 
   const supportedContentFilter: FilterFunction = element =>
     isShowingUnsupportedFiles ||
-    SUPPORTED_FILE_EXTENSIONS.some(fileExtension =>
-      element.name.endsWith(`.${fileExtension}`)
-    )
+    fileOpenerService.doesSupportFileExtension(element.name.split(".").pop())
 
   const nameFilter: FilterFunction = element =>
     element.name.toLowerCase().includes(nameFilterQuery.toLowerCase())
