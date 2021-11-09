@@ -86,6 +86,7 @@ const useInteractJs = ({
         let nodeAngle = angle
         let fingerAngleOffset = 0
         let gesturableStart: FrameSituation
+        let resizeByWidth = null
 
         console.debug("Assign interactjs events to the node", node)
 
@@ -126,8 +127,8 @@ const useInteractJs = ({
               translateX(${nodeLeft}px)
               translateY(${nodeTop}px)
               rotate(${angle}deg)`
-            node.style.width = `${width}px`
-            node.style.height = `${height}px`
+            node.style.width = `${nodeWidth}px`
+            node.style.height = `${nodeHeight}px`
           },
           onend: () => {
             manipulate({ left: nodeLeft, top: nodeTop })
@@ -149,12 +150,25 @@ const useInteractJs = ({
           },
           invert: "reposition",
           onmove: event => {
+            const aspectRatio = nodeWidth / nodeHeight
             const { width: rectWidth, height: rectHeight } = event.rect
-            const { left: deltaLeft, top: deltaTop } = event.deltaRect
+            const {
+              left: deltaLeft,
+              top: deltaTop,
+              width: deltaWidth,
+            } = event.deltaRect
+            if (resizeByWidth === null) {
+              resizeByWidth = deltaWidth !== 0
+            }
+            if (resizeByWidth) {
+              nodeWidth = rectWidth
+              nodeHeight = nodeWidth / aspectRatio
+            } else {
+              nodeHeight = rectHeight
+              nodeWidth = nodeHeight * aspectRatio
+            }
             nodeLeft += deltaLeft
             nodeTop += deltaTop
-            nodeWidth = rectWidth
-            nodeHeight = rectHeight
             node.style.transform = `
               translateX(${nodeLeft}px)
               translateY(${nodeTop}px)
