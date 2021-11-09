@@ -1,5 +1,14 @@
-import React, { CSSProperties, useState } from "react"
+import React, {
+  CSSProperties,
+  SyntheticEvent,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 import styled from "styled-components"
+import { ContentBlockProps } from "../types"
+import fileService from "../../veedrive/service"
+import { FrameContext } from "../../core/frames"
 
 const StyledVideoBlock = styled.div`
   background: #000;
@@ -14,12 +23,17 @@ const StyledOverlay = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
-  //background: red;
-  opacity: 0.3;
+  opacity: 0;
 `
 
-const VideoBlock: React.FC = () => {
-  const [src, setSrc] = useState()
+interface VideoBlockParams {
+  path: string
+}
+
+const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
+  const { updateAspectRatio } = useContext(FrameContext)
+  const { path } = (contentData as unknown) as VideoBlockParams
+  const [src, setSrc] = useState("")
   const elementStyle: CSSProperties = {
     boxSizing: "border-box",
     position: "absolute",
@@ -29,18 +43,37 @@ const VideoBlock: React.FC = () => {
     height: "100%",
   }
 
-  console.debug("$$$ render VideoFileBlock")
+  useEffect(() => {
+    async function loadFromVeeDrive() {
+      const response = await fileService.requestFile({ path: path })
+      console.debug("VideoBlock path=", response.url)
+      setSrc(response.url)
+    }
+    void loadFromVeeDrive()
+  }, [path])
 
-  // useEffect(() => {
-  //   setSrc(() => _.sample([]))
-  // }, [])
+  const handleMetadata = (event: SyntheticEvent<HTMLVideoElement, Event>) => {
+    const { videoWidth, videoHeight } = event.target as HTMLVideoElement
+    const aspectRatio = videoWidth / videoHeight
+    updateAspectRatio(aspectRatio)
+  }
 
   return (
     <StyledVideoBlock>
-      {/*<video controls width={"500"} height={"400"} autoPlay={true} style={elementStyle}>*/}
-      {/*  <source src={src} type="video/webm"/>*/}
-      {/*</video>*/}
-      To be implemented with real files
+      {src ? (
+        <video
+          controls
+          width={"100%"}
+          height={"100%"}
+          autoPlay={true}
+          style={elementStyle}
+          loop={true}
+          muted={true}
+          onLoadedMetadata={handleMetadata}
+        >
+          <source src={src} />
+        </video>
+      ) : null}
       <StyledOverlay />
     </StyledVideoBlock>
   )
