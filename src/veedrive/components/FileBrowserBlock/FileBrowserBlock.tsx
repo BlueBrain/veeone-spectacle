@@ -1,5 +1,11 @@
 import styled from "styled-components"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import fileService from "../../service"
 import { VeeDriveSearchFileSystemRequest } from "../../types"
@@ -29,6 +35,7 @@ import {
 } from "../../common/types"
 import VeeDriveConfig from "../../config"
 import FileBrowserFooter from "./FileBrowserFooter"
+import { FrameContext } from "../../../core/frames"
 
 type FilterableElement = BrowserFile | BrowserDirectory
 
@@ -377,6 +384,13 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
       )
     },
   }
+
+  const frameContext = useContext(FrameContext)
+  useEffect(() => {
+    frameContext.preventMoving()
+    frameContext.preventResizing()
+    frameContext.preventFullscreen()
+  }, [])
 
   return (
     <FileBrowserContext.Provider value={fileBrowserContextProvider}>
