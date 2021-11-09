@@ -11,6 +11,7 @@ export const contentBlockRegister: Record<
 > = {
   [ContentBlockTypes.Image]: ImageBlock,
   [ContentBlockTypes.SampleVideo]: VideoBlock,
+  [ContentBlockTypes.Video]: VideoBlock,
   [ContentBlockTypes.Vimeo]: VimeoBlock,
   [ContentBlockTypes.FileBrowser]: FileBrowserBlock,
 }

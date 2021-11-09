@@ -1,5 +1,5 @@
 import * as React from "react"
-import { PointerEvent, useCallback, useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import Frame from "../frames/Frame"
 import { LauncherMenu } from "../../launchermenu"
 import { useDispatch, useSelector } from "react-redux"

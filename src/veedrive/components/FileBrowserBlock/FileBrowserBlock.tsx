@@ -36,6 +36,7 @@ import {
 import VeeDriveConfig from "../../config"
 import FileBrowserFooter from "./FileBrowserFooter"
 import { FrameContext } from "../../../core/frames"
+import { fileOpenerService } from "../../../file-opener"
 
 type FilterableElement = BrowserFile | BrowserDirectory
 
@@ -247,11 +248,12 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     await moveBrowsingHistoryIndex(-1)
   }
 
-  const openFile = (filePath: string) => {
-    // const filePath = `${activePath}/${filename}`
+  const openFile = async (filePath: string) => {
     console.debug(`Requesting ${filePath} from frame=${frameId}`)
-    // todo handle different file types (currently all will open an image frame)
-    setTimeout(() => newImageFrame(filePath))
+    await fileOpenerService.handleFile(filePath, {
+      left: situation.left + situation.width / 2,
+      top: situation.top + situation.height / 2,
+    })
   }
 
   const performSearch = useCallback(async () => {
