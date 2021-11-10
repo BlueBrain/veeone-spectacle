@@ -121,24 +121,8 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const [activePathFiles, setActivePathFiles] = useState([] as BrowserFile[])
   const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
 
-  const newImageFrame = filePath => {
-    console.log("newImageFrame", filePath)
-    dispatch(
-      addFrame({
-        type: ContentBlockTypes.Image,
-        frameId: generateFrameId(),
-        position: {
-          top: situation.top + situation.height / 2,
-          left: situation.left + situation.width / 2,
-        },
-        contentData: {
-          path: filePath,
-        },
-      })
-    )
-  }
-
-  const initializeTree = async () => {
+  const initializeTree = useCallback(async () => {
+    console.debug("initializeTree")
     const paths = activePath.split("/")
     const tree = await fetchDirectoryContents("")
     let path = ""
@@ -167,11 +151,11 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     setGlobalDirectoryTree(tree.dirs)
     setActivePathDirs(currentDirList)
     setActivePathFiles(files)
-  }
+  }, [activePath])
 
   useEffect(() => {
     void initializeTree()
-  }, [activePath])
+  }, [initializeTree, activePath])
 
   const addToBrowsingHistory = dirPath => {
     const recentPath = history.length > 0 ? history[historyIndex] : ""
@@ -240,13 +224,16 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     await moveBrowsingHistoryIndex(-1)
   }
 
-  const openFile = async (filePath: string) => {
-    console.debug(`Requesting ${filePath} from frame=${frameId}`)
-    await fileOpenerService.handleFile(filePath, {
-      left: situation.left + situation.width / 2,
-      top: situation.top + situation.height / 2,
-    })
-  }
+  const openFile = useCallback(
+    async (filePath: string) => {
+      console.debug(`Requesting ${filePath} from frame=${frameId}`)
+      await fileOpenerService.handleFile(filePath, {
+        left: situation.left + situation.width / 2,
+        top: situation.top + situation.height / 2,
+      })
+    },
+    [frameId]
+  )
 
   const performSearch = useCallback(async () => {
     if (searchQuery.length >= VeeDriveConfig.minSearchQueryLength) {
@@ -266,33 +253,61 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const shouldDisplaySearchResults =
     searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
 
-  const hiddenFileOrDirectoryFilter: FilterFunction = element =>
-    isShowingHiddenFiles || !element.name.startsWith(".")
+  const hiddenFileOrDirectoryFilter: FilterFunction = useCallback(
+    element => isShowingHiddenFiles || !element.name.startsWith("."),
+    [isShowingHiddenFiles]
+  )
 
-  const supportedContentFilter: FilterFunction = element =>
-    isShowingUnsupportedFiles ||
-    fileOpenerService.doesSupportFileExtension(element.name.split(".").pop())
+  const supportedContentFilter: FilterFunction = useCallback(
+    element =>
+      isShowingUnsupportedFiles ||
+      fileOpenerService.doesSupportFileExtension(element.name.split(".").pop()),
+    [isShowingUnsupportedFiles]
+  )
 
   const nameFilter: FilterFunction = element =>
     element.name.toLowerCase().includes(nameFilterQuery.toLowerCase())
 
-  const combinedFileFilter: FilterFunction = element =>
-    hiddenFileOrDirectoryFilter(element) &&
-    supportedContentFilter(element) &&
-    nameFilter(element)
+  const combinedFileFilter: FilterFunction = useCallback(
+    element =>
+      hiddenFileOrDirectoryFilter(element) &&
+      supportedContentFilter(element) &&
+      nameFilter(element),
+    [hiddenFileOrDirectoryFilter, supportedContentFilter, nameFilter]
+  )
 
-  const combinedDirFilter: FilterFunction = element =>
-    hiddenFileOrDirectoryFilter(element) && nameFilter(element)
+  const combinedDirFilter: FilterFunction = useCallback(
+    element => hiddenFileOrDirectoryFilter(element) && nameFilter(element),
+    [hiddenFileOrDirectoryFilter, nameFilter]
+  )
 
-  const filteredFiles = (shouldDisplaySearchResults
-    ? searchResults.files
-    : activePathFiles
-  ).filter(combinedFileFilter)
+  const filteredFiles = useMemo(
+    () =>
+      (shouldDisplaySearchResults
+        ? searchResults.files
+        : activePathFiles
+      ).filter(combinedFileFilter),
+    [
+      shouldDisplaySearchResults,
+      activePathFiles,
+      searchResults.files,
+      combinedFileFilter,
+    ]
+  )
 
-  const filteredDirs = (shouldDisplaySearchResults
-    ? searchResults.directories
-    : activePathDirs
-  ).filter(combinedDirFilter)
+  const filteredDirs = useMemo(
+    () =>
+      (shouldDisplaySearchResults
+        ? searchResults.directories
+        : activePathDirs
+      ).filter(combinedDirFilter),
+    [
+      shouldDisplaySearchResults,
+      activePathDirs,
+      combinedDirFilter,
+      searchResults.directories,
+    ]
+  )
 
   const totalFilesCount = activePathFiles.length
   const hiddenFilesCount = totalFilesCount - filteredFiles.length
@@ -382,7 +397,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     frameContext.preventMoving()
     frameContext.preventResizing()
     frameContext.preventFullscreen()
-  }, [])
+  }, [frameContext])
 
   return (
     <FileBrowserContext.Provider value={fileBrowserContextProvider}>

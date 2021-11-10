@@ -16,7 +16,6 @@ class FileOpenerService {
 
   public async handleFile(filePath: string, referencePosition: Position) {
     const openerClass = this.handleFileByExtension(filePath)
-    console.debug("handleFile openerClass=", openerClass)
     const opener = new openerClass({
       filePath,
       position: referencePosition,
@@ -26,7 +25,6 @@ class FileOpenerService {
 
   private handleFileByExtension(filePath: string) {
     const fileExtension = filePath.split(".").pop() ?? ""
-    console.debug("File extension", fileExtension.toUpperCase())
     return this.getOpenerClass(fileExtension)
   }
 
@@ -41,10 +39,6 @@ class FileOpenerService {
   }
 
   public getSupportedFileExtensions() {
-    console.debug(
-      "getSupportedFileExtensions",
-      Object.keys(this.openerRegistry)
-    )
     return Object.keys(this.openerRegistry)
   }
 

@@ -1,4 +1,10 @@
-import React, { CSSProperties, useContext, useEffect, useState } from "react"
+import React, {
+  CSSProperties,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 import styled from "styled-components"
 import { ContentBlockProps } from "../types"
 import fileService from "../../veedrive/service"
@@ -26,32 +32,36 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
   const { path: imagePath } = (props.contentData as unknown) as ImageBlockParams
   const { updateAspectRatio } = useContext(FrameContext)
 
-  const loadImageWithDimensions = url => {
-    // read image dimensions
-    const img = new Image()
-    img.onload = function (event) {
-      // @ts-ignore
-      console.log("Image loaded", url, this.width, this.height)
-      setImageUrl(url)
-      // @ts-ignore
-      const aspectRatio = this.width / this.height
-      updateAspectRatio(aspectRatio)
+  const loadImageWithDimensions = useCallback(
+    url => {
+      // read image dimensions
+      const img = new Image()
+      img.onload = function (event) {
+        // @ts-ignore
+        console.log("Image loaded", url, this.width, this.height)
+        setImageUrl(url)
+        // @ts-ignore
+        const aspectRatio = this.width / this.height
+        updateAspectRatio(aspectRatio)
+      }
+      img.src = url
+    },
+    [updateAspectRatio]
+  )
+
+  const loadThumbnail = useCallback(async () => {
+    const response = await fileService.requestFile({ path: imagePath })
+    if (response !== undefined && !!response.thumbnail) {
+      console.debug("Got image", response)
+      loadImageWithDimensions(response.url)
+    } else {
+      // todo handle invalid images/paths/responses
     }
-    img.src = url
-  }
+  }, [imagePath])
 
   useEffect(() => {
-    const loadThumbnail = async () => {
-      const response = await fileService.requestFile({ path: imagePath })
-      if (response !== undefined && !!response.thumbnail) {
-        console.debug("Got image", response)
-        loadImageWithDimensions(response.url)
-      } else {
-        // todo handle invalid images/paths/responses
-      }
-    }
     void loadThumbnail()
-  }, [imageUrl])
+  }, [loadThumbnail])
 
   return (
     <StyledImageBlock>

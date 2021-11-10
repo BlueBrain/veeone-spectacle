@@ -76,7 +76,7 @@ const useInteractJs = ({
   const frameRefReceiver = useCallback(
     node => {
       if (frameRef.current) {
-        console.debug("frameRef.current is already set")
+        // console.debug("frameRef.current is already set")
         interact(frameRef.current).unset()
       }
 
@@ -90,7 +90,7 @@ const useInteractJs = ({
         let gesturableStart: FrameSituation
         let resizeByWidth = null
 
-        console.debug("Assign interactjs events to the node", node)
+        // console.debug("Assign interactjs events to the node", node)
 
         if (isFullscreenAllowed) {
           interact(node).on("doubletap", () => {
@@ -276,12 +276,13 @@ const useInteractJs = ({
       isMovingAllowed,
       isResizingAllowed,
       isFullscreenAllowed,
+      isFullscreen,
       bringToFront,
       manipulate,
       toggleFullscreen,
     ]
   )
-  return [frameRefReceiver, frameRef]
+  return [frameRefReceiver]
 }
 
 const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
@@ -291,7 +292,10 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   const [isResizingAllowed, setResizingAllowed] = useState(true)
   const [isFullscreenAllowed, setFullscreenAllowed] = useState(true)
 
-  const bringToFront = () => dispatch(bringFrameToFront(frameId))
+  const bringToFront = useCallback(() => dispatch(bringFrameToFront(frameId)), [
+    frameId,
+    dispatch,
+  ])
 
   const manipulate = useCallback(
     (newSituation: FrameSituationUpdate) => {
@@ -305,7 +309,7 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     manipulate(data)
   }, [manipulate, isFullscreen])
 
-  const [frameRefReceiver, frameRef] = useInteractJs({
+  const [frameRefReceiver] = useInteractJs({
     width,
     height,
     left,
@@ -322,25 +326,31 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
 
   const frameContentData = frame.data
 
-  const frameContextProvider: FrameContextProps = {
-    updateAspectRatio: (aspectRatio: number) => {
-      const newWidth = width
-      const newHeight = width / aspectRatio
-      manipulate({ width: newWidth, height: newHeight })
-    },
-    preventResizing: () => {
-      setResizingAllowed(false)
-    },
-    preventMoving: () => {
-      setMovingAllowed(false)
-    },
-    preventFullscreen: () => {
-      console.debug("Prevent fullscreen")
-      setFullscreenAllowed(false)
-    },
-  }
+  const frameContextProvider: FrameContextProps = useMemo(
+    () => ({
+      updateAspectRatio: (aspectRatio: number) => {
+        const newWidth = width
+        const newHeight = width / aspectRatio
+        manipulate({ width: newWidth, height: newHeight })
+      },
+      preventResizing: () => {
+        setResizingAllowed(false)
+      },
+      preventMoving: () => {
+        setMovingAllowed(false)
+      },
+      preventFullscreen: () => {
+        console.debug("Prevent fullscreen")
+        setFullscreenAllowed(false)
+      },
+    }),
+    [manipulate, width]
+  )
 
-  const ContentBlockComponent = contentBlockRegister[frame.type]
+  const ContentBlockComponent = useMemo(
+    () => contentBlockRegister[frame.type],
+    [frame.type]
+  )
 
   return (
     <StyledFrame
