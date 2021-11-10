@@ -52,8 +52,9 @@ interface UseInteractJsProps {
   isMovingAllowed
   isResizingAllowed
   isFullscreenAllowed
+  isFullscreen
   bringToFront
-  manipulate
+  manipulate: (newSituation: FrameSituationUpdate) => void
   toggleFullscreen
 }
 
@@ -66,6 +67,7 @@ const useInteractJs = ({
   isMovingAllowed,
   isResizingAllowed,
   isFullscreenAllowed,
+  isFullscreen,
   bringToFront,
   manipulate,
   toggleFullscreen,
@@ -97,6 +99,36 @@ const useInteractJs = ({
           })
         }
 
+        interact(node).on("mousewheel", event => {
+          if (isFullscreen || !isResizingAllowed) {
+            return
+          }
+          const diff = -event.deltaY * 2
+          const scale = diff / width
+          if (
+            node !== null &&
+            (diff > 0 || (diff < 0 && (nodeWidth > 300 || nodeHeight > 300)))
+          ) {
+            nodeWidth += diff
+            nodeHeight += scale * height
+            nodeLeft -= diff / 2
+            nodeTop -= diff / 2
+            node.style.transform = `
+                      translateX(${nodeLeft}px)
+                      translateY(${nodeTop}px)
+                      rotate(${angle}deg)`
+            node.style.width = `${nodeWidth}px`
+            node.style.height = `${nodeHeight}px`
+            manipulate({
+              width: nodeWidth,
+              height: nodeHeight,
+              left: nodeLeft,
+              top: nodeTop,
+            })
+          }
+          event.stopImmediatePropagation()
+        })
+
         interact(node).draggable({
           enabled: isMovingAllowed,
           inertia: {
@@ -117,7 +149,6 @@ const useInteractJs = ({
             node.style.zIndex = "9999"
             nodeLeft = left
             nodeTop = top
-            // console.debug("frame start", left, top, frame.situation)
           },
           onmove: event => {
             const { dx, dy } = event
@@ -281,6 +312,7 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     top,
     angle,
     isFullscreenAllowed,
+    isFullscreen,
     isMovingAllowed,
     isResizingAllowed,
     manipulate,
@@ -289,57 +321,6 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   })
 
   const frameContentData = frame.data
-
-  // Allow scaling frame on mouse wheel
-  let nodeWidth = width
-  let nodeHeight = height
-  let nodeLeft = left
-  let nodeTop = top
-
-  const performScaleChange = useCallback(
-    ({ nodeWidth, nodeHeight, nodeLeft, nodeTop }) => {
-      console.debug("performScaleChange")
-      manipulate({
-        width: nodeWidth,
-        height: nodeHeight,
-        left: nodeLeft,
-        top: nodeTop,
-      })
-    },
-    [manipulate]
-  )
-
-  const debouncedPerformScaleChange = useMemo(
-    () => _.debounce(performScaleChange, 200),
-    [performScaleChange]
-  )
-
-  const handleWheelScaling = (event: WheelEvent) => {
-    event.stopPropagation()
-    if (isFullscreen) {
-      return
-    }
-    let diff = -event.deltaY * 0.5
-    const scale = diff / width
-    // @ts-ignore
-    const node = frameRef.current
-    if (
-      node !== null &&
-      (diff > 0 || (diff < 0 && (nodeWidth > 200 || nodeHeight > 200)))
-    ) {
-      nodeWidth += diff
-      nodeHeight += scale * height
-      nodeLeft -= diff / 2
-      nodeTop -= diff / 2
-      node.style.transform = `
-                translateX(${nodeLeft}px)
-                translateY(${nodeTop}px)
-                rotate(${angle}deg)`
-      node.style.width = `${nodeWidth}px`
-      node.style.height = `${nodeHeight}px`
-      debouncedPerformScaleChange({ nodeWidth, nodeHeight, nodeLeft, nodeTop })
-    }
-  }
 
   const frameContextProvider: FrameContextProps = {
     updateAspectRatio: (aspectRatio: number) => {
@@ -364,7 +345,6 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   return (
     <StyledFrame
       onClick={bringToFront}
-      onWheel={handleWheelScaling}
       ref={frameRefReceiver}
       isFullscreen={isFullscreen}
       width={width}
