@@ -52,8 +52,9 @@ interface UseInteractJsProps {
   isMovingAllowed
   isResizingAllowed
   isFullscreenAllowed
+  isFullscreen
   bringToFront
-  manipulate
+  manipulate: (newSituation: FrameSituationUpdate) => void
   toggleFullscreen
 }
 
@@ -66,6 +67,7 @@ const useInteractJs = ({
   isMovingAllowed,
   isResizingAllowed,
   isFullscreenAllowed,
+  isFullscreen,
   bringToFront,
   manipulate,
   toggleFullscreen,
@@ -74,7 +76,7 @@ const useInteractJs = ({
   const frameRefReceiver = useCallback(
     node => {
       if (frameRef.current) {
-        console.debug("frameRef.current is already set")
+        // console.debug("frameRef.current is already set")
         interact(frameRef.current).unset()
       }
 
@@ -86,8 +88,9 @@ const useInteractJs = ({
         let nodeAngle = angle
         let fingerAngleOffset = 0
         let gesturableStart: FrameSituation
+        let resizeByWidth = null
 
-        console.debug("Assign interactjs events to the node", node)
+        // console.debug("Assign interactjs events to the node", node)
 
         if (isFullscreenAllowed) {
           interact(node).on("doubletap", () => {
@@ -95,6 +98,36 @@ const useInteractJs = ({
             toggleFullscreen()
           })
         }
+
+        interact(node).on("mousewheel", event => {
+          if (isFullscreen || !isResizingAllowed) {
+            return
+          }
+          const diff = -event.deltaY * 2
+          const scale = diff / width
+          if (
+            node !== null &&
+            (diff > 0 || (diff < 0 && (nodeWidth > 300 || nodeHeight > 300)))
+          ) {
+            nodeWidth += diff
+            nodeHeight += scale * height
+            nodeLeft -= diff / 2
+            nodeTop -= diff / 2
+            node.style.transform = `
+                      translateX(${nodeLeft}px)
+                      translateY(${nodeTop}px)
+                      rotate(${angle}deg)`
+            node.style.width = `${nodeWidth}px`
+            node.style.height = `${nodeHeight}px`
+            manipulate({
+              width: nodeWidth,
+              height: nodeHeight,
+              left: nodeLeft,
+              top: nodeTop,
+            })
+          }
+          event.stopImmediatePropagation()
+        })
 
         interact(node).draggable({
           enabled: isMovingAllowed,
@@ -116,7 +149,6 @@ const useInteractJs = ({
             node.style.zIndex = "9999"
             nodeLeft = left
             nodeTop = top
-            // console.debug("frame start", left, top, frame.situation)
           },
           onmove: event => {
             const { dx, dy } = event
@@ -126,8 +158,8 @@ const useInteractJs = ({
               translateX(${nodeLeft}px)
               translateY(${nodeTop}px)
               rotate(${angle}deg)`
-            node.style.width = `${width}px`
-            node.style.height = `${height}px`
+            node.style.width = `${nodeWidth}px`
+            node.style.height = `${nodeHeight}px`
           },
           onend: () => {
             manipulate({ left: nodeLeft, top: nodeTop })
@@ -149,12 +181,25 @@ const useInteractJs = ({
           },
           invert: "reposition",
           onmove: event => {
+            const aspectRatio = nodeWidth / nodeHeight
             const { width: rectWidth, height: rectHeight } = event.rect
-            const { left: deltaLeft, top: deltaTop } = event.deltaRect
+            const {
+              left: deltaLeft,
+              top: deltaTop,
+              width: deltaWidth,
+            } = event.deltaRect
+            if (resizeByWidth === null) {
+              resizeByWidth = deltaWidth !== 0
+            }
+            if (resizeByWidth) {
+              nodeWidth = rectWidth
+              nodeHeight = nodeWidth / aspectRatio
+            } else {
+              nodeHeight = rectHeight
+              nodeWidth = nodeHeight * aspectRatio
+            }
             nodeLeft += deltaLeft
             nodeTop += deltaTop
-            nodeWidth = rectWidth
-            nodeHeight = rectHeight
             node.style.transform = `
               translateX(${nodeLeft}px)
               translateY(${nodeTop}px)
@@ -231,12 +276,13 @@ const useInteractJs = ({
       isMovingAllowed,
       isResizingAllowed,
       isFullscreenAllowed,
+      isFullscreen,
       bringToFront,
       manipulate,
       toggleFullscreen,
     ]
   )
-  return [frameRefReceiver, frameRef]
+  return [frameRefReceiver]
 }
 
 const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
@@ -246,7 +292,10 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   const [isResizingAllowed, setResizingAllowed] = useState(true)
   const [isFullscreenAllowed, setFullscreenAllowed] = useState(true)
 
-  const bringToFront = () => dispatch(bringFrameToFront(frameId))
+  const bringToFront = useCallback(() => dispatch(bringFrameToFront(frameId)), [
+    frameId,
+    dispatch,
+  ])
 
   const manipulate = useCallback(
     (newSituation: FrameSituationUpdate) => {
@@ -260,13 +309,14 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     manipulate(data)
   }, [manipulate, isFullscreen])
 
-  const [frameRefReceiver, frameRef] = useInteractJs({
+  const [frameRefReceiver] = useInteractJs({
     width,
     height,
     left,
     top,
     angle,
     isFullscreenAllowed,
+    isFullscreen,
     isMovingAllowed,
     isResizingAllowed,
     manipulate,
@@ -276,81 +326,35 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
 
   const frameContentData = frame.data
 
-  // Allow scaling frame on mouse wheel
-  let nodeWidth = width
-  let nodeHeight = height
-  let nodeLeft = left
-  let nodeTop = top
-
-  const performScaleChange = useCallback(
-    ({ nodeWidth, nodeHeight, nodeLeft, nodeTop }) => {
-      console.debug("performScaleChange")
-      manipulate({
-        width: nodeWidth,
-        height: nodeHeight,
-        left: nodeLeft,
-        top: nodeTop,
-      })
-    },
-    [manipulate]
+  const frameContextProvider: FrameContextProps = useMemo(
+    () => ({
+      updateAspectRatio: (aspectRatio: number) => {
+        const newWidth = width
+        const newHeight = width / aspectRatio
+        manipulate({ width: newWidth, height: newHeight })
+      },
+      preventResizing: () => {
+        setResizingAllowed(false)
+      },
+      preventMoving: () => {
+        setMovingAllowed(false)
+      },
+      preventFullscreen: () => {
+        console.debug("Prevent fullscreen")
+        setFullscreenAllowed(false)
+      },
+    }),
+    [manipulate, width]
   )
 
-  const debouncedPerformScaleChange = useMemo(
-    () => _.debounce(performScaleChange, 200),
-    [performScaleChange]
+  const ContentBlockComponent = useMemo(
+    () => contentBlockRegister[frame.type],
+    [frame.type]
   )
-
-  const handleWheelScaling = (event: WheelEvent) => {
-    event.stopPropagation()
-    if (isFullscreen) {
-      return
-    }
-    let diff = -event.deltaY * 0.5
-    const scale = diff / width
-    // @ts-ignore
-    const node = frameRef.current
-    if (
-      node !== null &&
-      (diff > 0 || (diff < 0 && (nodeWidth > 200 || nodeHeight > 200)))
-    ) {
-      nodeWidth += diff
-      nodeHeight += scale * height
-      nodeLeft -= diff / 2
-      nodeTop -= diff / 2
-      node.style.transform = `
-                translateX(${nodeLeft}px)
-                translateY(${nodeTop}px)
-                rotate(${angle}deg)`
-      node.style.width = `${nodeWidth}px`
-      node.style.height = `${nodeHeight}px`
-      debouncedPerformScaleChange({ nodeWidth, nodeHeight, nodeLeft, nodeTop })
-    }
-  }
-
-  const frameContextProvider: FrameContextProps = {
-    updateAspectRatio: (aspectRatio: number) => {
-      const newWidth = width
-      const newHeight = width / aspectRatio
-      manipulate({ width: newWidth, height: newHeight })
-    },
-    preventResizing: () => {
-      setResizingAllowed(false)
-    },
-    preventMoving: () => {
-      setMovingAllowed(false)
-    },
-    preventFullscreen: () => {
-      console.debug("Prevent fullscreen")
-      setFullscreenAllowed(false)
-    },
-  }
-
-  const ContentBlockComponent = contentBlockRegister[frame.type]
 
   return (
     <StyledFrame
       onClick={bringToFront}
-      onWheel={handleWheelScaling}
       ref={frameRefReceiver}
       isFullscreen={isFullscreen}
       width={width}

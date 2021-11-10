@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import Frame from "../frames/Frame"
 import { LauncherMenu } from "../../launchermenu"
 import { useDispatch, useSelector } from "react-redux"
@@ -25,27 +25,38 @@ const StyledDesk = styled.div`
 `
 
 const Desk: React.FC = () => {
-  const refObject = useRef()
+  const deskRef = useRef()
   const dispatch = useDispatch()
   const frames = useSelector(getFrames)
   const frameStack = useSelector(getFrameStack)
   const launcherMenus = useSelector(getLauncherMenus)
 
-  const handleHold = event => {
-    console.debug("Holding...", event)
-    dispatch(openLauncherMenu({ position: { left: event.x, top: event.y } }))
-  }
+  const handleHold = useCallback(
+    event => {
+      if (event.target === deskRef.current) {
+        console.debug("Holding...", event)
+        dispatch(
+          openLauncherMenu({ position: { left: event.x, top: event.y } })
+        )
+      }
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
-    const refElement = refObject.current
-    interact((refObject.current as unknown) as Target).on("hold", handleHold)
+    const refElement = deskRef.current
+    interact((deskRef.current as unknown) as Target)
+      .pointerEvents({
+        holdDuration: 400,
+      })
+      .on("hold", handleHold)
     return () => {
-      interact(refObject.current ?? ((refElement as unknown) as Target)).unset()
+      interact(refElement ?? ((refElement as unknown) as Target)).unset()
     }
-  }, [])
+  }, [handleHold])
 
   return (
-    <StyledDesk ref={refObject}>
+    <StyledDesk ref={deskRef}>
       {Object.keys(frames).map(frameId => {
         const frame = frames[frameId]
         return typeof frame !== "undefined" ? (

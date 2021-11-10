@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core"
 import { Check, FilterList } from "@material-ui/icons"
 import React, { useContext, useState } from "react"
-import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import { FileBrowserContext } from "../contexts/FileBrowserContext"
 import NameFilterMenuItem from "./NameFilterMenuItem"
 
 const FiltersSelector: React.FC = () => {

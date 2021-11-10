@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
-import fileService from "../../service"
-import { BrowserFile } from "../../common/models"
-import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import fileService from "../service"
+import { BrowserFile } from "../common/models"
+import { FileBrowserContext } from "../contexts/FileBrowserContext"
 import { InsertDriveFile } from "@material-ui/icons"
 
 interface FileElementProps {
@@ -24,6 +24,7 @@ const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
   useEffect(() => {
     let isMounted = true
     const loadThumbnail = async () => {
+      console.debug("loadThumbnail", file.path)
       const response = await fileService.requestFile({
         path: file.path,
       })
@@ -37,7 +38,8 @@ const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
     return () => {
       isMounted = false
     }
-  })
+  }, [file.path])
+
   return (
     <div
       className={classes.gridTile}
@@ -46,7 +48,7 @@ const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
     >
       <div className={classes.gridTileThumbnail}>
         <div className={classes.gridTileThumbnailBody}>
-          {!!thumbnailUrl ? (
+          {thumbnailUrl ? (
             <StyledImage src={thumbnailUrl} />
           ) : (
             <InsertDriveFile fontSize={"large"} />

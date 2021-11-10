@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
-import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import { FileBrowserContext } from "../contexts/FileBrowserContext"
 import { createStyles, makeStyles } from "@material-ui/core"
-import { BrowserDirectory, BrowserFile } from "../../common/models"
+import { BrowserDirectory, BrowserFile } from "../common/models"
 import { Folder } from "@material-ui/icons"
 import FileElement from "./FileElement"
 

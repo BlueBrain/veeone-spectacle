@@ -7,41 +7,34 @@ import React, {
   useState,
 } from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
-import fileService from "../../service"
-import { VeeDriveSearchFileSystemRequest } from "../../types"
+import fileService from "../service"
+import { VeeDriveSearchFileSystemRequest } from "../types"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import _ from "lodash"
 import {
   BrowserContents,
   BrowserDirectory,
   BrowserFile,
-} from "../../common/models"
-import {
-  ContentBlockProps,
-  ContentBlockTypes,
-} from "../../../contentblocks/types"
+} from "../common/models"
+import { ContentBlockProps, ContentBlockTypes } from "../../contentblocks/types"
 import { useDispatch, useSelector } from "react-redux"
-import { addFrame, updateFrameData } from "../../../core/redux/actions"
-import { generateFrameId } from "../../../core/frames/utils"
-import { FrameEntry, SceneStateData } from "../../../core/scenes/interfaces"
-import { getFrame } from "../../../core/redux/selectors"
+import { addFrame, updateFrameData } from "../../core/redux/actions"
+import { generateFrameId } from "../../core/frames/utils"
+import { FrameEntry, SceneStateData } from "../../core/scenes/interfaces"
+import { getFrame } from "../../core/redux/selectors"
 import {
   FileBrowserContext,
   FileBrowserContextProps,
-} from "../../contexts/FileBrowserContext"
-import {
-  FileBrowserBlockPayload,
-  FileBrowserViewTypes,
-} from "../../common/types"
-import VeeDriveConfig from "../../config"
+} from "../contexts/FileBrowserContext"
+import { FileBrowserBlockPayload, FileBrowserViewTypes } from "../common/types"
+import VeeDriveConfig from "../config"
 import FileBrowserFooter from "./FileBrowserFooter"
-import { FrameContext } from "../../../core/frames"
+import { FrameContext } from "../../core/frames"
+import { fileOpenerService } from "../../file-opener"
 
 type FilterableElement = BrowserFile | BrowserDirectory
 
 type FilterFunction = (element: FilterableElement) => boolean
-
-const SUPPORTED_FILE_EXTENSIONS = ["jpg", "png", "jpeg", "gif"]
 
 const StyledFileBrowserBlock = styled.div`
   background: #fafafa;
@@ -64,7 +57,6 @@ const StyledMain = styled.div`
 `
 
 const fetchDirectoryContents = async dirPath => {
-  // todo implement cache for not directly affected/loaded dirs
   const response = await fileService.listDirectory({ path: dirPath })
   const pathPrefix = dirPath !== "" ? `${dirPath}/` : ``
   let dirs: BrowserDirectory[]
@@ -128,57 +120,19 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const [activePathFiles, setActivePathFiles] = useState([] as BrowserFile[])
   const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
 
-  const newImageFrame = filePath => {
-    console.log("newImageFrame", filePath)
-    dispatch(
-      addFrame({
-        type: ContentBlockTypes.Image,
-        frameId: generateFrameId(),
-        position: {
-          top: situation.top + situation.height / 2,
-          left: situation.left + situation.width / 2,
-        },
-        contentData: {
-          path: filePath,
-        },
-      })
-    )
-  }
-
-  const initializeTree = async () => {
-    const paths = activePath.split("/")
-    const tree = await fetchDirectoryContents("")
-    let path = ""
+  const initializeTree = useCallback(async () => {
+    console.debug("initializeTree", activePath)
+    const tree = await fetchDirectoryContents(activePath)
     let currentDirList = tree.dirs
     let files = tree.files
-
-    for (const p of paths) {
-      if (p === "") {
-        break
-      }
-
-      if (path.length > 0) {
-        path += "/"
-      }
-
-      path += p
-
-      const dirList = await fetchDirectoryContents(path)
-      files = dirList.files
-      const target = _.find(currentDirList, dir => dir.name === p)
-      if (target !== undefined) {
-        target.directories = dirList.dirs
-      }
-      currentDirList = dirList.dirs
-    }
     setGlobalDirectoryTree(tree.dirs)
     setActivePathDirs(currentDirList)
     setActivePathFiles(files)
-  }
+  }, [activePath])
 
   useEffect(() => {
     void initializeTree()
-  }, [activePath])
+  }, [initializeTree, activePath])
 
   const addToBrowsingHistory = dirPath => {
     const recentPath = history.length > 0 ? history[historyIndex] : ""
@@ -247,12 +201,16 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     await moveBrowsingHistoryIndex(-1)
   }
 
-  const openFile = (filePath: string) => {
-    // const filePath = `${activePath}/${filename}`
-    console.debug(`Requesting ${filePath} from frame=${frameId}`)
-    // todo handle different file types (currently all will open an image frame)
-    setTimeout(() => newImageFrame(filePath))
-  }
+  const openFile = useCallback(
+    async (filePath: string) => {
+      console.debug(`Requesting ${filePath} from frame=${frameId}`)
+      await fileOpenerService.handleFile(filePath, {
+        left: situation.left + situation.width / 2,
+        top: situation.top + situation.height / 2,
+      })
+    },
+    [frameId]
+  )
 
   const performSearch = useCallback(async () => {
     if (searchQuery.length >= VeeDriveConfig.minSearchQueryLength) {
@@ -272,35 +230,61 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const shouldDisplaySearchResults =
     searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
 
-  const hiddenFileOrDirectoryFilter: FilterFunction = element =>
-    isShowingHiddenFiles || !element.name.startsWith(".")
+  const hiddenFileOrDirectoryFilter: FilterFunction = useCallback(
+    element => isShowingHiddenFiles || !element.name.startsWith("."),
+    [isShowingHiddenFiles]
+  )
 
-  const supportedContentFilter: FilterFunction = element =>
-    isShowingUnsupportedFiles ||
-    SUPPORTED_FILE_EXTENSIONS.some(fileExtension =>
-      element.name.endsWith(`.${fileExtension}`)
-    )
+  const supportedContentFilter: FilterFunction = useCallback(
+    element =>
+      isShowingUnsupportedFiles ||
+      fileOpenerService.doesSupportFileExtension(element.name.split(".").pop()),
+    [isShowingUnsupportedFiles]
+  )
 
   const nameFilter: FilterFunction = element =>
     element.name.toLowerCase().includes(nameFilterQuery.toLowerCase())
 
-  const combinedFileFilter: FilterFunction = element =>
-    hiddenFileOrDirectoryFilter(element) &&
-    supportedContentFilter(element) &&
-    nameFilter(element)
+  const combinedFileFilter: FilterFunction = useCallback(
+    element =>
+      hiddenFileOrDirectoryFilter(element) &&
+      supportedContentFilter(element) &&
+      nameFilter(element),
+    [hiddenFileOrDirectoryFilter, supportedContentFilter, nameFilter]
+  )
 
-  const combinedDirFilter: FilterFunction = element =>
-    hiddenFileOrDirectoryFilter(element) && nameFilter(element)
+  const combinedDirFilter: FilterFunction = useCallback(
+    element => hiddenFileOrDirectoryFilter(element) && nameFilter(element),
+    [hiddenFileOrDirectoryFilter, nameFilter]
+  )
 
-  const filteredFiles = (shouldDisplaySearchResults
-    ? searchResults.files
-    : activePathFiles
-  ).filter(combinedFileFilter)
+  const filteredFiles = useMemo(
+    () =>
+      (shouldDisplaySearchResults
+        ? searchResults.files
+        : activePathFiles
+      ).filter(combinedFileFilter),
+    [
+      shouldDisplaySearchResults,
+      activePathFiles,
+      searchResults.files,
+      combinedFileFilter,
+    ]
+  )
 
-  const filteredDirs = (shouldDisplaySearchResults
-    ? searchResults.directories
-    : activePathDirs
-  ).filter(combinedDirFilter)
+  const filteredDirs = useMemo(
+    () =>
+      (shouldDisplaySearchResults
+        ? searchResults.directories
+        : activePathDirs
+      ).filter(combinedDirFilter),
+    [
+      shouldDisplaySearchResults,
+      activePathDirs,
+      combinedDirFilter,
+      searchResults.directories,
+    ]
+  )
 
   const totalFilesCount = activePathFiles.length
   const hiddenFilesCount = totalFilesCount - filteredFiles.length
@@ -390,7 +374,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     frameContext.preventMoving()
     frameContext.preventResizing()
     frameContext.preventFullscreen()
-  }, [])
+  }, [frameContext])
 
   return (
     <FileBrowserContext.Provider value={fileBrowserContextProvider}>

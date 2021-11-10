@@ -3,9 +3,9 @@ import { Json } from "../common/types"
 
 export enum ContentBlockTypes {
   Dummy = "dummy",
-  // SampleImage = "sampleimage",
   Image = "image",
-  SampleVideo = "video",
+  Video = "video",
+  SampleVideo = "samplevideo",
   Vimeo = "vimeo",
   FileBrowser = "filebrowser",
 }
