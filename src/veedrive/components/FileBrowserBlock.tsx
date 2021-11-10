@@ -57,7 +57,6 @@ const StyledMain = styled.div`
 `
 
 const fetchDirectoryContents = async dirPath => {
-  // todo implement cache for not directly affected/loaded dirs
   const response = await fileService.listDirectory({ path: dirPath })
   const pathPrefix = dirPath !== "" ? `${dirPath}/` : ``
   let dirs: BrowserDirectory[]
@@ -122,32 +121,10 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
 
   const initializeTree = useCallback(async () => {
-    console.debug("initializeTree")
-    const paths = activePath.split("/")
-    const tree = await fetchDirectoryContents("")
-    let path = ""
+    console.debug("initializeTree", activePath)
+    const tree = await fetchDirectoryContents(activePath)
     let currentDirList = tree.dirs
     let files = tree.files
-
-    for (const p of paths) {
-      if (p === "") {
-        break
-      }
-
-      if (path.length > 0) {
-        path += "/"
-      }
-
-      path += p
-
-      const dirList = await fetchDirectoryContents(path)
-      files = dirList.files
-      const target = _.find(currentDirList, dir => dir.name === p)
-      if (target !== undefined) {
-        target.directories = dirList.dirs
-      }
-      currentDirList = dirList.dirs
-    }
     setGlobalDirectoryTree(tree.dirs)
     setActivePathDirs(currentDirList)
     setActivePathFiles(files)
