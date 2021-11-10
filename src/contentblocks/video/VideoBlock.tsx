@@ -33,7 +33,7 @@ interface VideoBlockParams {
 const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
   const { updateAspectRatio } = useContext(FrameContext)
   const { path } = (contentData as unknown) as VideoBlockParams
-  const [src, setSrc] = useState("")
+  const [videoSource, setVideoSource] = useState("")
   const elementStyle: CSSProperties = {
     boxSizing: "border-box",
     position: "absolute",
@@ -41,13 +41,14 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
     top: "0",
     width: "100%",
     height: "100%",
+    pointerEvents: "none",
   }
 
   useEffect(() => {
     async function loadFromVeeDrive() {
       const response = await fileService.requestFile({ path: path })
       console.debug("VideoBlock path=", response.url)
-      setSrc(response.url)
+      setVideoSource(response.url)
     }
     void loadFromVeeDrive()
   }, [path])
@@ -60,9 +61,8 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
 
   return (
     <StyledVideoBlock>
-      {src ? (
+      {videoSource ? (
         <video
-          controls
           width={"100%"}
           height={"100%"}
           autoPlay={true}
@@ -71,7 +71,7 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
           muted={true}
           onLoadedMetadata={handleMetadata}
         >
-          <source src={src} />
+          <source src={videoSource} />
         </video>
       ) : null}
       <StyledOverlay />
