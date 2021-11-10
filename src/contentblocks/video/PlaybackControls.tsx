@@ -125,6 +125,20 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
         event.stopPropagation()
       })
     }
+
+    if (sliderRef.current) {
+      // Prevent moving a frame when using the slider playback component
+      const disabledEvent = event => {
+        event.stopPropagation()
+      }
+      interact(sliderRef.current)
+        .draggable({
+          onstart: disabledEvent,
+        })
+        .gesturable({
+          onstart: disabledEvent,
+        })
+    }
   }, [])
 
   const timelineProgress = useMemo(() => {
