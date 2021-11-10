@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core"
 import { Close } from "@material-ui/icons"
 import clsx from "clsx"
-import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import { FileBrowserContext } from "../contexts/FileBrowserContext"
 import ViewTypeSelector from "./ViewTypeSelector"
 
 const useStyles = makeStyles(theme =>

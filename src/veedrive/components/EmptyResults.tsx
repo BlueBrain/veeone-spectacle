@@ -6,7 +6,7 @@ import {
   makeStyles,
   Tooltip,
 } from "@material-ui/core"
-import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import { FileBrowserContext } from "../contexts/FileBrowserContext"
 import { ArrowUpward } from "@material-ui/icons"
 
 const useStyles = makeStyles(theme =>

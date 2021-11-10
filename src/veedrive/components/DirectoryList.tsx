@@ -9,8 +9,8 @@ import {
   makeStyles,
 } from "@material-ui/core"
 import { Folder, InsertDriveFile } from "@material-ui/icons"
-import { FileBrowserContext } from "../../contexts/FileBrowserContext"
-import { BrowserDirectory, BrowserFile } from "../../common/models"
+import { FileBrowserContext } from "../contexts/FileBrowserContext"
+import { BrowserDirectory, BrowserFile } from "../common/models"
 
 interface DirectoryListProps {
   files: BrowserFile[]

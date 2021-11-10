@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@material-ui/core"
 import { Clear, Search } from "@material-ui/icons"
-import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import { FileBrowserContext } from "../contexts/FileBrowserContext"
 
 const NameFilterMenuItem: React.FC = () => {
   const { nameFilterQuery, filterByName } = useContext(FileBrowserContext)

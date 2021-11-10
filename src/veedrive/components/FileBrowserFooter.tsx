@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
-import { FileBrowserContext } from "../../contexts/FileBrowserContext"
+import { FileBrowserContext } from "../contexts/FileBrowserContext"
 import { IconButton, Tooltip } from "@material-ui/core"
 import { Clear } from "@material-ui/icons"
 
