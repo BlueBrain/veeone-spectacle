@@ -20,7 +20,6 @@ import { GestureEvent } from "@interactjs/types"
 import { contentBlockRegister } from "../../contentblocks/content-block-register"
 import { FrameContextProps } from "./types"
 import { FrameContext } from "./index"
-import _ from "lodash"
 
 interface FrameProps {
   frame: FrameEntry

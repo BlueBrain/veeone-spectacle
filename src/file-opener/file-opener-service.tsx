@@ -6,8 +6,6 @@ import MovieOpener from "./openers/video-opener"
 type OpenerRegistry = Record<string, typeof BaseOpener>
 
 class FileOpenerService {
-  // determine file type and proxy to content opener
-
   private readonly openerRegistry: OpenerRegistry
 
   constructor() {

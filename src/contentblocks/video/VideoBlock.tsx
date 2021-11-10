@@ -3,12 +3,14 @@ import React, {
   SyntheticEvent,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react"
 import styled from "styled-components"
 import { ContentBlockProps } from "../types"
 import fileService from "../../veedrive/service"
 import { FrameContext } from "../../core/frames"
+import PlaybackControls from "./PlaybackControls"
 
 const StyledVideoBlock = styled.div`
   background: #000;
@@ -31,6 +33,7 @@ interface VideoBlockParams {
 }
 
 const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
+  const videoRef = useRef(null)
   const { updateAspectRatio } = useContext(FrameContext)
   const { path } = (contentData as unknown) as VideoBlockParams
   const [videoSource, setVideoSource] = useState("")
@@ -70,11 +73,13 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
           loop={true}
           muted={true}
           onLoadedMetadata={handleMetadata}
+          ref={videoRef}
         >
           <source src={videoSource} />
         </video>
       ) : null}
       <StyledOverlay />
+      <PlaybackControls videoRef={videoRef} />
     </StyledVideoBlock>
   )
 }
