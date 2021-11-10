@@ -15,6 +15,9 @@ const FrameContext = React.createContext<FrameContextProps>({
   preventFullscreen: () => {
     throw new NotImplementedError()
   },
+  toggleFullscreen: () => {
+    throw new NotImplementedError()
+  },
 })
 
 export default FrameContext

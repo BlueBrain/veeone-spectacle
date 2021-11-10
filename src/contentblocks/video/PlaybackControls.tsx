@@ -1,6 +1,7 @@
 import React, {
   RefObject,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -9,12 +10,15 @@ import React, {
 import styled from "styled-components"
 import {
   Forward10,
+  Fullscreen,
   PauseRounded,
   PlayArrowRounded,
   Replay10,
 } from "@material-ui/icons"
-import { IconButton, Slider } from "@material-ui/core"
+import { IconButton, Slider, withStyles } from "@material-ui/core"
 import interact from "interactjs"
+import { friendlyFormatTime } from "./display"
+import { FrameContext } from "../../core/frames"
 
 interface PlaybackControlsProps {
   videoRef: RefObject<HTMLVideoElement>
@@ -23,13 +27,19 @@ interface PlaybackControlsProps {
 const StyledPlaybackControls = styled.div`
   width: clamp(300px, 40%, 600px);
   height: clamp(100px, 20%, 20%);
-  background: rgba(255, 0, 0, 0.5);
+  //background: rgba(255, 0, 0, 0.5);
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  opacity: 0.7;
+
+  svg {
+    fill: rgba(255, 255, 255, 1);
+    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.8));
+  }
 `
 
 const StyledPlaybackButtons = styled.div`
@@ -52,14 +62,37 @@ const StyledPlaybackButtons = styled.div`
     width: clamp(50px, 80%, 80%);
     height: 100%;
     display: flex;
-    fill: rgba(255, 255, 255, 0.8);
-    filter: drop-shadow(3px 3px 10px rgba(0, 0, 0, 0.5));
   }
 `
 
 const StyledScrubBar = styled.div`
-  background: rgba(0, 255, 0, 0.4);
+  //background: rgba(0, 255, 0, 0.4);
+  display: flex;
+  align-items: center;
 `
+
+const StyledFooter = styled.div`
+  font-size: 0.8rem;
+`
+
+const TimelineSlider = withStyles({
+  root: {
+    color: `#ffffff`,
+  },
+  thumb: {
+    width: 20,
+    height: 20,
+    marginTop: -6,
+    marginLeft: -10,
+  },
+  rail: {
+    height: 8,
+  },
+  track: {
+    height: 8,
+    color: `#ff0000`,
+  },
+})(Slider)
 
 const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
   const controlsRef = useRef(null)
@@ -67,6 +100,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
   const [currentTime, setCurrentTime] = useState(0)
   const [totalTime, setTotalTime] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
+  const { toggleFullscreen } = useContext(FrameContext)
 
   const handlePlayButton = () => {
     console.debug("PLAY / PAUSE button pressed")
@@ -145,6 +179,14 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
     return Math.ceil((100 * currentTime) / totalTime)
   }, [currentTime, totalTime])
 
+  const currentTimeFriendly = useMemo(() => friendlyFormatTime(currentTime), [
+    currentTime,
+  ])
+
+  const totalTimeFriendly = useMemo(() => friendlyFormatTime(totalTime), [
+    totalTime,
+  ])
+
   return (
     <>
       <StyledPlaybackControls ref={controlsRef}>
@@ -160,15 +202,20 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
           </IconButton>
         </StyledPlaybackButtons>
         <StyledScrubBar ref={sliderRef}>
-          {currentTime}
-          <Slider
+          <TimelineSlider
             value={timelineProgress}
             color={"primary"}
             onChange={(event, newValue) =>
               handleSliderChange(newValue as number)
             }
           />
+          <IconButton onClick={toggleFullscreen}>
+            <Fullscreen />
+          </IconButton>
         </StyledScrubBar>
+        <StyledFooter>
+          {currentTimeFriendly} / {totalTimeFriendly}
+        </StyledFooter>
       </StyledPlaybackControls>
     </>
   )
