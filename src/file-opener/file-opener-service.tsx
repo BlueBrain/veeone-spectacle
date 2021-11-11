@@ -6,8 +6,6 @@ import MovieOpener from "./openers/video-opener"
 type OpenerRegistry = Record<string, typeof BaseOpener>
 
 class FileOpenerService {
-  // determine file type and proxy to content opener
-
   private readonly openerRegistry: OpenerRegistry
 
   constructor() {
@@ -48,12 +46,20 @@ class FileOpenerService {
 }
 
 const fileOpenerService = new FileOpenerService()
-fileOpenerService.registerOpener(ImageOpener, ["jpg", "png", "bmp", "gif"])
+fileOpenerService.registerOpener(ImageOpener, [
+  "jpg",
+  "png",
+  "bmp",
+  "gif",
+  "webp",
+])
 fileOpenerService.registerOpener(MovieOpener, [
   "mp4",
   "mov",
   "avi",
   "mpg",
   "mpeg",
+  "webm",
+  "mkv",
 ])
 export default fileOpenerService

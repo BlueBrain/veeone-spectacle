@@ -1,14 +1,19 @@
 import React, {
   CSSProperties,
   SyntheticEvent,
+  useCallback,
   useContext,
   useEffect,
+  useMemo,
+  useRef,
   useState,
 } from "react"
 import styled from "styled-components"
 import { ContentBlockProps } from "../types"
 import fileService from "../../veedrive/service"
 import { FrameContext } from "../../core/frames"
+import PlaybackControls from "./PlaybackControls"
+import VideoBlockContext, { VideoBlockContextProps } from "./VideoBlockContext"
 
 const StyledVideoBlock = styled.div`
   background: #000;
@@ -31,9 +36,11 @@ interface VideoBlockParams {
 }
 
 const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
+  const videoRef = useRef(null)
   const { updateAspectRatio } = useContext(FrameContext)
   const { path } = (contentData as unknown) as VideoBlockParams
-  const [src, setSrc] = useState("")
+  const [videoSource, setVideoSource] = useState("")
+  const [activeModeToggleHandler, setActiveModeToggleHandler] = useState(null)
   const elementStyle: CSSProperties = {
     boxSizing: "border-box",
     position: "absolute",
@@ -41,13 +48,14 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
     top: "0",
     width: "100%",
     height: "100%",
+    pointerEvents: "none",
   }
 
   useEffect(() => {
     async function loadFromVeeDrive() {
       const response = await fileService.requestFile({ path: path })
       console.debug("VideoBlock path=", response.url)
-      setSrc(response.url)
+      setVideoSource(response.url)
     }
     void loadFromVeeDrive()
   }, [path])
@@ -58,24 +66,41 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
     updateAspectRatio(aspectRatio)
   }
 
+  const handleOverlayClick = useCallback(() => {
+    activeModeToggleHandler()
+  }, [activeModeToggleHandler])
+
+  const contextProvider: VideoBlockContextProps = useMemo(
+    () => ({
+      setActiveModeToggleHandler: handlerFunction => {
+        setActiveModeToggleHandler(handlerFunction)
+      },
+    }),
+    []
+  )
+
   return (
-    <StyledVideoBlock>
-      {src ? (
-        <video
-          controls
-          width={"100%"}
-          height={"100%"}
-          autoPlay={true}
-          style={elementStyle}
-          loop={true}
-          muted={true}
-          onLoadedMetadata={handleMetadata}
-        >
-          <source src={src} />
-        </video>
-      ) : null}
-      <StyledOverlay />
-    </StyledVideoBlock>
+    <VideoBlockContext.Provider value={contextProvider}>
+      <StyledVideoBlock>
+        {videoSource ? (
+          <video
+            width={"100%"}
+            height={"100%"}
+            autoPlay={true}
+            style={elementStyle}
+            loop={true}
+            muted={true}
+            onLoadedMetadata={handleMetadata}
+            ref={videoRef}
+            disablePictureInPicture
+          >
+            <source src={videoSource} />
+          </video>
+        ) : null}
+        <StyledOverlay onClick={handleOverlayClick} />
+        <PlaybackControls videoRef={videoRef} />
+      </StyledVideoBlock>
+    </VideoBlockContext.Provider>
   )
 }
 

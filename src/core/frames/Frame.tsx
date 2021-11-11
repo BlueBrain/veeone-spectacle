@@ -20,7 +20,6 @@ import { GestureEvent } from "@interactjs/types"
 import { contentBlockRegister } from "../../contentblocks/content-block-register"
 import { FrameContextProps } from "./types"
 import { FrameContext } from "./index"
-import _ from "lodash"
 
 interface FrameProps {
   frame: FrameEntry
@@ -343,8 +342,11 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
         console.debug("Prevent fullscreen")
         setFullscreenAllowed(false)
       },
+      toggleFullscreen: async () => {
+        toggleFullscreen()
+      },
     }),
-    [manipulate, width]
+    [manipulate, width, toggleFullscreen]
   )
 
   const ContentBlockComponent = useMemo(
