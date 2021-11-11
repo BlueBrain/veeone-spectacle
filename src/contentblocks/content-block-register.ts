@@ -1,5 +1,5 @@
 import VimeoBlock from "./vimeo/VimeoBlock"
-import ImageBlock from "./image/ImageBlock"
+import { ImageBlock } from "./image"
 import { VideoBlock } from "./video"
 import React from "react"
 import { FileBrowserBlock } from "../veedrive/components"
