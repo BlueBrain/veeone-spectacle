@@ -7,6 +7,7 @@ import {
   bringFrameToFront,
   closeFrame,
   manipulateFrame,
+  sendFrameToBack,
 } from "../redux/actions"
 import {
   FrameEntry,
@@ -354,6 +355,10 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     [frame.type]
   )
 
+  const handleCloseFrame = () => dispatch(closeFrame(frameId))
+
+  const handleSendToBack = () => dispatch(sendFrameToBack(frameId))
+
   return (
     <StyledFrame
       onClick={bringToFront}
@@ -367,7 +372,10 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
       angle={angle}
     >
       <FrameContext.Provider value={frameContextProvider}>
-        <FrameControlBar onClose={() => dispatch(closeFrame(frameId))} />
+        <FrameControlBar
+          onClose={handleCloseFrame}
+          onSendToBack={handleSendToBack}
+        />
         <ContentBlockComponent
           frameId={frameId}
           contentData={frameContentData}
