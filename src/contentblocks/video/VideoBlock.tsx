@@ -1,8 +1,10 @@
 import React, {
   CSSProperties,
   SyntheticEvent,
+  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react"
@@ -11,6 +13,7 @@ import { ContentBlockProps } from "../types"
 import fileService from "../../veedrive/service"
 import { FrameContext } from "../../core/frames"
 import PlaybackControls from "./PlaybackControls"
+import VideoBlockContext, { VideoBlockContextProps } from "./VideoBlockContext"
 
 const StyledVideoBlock = styled.div`
   background: #000;
@@ -37,7 +40,7 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
   const { updateAspectRatio } = useContext(FrameContext)
   const { path } = (contentData as unknown) as VideoBlockParams
   const [videoSource, setVideoSource] = useState("")
-  const [playbackControlsActive, setPlaybackControlsActive] = useState(true)
+  const [activeModeToggleHandler, setActiveModeToggleHandler] = useState(null)
   const elementStyle: CSSProperties = {
     boxSizing: "border-box",
     position: "absolute",
@@ -63,35 +66,41 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
     updateAspectRatio(aspectRatio)
   }
 
-  const toggleControlsVisibility = () => {
-    setPlaybackControlsActive(!playbackControlsActive)
-  }
+  const handleOverlayClick = useCallback(() => {
+    activeModeToggleHandler()
+  }, [activeModeToggleHandler])
 
-  useEffect(() => {}, [playbackControlsActive])
+  const contextProvider: VideoBlockContextProps = useMemo(
+    () => ({
+      setActiveModeToggleHandler: handlerFunction => {
+        setActiveModeToggleHandler(handlerFunction)
+      },
+    }),
+    []
+  )
 
   return (
-    <StyledVideoBlock>
-      {videoSource ? (
-        <video
-          width={"100%"}
-          height={"100%"}
-          autoPlay={true}
-          style={elementStyle}
-          loop={true}
-          muted={true}
-          onLoadedMetadata={handleMetadata}
-          ref={videoRef}
-          disablePictureInPicture
-        >
-          <source src={videoSource} />
-        </video>
-      ) : null}
-      <StyledOverlay onClick={toggleControlsVisibility} />
-      <PlaybackControls
-        videoRef={videoRef}
-        activeMode={playbackControlsActive}
-      />
-    </StyledVideoBlock>
+    <VideoBlockContext.Provider value={contextProvider}>
+      <StyledVideoBlock>
+        {videoSource ? (
+          <video
+            width={"100%"}
+            height={"100%"}
+            autoPlay={true}
+            style={elementStyle}
+            loop={true}
+            muted={true}
+            onLoadedMetadata={handleMetadata}
+            ref={videoRef}
+            disablePictureInPicture
+          >
+            <source src={videoSource} />
+          </video>
+        ) : null}
+        <StyledOverlay onClick={handleOverlayClick} />
+        <PlaybackControls videoRef={videoRef} />
+      </StyledVideoBlock>
+    </VideoBlockContext.Provider>
   )
 }
 

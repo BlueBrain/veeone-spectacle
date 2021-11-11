@@ -19,17 +19,18 @@ import { IconButton, Slider, withStyles } from "@material-ui/core"
 import interact from "interactjs"
 import { friendlyFormatTime } from "./display"
 import { FrameContext } from "../../core/frames"
+import VideoBlockContext from "./VideoBlockContext"
 
 const CONTROLS_FADING_TIME_MS = 500
+const CONTROLS_AUTO_HIDE_AFTER_MS = 5000
 
 interface PlaybackControlsProps {
-  activeMode: boolean
   videoRef: RefObject<HTMLVideoElement>
 }
 
 interface StyledPlaybackControlsProps {
-  activeMode: boolean
-  activeModeDisplay: boolean
+  active: boolean
+  activeCssDisplay: boolean
 }
 
 const StyledPlaybackControls = styled.div`
@@ -44,14 +45,14 @@ const StyledPlaybackControls = styled.div`
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   transition: opacity ease ${CONTROLS_FADING_TIME_MS}ms;
 
-  ${({ activeMode, activeModeDisplay }: StyledPlaybackControlsProps) => `
-    opacity: ${activeMode ? `0.7` : `0`};
-    visibility: ${activeModeDisplay || activeMode ? `visible` : `hidden`};
+  ${({ active, activeCssDisplay }: StyledPlaybackControlsProps) => `
+    opacity: ${active ? `0.7` : `0`};
+    visibility: ${active || activeCssDisplay ? `visible` : `hidden`};
     `}
 
   svg {
     fill: rgba(255, 255, 255, 1);
-    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.8));
+    filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.8));
   }
 `
 
@@ -107,31 +108,28 @@ const TimelineSlider = withStyles({
   },
 })(Slider)
 
-const PlaybackControls: React.FC<PlaybackControlsProps> = ({
-  videoRef,
-  activeMode,
-}) => {
+const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
+  const videoContext = useContext(VideoBlockContext)
   const controlsRef = useRef(null)
   const sliderRef = useRef(null)
   const [currentTime, setCurrentTime] = useState(0)
   const [totalTime, setTotalTime] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
   const { toggleFullscreen } = useContext(FrameContext)
-  const [activeModeDisplay, setActiveModeDisplay] = useState(activeMode)
+  const [active, setActive] = useState(true)
+  const [activeCssDisplay, setActiveCssDisplay] = useState(active)
+  const [autoHideTimeoutId, setAutoHideTimeoutId] = useState(null)
 
   const handlePlayButton = () => {
-    console.debug("PLAY / PAUSE button pressed")
     setIsPlaying(!isPlaying)
   }
 
   const handleForwardButton = () => {
-    console.debug("FORWARD button pressed")
     videoRef.current.currentTime += 10
     setCurrentTime(videoRef.current.currentTime)
   }
 
   const handleReplayButton = () => {
-    console.debug("REPLAY button pressed")
     videoRef.current.currentTime -= 10
     setCurrentTime(videoRef.current.currentTime)
   }
@@ -139,8 +137,37 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   const handleSliderChange = (value: number) => {
     videoRef.current.currentTime = Math.floor((totalTime * value) / 100)
     setCurrentTime(videoRef.current.currentTime)
+    restartHidingTimer()
   }
 
+  // Reset timer that otherwise hides the playback controls
+  const restartHidingTimer = useCallback(() => {
+    clearTimeout(autoHideTimeoutId)
+    const timeoutId = setTimeout(
+      () => setActive(false),
+      CONTROLS_AUTO_HIDE_AFTER_MS
+    )
+    setAutoHideTimeoutId(timeoutId)
+  }, [autoHideTimeoutId])
+
+  useEffect(() => {
+    if (active) {
+      restartHidingTimer()
+    }
+  }, [])
+
+  // Allow changing active mode from external components within this video context
+  useEffect(() => {
+    const toggleActive = () => {
+      setActive(!active)
+    }
+    videoContext.setActiveModeToggleHandler(() => toggleActive)
+    if (active) {
+      restartHidingTimer()
+    }
+  }, [active, videoContext])
+
+  // Play/Pause handling
   useEffect(() => {
     if (!videoRef.current) {
       return
@@ -157,6 +184,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
     void handlePlaybackState()
   }, [videoRef, isPlaying])
 
+  // Indicate current time
   const refreshVideoTime = useCallback(() => {
     if (videoRef.current) {
       setCurrentTime(Math.floor(videoRef.current.currentTime))
@@ -174,7 +202,6 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   useEffect(() => {
     if (controlsRef.current) {
       interact(controlsRef.current).on("doubletap", event => {
-        console.debug("Caught doubletap in VIDEO CONTROLS - STOP PROPAGATION")
         event.stopPropagation()
       })
     }
@@ -196,18 +223,18 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 
   useEffect(() => {
     let timeout
-    if (!activeMode) {
+    if (!active) {
       timeout = setTimeout(
-        () => setActiveModeDisplay(false),
+        () => setActiveCssDisplay(false),
         CONTROLS_FADING_TIME_MS
       )
     } else {
-      setActiveModeDisplay(true)
+      setActiveCssDisplay(true)
     }
     return () => {
       clearTimeout(timeout)
     }
-  }, [activeMode])
+  }, [active])
 
   const timelineProgress = useMemo(() => {
     return Math.ceil((100 * currentTime) / totalTime)
@@ -225,8 +252,9 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
     <>
       <StyledPlaybackControls
         ref={controlsRef}
-        activeMode={activeMode}
-        activeModeDisplay={activeModeDisplay}
+        active={active}
+        activeCssDisplay={activeCssDisplay}
+        onClick={restartHidingTimer}
       >
         <StyledPlaybackButtons>
           <IconButton onClick={handleReplayButton}>
