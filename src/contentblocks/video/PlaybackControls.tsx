@@ -20,21 +20,34 @@ import interact from "interactjs"
 import { friendlyFormatTime } from "./display"
 import { FrameContext } from "../../core/frames"
 
+const CONTROLS_FADING_TIME_MS = 500
+
 interface PlaybackControlsProps {
+  activeMode: boolean
   videoRef: RefObject<HTMLVideoElement>
 }
 
+interface StyledPlaybackControlsProps {
+  activeMode: boolean
+  activeModeDisplay: boolean
+}
+
 const StyledPlaybackControls = styled.div`
+  //background: rgba(255, 0, 0, 0.5);
   width: clamp(300px, 40%, 600px);
   height: clamp(100px, 20%, 20%);
-  //background: rgba(255, 0, 0, 0.5);
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  opacity: 0.7;
+  transition: opacity ease ${CONTROLS_FADING_TIME_MS}ms;
+
+  ${({ activeMode, activeModeDisplay }: StyledPlaybackControlsProps) => `
+    opacity: ${activeMode ? `0.7` : `0`};
+    visibility: ${activeModeDisplay || activeMode ? `visible` : `hidden`};
+    `}
 
   svg {
     fill: rgba(255, 255, 255, 1);
@@ -94,13 +107,17 @@ const TimelineSlider = withStyles({
   },
 })(Slider)
 
-const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
+const PlaybackControls: React.FC<PlaybackControlsProps> = ({
+  videoRef,
+  activeMode,
+}) => {
   const controlsRef = useRef(null)
   const sliderRef = useRef(null)
   const [currentTime, setCurrentTime] = useState(0)
   const [totalTime, setTotalTime] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
   const { toggleFullscreen } = useContext(FrameContext)
+  const [activeModeDisplay, setActiveModeDisplay] = useState(activeMode)
 
   const handlePlayButton = () => {
     console.debug("PLAY / PAUSE button pressed")
@@ -128,6 +145,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
     if (!videoRef.current) {
       return
     }
+
     async function handlePlaybackState() {
       if (isPlaying) {
         await videoRef.current.play()
@@ -135,6 +153,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
         await videoRef.current.pause()
       }
     }
+
     void handlePlaybackState()
   }, [videoRef, isPlaying])
 
@@ -175,6 +194,21 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
     }
   }, [])
 
+  useEffect(() => {
+    let timeout
+    if (!activeMode) {
+      timeout = setTimeout(
+        () => setActiveModeDisplay(false),
+        CONTROLS_FADING_TIME_MS
+      )
+    } else {
+      setActiveModeDisplay(true)
+    }
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [activeMode])
+
   const timelineProgress = useMemo(() => {
     return Math.ceil((100 * currentTime) / totalTime)
   }, [currentTime, totalTime])
@@ -189,7 +223,11 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
 
   return (
     <>
-      <StyledPlaybackControls ref={controlsRef}>
+      <StyledPlaybackControls
+        ref={controlsRef}
+        activeMode={activeMode}
+        activeModeDisplay={activeModeDisplay}
+      >
         <StyledPlaybackButtons>
           <IconButton onClick={handleReplayButton}>
             <Replay10 />

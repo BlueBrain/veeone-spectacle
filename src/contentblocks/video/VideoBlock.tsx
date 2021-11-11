@@ -37,6 +37,7 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
   const { updateAspectRatio } = useContext(FrameContext)
   const { path } = (contentData as unknown) as VideoBlockParams
   const [videoSource, setVideoSource] = useState("")
+  const [playbackControlsActive, setPlaybackControlsActive] = useState(true)
   const elementStyle: CSSProperties = {
     boxSizing: "border-box",
     position: "absolute",
@@ -62,6 +63,12 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
     updateAspectRatio(aspectRatio)
   }
 
+  const toggleControlsVisibility = () => {
+    setPlaybackControlsActive(!playbackControlsActive)
+  }
+
+  useEffect(() => {}, [playbackControlsActive])
+
   return (
     <StyledVideoBlock>
       {videoSource ? (
@@ -78,8 +85,11 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
           <source src={videoSource} />
         </video>
       ) : null}
-      <StyledOverlay />
-      <PlaybackControls videoRef={videoRef} />
+      <StyledOverlay onClick={toggleControlsVisibility} />
+      <PlaybackControls
+        videoRef={videoRef}
+        activeMode={playbackControlsActive}
+      />
     </StyledVideoBlock>
   )
 }
