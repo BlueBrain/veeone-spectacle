@@ -81,6 +81,7 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
           muted={true}
           onLoadedMetadata={handleMetadata}
           ref={videoRef}
+          disablePictureInPicture
         >
           <source src={videoSource} />
         </video>
