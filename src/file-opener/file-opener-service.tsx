@@ -46,12 +46,20 @@ class FileOpenerService {
 }
 
 const fileOpenerService = new FileOpenerService()
-fileOpenerService.registerOpener(ImageOpener, ["jpg", "png", "bmp", "gif"])
+fileOpenerService.registerOpener(ImageOpener, [
+  "jpg",
+  "png",
+  "bmp",
+  "gif",
+  "webp",
+])
 fileOpenerService.registerOpener(MovieOpener, [
   "mp4",
   "mov",
   "avi",
   "mpg",
   "mpeg",
+  "webm",
+  "mkv",
 ])
 export default fileOpenerService
