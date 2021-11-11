@@ -1,10 +1,11 @@
 import React from "react"
 import styled from "styled-components"
-import { faTimes } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Close, FlipToBack } from "@material-ui/icons"
+import { IconButton } from "@material-ui/core"
 
 interface FrameControlBarProps {
   onClose(): void
+  onSendToBack(): void
 }
 
 const StyledFrameControlBar = styled.div`
@@ -30,11 +31,19 @@ const FrameControlBar: React.FC<FrameControlBarProps> = (
 ) => {
   const close = () => props.onClose()
 
+  const sendToBack = event => {
+    props.onSendToBack()
+    event.stopPropagation()
+  }
+
   return (
     <StyledFrameControlBar>
-      <StyledCloseButton type={"button"} onClick={close}>
-        <FontAwesomeIcon icon={faTimes} />
-      </StyledCloseButton>
+      <IconButton type={"button"} onClick={close} size={"small"}>
+        <Close />
+      </IconButton>
+      <IconButton type={"button"} onClick={sendToBack} size={"small"}>
+        <FlipToBack />
+      </IconButton>
     </StyledFrameControlBar>
   )
 }

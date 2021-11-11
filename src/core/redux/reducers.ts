@@ -96,6 +96,10 @@ export const frameStackReducer = (
       const frameId = action.payload.frameId
       return [...frameStack.filter(id => id !== frameId), frameId]
     }
+    case Actions.SendFrameToBack: {
+      const frameId = action.payload.frameId
+      return [frameId, ...frameStack.filter(id => id !== frameId)]
+    }
     case Actions.LoadScene: {
       return action.payload.state.frameStack
     }
