@@ -4,12 +4,18 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const EnvironmentVariablesPlugin = require("./webpack/plugins/environment-variables-plugin")
-const SpeedMeasurePlugin = require("speed-measure-webpack-plugin")
 
-const smp = new SpeedMeasurePlugin()
-
-module.exports = env =>
-  smp.wrap({
+module.exports = (env, argv) => {
+  let smp
+  if (argv.mode === "production") {
+    smp = {
+      wrap: data => data,
+    }
+  } else {
+    const SpeedMeasurePlugin = require("speed-measure-webpack-plugin")
+    smp = new SpeedMeasurePlugin()
+  }
+  return smp.wrap({
     cache: {
       type: "memory",
     },
@@ -126,3 +132,4 @@ module.exports = env =>
       alias: {},
     },
   })
+}
