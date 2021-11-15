@@ -31,6 +31,8 @@ import FileBrowserFooter from "./FileBrowserFooter"
 import { FrameContext } from "../../core/frames"
 import { fileOpenerService } from "../../file-opener"
 
+const SEARCH_QUERY_CHANGE_DEBOUNCE_MS = 500
+
 type FilterableElement = BrowserFile | BrowserDirectory
 
 type FilterFunction = (element: FilterableElement) => boolean
@@ -218,9 +220,10 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     }
   }, [searchQuery])
 
-  const onSearchQueryChange = useMemo(() => _.debounce(performSearch, 1000), [
-    performSearch,
-  ])
+  const onSearchQueryChange = useMemo(
+    () => _.debounce(performSearch, SEARCH_QUERY_CHANGE_DEBOUNCE_MS),
+    [performSearch]
+  )
 
   useEffect(() => {
     onSearchQueryChange()
@@ -285,88 +288,121 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     ]
   )
 
-  const totalFilesCount = activePathFiles.length
-  const hiddenFilesCount = totalFilesCount - filteredFiles.length
+  const totalFilesCount = useMemo<number>(
+    () =>
+      shouldDisplaySearchResults
+        ? searchResults.files.length
+        : activePathFiles.length,
+    [activePathFiles, searchResults.files, shouldDisplaySearchResults]
+  )
+  const hiddenFilesCount = useMemo(
+    () => totalFilesCount - filteredFiles.length,
+    [filteredFiles.length, totalFilesCount]
+  )
 
-  const fileBrowserContextProvider: FileBrowserContextProps = {
-    frameId: frameId,
-    activePath: activePath,
-    historyIndex: historyIndex,
-    history: history,
-    viewType: viewType,
-    isShowingHiddenFiles: isShowingHiddenFiles,
-    isShowingUnsupportedFiles: isShowingUnsupportedFiles,
-    navigateUp() {
-      void openParentDirectory()
-    },
-    navigateBack() {
-      void openPreviousDirectory()
-    },
-    navigateForward() {
-      void openNextDirectory()
-    },
-    navigateToIndex(historyIndex: number) {
-      void setBrowsingHistoryIndex(historyIndex)
-    },
-    navigateDirectory(dirPath: string) {
-      void addToBrowsingHistory(dirPath)
-    },
-    requestFile(fileName: string) {
-      void openFile(fileName)
-    },
-    changeViewType(newViewType: FileBrowserViewTypes) {
-      void changeViewType(newViewType)
-    },
-    searchModeOn: searchMode,
-    searchQuery: searchQuery,
-    setSearchMode(enabled: boolean) {
-      setSearchMode(enabled)
-    },
-    async requestSearch(query: string) {
-      setSearchQuery(query)
-    },
-    toggleShowHiddenFilesFilter: () => {
-      dispatch(
-        updateFrameData(frameId, {
-          isShowingHiddenFiles: !isShowingHiddenFiles,
-        } as FileBrowserBlockPayload)
-      )
-    },
-    toggleShowUnsupportedFilesFilter: () => {
-      dispatch(
-        updateFrameData(frameId, {
-          isShowingUnsupportedFiles: !isShowingUnsupportedFiles,
-        } as FileBrowserBlockPayload)
-      )
-    },
-    nameFilterQuery: nameFilterQuery,
-    filterByName(query: string) {
-      dispatch(
-        updateFrameData(frameId, {
-          nameFilterQuery: query,
-        } as FileBrowserBlockPayload)
-      )
-    },
-    resetFilters() {
-      dispatch(
-        updateFrameData(frameId, {
-          nameFilterQuery: "",
-          isShowingHiddenFiles: false,
-          isShowingUnsupportedFiles: false,
-        } as FileBrowserBlockPayload)
-      )
-    },
-    totalFilesCount: totalFilesCount,
-    hiddenFilesCount: hiddenFilesCount,
-    displayAllHiddenFiles() {
-      dispatch(
-        updateFrameData(frameId, {
-          isShowingHiddenFiles: true,
-          isShowingUnsupportedFiles: true,
-        } as FileBrowserBlockPayload)
-      )
-    },
-  }
+  const fileBrowserContextProvider: FileBrowserContextProps = useMemo(
+    () => ({
+      frameId: frameId,
+      activePath: activePath,
+      historyIndex: historyIndex,
+      history: history,
+      viewType: viewType,
+      isShowingHiddenFiles: isShowingHiddenFiles,
+      isShowingUnsupportedFiles: isShowingUnsupportedFiles,
+      navigateUp() {
+        void openParentDirectory()
+      },
+      navigateBack() {
+        void openPreviousDirectory()
+      },
+      navigateForward() {
+        void openNextDirectory()
+      },
+      navigateToIndex(historyIndex: number) {
+        void setBrowsingHistoryIndex(historyIndex)
+      },
+      navigateDirectory(dirPath: string) {
+        void addToBrowsingHistory(dirPath)
+      },
+      requestFile(fileName: string) {
+        void openFile(fileName)
+      },
+      changeViewType(newViewType: FileBrowserViewTypes) {
+        void changeViewType(newViewType)
+      },
+      searchModeOn: searchMode,
+      searchQuery: searchQuery,
+      setSearchMode(enabled: boolean) {
+        setSearchMode(enabled)
+      },
+      async requestSearch(query: string) {
+        setSearchQuery(query)
+      },
+      toggleShowHiddenFilesFilter: () => {
+        dispatch(
+          updateFrameData(frameId, {
+            isShowingHiddenFiles: !isShowingHiddenFiles,
+          } as FileBrowserBlockPayload)
+        )
+      },
+      toggleShowUnsupportedFilesFilter: () => {
+        dispatch(
+          updateFrameData(frameId, {
+            isShowingUnsupportedFiles: !isShowingUnsupportedFiles,
+          } as FileBrowserBlockPayload)
+        )
+      },
+      nameFilterQuery: nameFilterQuery,
+      filterByName(query: string) {
+        dispatch(
+          updateFrameData(frameId, {
+            nameFilterQuery: query,
+          } as FileBrowserBlockPayload)
+        )
+      },
+      resetFilters() {
+        dispatch(
+          updateFrameData(frameId, {
+            nameFilterQuery: "",
+            isShowingHiddenFiles: false,
+            isShowingUnsupportedFiles: false,
+          } as FileBrowserBlockPayload)
+        )
+      },
+      totalFilesCount: totalFilesCount,
+      hiddenFilesCount: hiddenFilesCount,
+      displayAllHiddenFiles() {
+        dispatch(
+          updateFrameData(frameId, {
+            isShowingHiddenFiles: true,
+            isShowingUnsupportedFiles: true,
+          } as FileBrowserBlockPayload)
+        )
+      },
+    }),
+    [
+      activePath,
+      addToBrowsingHistory,
+      changeViewType,
+      dispatch,
+      frameId,
+      hiddenFilesCount,
+      history,
+      historyIndex,
+      isShowingHiddenFiles,
+      isShowingUnsupportedFiles,
+      nameFilterQuery,
+      openFile,
+      openNextDirectory,
+      openParentDirectory,
+      openPreviousDirectory,
+      searchMode,
+      searchQuery,
+      setBrowsingHistoryIndex,
+      totalFilesCount,
+      viewType,
+    ]
+  )
 
   const frameContext = useContext(FrameContext)
   useEffect(() => {

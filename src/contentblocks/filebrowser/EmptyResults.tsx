@@ -44,9 +44,16 @@ const EmptyResults: React.FC = () => {
   if (!!searchQuery.length && searchModeOn) {
     message = (
       <div>
-        No search results could be found for the query{" "}
+        {totalFilesCount > 0
+          ? "Only hidden/unsupported files have been found"
+          : "No search results could be found for the query"}
         <span className={classes.searchQuery}>`{searchQuery}`</span>
         <div>
+          {totalFilesCount > 0 ? (
+            <Button color="secondary" onClick={displayAllHiddenFiles}>
+              Show all results
+            </Button>
+          ) : null}
           <Button color="secondary" onClick={resetMySearchQuery}>
             Reset my search
           </Button>

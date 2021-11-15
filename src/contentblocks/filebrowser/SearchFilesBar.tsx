@@ -29,8 +29,10 @@ const SearchFilesBar: React.FC = () => {
     FileBrowserContext
   )
 
-  const onSearchQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    void requestSearch(event.target.value)
+  const onSearchQueryChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    await requestSearch(event.target.value)
   }
 
   return (
