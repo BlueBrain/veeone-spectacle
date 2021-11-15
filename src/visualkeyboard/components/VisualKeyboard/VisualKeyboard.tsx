@@ -1,8 +1,8 @@
 import Keyboard from "react-simple-keyboard"
 import "react-simple-keyboard/build/css/index.css"
 import React, { useEffect, useRef, useState } from "react"
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import createStyles from "@mui/styles/createStyles"
+import makeStyles from "@mui/styles/makeStyles"
 import styled from "styled-components"
 
 type KeyboardLayout = "default" | "shift" | "caps"

@@ -24,13 +24,15 @@ const ViewTypeSelector: React.FC = () => {
     changeViewType(VIEW_TYPES[viewType].switchTo)
   }
 
-  return <>
-    <Tooltip title={VIEW_TYPES[viewType].tooltip}>
-      <IconButton onClick={toggleViewType} size="large">
-        {VIEW_TYPES[viewType].icon}
-      </IconButton>
-    </Tooltip>
-  </>;
+  return (
+    <>
+      <Tooltip title={VIEW_TYPES[viewType].tooltip}>
+        <IconButton onClick={toggleViewType} size="large">
+          {VIEW_TYPES[viewType].icon}
+        </IconButton>
+      </Tooltip>
+    </>
+  )
 }
 
 export default ViewTypeSelector

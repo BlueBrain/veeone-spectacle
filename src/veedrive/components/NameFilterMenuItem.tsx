@@ -47,7 +47,7 @@ const NameFilterMenuItem: React.FC = () => {
         <Typography>Filter by name</Typography>
       )}
     </MenuItem>
-  );
+  )
 }
 
 export default NameFilterMenuItem

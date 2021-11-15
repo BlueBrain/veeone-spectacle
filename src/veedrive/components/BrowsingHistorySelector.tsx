@@ -27,30 +27,36 @@ const BrowsingHistorySelector: React.FC<BrowsingHistorySelectorProps> = () => {
 
   const shouldDisableButton = history.length <= 1
 
-  return <>
-    <Tooltip title="Show recently visited folders">
-      <span>
-        <IconButton onClick={openMenu} disabled={shouldDisableButton} size="large">
-          <History />
-        </IconButton>
-      </span>
-    </Tooltip>
-    <Menu
-      id="viewType"
-      anchorEl={viewTypeAnchorElement}
-      open={Boolean(viewTypeAnchorElement)}
-      onClose={onCloseMenu}
-    >
-      {history.map((historyItem, index) => (
-        <MenuItem
-          key={index}
-          onClick={() => onSelectHistoryItem(historyItem, index)}
-        >
-          {historyItem || "/"}
-        </MenuItem>
-      ))}
-    </Menu>
-  </>;
+  return (
+    <>
+      <Tooltip title="Show recently visited folders">
+        <span>
+          <IconButton
+            onClick={openMenu}
+            disabled={shouldDisableButton}
+            size="large"
+          >
+            <History />
+          </IconButton>
+        </span>
+      </Tooltip>
+      <Menu
+        id="viewType"
+        anchorEl={viewTypeAnchorElement}
+        open={Boolean(viewTypeAnchorElement)}
+        onClose={onCloseMenu}
+      >
+        {history.map((historyItem, index) => (
+          <MenuItem
+            key={index}
+            onClick={() => onSelectHistoryItem(historyItem, index)}
+          >
+            {historyItem || "/"}
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
+  )
 }
 
 export default BrowsingHistorySelector

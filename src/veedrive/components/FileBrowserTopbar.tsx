@@ -85,14 +85,22 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
           <Grid item>
             <Tooltip title="Back">
               <span>
-                <IconButton onClick={navigateBack} disabled={disableBackButton} size="large">
+                <IconButton
+                  onClick={navigateBack}
+                  disabled={disableBackButton}
+                  size="large"
+                >
                   <ArrowBack />
                 </IconButton>
               </span>
             </Tooltip>
             <Tooltip title="Forward">
               <span>
-                <IconButton onClick={navigateForward} disabled={disableForwardButton} size="large">
+                <IconButton
+                  onClick={navigateForward}
+                  disabled={disableForwardButton}
+                  size="large"
+                >
                   <ArrowForward />
                 </IconButton>
               </span>
@@ -102,7 +110,11 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
 
             <Tooltip title="Move to the home directory">
               <span>
-                <IconButton onClick={navigateHome} disabled={hideUpButton} size="large">
+                <IconButton
+                  onClick={navigateHome}
+                  disabled={hideUpButton}
+                  size="large"
+                >
                   <Home />
                 </IconButton>
               </span>
@@ -138,7 +150,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
         </Grid>
       )}
     </StyledFileBrowserTopbar>
-  );
+  )
 }
 
 export default FileBrowserTopbar

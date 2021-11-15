@@ -1,7 +1,14 @@
 import React, { useContext } from "react"
-import { FilledInput, FormControl, Grid, IconButton, InputAdornment, InputLabel } from "@mui/material";
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import {
+  FilledInput,
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+} from "@mui/material"
+import createStyles from "@mui/styles/createStyles"
+import makeStyles from "@mui/styles/makeStyles"
 import { Close } from "@mui/icons-material"
 import clsx from "clsx"
 import { FileBrowserContext } from "../contexts/FileBrowserContext"
@@ -54,7 +61,7 @@ const SearchFilesBar: React.FC = () => {
         <ViewTypeSelector />
       </Grid>
     </Grid>
-  );
+  )
 }
 
 export default SearchFilesBar
