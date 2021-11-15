@@ -8,6 +8,7 @@ const EnvironmentVariablesPlugin = require("./webpack/plugins/environment-variab
 module.exports = (env, argv) => {
   let smp
   if (argv.mode === "production") {
+    console.log("Production build")
     smp = {
       wrap: data => data,
     }
