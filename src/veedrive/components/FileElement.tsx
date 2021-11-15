@@ -3,7 +3,7 @@ import styled from "styled-components"
 import fileService from "../service"
 import { BrowserFile } from "../common/models"
 import { FileBrowserContext } from "../contexts/FileBrowserContext"
-import { InsertDriveFile } from "@material-ui/icons"
+import { InsertDriveFile } from "@mui/icons-material"
 
 interface FileElementProps {
   classes: any

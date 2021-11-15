@@ -1,13 +1,9 @@
 import React, { useContext } from "react"
-import {
-  Button,
-  createStyles,
-  IconButton,
-  makeStyles,
-  Tooltip,
-} from "@material-ui/core"
+import { Button, IconButton, Tooltip } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { FileBrowserContext } from "../contexts/FileBrowserContext"
-import { ArrowUpward } from "@material-ui/icons"
+import { ArrowUpward } from "@mui/icons-material"
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -86,7 +82,7 @@ const EmptyResults: React.FC = () => {
       <div>
         <Tooltip title="Move to the parent directory">
           <span>
-            <IconButton onClick={goToParentDirectory}>
+            <IconButton onClick={goToParentDirectory} size="large">
               <ArrowUpward />
             </IconButton>
           </span>

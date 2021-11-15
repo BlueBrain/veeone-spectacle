@@ -1,14 +1,9 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
-import {
-  createStyles,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  makeStyles,
-} from "@material-ui/core"
-import { Folder, InsertDriveFile } from "@material-ui/icons"
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { Folder, InsertDriveFile } from "@mui/icons-material"
 import { FileBrowserContext } from "../contexts/FileBrowserContext"
 import { BrowserDirectory, BrowserFile } from "../common/models"
 

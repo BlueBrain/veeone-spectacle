@@ -5,8 +5,8 @@ import {
   MenuItem,
   TextField,
   Typography,
-} from "@material-ui/core"
-import { Clear, Search } from "@material-ui/icons"
+} from "@mui/material"
+import { Clear, Search } from "@mui/icons-material"
 import { FileBrowserContext } from "../contexts/FileBrowserContext"
 
 const NameFilterMenuItem: React.FC = () => {
@@ -39,7 +39,7 @@ const NameFilterMenuItem: React.FC = () => {
             onChange={updateFilterQuery}
             label={"Filter by name"}
           />
-          <IconButton onClick={clearFilter}>
+          <IconButton onClick={clearFilter} size="large">
             <Clear />
           </IconButton>
         </>
@@ -47,7 +47,7 @@ const NameFilterMenuItem: React.FC = () => {
         <Typography>Filter by name</Typography>
       )}
     </MenuItem>
-  )
+  );
 }
 
 export default NameFilterMenuItem

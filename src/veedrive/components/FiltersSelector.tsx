@@ -7,8 +7,8 @@ import {
   MenuItem,
   Tooltip,
   Typography,
-} from "@material-ui/core"
-import { Check, FilterList } from "@material-ui/icons"
+} from "@mui/material"
+import { Check, FilterList } from "@mui/icons-material"
 import React, { useContext, useState } from "react"
 import { FileBrowserContext } from "../contexts/FileBrowserContext"
 import NameFilterMenuItem from "./NameFilterMenuItem"
@@ -49,36 +49,34 @@ const FiltersSelector: React.FC = () => {
     (isShowingUnsupportedFiles ? 1 : 0) +
     (nameFilterQuery.length > 0 ? 1 : 0)
 
-  return (
-    <>
-      <Tooltip title="Filter view">
-        <IconButton onClick={openMenu}>
-          <Badge badgeContent={activeFiltersCount} color={"error"}>
-            <FilterList />
-          </Badge>
-        </IconButton>
-      </Tooltip>
-      <Menu
-        id="viewType"
-        anchorEl={viewTypeAnchorElement}
-        open={Boolean(viewTypeAnchorElement)}
-        onClose={onCloseMenu}
-      >
-        <MenuItem onClick={handleHiddenFilesToggle}>
-          <ListItemIcon>{isShowingHiddenFiles ? <Check /> : null}</ListItemIcon>
-          <Typography>Show hidden files</Typography>
-        </MenuItem>
-        <MenuItem onClick={handleUnsupportedFilesToggle}>
-          <ListItemIcon>
-            {isShowingUnsupportedFiles ? <Check /> : null}
-          </ListItemIcon>
-          <Typography>Show unsupported files</Typography>
-        </MenuItem>
-        <Divider />
-        <NameFilterMenuItem />
-      </Menu>
-    </>
-  )
+  return <>
+    <Tooltip title="Filter view">
+      <IconButton onClick={openMenu} size="large">
+        <Badge badgeContent={activeFiltersCount} color={"error"}>
+          <FilterList />
+        </Badge>
+      </IconButton>
+    </Tooltip>
+    <Menu
+      id="viewType"
+      anchorEl={viewTypeAnchorElement}
+      open={Boolean(viewTypeAnchorElement)}
+      onClose={onCloseMenu}
+    >
+      <MenuItem onClick={handleHiddenFilesToggle}>
+        <ListItemIcon>{isShowingHiddenFiles ? <Check /> : null}</ListItemIcon>
+        <Typography>Show hidden files</Typography>
+      </MenuItem>
+      <MenuItem onClick={handleUnsupportedFilesToggle}>
+        <ListItemIcon>
+          {isShowingUnsupportedFiles ? <Check /> : null}
+        </ListItemIcon>
+        <Typography>Show unsupported files</Typography>
+      </MenuItem>
+      <Divider />
+      <NameFilterMenuItem />
+    </Menu>
+  </>;
 }
 
 export default FiltersSelector

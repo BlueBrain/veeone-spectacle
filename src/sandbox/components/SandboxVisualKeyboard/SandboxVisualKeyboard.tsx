@@ -1,6 +1,6 @@
 import "react-simple-keyboard/build/css/index.css"
 import React, { useEffect, useState } from "react"
-import { Button } from "@material-ui/core"
+import { Button } from "@mui/material"
 import { visualKeyboardService } from "../../../visualkeyboard"
 import { OpenVisualKeyboardOptions } from "../../../visualkeyboard/types"
 

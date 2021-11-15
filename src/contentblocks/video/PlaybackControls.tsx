@@ -14,8 +14,9 @@ import {
   PauseRounded,
   PlayArrowRounded,
   Replay10,
-} from "@material-ui/icons"
-import { IconButton, Slider, withStyles } from "@material-ui/core"
+} from "@mui/icons-material"
+import { IconButton, Slider } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import interact from "interactjs"
 import { friendlyFormatTime } from "./display"
 import { FrameContext } from "../../core/frames"
@@ -248,43 +249,41 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
     totalTime,
   ])
 
-  return (
-    <>
-      <StyledPlaybackControls
-        ref={controlsRef}
-        active={active}
-        activeCssDisplay={activeCssDisplay}
-        onClick={restartHidingTimer}
-      >
-        <StyledPlaybackButtons>
-          <IconButton onClick={handleReplayButton}>
-            <Replay10 />
-          </IconButton>
-          <IconButton onClick={handlePlayButton}>
-            {isPlaying ? <PauseRounded /> : <PlayArrowRounded />}
-          </IconButton>
-          <IconButton onClick={handleForwardButton}>
-            <Forward10 />
-          </IconButton>
-        </StyledPlaybackButtons>
-        <StyledScrubBar ref={sliderRef}>
-          <TimelineSlider
-            value={timelineProgress}
-            color={"primary"}
-            onChange={(event, newValue) =>
-              handleSliderChange(newValue as number)
-            }
-          />
-          <IconButton onClick={toggleFullscreen}>
-            <Fullscreen />
-          </IconButton>
-        </StyledScrubBar>
-        <StyledFooter>
-          {currentTimeFriendly} / {totalTimeFriendly}
-        </StyledFooter>
-      </StyledPlaybackControls>
-    </>
-  )
+  return <>
+    <StyledPlaybackControls
+      ref={controlsRef}
+      active={active}
+      activeCssDisplay={activeCssDisplay}
+      onClick={restartHidingTimer}
+    >
+      <StyledPlaybackButtons>
+        <IconButton onClick={handleReplayButton} size="large">
+          <Replay10 />
+        </IconButton>
+        <IconButton onClick={handlePlayButton} size="large">
+          {isPlaying ? <PauseRounded /> : <PlayArrowRounded />}
+        </IconButton>
+        <IconButton onClick={handleForwardButton} size="large">
+          <Forward10 />
+        </IconButton>
+      </StyledPlaybackButtons>
+      <StyledScrubBar ref={sliderRef}>
+        <TimelineSlider
+          value={timelineProgress}
+          color={"primary"}
+          onChange={(event, newValue) =>
+            handleSliderChange(newValue as number)
+          }
+        />
+        <IconButton onClick={toggleFullscreen} size="large">
+          <Fullscreen />
+        </IconButton>
+      </StyledScrubBar>
+      <StyledFooter>
+        {currentTimeFriendly} / {totalTimeFriendly}
+      </StyledFooter>
+    </StyledPlaybackControls>
+  </>;
 }
 
 export default PlaybackControls

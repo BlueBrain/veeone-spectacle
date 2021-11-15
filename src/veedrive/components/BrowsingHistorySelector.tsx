@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react"
-import { IconButton, Menu, MenuItem, Tooltip } from "@material-ui/core"
-import { History } from "@material-ui/icons"
+import { IconButton, Menu, MenuItem, Tooltip } from "@mui/material"
+import { History } from "@mui/icons-material"
 import { FileBrowserContext } from "../contexts/FileBrowserContext"
 
 interface BrowsingHistorySelectorProps {}
@@ -27,32 +27,30 @@ const BrowsingHistorySelector: React.FC<BrowsingHistorySelectorProps> = () => {
 
   const shouldDisableButton = history.length <= 1
 
-  return (
-    <>
-      <Tooltip title="Show recently visited folders">
-        <span>
-          <IconButton onClick={openMenu} disabled={shouldDisableButton}>
-            <History />
-          </IconButton>
-        </span>
-      </Tooltip>
-      <Menu
-        id="viewType"
-        anchorEl={viewTypeAnchorElement}
-        open={Boolean(viewTypeAnchorElement)}
-        onClose={onCloseMenu}
-      >
-        {history.map((historyItem, index) => (
-          <MenuItem
-            key={index}
-            onClick={() => onSelectHistoryItem(historyItem, index)}
-          >
-            {historyItem || "/"}
-          </MenuItem>
-        ))}
-      </Menu>
-    </>
-  )
+  return <>
+    <Tooltip title="Show recently visited folders">
+      <span>
+        <IconButton onClick={openMenu} disabled={shouldDisableButton} size="large">
+          <History />
+        </IconButton>
+      </span>
+    </Tooltip>
+    <Menu
+      id="viewType"
+      anchorEl={viewTypeAnchorElement}
+      open={Boolean(viewTypeAnchorElement)}
+      onClose={onCloseMenu}
+    >
+      {history.map((historyItem, index) => (
+        <MenuItem
+          key={index}
+          onClick={() => onSelectHistoryItem(historyItem, index)}
+        >
+          {historyItem || "/"}
+        </MenuItem>
+      ))}
+    </Menu>
+  </>;
 }
 
 export default BrowsingHistorySelector

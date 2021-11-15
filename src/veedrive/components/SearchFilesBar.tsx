@@ -1,15 +1,8 @@
 import React, { useContext } from "react"
-import {
-  createStyles,
-  FilledInput,
-  FormControl,
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  makeStyles,
-} from "@material-ui/core"
-import { Close } from "@material-ui/icons"
+import { FilledInput, FormControl, Grid, IconButton, InputAdornment, InputLabel } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { Close } from "@mui/icons-material"
 import clsx from "clsx"
 import { FileBrowserContext } from "../contexts/FileBrowserContext"
 import ViewTypeSelector from "./ViewTypeSelector"
@@ -48,7 +41,7 @@ const SearchFilesBar: React.FC = () => {
               type={"text"}
               endAdornment={
                 <InputAdornment position="start">
-                  <IconButton onClick={() => setSearchMode(false)}>
+                  <IconButton onClick={() => setSearchMode(false)} size="large">
                     <Close />
                   </IconButton>
                 </InputAdornment>
@@ -61,7 +54,7 @@ const SearchFilesBar: React.FC = () => {
         <ViewTypeSelector />
       </Grid>
     </Grid>
-  )
+  );
 }
 
 export default SearchFilesBar
