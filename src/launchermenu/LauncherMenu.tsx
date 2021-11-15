@@ -10,6 +10,7 @@ import { ContentBlockTypes } from "../contentblocks/types"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTimes } from "@fortawesome/free-solid-svg-icons"
 import { generateFrameId } from "../core/frames/utils"
+import { config } from "../config"
 
 interface LauncherMenuProps {
   menuId: string
@@ -79,7 +80,10 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
       case LauncherMenuAction.OpenMedia: {
         newFrame({
           type: ContentBlockTypes.FileBrowser,
-          size: { width: 700, height: 500 },
+          size: {
+            width: config.FILE_BROWSER_WIDTH,
+            height: config.FILE_BROWSER_HEIGHT,
+          },
         })
         break
       }

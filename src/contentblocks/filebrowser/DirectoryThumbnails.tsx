@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme =>
     },
     grid: {
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fill, minmax(7rem, 1fr))",
+      gridTemplateColumns: "repeat(auto-fill, minmax(6rem, 1fr))",
       gridGap: ".2rem",
       marginBottom: "1rem",
     },
