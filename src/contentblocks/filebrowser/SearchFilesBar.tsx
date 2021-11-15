@@ -13,6 +13,7 @@ import { Close } from "@mui/icons-material"
 import clsx from "clsx"
 import { FileBrowserContext } from "./FileBrowserContext"
 import ViewTypeSelector from "./ViewTypeSelector"
+import FiltersSelector from "./FiltersSelector"
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -60,6 +61,7 @@ const SearchFilesBar: React.FC = () => {
         </div>
       </Grid>
       <Grid item>
+        <FiltersSelector />
         <ViewTypeSelector />
       </Grid>
     </Grid>
