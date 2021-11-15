@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react"
+import React, { useCallback, useContext, useEffect, useState } from "react"
 import {
   FilledInput,
   FormControl,
@@ -26,6 +26,7 @@ const useStyles = makeStyles(theme =>
 )
 
 const SearchFilesBar: React.FC = () => {
+  const [keyboardId, setKeyboardId] = useState(null)
   const classes = useStyles()
   const { setSearchMode, requestSearch, searchQuery } = useContext(
     FileBrowserContext
@@ -47,10 +48,20 @@ const SearchFilesBar: React.FC = () => {
 
   const showVisualKeyboard = useCallback(
     event => {
-      visualKeyboardService.newKeyboard(event.target, handleInputChange)
+      const newKeyboardId = visualKeyboardService.newKeyboard(
+        event.target,
+        handleInputChange
+      )
+      setKeyboardId(newKeyboardId)
     },
     [handleInputChange]
   )
+
+  useEffect(() => {
+    return () => {
+      visualKeyboardService.closeKeyboard(keyboardId)
+    }
+  }, [keyboardId])
 
   return (
     <Grid container alignItems="center">

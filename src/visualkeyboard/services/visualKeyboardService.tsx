@@ -86,12 +86,18 @@ class VisualKeyboardService {
     )
 
     ReactDOM.render(keyboardComponent, keyboardWrapper)
+
+    return keyboardId
   }
 
   public readonly closeKeyboard = keyboardId => {
     console.log("close keyboard", keyboardId)
-    this.keyboards[keyboardId].removeElement()
-    delete this.keyboards[keyboardId]
+    if (this.keyboards[keyboardId]) {
+      this.keyboards[keyboardId].removeElement()
+      delete this.keyboards[keyboardId]
+    } else {
+      console.warn("Keyboard does not exist", keyboardId)
+    }
   }
 }
 
