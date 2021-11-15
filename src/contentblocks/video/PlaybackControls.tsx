@@ -95,10 +95,8 @@ const TimelineSlider = withStyles({
     color: `#ffffff`,
   },
   thumb: {
-    width: 20,
-    height: 20,
-    marginTop: -6,
-    marginLeft: -10,
+    width: 22,
+    height: 22,
   },
   rail: {
     height: 8,
@@ -238,7 +236,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
   }, [active])
 
   const timelineProgress = useMemo(() => {
-    return Math.ceil((100 * currentTime) / totalTime)
+    return totalTime ? Math.ceil((100 * currentTime) / totalTime) : 0
   }, [currentTime, totalTime])
 
   const currentTimeFriendly = useMemo(() => friendlyFormatTime(currentTime), [
