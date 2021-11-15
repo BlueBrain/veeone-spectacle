@@ -1,6 +1,6 @@
 import React from "react"
 import { FrameId } from "../../core/scenes/interfaces"
-import { FileBrowserViewTypes } from "../common/types"
+import { FileBrowserViewTypes } from "./types"
 
 export interface FileBrowserContextProps {
   frameId?: FrameId

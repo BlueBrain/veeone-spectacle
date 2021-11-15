@@ -7,27 +7,26 @@ import React, {
   useState,
 } from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
-import fileService from "../service"
-import { VeeDriveSearchFileSystemRequest } from "../types"
+import fileService from "../../veedrive/service"
+import { VeeDriveSearchFileSystemRequest } from "../../veedrive/types"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import _ from "lodash"
 import {
   BrowserContents,
   BrowserDirectory,
   BrowserFile,
-} from "../common/models"
-import { ContentBlockProps, ContentBlockTypes } from "../../contentblocks/types"
+} from "../../veedrive/common/models"
+import { ContentBlockProps } from "../types"
 import { useDispatch, useSelector } from "react-redux"
-import { addFrame, updateFrameData } from "../../core/redux/actions"
-import { generateFrameId } from "../../core/frames/utils"
+import { updateFrameData } from "../../core/redux/actions"
 import { FrameEntry, SceneStateData } from "../../core/scenes/interfaces"
 import { getFrame } from "../../core/redux/selectors"
 import {
   FileBrowserContext,
   FileBrowserContextProps,
-} from "../contexts/FileBrowserContext"
-import { FileBrowserBlockPayload, FileBrowserViewTypes } from "../common/types"
-import VeeDriveConfig from "../config"
+} from "./FileBrowserContext"
+import { FileBrowserBlockPayload, FileBrowserViewTypes } from "./types"
+import VeeDriveConfig from "../../veedrive/config"
 import FileBrowserFooter from "./FileBrowserFooter"
 import { FrameContext } from "../../core/frames"
 import { fileOpenerService } from "../../file-opener"

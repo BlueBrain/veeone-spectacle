@@ -1,8 +1,8 @@
 import React, { useContext } from "react"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
+import { FileBrowserContext } from "./FileBrowserContext"
 import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
-import { BrowserDirectory, BrowserFile } from "../common/models"
+import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import { Folder } from "@mui/icons-material"
 import FileElement from "./FileElement"
 

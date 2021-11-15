@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
+import { FileBrowserContext } from "./FileBrowserContext"
 import { IconButton, Tooltip } from "@mui/material"
 import { Clear } from "@mui/icons-material"
 

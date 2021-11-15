@@ -8,7 +8,7 @@ import {
   Home,
   Search,
 } from "@mui/icons-material"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
+import { FileBrowserContext } from "./FileBrowserContext"
 import BrowsingHistorySelector from "./BrowsingHistorySelector"
 import ViewTypeSelector from "./ViewTypeSelector"
 import SearchFilesBar from "./SearchFilesBar"

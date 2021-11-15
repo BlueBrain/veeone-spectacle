@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
-import fileService from "../service"
-import { BrowserFile } from "../common/models"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
+import fileService from "../../veedrive/service"
+import { BrowserFile } from "../../veedrive/common/models"
+import { FileBrowserContext } from "./FileBrowserContext"
 import { InsertDriveFile } from "@mui/icons-material"
 
 interface FileElementProps {

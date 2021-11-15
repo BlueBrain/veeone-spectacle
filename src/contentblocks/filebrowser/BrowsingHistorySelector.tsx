@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react"
 import { IconButton, Menu, MenuItem, Tooltip } from "@mui/material"
 import { History } from "@mui/icons-material"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
+import { FileBrowserContext } from "./FileBrowserContext"
 
 interface BrowsingHistorySelectorProps {}
 

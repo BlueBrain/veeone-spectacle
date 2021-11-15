@@ -11,7 +11,7 @@ import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
 import { Close } from "@mui/icons-material"
 import clsx from "clsx"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
+import { FileBrowserContext } from "./FileBrowserContext"
 import ViewTypeSelector from "./ViewTypeSelector"
 
 const useStyles = makeStyles(theme =>
