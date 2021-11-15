@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useCallback, useContext } from "react"
 import {
   FilledInput,
   FormControl,
@@ -14,6 +14,7 @@ import clsx from "clsx"
 import { FileBrowserContext } from "./FileBrowserContext"
 import ViewTypeSelector from "./ViewTypeSelector"
 import FiltersSelector from "./FiltersSelector"
+import { visualKeyboardService } from "../../visualkeyboard"
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -36,6 +37,21 @@ const SearchFilesBar: React.FC = () => {
     await requestSearch(event.target.value)
   }
 
+  const handleInputChange = useCallback(
+    (value: string) => {
+      console.log("handleOnChange for component", value)
+      requestSearch(value)
+    },
+    [requestSearch]
+  )
+
+  const showVisualKeyboard = useCallback(
+    event => {
+      visualKeyboardService.newKeyboard(event.target, handleInputChange)
+    },
+    [handleInputChange]
+  )
+
   return (
     <Grid container alignItems="center">
       <Grid item xs>
@@ -46,6 +62,7 @@ const SearchFilesBar: React.FC = () => {
             </InputLabel>
             <FilledInput
               onChange={onSearchQueryChange}
+              onFocus={showVisualKeyboard}
               value={searchQuery}
               autoFocus={true}
               type={"text"}
