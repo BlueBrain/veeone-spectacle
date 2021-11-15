@@ -14,8 +14,9 @@ import {
   PauseRounded,
   PlayArrowRounded,
   Replay10,
-} from "@material-ui/icons"
-import { IconButton, Slider, withStyles } from "@material-ui/core"
+} from "@mui/icons-material"
+import { IconButton, Slider } from "@mui/material"
+import withStyles from "@mui/styles/withStyles"
 import interact from "interactjs"
 import { friendlyFormatTime } from "./display"
 import { FrameContext } from "../../core/frames"
@@ -94,10 +95,8 @@ const TimelineSlider = withStyles({
     color: `#ffffff`,
   },
   thumb: {
-    width: 20,
-    height: 20,
-    marginTop: -6,
-    marginLeft: -10,
+    width: 22,
+    height: 22,
   },
   rail: {
     height: 8,
@@ -237,7 +236,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
   }, [active])
 
   const timelineProgress = useMemo(() => {
-    return Math.ceil((100 * currentTime) / totalTime)
+    return totalTime ? Math.ceil((100 * currentTime) / totalTime) : 0
   }, [currentTime, totalTime])
 
   const currentTimeFriendly = useMemo(() => friendlyFormatTime(currentTime), [
@@ -257,13 +256,13 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
         onClick={restartHidingTimer}
       >
         <StyledPlaybackButtons>
-          <IconButton onClick={handleReplayButton}>
+          <IconButton onClick={handleReplayButton} size="large">
             <Replay10 />
           </IconButton>
-          <IconButton onClick={handlePlayButton}>
+          <IconButton onClick={handlePlayButton} size="large">
             {isPlaying ? <PauseRounded /> : <PlayArrowRounded />}
           </IconButton>
-          <IconButton onClick={handleForwardButton}>
+          <IconButton onClick={handleForwardButton} size="large">
             <Forward10 />
           </IconButton>
         </StyledPlaybackButtons>
@@ -275,7 +274,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
               handleSliderChange(newValue as number)
             }
           />
-          <IconButton onClick={toggleFullscreen}>
+          <IconButton onClick={toggleFullscreen} size="large">
             <Fullscreen />
           </IconButton>
         </StyledScrubBar>

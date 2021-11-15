@@ -1,10 +1,10 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
-import { FileBrowserViewTypes } from "../common/types"
+import { FileBrowserContext } from "./FileBrowserContext"
+import { FileBrowserViewTypes } from "./types"
 import DirectoryThumbnails from "./DirectoryThumbnails"
 import DirectoryList from "./DirectoryList"
-import { BrowserDirectory, BrowserFile } from "../common/models"
+import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import EmptyResults from "./EmptyResults"
 
 interface Props {

@@ -1,8 +1,8 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
-import { IconButton, Tooltip } from "@material-ui/core"
-import { Clear } from "@material-ui/icons"
+import { FileBrowserContext } from "./FileBrowserContext"
+import { IconButton, Tooltip } from "@mui/material"
+import { Clear } from "@mui/icons-material"
 
 const StyledFooter = styled.div`
   font-size: 0.8rem;

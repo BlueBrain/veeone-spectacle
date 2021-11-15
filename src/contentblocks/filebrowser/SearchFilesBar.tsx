@@ -1,18 +1,20 @@
-import React, { useContext } from "react"
+import React, { useCallback, useContext } from "react"
 import {
-  createStyles,
   FilledInput,
   FormControl,
   Grid,
   IconButton,
   InputAdornment,
   InputLabel,
-  makeStyles,
-} from "@material-ui/core"
-import { Close } from "@material-ui/icons"
+} from "@mui/material"
+import createStyles from "@mui/styles/createStyles"
+import makeStyles from "@mui/styles/makeStyles"
+import { Close } from "@mui/icons-material"
 import clsx from "clsx"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
+import { FileBrowserContext } from "./FileBrowserContext"
 import ViewTypeSelector from "./ViewTypeSelector"
+import FiltersSelector from "./FiltersSelector"
+import { visualKeyboardService } from "../../visualkeyboard"
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -29,9 +31,26 @@ const SearchFilesBar: React.FC = () => {
     FileBrowserContext
   )
 
-  const onSearchQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    void requestSearch(event.target.value)
+  const onSearchQueryChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    await requestSearch(event.target.value)
   }
+
+  const handleInputChange = useCallback(
+    (value: string) => {
+      console.log("handleOnChange for component", value)
+      requestSearch(value)
+    },
+    [requestSearch]
+  )
+
+  const showVisualKeyboard = useCallback(
+    event => {
+      visualKeyboardService.newKeyboard(event.target, handleInputChange)
+    },
+    [handleInputChange]
+  )
 
   return (
     <Grid container alignItems="center">
@@ -43,12 +62,13 @@ const SearchFilesBar: React.FC = () => {
             </InputLabel>
             <FilledInput
               onChange={onSearchQueryChange}
+              onFocus={showVisualKeyboard}
               value={searchQuery}
               autoFocus={true}
               type={"text"}
               endAdornment={
                 <InputAdornment position="start">
-                  <IconButton onClick={() => setSearchMode(false)}>
+                  <IconButton onClick={() => setSearchMode(false)} size="large">
                     <Close />
                   </IconButton>
                 </InputAdornment>
@@ -58,6 +78,7 @@ const SearchFilesBar: React.FC = () => {
         </div>
       </Grid>
       <Grid item>
+        <FiltersSelector />
         <ViewTypeSelector />
       </Grid>
     </Grid>

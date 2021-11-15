@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
-import { Close, FlipToBack } from "@material-ui/icons"
-import { IconButton } from "@material-ui/core"
+import { Close, FlipToBack } from "@mui/icons-material"
+import { IconButton } from "@mui/material"
 
 interface FrameControlBarProps {
   onClose(): void
@@ -16,14 +16,6 @@ const StyledFrameControlBar = styled.div`
   padding: 5px;
   box-sizing: border-box;
   transform: translateY(-100%);
-`
-
-const StyledCloseButton = styled.button`
-  background: rgba(255, 255, 255, 0.2);
-  color: rgba(0, 0, 0, 0.7);
-  border: none;
-  border-radius: 3rem;
-  aspect-ratio: 1;
 `
 
 const FrameControlBar: React.FC<FrameControlBarProps> = (

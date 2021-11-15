@@ -4,8 +4,12 @@ include:
 
 docker:
   extends: .build-image-using-kaniko
+  tags:
+    - kubernetes
   variables:
     CI_REGISTRY_IMAGE: docker-registry-default.ocp.bbp.epfl.ch/bbp-ou-visualization/veeone-spectacle
+    KUBERNETES_MEMORY_LIMIT: 3Gi
+    KUBERNETES_MEMORY_REQUEST: 3Gi
 
 publish-spectacle:
   extends: .publish-image-using-kaniko

@@ -1,8 +1,8 @@
 import React, { useContext } from "react"
-import { IconButton, Tooltip } from "@material-ui/core"
-import { ViewColumn, ViewComfy } from "@material-ui/icons"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
-import { FileBrowserViewTypes } from "../common/types"
+import { IconButton, Tooltip } from "@mui/material"
+import { ViewColumn, ViewComfy } from "@mui/icons-material"
+import { FileBrowserContext } from "./FileBrowserContext"
+import { FileBrowserViewTypes } from "./types"
 
 const VIEW_TYPES = {
   [FileBrowserViewTypes.Thumbnails]: {
@@ -27,7 +27,7 @@ const ViewTypeSelector: React.FC = () => {
   return (
     <>
       <Tooltip title={VIEW_TYPES[viewType].tooltip}>
-        <IconButton onClick={toggleViewType}>
+        <IconButton onClick={toggleViewType} size="large">
           {VIEW_TYPES[viewType].icon}
         </IconButton>
       </Tooltip>

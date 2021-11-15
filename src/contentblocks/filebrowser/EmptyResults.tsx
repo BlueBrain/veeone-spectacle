@@ -1,13 +1,9 @@
 import React, { useContext } from "react"
-import {
-  Button,
-  createStyles,
-  IconButton,
-  makeStyles,
-  Tooltip,
-} from "@material-ui/core"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
-import { ArrowUpward } from "@material-ui/icons"
+import { Button, IconButton, Tooltip } from "@mui/material"
+import createStyles from "@mui/styles/createStyles"
+import makeStyles from "@mui/styles/makeStyles"
+import { FileBrowserContext } from "./FileBrowserContext"
+import { ArrowUpward } from "@mui/icons-material"
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -48,9 +44,16 @@ const EmptyResults: React.FC = () => {
   if (!!searchQuery.length && searchModeOn) {
     message = (
       <div>
-        No search results could be found for the query{" "}
+        {totalFilesCount > 0
+          ? "Only hidden/unsupported files have been found"
+          : "No search results could be found for the query"}
         <span className={classes.searchQuery}>`{searchQuery}`</span>
         <div>
+          {totalFilesCount > 0 ? (
+            <Button color="secondary" onClick={displayAllHiddenFiles}>
+              Show all results
+            </Button>
+          ) : null}
           <Button color="secondary" onClick={resetMySearchQuery}>
             Reset my search
           </Button>
@@ -86,7 +89,7 @@ const EmptyResults: React.FC = () => {
       <div>
         <Tooltip title="Move to the parent directory">
           <span>
-            <IconButton onClick={goToParentDirectory}>
+            <IconButton onClick={goToParentDirectory} size="large">
               <ArrowUpward />
             </IconButton>
           </span>

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react"
-import { IconButton, Menu, MenuItem, Tooltip } from "@material-ui/core"
-import { History } from "@material-ui/icons"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
+import { IconButton, Menu, MenuItem, Tooltip } from "@mui/material"
+import { History } from "@mui/icons-material"
+import { FileBrowserContext } from "./FileBrowserContext"
 
 interface BrowsingHistorySelectorProps {}
 
@@ -31,7 +31,11 @@ const BrowsingHistorySelector: React.FC<BrowsingHistorySelectorProps> = () => {
     <>
       <Tooltip title="Show recently visited folders">
         <span>
-          <IconButton onClick={openMenu} disabled={shouldDisableButton}>
+          <IconButton
+            onClick={openMenu}
+            disabled={shouldDisableButton}
+            size="large"
+          >
             <History />
           </IconButton>
         </span>

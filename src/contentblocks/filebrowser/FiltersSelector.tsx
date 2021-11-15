@@ -7,10 +7,10 @@ import {
   MenuItem,
   Tooltip,
   Typography,
-} from "@material-ui/core"
-import { Check, FilterList } from "@material-ui/icons"
+} from "@mui/material"
+import { Check, FilterList } from "@mui/icons-material"
 import React, { useContext, useState } from "react"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
+import { FileBrowserContext } from "./FileBrowserContext"
 import NameFilterMenuItem from "./NameFilterMenuItem"
 
 const FiltersSelector: React.FC = () => {
@@ -52,7 +52,7 @@ const FiltersSelector: React.FC = () => {
   return (
     <>
       <Tooltip title="Filter view">
-        <IconButton onClick={openMenu}>
+        <IconButton onClick={openMenu} size="large">
           <Badge badgeContent={activeFiltersCount} color={"error"}>
             <FilterList />
           </Badge>

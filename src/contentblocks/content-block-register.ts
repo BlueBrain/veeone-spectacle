@@ -2,7 +2,7 @@ import VimeoBlock from "./vimeo/VimeoBlock"
 import { ImageBlock } from "./image"
 import { VideoBlock } from "./video"
 import React from "react"
-import { FileBrowserBlock } from "../veedrive/components"
+import { FileBrowserBlock } from "./filebrowser"
 import { ContentBlockProps, ContentBlockTypes } from "./types"
 
 export const contentBlockRegister: Record<

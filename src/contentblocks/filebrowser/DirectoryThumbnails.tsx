@@ -1,8 +1,9 @@
 import React, { useContext } from "react"
-import { FileBrowserContext } from "../contexts/FileBrowserContext"
-import { createStyles, makeStyles } from "@material-ui/core"
-import { BrowserDirectory, BrowserFile } from "../common/models"
-import { Folder } from "@material-ui/icons"
+import { FileBrowserContext } from "./FileBrowserContext"
+import createStyles from "@mui/styles/createStyles"
+import makeStyles from "@mui/styles/makeStyles"
+import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
+import { Folder } from "@mui/icons-material"
 import FileElement from "./FileElement"
 
 interface DirectoryThumbnailsProps {
@@ -17,7 +18,7 @@ const useStyles = makeStyles(theme =>
       flexWrap: "wrap",
       justifyContent: "space-around",
       overflow: "scroll",
-      backgroundColor: theme.palette.background.paper,
+      backgroundColor: `#fff`,
     },
     grid: {
       display: "grid",
