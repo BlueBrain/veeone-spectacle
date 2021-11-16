@@ -1,17 +1,22 @@
 import * as React from "react"
-import Desk from "../desk/Desk"
-import styled from "styled-components"
+import { Desk } from "../desk"
+import { styled, ThemeProvider } from "@mui/material/styles"
+import { bbpTheme } from "../themes/bbp"
+import { config } from "../../config"
 
-const StyledSpectacle = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-`
+const StyledDeskWrapper = styled("div")({
+  width: `${config.VIEWPORT_WIDTH}px`,
+  height: `${config.VIEWPORT_HEIGHT}px`,
+  overflow: "hidden",
+  contain: `content`,
+})
 
 export const Spectacle = () => {
   return (
-    <StyledSpectacle>
-      <Desk />
-    </StyledSpectacle>
+    <ThemeProvider theme={bbpTheme}>
+      <StyledDeskWrapper>
+        <Desk />
+      </StyledDeskWrapper>
+    </ThemeProvider>
   )
 }

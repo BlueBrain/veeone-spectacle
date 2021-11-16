@@ -7,22 +7,24 @@ import { getFrames, getFrameStack, getLauncherMenus } from "../redux/selectors"
 import { openLauncherMenu } from "../redux/actions"
 import interact from "interactjs"
 import { Target } from "@interactjs/types"
-import styled from "styled-components"
+import { styled } from "@mui/material/styles"
 
 interact.pointerMoveTolerance(4)
 
-const StyledDesk = styled.div`
-  background: rgb(5, 10, 86);
-  background: radial-gradient(
-    circle,
-    rgba(3, 86, 150, 1) 0%,
-    rgba(5, 10, 86, 1) 80%
-  );
-  width: 100%;
-  height: 100%;
-  contain: content;
-  overflow: hidden;
-`
+const StyledDesk = styled(`div`)(({ theme }) => {
+  console.debug("StyledDeskxx", theme)
+  return {
+    background: `radial-gradient(
+          circle,
+          ${theme.palette.background.light} 0%,
+          ${theme.palette.background.default} 80%)`,
+    width: `100%`,
+    height: `100%`,
+    contain: `content`,
+    overflow: `hidden`,
+    position: `absolute`,
+  }
+})
 
 const Desk: React.FC = () => {
   const deskRef = useRef()
