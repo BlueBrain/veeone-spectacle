@@ -11,20 +11,17 @@ import { styled } from "@mui/material/styles"
 
 interact.pointerMoveTolerance(4)
 
-const StyledDesk = styled(`div`)(({ theme }) => {
-  console.debug("StyledDeskxx", theme)
-  return {
-    background: `radial-gradient(
+const StyledDesk = styled(`div`)(({ theme }) => ({
+  background: `radial-gradient(
           circle,
           ${theme.palette.background.light} 0%,
           ${theme.palette.background.default} 80%)`,
-    width: `100%`,
-    height: `100%`,
-    contain: `content`,
-    overflow: `hidden`,
-    position: `absolute`,
-  }
-})
+  width: `100%`,
+  height: `100%`,
+  contain: `content`,
+  overflow: `hidden`,
+  position: `absolute`,
+}))
 
 const Desk: React.FC = () => {
   const deskRef = useRef()

@@ -346,18 +346,20 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
       toggleFullscreen: async () => {
         toggleFullscreen()
       },
+      close: async () => {
+        dispatch(closeFrame(frameId))
+      },
+      sendToBack: async () => {
+        dispatch(sendFrameToBack(frameId))
+      },
     }),
-    [manipulate, width, toggleFullscreen]
+    [width, manipulate, toggleFullscreen, dispatch, frameId]
   )
 
   const ContentBlockComponent = useMemo(
     () => contentBlockRegister[frame.type],
     [frame.type]
   )
-
-  const handleCloseFrame = () => dispatch(closeFrame(frameId))
-
-  const handleSendToBack = () => dispatch(sendFrameToBack(frameId))
 
   return (
     <StyledFrame
@@ -372,10 +374,6 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
       angle={angle}
     >
       <FrameContext.Provider value={frameContextProvider}>
-        <FrameControlBar
-          onClose={handleCloseFrame}
-          onSendToBack={handleSendToBack}
-        />
         <ContentBlockComponent
           frameId={frameId}
           contentData={frameContentData}

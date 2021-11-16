@@ -13,6 +13,7 @@ import ViewTypeSelector from "./ViewTypeSelector"
 import SearchFilesBar from "./SearchFilesBar"
 import FiltersSelector from "./FiltersSelector"
 import PathParts from "./PathParts"
+import FrameControlBar from "../../core/frames/FrameControlBar"
 
 interface Props {
   onSelectPathPart(pathPart: number)
@@ -42,9 +43,15 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
   return (
     <>
       {searchModeOn ? (
-        <SearchFilesBar />
+        <>
+          <FrameControlBar />
+          <SearchFilesBar />
+        </>
       ) : (
         <Grid container alignItems="center">
+          <Grid item>
+            <FrameControlBar />
+          </Grid>
           <Grid item>
             <Tooltip title="Back">
               <span>

@@ -9,6 +9,7 @@ import styled from "styled-components"
 import { ContentBlockProps } from "../types"
 import fileService from "../../veedrive/service"
 import { FrameContext } from "../../core/frames"
+import FrameControlBar from "../../core/frames/FrameControlBar"
 
 const StyledImageBlock = styled.div`
   width: 100%;
@@ -66,6 +67,7 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
   return (
     <StyledImageBlock>
       {imageUrl ? <img src={imageUrl} style={imgStyle} alt={""} /> : null}
+      <FrameControlBar floating={true} />
     </StyledImageBlock>
   )
 }

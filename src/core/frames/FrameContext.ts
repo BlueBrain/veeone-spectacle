@@ -18,6 +18,12 @@ const FrameContext = React.createContext<FrameContextProps>({
   toggleFullscreen: () => {
     throw new NotImplementedError()
   },
+  close: () => {
+    throw new NotImplementedError()
+  },
+  sendToBack: () => {
+    throw new NotImplementedError()
+  },
 })
 
 export default FrameContext
