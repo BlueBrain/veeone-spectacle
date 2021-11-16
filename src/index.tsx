@@ -1,7 +1,7 @@
 import React from "react"
 import { Provider } from "react-redux"
 import { spectacleStore } from "./core/redux/store"
-import { Spectacle } from "./core/components"
+import { Spectacle } from "./core/spectacle"
 import "./global.scss"
 import ReactDOM from "react-dom"
 
