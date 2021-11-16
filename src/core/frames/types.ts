@@ -4,4 +4,6 @@ export interface FrameContextProps {
   preventMoving: () => void
   preventResizing: () => void
   preventFullscreen: () => void
+  close: () => void
+  sendToBack: () => void
 }

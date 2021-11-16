@@ -1,5 +1,4 @@
 import React, { useContext } from "react"
-import styled from "styled-components"
 import { Grid, IconButton, Tooltip } from "@mui/material"
 import {
   ArrowBack,
@@ -13,28 +12,12 @@ import BrowsingHistorySelector from "./BrowsingHistorySelector"
 import ViewTypeSelector from "./ViewTypeSelector"
 import SearchFilesBar from "./SearchFilesBar"
 import FiltersSelector from "./FiltersSelector"
+import PathParts from "./PathParts"
+import FrameControlBar from "../../core/frames/FrameControlBar"
 
 interface Props {
   onSelectPathPart(pathPart: number)
 }
-
-const StyledFileBrowserTopbar = styled.div`
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-`
-
-const StyledPathPart = styled.a`
-  text-decoration: none;
-  padding: 0 0.2rem;
-  margin-right: 0.4rem;
-  box-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
-
-  ::after {
-    content: "/";
-  }
-`
 
 const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
   const {
@@ -53,42 +36,29 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
     void navigateDirectory("")
   }
 
-  const makePathParts = (path: string) => {
-    return (
-      <>
-        {path
-          .split("/")
-          .filter(part => part !== "")
-          .map((part, index, all) => (
-            <StyledPathPart
-              key={index}
-              onClick={() => onSelectPathPart(index + 1)}
-              href={"#"}
-            >
-              {part}
-            </StyledPathPart>
-          ))}
-      </>
-    )
-  }
-
   const disableForwardButton = historyIndex === 0
   const disableBackButton = historyIndex === history.length - 1
   const hideUpButton = activePath.length === 0
 
   return (
-    <StyledFileBrowserTopbar>
+    <>
       {searchModeOn ? (
-        <SearchFilesBar />
+        <>
+          <FrameControlBar />
+          <SearchFilesBar />
+        </>
       ) : (
         <Grid container alignItems="center">
+          <Grid item>
+            <FrameControlBar />
+          </Grid>
           <Grid item>
             <Tooltip title="Back">
               <span>
                 <IconButton
                   onClick={navigateBack}
                   disabled={disableBackButton}
-                  size="large"
+                  color={"primary"}
                 >
                   <ArrowBack />
                 </IconButton>
@@ -99,7 +69,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
                 <IconButton
                   onClick={navigateForward}
                   disabled={disableForwardButton}
-                  size="large"
+                  color={"primary"}
                 >
                   <ArrowForward />
                 </IconButton>
@@ -113,7 +83,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
                 <IconButton
                   onClick={navigateHome}
                   disabled={hideUpButton}
-                  size="large"
+                  color={"primary"}
                 >
                   <Home />
                 </IconButton>
@@ -123,7 +93,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
             {!hideUpButton ? (
               <Tooltip title="Move to the parent directory">
                 <span>
-                  <IconButton onClick={navigateUp} size="large">
+                  <IconButton onClick={navigateUp} color={"primary"}>
                     <ArrowUpward />
                   </IconButton>
                 </span>
@@ -132,15 +102,14 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
           </Grid>
 
           <Grid item xs>
-            {/*<StyledPathPart onClick={() => onSelectPathPart(0)} href={"#"} />*/}
-            {makePathParts(activePath)}
+            <PathParts path={activePath} onSelectPathPart={onSelectPathPart} />
           </Grid>
 
           <Grid item>
             <FiltersSelector />
 
             <Tooltip title="Search files and directories">
-              <IconButton onClick={() => setSearchMode(true)} size="large">
+              <IconButton onClick={() => setSearchMode(true)} color={"primary"}>
                 <Search />
               </IconButton>
             </Tooltip>
@@ -149,7 +118,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
           </Grid>
         </Grid>
       )}
-    </StyledFileBrowserTopbar>
+    </>
   )
 }
 

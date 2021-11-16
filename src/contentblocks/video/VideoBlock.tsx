@@ -14,6 +14,7 @@ import fileService from "../../veedrive/service"
 import { FrameContext } from "../../core/frames"
 import PlaybackControls from "./PlaybackControls"
 import VideoBlockContext, { VideoBlockContextProps } from "./VideoBlockContext"
+import FrameControlBar from "../../core/frames/FrameControlBar"
 
 const StyledVideoBlock = styled.div`
   background: #000;
@@ -100,6 +101,7 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
         <StyledOverlay onClick={handleOverlayClick} />
         <PlaybackControls videoRef={videoRef} />
       </StyledVideoBlock>
+      <FrameControlBar floating={true} />
     </VideoBlockContext.Provider>
   )
 }

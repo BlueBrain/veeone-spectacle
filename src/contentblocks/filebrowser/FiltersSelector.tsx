@@ -52,7 +52,7 @@ const FiltersSelector: React.FC = () => {
   return (
     <>
       <Tooltip title="Filter view">
-        <IconButton onClick={openMenu} size="large">
+        <IconButton onClick={openMenu} color={"primary"}>
           <Badge badgeContent={activeFiltersCount} color={"error"}>
             <FilterList />
           </Badge>
