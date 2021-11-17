@@ -1,19 +1,12 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
 import { FileBrowserContext } from "./FileBrowserContext"
-import { IconButton, Tooltip } from "@mui/material"
-import { Clear } from "@mui/icons-material"
+import { Button, Grid } from "@mui/material"
 
 const StyledFooter = styled.div`
   font-size: 0.8rem;
   padding: 0 1rem;
   color: rgba(0, 0, 0, 0.4);
-`
-
-const StyledNameFilterInfo = styled.span`
-  color: red;
-  font-weight: bold;
-  padding-left: 0.5rem;
 `
 
 interface FileBrowserFooterProps {}
@@ -32,18 +25,24 @@ const FileBrowserFooter: React.FC<FileBrowserFooterProps> = () => {
 
   return (
     <StyledFooter>
-      Total: {totalFilesCount} {totalFilesCount === 1 ? "file" : "files"}{" "}
-      {hiddenFilesCount > 0 ? `(${hiddenFilesCount} hidden)` : null}
-      {nameFilterQuery.length > 0 ? (
-        <StyledNameFilterInfo>
-          Filtering by name is active: `{nameFilterQuery}`
-          <Tooltip title="Clear filtering by name">
-            <IconButton onClick={clearFilters} size="small">
-              <Clear />
-            </IconButton>
-          </Tooltip>
-        </StyledNameFilterInfo>
-      ) : null}
+      <Grid container alignItems="center" justifyContent={"space-between"}>
+        <Grid item>
+          Total: {totalFilesCount} {totalFilesCount === 1 ? "file" : "files"}{" "}
+        </Grid>
+        <Grid item xs>
+          {hiddenFilesCount > 0 ? `(${hiddenFilesCount} hidden)` : null}
+        </Grid>
+        {nameFilterQuery.length > 0 ? (
+          <Grid item>
+            <>
+              Filtering by name is active: {nameFilterQuery}
+              <Button onClick={clearFilters} size="small" color={"secondary"}>
+                Clear filter
+              </Button>
+            </>
+          </Grid>
+        ) : null}
+      </Grid>
     </StyledFooter>
   )
 }

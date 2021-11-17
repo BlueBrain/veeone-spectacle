@@ -1,16 +1,8 @@
 import React, { useCallback, useContext, useEffect, useState } from "react"
-import {
-  FilledInput,
-  FormControl,
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-} from "@mui/material"
+import { Grid, IconButton, TextField } from "@mui/material"
 import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
 import { Close } from "@mui/icons-material"
-import clsx from "clsx"
 import { FileBrowserContext } from "./FileBrowserContext"
 import ViewTypeSelector from "./ViewTypeSelector"
 import FiltersSelector from "./FiltersSelector"
@@ -64,29 +56,29 @@ const SearchFilesBar: React.FC = () => {
   }, [keyboardId])
 
   return (
-    <Grid container alignItems="center">
+    <Grid container alignItems={"center"}>
       <Grid item xs>
-        <div className={classes.searchBarContainer}>
-          <FormControl className={clsx(classes.searchBar)} variant="standard">
-            <InputLabel htmlFor="filled-adornment-password">
-              Search filesystem
-            </InputLabel>
-            <FilledInput
+        <Grid container alignItems={"center"}>
+          <Grid item xs>
+            <TextField
+              type={"text"}
+              size={"small"}
+              variant={"outlined"}
+              margin={"dense"}
+              label={"Search filesystem"}
+              autoFocus={true}
+              fullWidth={true}
+              value={searchQuery}
               onChange={onSearchQueryChange}
               onFocus={showVisualKeyboard}
-              value={searchQuery}
-              autoFocus={true}
-              type={"text"}
-              endAdornment={
-                <InputAdornment position="start">
-                  <IconButton onClick={() => setSearchMode(false)} size="large">
-                    <Close />
-                  </IconButton>
-                </InputAdornment>
-              }
             />
-          </FormControl>
-        </div>
+          </Grid>
+          <Grid item>
+            <IconButton onClick={() => setSearchMode(false)} size={"small"}>
+              <Close />
+            </IconButton>
+          </Grid>
+        </Grid>
       </Grid>
       <Grid item>
         <FiltersSelector />

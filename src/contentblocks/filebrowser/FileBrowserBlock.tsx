@@ -30,6 +30,7 @@ import VeeDriveConfig from "../../veedrive/config"
 import FileBrowserFooter from "./FileBrowserFooter"
 import { FrameContext } from "../../core/frames"
 import { fileOpenerService } from "../../file-opener"
+import FileSystemBusyIndicator from "./FileSystemBusyIndicator"
 
 const SEARCH_QUERY_CHANGE_DEBOUNCE_MS = 500
 
@@ -118,13 +119,16 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     files: [],
     directories: [],
   })
-
+  const [searchQueryLoaded, setSearchQueryLoaded] = useState<string>("")
+  const [pathLoaded, setPathLoaded] = useState<string | null>(null)
   const [activePathFiles, setActivePathFiles] = useState([] as BrowserFile[])
   const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
 
   const initializeTree = useCallback(async () => {
     console.debug("initializeTree", activePath)
+    setPathLoaded(null)
     const tree = await fetchDirectoryContents(activePath)
+    setPathLoaded(activePath)
     let currentDirList = tree.dirs
     let files = tree.files
     setActivePathDirs(currentDirList)
@@ -227,7 +231,9 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
 
   const performSearch = useCallback(async () => {
     if (searchQuery.length >= VeeDriveConfig.minSearchQueryLength) {
+      setSearchQueryLoaded(null)
       const { directories, files } = await searchFilesystem(searchQuery)
+      setSearchQueryLoaded(searchQuery)
       setSearchResults({ files, directories })
     }
   }, [searchQuery])
@@ -314,6 +320,10 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     () => totalFilesCount - filteredFiles.length,
     [filteredFiles.length, totalFilesCount]
   )
+
+  const isLoading = !searchMode
+    ? activePath !== pathLoaded
+    : searchQuery && searchQuery !== searchQueryLoaded
 
   const fileBrowserContextProvider: FileBrowserContextProps = useMemo(
     () => ({
@@ -432,12 +442,16 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
         <StyledBlockContent>
           <FileBrowserTopbar onSelectPathPart={openDirectoryByPathPartIndex} />
           <StyledMain>
-            <FileBrowserDirectoryContent
-              dirs={filteredDirs}
-              files={filteredFiles}
-            />
+            {!isLoading ? (
+              <FileBrowserDirectoryContent
+                dirs={filteredDirs}
+                files={filteredFiles}
+              />
+            ) : (
+              <FileSystemBusyIndicator />
+            )}
           </StyledMain>
-          <FileBrowserFooter />
+          {!isLoading ? <FileBrowserFooter /> : null}
         </StyledBlockContent>
       </StyledFileBrowserBlock>
     </FileBrowserContext.Provider>
