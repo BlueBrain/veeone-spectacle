@@ -33,7 +33,14 @@ export interface VeeDriveSearchFileSystemRequest {
   name: string
 }
 
-export type VeeDriveSearchFileSystemResponse = VeeDriveListDirectoryResponse
+export interface VeeDriveSearchFileSystemResponse {
+  searchId: string
+}
+
+export interface SearchFileSystemResponse
+  extends VeeDriveListDirectoryResponse {
+  done: boolean
+}
 
 export interface VeeDriveFile {
   name: string

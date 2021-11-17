@@ -1,4 +1,5 @@
 import {
+  SearchFileSystemResponse,
   VeeDriveFileRequest,
   VeeDriveFileResponse,
   VeeDriveImageRequest,
@@ -32,10 +33,29 @@ class VeeDriveService extends NetworkFileBrowsingServiceBase {
   ): Promise<VeeDriveImageResponse> =>
     this.sendRequest(VeeDriveConfig.endpointNames.requestImage, params)
 
-  public readonly searchFileSystem = async (
+  public async *searchFileSystem(
     params: VeeDriveSearchFileSystemRequest
-  ): Promise<VeeDriveSearchFileSystemResponse> =>
-    this.sendRequest(VeeDriveConfig.endpointNames.searchFiles, params)
+  ): AsyncIterableIterator<SearchFileSystemResponse> {
+    console.debug("Send search request", params)
+    const searchResponse: VeeDriveSearchFileSystemResponse = await this.sendRequest(
+      VeeDriveConfig.endpointNames.searchFiles,
+      params
+    )
+    const searchId = searchResponse.searchId
+    console.debug("Got searchId", searchId)
+    while (true) {
+      console.debug("Fetch results for", searchId)
+      const currentResults: SearchFileSystemResponse = await this.sendRequest(
+        VeeDriveConfig.endpointNames.searchResults,
+        { searchId }
+      )
+      if (typeof currentResults === "undefined") {
+        console.warn("currentResults was undefined", searchId)
+        return
+      }
+      yield currentResults
+    }
+  }
 }
 
 export default new VeeDriveService()

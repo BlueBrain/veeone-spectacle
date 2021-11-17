@@ -25,7 +25,7 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
   dirs = [],
   files = [],
 }) => {
-  const { viewType } = useContext(FileBrowserContext)
+  const { viewType, isSearchingInProgress } = useContext(FileBrowserContext)
 
   const displayType = viewType ?? FileBrowserViewTypes.Thumbnails
 
@@ -33,7 +33,7 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
 
   return (
     <StyledFileBrowserFileList>
-      {isEmpty ? (
+      {isEmpty && !isSearchingInProgress ? (
         <EmptyResults />
       ) : displayType === FileBrowserViewTypes.Thumbnails ? (
         <DirectoryThumbnails dirs={dirs} files={files} />

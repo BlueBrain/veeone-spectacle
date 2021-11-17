@@ -85,7 +85,7 @@ const DirectoryThumbnails: React.FC<DirectoryThumbnailsProps> = ({
       <div className={classes.grid}>
         {dirs.map(dir => (
           <div
-            key={dir.name}
+            key={dir.path}
             className={classes.gridTile}
             onClick={() => navigateDirectory(dir.path)}
             title={dir.name}

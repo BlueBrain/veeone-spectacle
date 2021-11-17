@@ -1,25 +1,13 @@
 import React, { useCallback, useContext, useEffect, useState } from "react"
 import { Grid, IconButton, TextField } from "@mui/material"
-import createStyles from "@mui/styles/createStyles"
-import makeStyles from "@mui/styles/makeStyles"
 import { Close } from "@mui/icons-material"
 import { FileBrowserContext } from "./FileBrowserContext"
 import ViewTypeSelector from "./ViewTypeSelector"
 import FiltersSelector from "./FiltersSelector"
 import { visualKeyboardService } from "../../visualkeyboard"
 
-const useStyles = makeStyles(theme =>
-  createStyles({
-    searchBarContainer: {},
-    searchBar: {
-      width: "100%",
-    },
-  })
-)
-
 const SearchFilesBar: React.FC = () => {
   const [keyboardId, setKeyboardId] = useState(null)
-  const classes = useStyles()
   const { setSearchMode, requestSearch, searchQuery } = useContext(
     FileBrowserContext
   )
@@ -39,10 +27,11 @@ const SearchFilesBar: React.FC = () => {
   )
 
   const showVisualKeyboard = useCallback(
-    event => {
+    (event, initialValue: string) => {
       const newKeyboardId = visualKeyboardService.newKeyboard(
         event.target,
-        handleInputChange
+        handleInputChange,
+        { initialValue }
       )
       setKeyboardId(newKeyboardId)
     },
@@ -70,7 +59,7 @@ const SearchFilesBar: React.FC = () => {
               fullWidth={true}
               value={searchQuery}
               onChange={onSearchQueryChange}
-              onFocus={showVisualKeyboard}
+              onFocus={event => showVisualKeyboard(event, searchQuery)}
             />
           </Grid>
           <Grid item>
