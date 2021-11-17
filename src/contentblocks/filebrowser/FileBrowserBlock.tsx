@@ -97,8 +97,12 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
 
   const situation = frameData.situation
   const blockData = (frameData.data as unknown) as FileBrowserBlockPayload
-  const history = blockData?.history ?? [""]
-  const historyIndex = blockData?.historyIndex ?? 0
+  const history = useMemo(() => blockData?.history ?? [""], [
+    blockData?.history,
+  ])
+  const historyIndex = useMemo(() => blockData?.historyIndex ?? 0, [
+    blockData?.historyIndex,
+  ])
   const activePath = history[historyIndex]
   const viewType = blockData?.viewType ?? FileBrowserViewTypes.Thumbnails
 
@@ -115,9 +119,6 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     directories: [],
   })
 
-  const [globalDirectoryTree, setGlobalDirectoryTree] = useState(
-    [] as BrowserDirectory[]
-  )
   const [activePathFiles, setActivePathFiles] = useState([] as BrowserFile[])
   const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
 
@@ -126,7 +127,6 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     const tree = await fetchDirectoryContents(activePath)
     let currentDirList = tree.dirs
     let files = tree.files
-    setGlobalDirectoryTree(tree.dirs)
     setActivePathDirs(currentDirList)
     setActivePathFiles(files)
   }, [activePath])
@@ -135,72 +135,84 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     void initializeTree()
   }, [initializeTree, activePath])
 
-  const addToBrowsingHistory = dirPath => {
-    const recentPath = history.length > 0 ? history[historyIndex] : ""
-    if (dirPath === recentPath) {
-      return
-    }
-    const newHistory = [dirPath, ...history.slice(historyIndex)]
-    const newHistoryIndex = 0
-    const newFrameData: FileBrowserBlockPayload = {
-      history: newHistory,
-      historyIndex: newHistoryIndex,
-    }
-    console.debug("addToBrowsingHistory", newFrameData)
-    dispatch(updateFrameData(frameId, newFrameData))
-  }
+  const addToBrowsingHistory = useCallback(
+    dirPath => {
+      const recentPath = history.length > 0 ? history[historyIndex] : ""
+      if (dirPath === recentPath) {
+        return
+      }
+      const newHistory = [dirPath, ...history.slice(historyIndex)]
+      const newHistoryIndex = 0
+      const newFrameData: FileBrowserBlockPayload = {
+        history: newHistory,
+        historyIndex: newHistoryIndex,
+      }
+      console.debug("addToBrowsingHistory", newFrameData)
+      dispatch(updateFrameData(frameId, newFrameData))
+    },
+    [dispatch, frameId, history, historyIndex]
+  )
 
-  const openParentDirectory = async () => {
+  const openParentDirectory = useCallback(async () => {
     const upperPath = activePath.split("/").slice(0, -1).join("/")
     addToBrowsingHistory(upperPath)
-  }
+  }, [activePath, addToBrowsingHistory])
 
   const openDirectoryByPathPartIndex = async (pathPartIndex: number) => {
     const path = activePath.split("/").slice(0, pathPartIndex).join("/")
     return addToBrowsingHistory(path)
   }
 
-  const setBrowsingHistoryIndex = async (newIndex: number) => {
-    let newHistoryIndex = newIndex
-    if (newHistoryIndex + 1 >= history.length) {
-      newHistoryIndex = history.length - 1
-    }
-    const newFrameData: FileBrowserBlockPayload = {
-      history: history,
-      historyIndex: newHistoryIndex,
-    }
-    dispatch(updateFrameData(frameId, newFrameData))
-  }
+  const setBrowsingHistoryIndex = useCallback(
+    async (newIndex: number) => {
+      let newHistoryIndex = newIndex
+      if (newHistoryIndex + 1 >= history.length) {
+        newHistoryIndex = history.length - 1
+      }
+      const newFrameData: FileBrowserBlockPayload = {
+        history: history,
+        historyIndex: newHistoryIndex,
+      }
+      dispatch(updateFrameData(frameId, newFrameData))
+    },
+    [dispatch, frameId, history]
+  )
 
-  const moveBrowsingHistoryIndex = async (delta: number) => {
-    let newHistoryIndex = historyIndex + delta
-    if (newHistoryIndex < 0) {
-      newHistoryIndex = 0
-    }
-    if (newHistoryIndex + 1 >= history.length) {
-      newHistoryIndex = history.length - 1
-    }
-    const newFrameData: FileBrowserBlockPayload = {
-      history: history,
-      historyIndex: newHistoryIndex,
-    }
-    dispatch(updateFrameData(frameId, newFrameData))
-  }
+  const moveBrowsingHistoryIndex = useCallback(
+    async (delta: number) => {
+      let newHistoryIndex = historyIndex + delta
+      if (newHistoryIndex < 0) {
+        newHistoryIndex = 0
+      }
+      if (newHistoryIndex + 1 >= history.length) {
+        newHistoryIndex = history.length - 1
+      }
+      const newFrameData: FileBrowserBlockPayload = {
+        history: history,
+        historyIndex: newHistoryIndex,
+      }
+      dispatch(updateFrameData(frameId, newFrameData))
+    },
+    [dispatch, frameId, history, historyIndex]
+  )
 
-  const changeViewType = async (newType: FileBrowserViewTypes) => {
-    const newFrameData = {
-      viewType: newType,
-    }
-    dispatch(updateFrameData(frameId, newFrameData))
-  }
+  const changeViewType = useCallback(
+    async (newType: FileBrowserViewTypes) => {
+      const newFrameData = {
+        viewType: newType,
+      }
+      dispatch(updateFrameData(frameId, newFrameData))
+    },
+    [dispatch, frameId]
+  )
 
-  const openPreviousDirectory = async () => {
+  const openPreviousDirectory = useCallback(async () => {
     await moveBrowsingHistoryIndex(1)
-  }
+  }, [moveBrowsingHistoryIndex])
 
-  const openNextDirectory = async () => {
+  const openNextDirectory = useCallback(async () => {
     await moveBrowsingHistoryIndex(-1)
-  }
+  }, [moveBrowsingHistoryIndex])
 
   const openFile = useCallback(
     async (filePath: string) => {
@@ -210,7 +222,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
         top: situation.top + situation.height / 2,
       })
     },
-    [frameId]
+    [frameId, situation.height, situation.left, situation.top, situation.width]
   )
 
   const performSearch = useCallback(async () => {
@@ -244,8 +256,11 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     [isShowingUnsupportedFiles]
   )
 
-  const nameFilter: FilterFunction = element =>
-    element.name.toLowerCase().includes(nameFilterQuery.toLowerCase())
+  const nameFilter: FilterFunction = useCallback(
+    element =>
+      element.name.toLowerCase().includes(nameFilterQuery.toLowerCase()),
+    [nameFilterQuery]
+  )
 
   const combinedFileFilter: FilterFunction = useCallback(
     element =>
