@@ -49,6 +49,8 @@ export interface FileBrowserContextProps {
   totalFilesCount: number
 
   displayAllHiddenFiles(): void
+
+  isSearchingInProgress: boolean
 }
 
 export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
@@ -105,4 +107,5 @@ export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
   displayAllHiddenFiles() {
     throw new Error("Not implemented")
   },
+  isSearchingInProgress: false,
 })

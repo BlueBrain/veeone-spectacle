@@ -43,10 +43,14 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
   return (
     <>
       {searchModeOn ? (
-        <>
-          <FrameControlBar />
-          <SearchFilesBar />
-        </>
+        <Grid container alignItems="center">
+          <Grid item>
+            <FrameControlBar />
+          </Grid>
+          <Grid item xs>
+            <SearchFilesBar />
+          </Grid>
+        </Grid>
       ) : (
         <Grid container alignItems="center">
           <Grid item>
@@ -106,13 +110,13 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
           </Grid>
 
           <Grid item>
-            <FiltersSelector />
-
             <Tooltip title="Search files and directories">
               <IconButton onClick={() => setSearchMode(true)} color={"primary"}>
                 <Search />
               </IconButton>
             </Tooltip>
+
+            <FiltersSelector />
 
             <ViewTypeSelector />
           </Grid>

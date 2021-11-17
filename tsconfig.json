@@ -12,7 +12,7 @@
     "extendedDiagnostics": false,
     "incremental": false,
     "jsx": "react",
-    "lib": ["dom", "dom.iterable", "es6"],
+    "lib": ["dom", "dom.iterable", "es6", "es2018.asynciterable"],
     "module": "CommonJS",
     "moduleResolution": "node",
     "noImplicitAny": false,
