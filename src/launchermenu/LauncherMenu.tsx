@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 import { Position } from "../common/types"
 import { useDispatch } from "react-redux"
 import { addFrame, closeLauncherMenu } from "../core/redux/actions"
@@ -50,14 +50,18 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
   const mainRef = useRef()
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    interact(mainRef.current).on("doubletap", () => {
-      dispatch(closeLauncherMenu({ menuId }))
-    })
+  const close = useCallback(() => {
+    dispatch(closeLauncherMenu({ menuId }))
   }, [dispatch, menuId])
 
+  useEffect(() => {
+    interact(mainRef.current).on("doubletap", () => {
+      close()
+    })
+  }, [close, dispatch, menuId])
+
   const newFrame = payload => {
-    // close()
+    close()
     dispatch(
       addFrame({
         frameId: generateFrameId(),
