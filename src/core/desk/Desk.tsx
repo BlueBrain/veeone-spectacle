@@ -8,6 +8,8 @@ import { openLauncherMenu } from "../redux/actions"
 import interact from "interactjs"
 import { Target } from "@interactjs/types"
 import { styled } from "@mui/material/styles"
+import { Position } from "../../common/types"
+import { LauncherMenuData } from "../scenes/interfaces"
 
 interact.pointerMoveTolerance(4)
 
@@ -23,23 +25,52 @@ const StyledDesk = styled(`div`)(({ theme }) => ({
   position: `absolute`,
 }))
 
+function isAnyLauncherNearby(
+  position: Position,
+  launcherMenus: LauncherMenuData[]
+) {
+  return launcherMenus.some(launcher => {
+    // fixme this is hardcoded for now - should be calculated from launcher size
+    const top = launcher.position.top - 300
+    const bottom = launcher.position.top + 300
+    const left = launcher.position.left - 600
+    const right = launcher.position.left + 600
+    console.debug("Check position", launcher.menuId, position, {
+      top,
+      left,
+      bottom,
+      right,
+    })
+    return (
+      top <= position.top &&
+      position.top <= bottom &&
+      left <= position.left &&
+      position.left <= right
+    )
+  })
+}
+
 const Desk: React.FC = () => {
   const deskRef = useRef()
   const dispatch = useDispatch()
   const frames = useSelector(getFrames)
   const frameStack = useSelector(getFrameStack)
-  const launcherMenus = useSelector(getLauncherMenus)
+  const launcherMenus: LauncherMenuData[] = useSelector(getLauncherMenus)
 
   const handleHold = useCallback(
     event => {
+      const position = { left: event.x, top: event.y }
       if (event.target === deskRef.current) {
         console.debug("Holding...", event)
-        dispatch(
-          openLauncherMenu({ position: { left: event.x, top: event.y } })
-        )
+        if (!isAnyLauncherNearby(position, launcherMenus)) {
+          dispatch(openLauncherMenu({ position: position }))
+        } else {
+          // todo any feedback to the user that the launcher couldn't have been opened?
+          console.debug("Too close to other launcher menus. Not opening.")
+        }
       }
     },
-    [dispatch]
+    [dispatch, launcherMenus]
   )
 
   useEffect(() => {
