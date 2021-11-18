@@ -21,8 +21,8 @@ config = {
 
 config = {
   ...config,
-  FILE_BROWSER_WIDTH: config.VIEWPORT_WIDTH / 1.5,
-  FILE_BROWSER_HEIGHT: config.VIEWPORT_HEIGHT / 1.5,
+  FILE_BROWSER_WIDTH: config.VIEWPORT_WIDTH / 3,
+  FILE_BROWSER_HEIGHT: config.VIEWPORT_HEIGHT / 2.5,
 }
 
 const AppConfigWithOverrides: ApplicationConfig = queryParamOverrides.wrap(

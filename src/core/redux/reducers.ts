@@ -6,6 +6,7 @@ import {
 } from "../scenes/interfaces"
 import { generateRandomId } from "../../common/random"
 import { ReduxAction } from "../../redux/actions"
+import { Position } from "../../common/types"
 
 export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
   switch (action.type) {

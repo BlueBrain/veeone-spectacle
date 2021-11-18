@@ -1,47 +1,40 @@
-import React from "react"
-import styled from "styled-components"
+import React, { useCallback, useEffect, useRef } from "react"
 import { Position } from "../common/types"
 import { useDispatch } from "react-redux"
 import { addFrame, closeLauncherMenu } from "../core/redux/actions"
 import LauncherPrimaryMenu from "./LauncherPrimaryMenu"
-import LauncherPagesNavigator from "./LauncherPagesNavigator"
 import { LauncherMenuAction } from "./launcher-menu-actions"
 import { ContentBlockTypes } from "../contentblocks/types"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTimes } from "@fortawesome/free-solid-svg-icons"
 import { generateFrameId } from "../core/frames/utils"
 import { config } from "../config"
+import { styled } from "@mui/material/styles"
+import interact from "interactjs"
 
 interface LauncherMenuProps {
   menuId: string
   position: Position
 }
 
-const StyledCloseButton = styled.button`
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: rgba(0, 0, 0, 0.7);
-  border-radius: 1rem;
-  aspect-ratio: 1;
-`
-
-const StyledLauncherMenu = styled.div`
+const StyledLauncherMenuWrapper = styled("div")`
+  padding: 5rem 5rem;
+  //background: rgba(255, 0, 0, 0.2);
   position: absolute;
   transform: translate(-50%, -50%);
   width: 28rem;
+  box-sizing: content-box;
+`
+
+const StyledLauncherMenu = styled("div")`
   display: flex;
   flex-direction: column;
   z-index: 9999;
   overflow: visible;
   padding: 1rem 1rem;
-  box-shadow: 2rem 2rem 4rem rgba(0, 0, 0, 0.3),
-    -2rem 2rem 4rem rgba(0, 0, 0, 0.3);
 `
 
-const StyledLauncherMenuBackground = styled.div`
+const StyledLauncherMenuBackground = styled("div")(
+  ({ theme }) => `
   position: absolute;
-  background: rgba(17, 82, 147, 0.8);
-  backdrop-filter: grayscale(100%) blur(10px);
   box-sizing: content-box;
   overflow: visible;
   width: 100%;
@@ -51,18 +44,21 @@ const StyledLauncherMenuBackground = styled.div`
   left: 0;
   top: 0;
 `
-
-const StyledTopControls = styled.div`
-  position: relative;
-  margin-bottom: 1rem;
-  margin-top: -2.7rem;
-`
+)
 
 const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
+  const mainRef = useRef()
   const dispatch = useDispatch()
-  const close = () => {
+
+  const close = useCallback(() => {
     dispatch(closeLauncherMenu({ menuId }))
-  }
+  }, [dispatch, menuId])
+
+  useEffect(() => {
+    interact(mainRef.current).on("doubletap", () => {
+      close()
+    })
+  }, [close, dispatch, menuId])
 
   const newFrame = payload => {
     close()
@@ -115,17 +111,12 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
   }
 
   return (
-    <StyledLauncherMenu>
-      <StyledLauncherMenuBackground />
-      <StyledTopControls>
-        <StyledCloseButton type="button" onClick={close}>
-          <FontAwesomeIcon icon={faTimes} />
-        </StyledCloseButton>
-      </StyledTopControls>
-
-      <LauncherPrimaryMenu onActionSelected={handleAction} />
-      <LauncherPagesNavigator />
-    </StyledLauncherMenu>
+    <StyledLauncherMenuWrapper ref={mainRef}>
+      <StyledLauncherMenu>
+        <StyledLauncherMenuBackground />
+        <LauncherPrimaryMenu onActionSelected={handleAction} />
+      </StyledLauncherMenu>
+    </StyledLauncherMenuWrapper>
   )
 }
 
