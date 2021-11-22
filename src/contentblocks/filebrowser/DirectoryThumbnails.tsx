@@ -3,8 +3,8 @@ import { FileBrowserContext } from "./FileBrowserContext"
 import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
-import { Folder } from "@mui/icons-material"
 import FileElement from "./FileElement"
+import FolderElement from "./FolderElement"
 
 interface DirectoryThumbnailsProps {
   files: BrowserFile[]
@@ -78,25 +78,12 @@ const DirectoryThumbnails: React.FC<DirectoryThumbnailsProps> = ({
   files,
 }) => {
   const classes = useStyles()
-  const { navigateDirectory } = useContext(FileBrowserContext)
 
   return (
     <>
       <div className={classes.grid}>
         {dirs.map(dir => (
-          <div
-            key={dir.path}
-            className={classes.gridTile}
-            onClick={() => navigateDirectory(dir.path)}
-            title={dir.name}
-          >
-            <div className={classes.gridTileThumbnail}>
-              <div className={classes.gridTileThumbnailBody}>
-                <Folder fontSize={"large"} className={classes.gridTileIcon} />
-              </div>
-            </div>
-            <div className={classes.gridTileLabel}>{dir.name}</div>
-          </div>
+          <FolderElement key={dir.path} dir={dir} classes={classes} />
         ))}
         {files.map((file: BrowserFile) => (
           <FileElement key={file.path} file={file} classes={classes} />

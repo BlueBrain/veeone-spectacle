@@ -2,6 +2,8 @@ import * as React from "react"
 import styled from "styled-components"
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import useInteractable from "../core/interactable/useInteractable"
+import { useRef } from "react"
 
 interface LauncherMenuItemProps {
   label: string
@@ -10,9 +12,7 @@ interface LauncherMenuItemProps {
   onSelected?()
 }
 
-type Props = LauncherMenuItemProps
-
-const StyledLauncherMenuItem = styled.a`
+const StyledLauncherMenuItem = styled.div`
   height: 100%;
   display: flex;
   background: #1976d2;
@@ -50,15 +50,26 @@ const StyledIconWrapper = styled.div`
   }
 `
 
-const LauncherMenuItem = (props: Props) => {
+const LauncherMenuItem: React.FC<LauncherMenuItemProps> = ({
+  label,
+  faSvgIcon,
+  onSelected,
+}) => {
+  const ref = useRef()
+  const handleTap = event => {
+    onSelected()
+    event.stopPropagation()
+  }
+  useInteractable(ref, {
+    onTap: handleTap,
+  })
+
   return (
-    <StyledLauncherMenuItem
-      onClick={props.onSelected ? props.onSelected : null}
-    >
+    <StyledLauncherMenuItem ref={ref}>
       <StyledIconWrapper>
-        {props.faSvgIcon ? <FontAwesomeIcon icon={props.faSvgIcon} /> : null}
+        {faSvgIcon ? <FontAwesomeIcon icon={faSvgIcon} /> : null}
       </StyledIconWrapper>
-      {props.label}
+      {label}
     </StyledLauncherMenuItem>
   )
 }

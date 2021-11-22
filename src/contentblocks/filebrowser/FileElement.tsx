@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import fileService from "../../veedrive/service"
 import { BrowserFile } from "../../veedrive/common/models"
 import { FileBrowserContext } from "./FileBrowserContext"
 import { InsertDriveFile } from "@mui/icons-material"
+import useInteractable from "../../core/interactable/useInteractable"
 
 interface FileElementProps {
   classes: any
@@ -40,12 +41,17 @@ const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
     }
   }, [file.path])
 
+  const ref = useRef()
+
+  useInteractable(ref, {
+    onTap: event => {
+      event.stopPropagation()
+      requestFile(file.path)
+    },
+  })
+
   return (
-    <div
-      className={classes.gridTile}
-      onClick={() => requestFile(file.path)}
-      title={file.name}
-    >
+    <div className={classes.gridTile} title={file.name} ref={ref}>
       <div className={classes.gridTileThumbnail}>
         <div className={classes.gridTileThumbnailBody}>
           {thumbnailUrl ? (

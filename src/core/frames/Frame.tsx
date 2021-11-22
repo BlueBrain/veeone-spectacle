@@ -16,7 +16,6 @@ import {
   FrameSituationUpdate,
 } from "../scenes/interfaces"
 import styled from "styled-components"
-import FrameControlBar from "./FrameControlBar"
 import { GestureEvent } from "@interactjs/types"
 import { contentBlockRegister } from "../../contentblocks/content-block-register"
 import { FrameContextProps } from "./types"
@@ -58,7 +57,7 @@ interface UseInteractJsProps {
   toggleFullscreen
 }
 
-const useInteractJs = ({
+const useInteractWithFrame = ({
   angle,
   width,
   height,
@@ -91,15 +90,18 @@ const useInteractJs = ({
         let resizeByWidth = null
 
         // console.debug("Assign interactjs events to the node", node)
+        const interactiveNode = interact(node)
 
         if (isFullscreenAllowed) {
-          interact(node).on("doubletap", () => {
+          interactiveNode.on("doubletap", () => {
             console.debug("Double tap detected")
             toggleFullscreen()
           })
         }
 
-        interact(node).on("mousewheel", event => {
+        interactiveNode.on("tap", bringToFront)
+
+        interactiveNode.on("mousewheel", event => {
           if (isFullscreen || !isResizingAllowed) {
             return
           }
@@ -129,7 +131,7 @@ const useInteractJs = ({
           event.stopImmediatePropagation()
         })
 
-        interact(node).draggable({
+        interactiveNode.draggable({
           enabled: isMovingAllowed,
           inertia: {
             resistance: 8,
@@ -162,8 +164,8 @@ const useInteractJs = ({
             node.style.height = `${nodeHeight}px`
           },
           onend: () => {
-            manipulate({ left: nodeLeft, top: nodeTop })
             bringToFront()
+            manipulate({ left: nodeLeft, top: nodeTop })
             node.style.transform = ``
             node.style.width = ``
             node.style.height = ``
@@ -171,7 +173,7 @@ const useInteractJs = ({
           },
         })
 
-        interact(node).resizable({
+        interactiveNode.resizable({
           enabled: isResizingAllowed,
           edges: {
             left: true,
@@ -221,7 +223,7 @@ const useInteractJs = ({
           },
         })
 
-        interact(node).gesturable({
+        interactiveNode.gesturable({
           enabled: isResizingAllowed,
           onstart: event => {
             fingerAngleOffset = event.angle - angle
@@ -266,20 +268,21 @@ const useInteractJs = ({
         })
       }
       frameRef.current = node
+      return frameRef
     },
     [
-      angle,
-      width,
-      height,
       left,
       top,
+      width,
+      height,
+      angle,
+      isFullscreenAllowed,
+      bringToFront,
       isMovingAllowed,
       isResizingAllowed,
-      isFullscreenAllowed,
-      isFullscreen,
-      bringToFront,
-      manipulate,
       toggleFullscreen,
+      isFullscreen,
+      manipulate,
     ]
   )
   return [frameRefReceiver]
@@ -309,7 +312,7 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     manipulate(data)
   }, [manipulate, isFullscreen])
 
-  const [frameRefReceiver] = useInteractJs({
+  const [frameRefReceiver] = useInteractWithFrame({
     width,
     height,
     left,
@@ -363,7 +366,6 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
 
   return (
     <StyledFrame
-      onClick={bringToFront}
       ref={frameRefReceiver}
       isFullscreen={isFullscreen}
       width={width}

@@ -75,6 +75,7 @@ const Desk: React.FC = () => {
 
   useEffect(() => {
     const refElement = deskRef.current
+    interact((deskRef.current as unknown) as Target).unset()
     interact((deskRef.current as unknown) as Target)
       .pointerEvents({
         holdDuration: 400,
