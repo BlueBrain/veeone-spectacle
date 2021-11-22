@@ -19,6 +19,13 @@ const StyledFileBrowserFileList = styled.div`
   overflow-x: visible;
   flex-direction: column;
   padding: 0 1rem;
+
+  // Hide scrollbar
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `
 
 const FileBrowserDirectoryContent: React.FC<Props> = ({
