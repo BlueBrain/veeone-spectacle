@@ -3,13 +3,11 @@
 html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  font: 112.5%/1.45em georgia, serif, sans-serif;
+  font: 112.5%/1.45em "Titillium Web", sans-serif;
   box-sizing: border-box;
-  overflow-y: scroll;
   height: 100%;
   overflow: hidden;
   -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;
 }
 
 body {
@@ -28,9 +26,9 @@ body {
   font-feature-settings: "kern", "liga", "clig", "calt";
   user-select: none;
   touch-action: none;
-  //cursor: none;
+  scrollbar-width: none;
 }
 
-a {
-  color: royalblue;
+body::-webkit-scrollbar {
+  display: none
 }

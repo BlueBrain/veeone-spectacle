@@ -1,8 +1,9 @@
-import React, { useContext } from "react"
+import React, { useContext, useRef } from "react"
 import { Close, FlipToBack, Fullscreen } from "@mui/icons-material"
 import { IconButton, Tooltip } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import FrameContext from "./FrameContext"
+import useInteractable from "../interactable/useInteractable"
 
 interface FrameControlBarProps {
   floating?: boolean
@@ -55,25 +56,33 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
 }) => {
   const { toggleFullscreen, close, sendToBack } = useContext(FrameContext)
 
-  const handleSendToBack = event => {
-    sendToBack()
-    event.stopPropagation()
-  }
+  const closeRef = useRef()
+  const sendToBackRef = useRef()
+  const fullscreenRef = useRef()
+
+  useInteractable(closeRef, { onTap: close })
+  useInteractable(sendToBackRef, {
+    onTap: event => {
+      event.stopPropagation()
+      sendToBack()
+    },
+  })
+  useInteractable(fullscreenRef, { onTap: toggleFullscreen })
 
   return (
     <StyledFrameControlBar floating={floating ? 1 : 0}>
       <Tooltip title="Close">
-        <CloseIconButton type={"button"} onClick={close}>
+        <CloseIconButton type={"button"} ref={closeRef}>
           <Close />
         </CloseIconButton>
       </Tooltip>
       <Tooltip title="Send to back">
-        <SendToBackIconButton type={"button"} onClick={handleSendToBack}>
+        <SendToBackIconButton type={"button"} ref={sendToBackRef}>
           <FlipToBack />
         </SendToBackIconButton>
       </Tooltip>
       <Tooltip title="Fullscreen">
-        <FullscreenIconButton type={"button"} onClick={toggleFullscreen}>
+        <FullscreenIconButton type={"button"} ref={fullscreenRef}>
           <Fullscreen />
         </FullscreenIconButton>
       </Tooltip>
