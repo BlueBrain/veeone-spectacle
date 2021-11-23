@@ -52,7 +52,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
           </Grid>
         </Grid>
       ) : (
-        <Grid container alignItems="center">
+        <Grid container alignItems="center" data-drag-handle={true}>
           <Grid item>
             <FrameControlBar />
           </Grid>

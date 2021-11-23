@@ -50,6 +50,7 @@ interface UseInteractJsProps {
   top
   isMovingAllowed
   isResizingAllowed
+  isResizingWithWheelAllowed
   isFullscreenAllowed
   isFullscreen
   bringToFront
@@ -65,6 +66,7 @@ const useInteractWithFrame = ({
   top,
   isMovingAllowed,
   isResizingAllowed,
+  isResizingWithWheelAllowed,
   isFullscreenAllowed,
   isFullscreen,
   bringToFront,
@@ -101,38 +103,41 @@ const useInteractWithFrame = ({
 
         interactiveNode.on("tap", bringToFront)
 
-        interactiveNode.on("mousewheel", event => {
-          if (isFullscreen || !isResizingAllowed) {
-            return
-          }
-          const diff = -event.deltaY * 2
-          const scale = diff / width
-          if (
-            node !== null &&
-            (diff > 0 || (diff < 0 && (nodeWidth > 300 || nodeHeight > 300)))
-          ) {
-            nodeWidth += diff
-            nodeHeight += scale * height
-            nodeLeft -= diff / 2
-            nodeTop -= diff / 2
-            node.style.transform = `
+        if (isResizingAllowed && isResizingWithWheelAllowed) {
+          interactiveNode.on("mousewheel", event => {
+            if (isFullscreen || !isResizingAllowed) {
+              return
+            }
+            const diff = -event.deltaY * 2
+            const scale = diff / width
+            if (
+              node !== null &&
+              (diff > 0 || (diff < 0 && (nodeWidth > 300 || nodeHeight > 300)))
+            ) {
+              nodeWidth += diff
+              nodeHeight += scale * height
+              nodeLeft -= diff / 2
+              nodeTop -= diff / 2
+              node.style.transform = `
                       translateX(${nodeLeft}px)
                       translateY(${nodeTop}px)
                       rotate(${angle}deg)`
-            node.style.width = `${nodeWidth}px`
-            node.style.height = `${nodeHeight}px`
-            manipulate({
-              width: nodeWidth,
-              height: nodeHeight,
-              left: nodeLeft,
-              top: nodeTop,
-            })
-          }
-          event.stopImmediatePropagation()
-        })
+              node.style.width = `${nodeWidth}px`
+              node.style.height = `${nodeHeight}px`
+              manipulate({
+                width: nodeWidth,
+                height: nodeHeight,
+                left: nodeLeft,
+                top: nodeTop,
+              })
+            }
+            event.stopImmediatePropagation()
+          })
+        }
 
         interactiveNode.draggable({
           enabled: isMovingAllowed,
+          allowFrom: "[data-drag-handle]",
           inertia: {
             resistance: 8,
           },
@@ -280,6 +285,7 @@ const useInteractWithFrame = ({
       bringToFront,
       isMovingAllowed,
       isResizingAllowed,
+      isResizingWithWheelAllowed,
       toggleFullscreen,
       isFullscreen,
       manipulate,
@@ -293,6 +299,9 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   const { width, height, left, top, angle, isFullscreen } = frame.situation
   const [isMovingAllowed, setMovingAllowed] = useState(true)
   const [isResizingAllowed, setResizingAllowed] = useState(true)
+  const [isResizingWithWheelAllowed, setResizingWithWheelAllowed] = useState(
+    true
+  )
   const [isFullscreenAllowed, setFullscreenAllowed] = useState(true)
 
   const bringToFront = useCallback(() => dispatch(bringFrameToFront(frameId)), [
@@ -322,6 +331,7 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     isFullscreen,
     isMovingAllowed,
     isResizingAllowed,
+    isResizingWithWheelAllowed,
     manipulate,
     toggleFullscreen,
     bringToFront,
@@ -338,6 +348,9 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
       },
       preventResizing: () => {
         setResizingAllowed(false)
+      },
+      preventResizingWithWheel: () => {
+        setResizingWithWheelAllowed(false)
       },
       preventMoving: () => {
         setMovingAllowed(false)

@@ -3,6 +3,7 @@ export interface FrameContextProps {
   toggleFullscreen: () => void
   preventMoving: () => void
   preventResizing: () => void
+  preventResizingWithWheel: () => void
   preventFullscreen: () => void
   close: () => void
   sendToBack: () => void
