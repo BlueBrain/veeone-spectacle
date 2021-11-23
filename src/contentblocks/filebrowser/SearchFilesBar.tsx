@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react"
+import React, { useCallback, useContext, useEffect, useRef } from "react"
 import { Grid, IconButton, TextField } from "@mui/material"
 import { Close } from "@mui/icons-material"
 import { FileBrowserContext } from "./FileBrowserContext"
@@ -14,8 +8,7 @@ import { visualKeyboardService } from "../../visualkeyboard"
 import useInteractable from "../../core/interactable/useInteractable"
 
 const SearchFilesBar: React.FC = () => {
-  const [keyboardId, setKeyboardId] = useState(null)
-  const { setSearchMode, requestSearch, searchQuery } = useContext(
+  const { setSearchMode, requestSearch, searchQuery, frameId } = useContext(
     FileBrowserContext
   )
 
@@ -35,22 +28,19 @@ const SearchFilesBar: React.FC = () => {
 
   const showVisualKeyboard = useCallback(
     (target, initialValue: string) => {
-      const newKeyboardId = visualKeyboardService.newKeyboard(
-        target,
-        handleInputChange,
-        { initialValue }
-      )
-      setKeyboardId(newKeyboardId)
+      visualKeyboardService.newKeyboard(target, handleInputChange, {
+        initialValue,
+        keyboardId: frameId,
+      })
     },
-    [handleInputChange]
+    [frameId, handleInputChange]
   )
 
   const searchFieldRef = useRef()
 
   useInteractable(searchFieldRef, {
     onTap: event => {
-      const newKeyboardId = showVisualKeyboard(event.target, searchQuery)
-      setKeyboardId(newKeyboardId)
+      showVisualKeyboard(event.target, searchQuery)
     },
   })
 
