@@ -9,9 +9,6 @@ const FileBrowserBackgroundProgressIndicator: React.FC = () => {
       sx={{
         width: "100%",
         height: 8,
-        position: "absolute",
-        bottom: 0,
-        left: 0,
       }}
     >
       {isSearchingInProgress ? <LinearProgress sx={{ height: 8 }} /> : null}

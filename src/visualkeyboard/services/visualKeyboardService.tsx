@@ -90,6 +90,22 @@ class VisualKeyboardService {
     return keyboardId
   }
 
+  public readonly closeKeyboardByTarget = target => {
+    const keyboardToDelete = this.keyboards[
+      Object.keys(this.keyboards).find(
+        key => this.keyboards[key].target === target
+      )
+    ]
+    if (keyboardToDelete) {
+      this.keyboards[keyboardToDelete.id].removeElement()
+      delete this.keyboards[keyboardToDelete.id]
+      console.warn(
+        "Removed keyboard associated with the target",
+        keyboardToDelete.target
+      )
+    }
+  }
+
   public readonly closeKeyboard = keyboardId => {
     console.log("close keyboard", keyboardId)
     if (this.keyboards[keyboardId]) {

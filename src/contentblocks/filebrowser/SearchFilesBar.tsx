@@ -1,10 +1,17 @@
-import React, { useCallback, useContext, useEffect, useState } from "react"
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { Grid, IconButton, TextField } from "@mui/material"
 import { Close } from "@mui/icons-material"
 import { FileBrowserContext } from "./FileBrowserContext"
 import ViewTypeSelector from "./ViewTypeSelector"
 import FiltersSelector from "./FiltersSelector"
 import { visualKeyboardService } from "../../visualkeyboard"
+import useInteractable from "../../core/interactable/useInteractable"
 
 const SearchFilesBar: React.FC = () => {
   const [keyboardId, setKeyboardId] = useState(null)
@@ -27,9 +34,9 @@ const SearchFilesBar: React.FC = () => {
   )
 
   const showVisualKeyboard = useCallback(
-    (event, initialValue: string) => {
+    (target, initialValue: string) => {
       const newKeyboardId = visualKeyboardService.newKeyboard(
-        event.target,
+        target,
         handleInputChange,
         { initialValue }
       )
@@ -38,11 +45,21 @@ const SearchFilesBar: React.FC = () => {
     [handleInputChange]
   )
 
+  const searchFieldRef = useRef()
+
+  useInteractable(searchFieldRef, {
+    onTap: event => {
+      const newKeyboardId = showVisualKeyboard(event.target, searchQuery)
+      setKeyboardId(newKeyboardId)
+    },
+  })
+
   useEffect(() => {
+    const keyboardTarget = searchFieldRef.current
     return () => {
-      visualKeyboardService.closeKeyboard(keyboardId)
+      visualKeyboardService.closeKeyboardByTarget(keyboardTarget)
     }
-  }, [keyboardId])
+  }, [searchFieldRef])
 
   return (
     <Grid container alignItems={"center"}>
@@ -59,7 +76,8 @@ const SearchFilesBar: React.FC = () => {
               fullWidth={true}
               value={searchQuery}
               onChange={onSearchQueryChange}
-              onFocus={event => showVisualKeyboard(event, searchQuery)}
+              onFocus={event => showVisualKeyboard(event.target, searchQuery)}
+              inputRef={searchFieldRef}
             />
           </Grid>
           <Grid item>
