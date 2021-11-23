@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react"
+import React, { useCallback, useContext, useRef } from "react"
 import styled from "styled-components"
 import { FileBrowserContext } from "./FileBrowserContext"
 import { FileBrowserViewTypes } from "./types"
@@ -6,7 +6,6 @@ import DirectoryThumbnails from "./DirectoryThumbnails"
 import DirectoryList from "./DirectoryList"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import EmptyResults from "./EmptyResults"
-import useInteractable from "../../core/interactable/useInteractable"
 import { visualKeyboardService } from "../../visualkeyboard"
 
 interface Props {
@@ -42,19 +41,18 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
 
   const isEmpty = !dirs.length && !files.length
 
-  const ref = useRef()
-
-  useInteractable(ref, {
-    onTap: () => {
-      console.debug(
-        `Hide keyboard from tapping on directory contents: ${frameId}`
-      )
-      visualKeyboardService.closeKeyboard(frameId)
-    },
-  })
+  const closeAnyKeyboards = useCallback(() => {
+    console.debug(
+      `Hide keyboard from tapping on directory contents: ${frameId}`
+    )
+    visualKeyboardService.closeKeyboard(frameId)
+  }, [frameId])
 
   return (
-    <StyledFileBrowserFileList ref={ref}>
+    <StyledFileBrowserFileList
+      onTouchEnd={closeAnyKeyboards}
+      onMouseUp={closeAnyKeyboards}
+    >
       {isEmpty && !isSearchingInProgress ? (
         <EmptyResults />
       ) : displayType === FileBrowserViewTypes.Thumbnails ? (
