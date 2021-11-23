@@ -43,7 +43,12 @@ class VisualKeyboardService {
       return
     }
 
-    const keyboardId = generateRandomId(8)
+    const keyboardId = options.keyboardId ?? generateRandomId(8)
+
+    if (keyboardId in this.keyboards) {
+      throw new Error(`This keyboard already exists: ${keyboardId}`)
+    }
+
     const keyboardWrapperId = `${this.wrapperPrefix}${keyboardId}`
     const keyboardWrapper: HTMLElement = document.createElement("div")
     let parent
