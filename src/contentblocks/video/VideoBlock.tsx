@@ -82,7 +82,7 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
 
   return (
     <VideoBlockContext.Provider value={contextProvider}>
-      <StyledVideoBlock>
+      <StyledVideoBlock data-drag-handle={true}>
         {videoSource ? (
           <video
             width={"100%"}

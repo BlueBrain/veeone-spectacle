@@ -65,7 +65,7 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
   }, [loadThumbnail])
 
   return (
-    <StyledImageBlock>
+    <StyledImageBlock data-drag-handle={true}>
       {imageUrl ? <img src={imageUrl} style={imgStyle} alt={""} /> : null}
       <FrameControlBar floating={true} />
     </StyledImageBlock>

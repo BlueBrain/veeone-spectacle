@@ -9,6 +9,9 @@ const FrameContext = React.createContext<FrameContextProps>({
   preventResizing: () => {
     throw new NotImplementedError()
   },
+  preventResizingWithWheel: () => {
+    throw new NotImplementedError()
+  },
   preventMoving: () => {
     throw new NotImplementedError()
   },
