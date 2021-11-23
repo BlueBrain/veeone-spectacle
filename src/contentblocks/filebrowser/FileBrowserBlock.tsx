@@ -34,7 +34,8 @@ import FileSystemBusyIndicator from "./FileSystemBusyIndicator"
 import { delay } from "../../common/asynchronous"
 import FileBrowserBackgroundProgressIndicator from "./FileBrowserBackgroundProgressIndicator"
 
-const SEARCH_QUERY_CHANGE_DEBOUNCE_MS = 1000
+const SEARCH_QUERY_CHANGE_DEBOUNCE_MS = 500
+const SEARCH_RESULTS_FETCH_INTERVAL_MS = 1000
 
 type FilterableElement = BrowserFile | BrowserDirectory
 
@@ -251,7 +252,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
       }
       const { files, directories } = result
       setSearchResults({ files, directories })
-      await delay(1000)
+      await delay(SEARCH_RESULTS_FETCH_INTERVAL_MS)
     }
     setIsSearchingInProgress(false)
     console.debug("Finished searching process")
@@ -271,15 +272,15 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     const stopper = {
       stopped: false,
       stop: function () {
-        console.debug("STOPPING STOPPER :))")
+        console.debug("Stop fetching results")
         this.stopped = true
       },
     }
     if (searchQuery.length >= VeeDriveConfig.minSearchQueryLength) {
       debouncedSearchQueryChange(searchQuery, stopper)
-      return () => {
-        stopper.stop()
-      }
+    }
+    return () => {
+      stopper.stop()
     }
   }, [debouncedSearchQueryChange, searchQuery, triggerSearchQueryChange])
 
@@ -381,6 +382,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
         void setBrowsingHistoryIndex(historyIndex)
       },
       navigateDirectory(dirPath: string) {
+        setSearchMode(false)
         void addToBrowsingHistory(dirPath)
       },
       requestFile(fileName: string) {
@@ -476,6 +478,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
       <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
         <StyledBlockContent>
           <FileBrowserTopbar onSelectPathPart={openDirectoryByPathPartIndex} />
+          <FileBrowserBackgroundProgressIndicator />
           <StyledMain>
             {!isLoading ? (
               <FileBrowserDirectoryContent
@@ -487,7 +490,6 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
             )}
           </StyledMain>
           {!isLoading ? <FileBrowserFooter /> : null}
-          <FileBrowserBackgroundProgressIndicator />
         </StyledBlockContent>
       </StyledFileBrowserBlock>
     </FileBrowserContext.Provider>
