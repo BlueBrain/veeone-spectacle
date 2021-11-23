@@ -278,6 +278,8 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     }
     if (searchQuery.length >= VeeDriveConfig.minSearchQueryLength) {
       debouncedSearchQueryChange(searchQuery, stopper)
+    } else {
+      setSearchResults({ files: [], directories: [] })
     }
     return () => {
       stopper.stop()
