@@ -35,8 +35,7 @@ const isFrameTooSmall = (width, height) => {
 }
 
 const isFrameTooBig = (width, height) => {
-  // todo implement it
-  return false
+  return Math.max(width, height) > config.MAXIMUM_FRAME_LONG_SIDE
 }
 
 const StyledFrame = styled.div(
@@ -147,6 +146,16 @@ const useInteractWithFrame = ({
                   nodeHeight = nodeWidth / aspectRatio
                 } else {
                   nodeHeight = config.MINIMUM_FRAME_LONG_SIDE
+                  diffHorizontal -= nodeWidth - nodeHeight * aspectRatio
+                  nodeWidth = nodeHeight * aspectRatio
+                }
+              } else if (isFrameTooBig(nodeWidth, nodeHeight)) {
+                if (aspectRatio >= 1) {
+                  diffHorizontal -= nodeWidth - config.MAXIMUM_FRAME_LONG_SIDE
+                  nodeWidth = config.MAXIMUM_FRAME_LONG_SIDE
+                  nodeHeight = nodeWidth / aspectRatio
+                } else {
+                  nodeHeight = config.MAXIMUM_FRAME_LONG_SIDE
                   diffHorizontal -= nodeWidth - nodeHeight * aspectRatio
                   nodeWidth = nodeHeight * aspectRatio
                 }
