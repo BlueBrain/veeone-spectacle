@@ -8,6 +8,8 @@ export type Size = {
   height: number
 }
 
+export interface Situation extends Position, Size {}
+
 export type Json =
   | string
   | number

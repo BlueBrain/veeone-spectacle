@@ -5,12 +5,23 @@ declare const ENV_VARIABLES: any
 
 console.debug("ENV_VARIABLES", ENV_VARIABLES)
 
+const viewportWidth = window.visualViewport.width
+const viewportHeight = window.visualViewport.height
+const viewportLongSide = Math.max(viewportWidth, viewportHeight)
+const viewportShortSide = Math.min(viewportWidth, viewportHeight)
+
 let config: ApplicationConfig = {
-  VIEWPORT_WIDTH: window.visualViewport.width,
-  VIEWPORT_HEIGHT: window.visualViewport.height,
+  VIEWPORT_WIDTH: viewportWidth,
+  VIEWPORT_HEIGHT: viewportHeight,
   VEEDRIVE_WS_PATH: "ws://localhost:4444/ws",
   FILE_BROWSER_WIDTH: 500,
   FILE_BROWSER_HEIGHT: 400,
+  MINIMUM_FRAME_LONG_SIDE: viewportLongSide / 5,
+  MAXIMUM_FRAME_LONG_SIDE: Math.min(
+    viewportLongSide * 0.8,
+    viewportShortSide * 0.95
+  ),
+  ALLOW_SCALE_WITH_MOUSEWHEEL: true,
 }
 
 config = {
