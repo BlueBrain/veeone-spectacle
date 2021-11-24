@@ -22,6 +22,7 @@ let config: ApplicationConfig = {
     viewportShortSide * 0.95
   ),
   ALLOW_SCALE_WITH_MOUSEWHEEL: true,
+  ALLOW_MAX_LAUNCHER_MENUS: 1,
 }
 
 config = {

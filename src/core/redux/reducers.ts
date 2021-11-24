@@ -6,7 +6,7 @@ import {
 } from "../scenes/interfaces"
 import { generateRandomId } from "../../common/random"
 import { ReduxAction } from "../../redux/actions"
-import { Position } from "../../common/types"
+import { config } from "../../config"
 
 export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
   switch (action.type) {
@@ -120,7 +120,12 @@ export const launcherMenuReducer = (
         menuId: generateRandomId(4),
         position: { left, top },
       }
-      return [...launcherMenus, newLauncherMenu]
+      return [
+        ...launcherMenus.slice(
+          launcherMenus.length - config.ALLOW_MAX_LAUNCHER_MENUS + 1
+        ),
+        newLauncherMenu,
+      ]
 
     case Actions.CloseLauncherMenu:
       return launcherMenus.filter(menu => menu.menuId !== action.payload.menuId)
