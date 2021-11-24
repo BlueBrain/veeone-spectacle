@@ -20,11 +20,23 @@ import { GestureEvent } from "@interactjs/types"
 import { contentBlockRegister } from "../../contentblocks/content-block-register"
 import { FrameContextProps } from "./types"
 import { FrameContext } from "./index"
+import { Situation } from "../../common/types"
+import { config } from "../../config"
+import { debounce } from "lodash"
 
 interface FrameProps {
   frame: FrameEntry
   frameId: FrameId
   stackIndex: number
+}
+
+const isFrameTooSmall = (width, height) => {
+  return Math.max(width, height) < config.MINIMUM_FRAME_LONG_SIDE
+}
+
+const isFrameTooBig = (width, height) => {
+  // todo implement it
+  return false
 }
 
 const StyledFrame = styled.div(
@@ -74,10 +86,13 @@ const useInteractWithFrame = ({
   toggleFullscreen,
 }: UseInteractJsProps) => {
   const frameRef = useRef(null)
+  const debouncedManipulate = useMemo(
+    () => debounce((situation: Situation) => manipulate(situation), 200),
+    [manipulate]
+  )
   const frameRefReceiver = useCallback(
     node => {
       if (frameRef.current) {
-        // console.debug("frameRef.current is already set")
         interact(frameRef.current).unset()
       }
 
@@ -87,11 +102,11 @@ const useInteractWithFrame = ({
         let nodeWidth = width
         let nodeHeight = height
         let nodeAngle = angle
+        let aspectRatio = width / height
         let fingerAngleOffset = 0
         let gesturableStart: FrameSituation
         let resizeByWidth = null
 
-        // console.debug("Assign interactjs events to the node", node)
         const interactiveNode = interact(node)
 
         if (isFullscreenAllowed) {
@@ -103,35 +118,59 @@ const useInteractWithFrame = ({
 
         interactiveNode.on("tap", bringToFront)
 
-        if (isResizingAllowed && isResizingWithWheelAllowed) {
+        if (
+          isResizingAllowed &&
+          isResizingWithWheelAllowed &&
+          config.ALLOW_SCALE_WITH_MOUSEWHEEL
+        ) {
           interactiveNode.on("mousewheel", event => {
+            event.preventDefault()
+            event.stopPropagation()
             if (isFullscreen || !isResizingAllowed) {
               return
             }
-            const diff = -event.deltaY * 2
-            const scale = diff / width
-            if (
-              node !== null &&
-              (diff > 0 || (diff < 0 && (nodeWidth > 300 || nodeHeight > 300)))
-            ) {
-              nodeWidth += diff
-              nodeHeight += scale * height
-              nodeLeft -= diff / 2
-              nodeTop -= diff / 2
+            if (node !== null) {
+              let diffHorizontal = Math.min(
+                Math.max(-200, -event.deltaY * 2),
+                200
+              )
+              let scale = diffHorizontal / width
+              let diffVertical = scale * height
+
+              nodeWidth += diffHorizontal
+              nodeHeight += diffVertical
+
+              if (isFrameTooSmall(nodeWidth, nodeHeight)) {
+                if (aspectRatio >= 1) {
+                  diffHorizontal -= nodeWidth - config.MINIMUM_FRAME_LONG_SIDE
+                  nodeWidth = config.MINIMUM_FRAME_LONG_SIDE
+                  nodeHeight = nodeWidth / aspectRatio
+                } else {
+                  nodeHeight = config.MINIMUM_FRAME_LONG_SIDE
+                  diffHorizontal -= nodeWidth - nodeHeight * aspectRatio
+                  nodeWidth = nodeHeight * aspectRatio
+                }
+              }
+
+              scale = diffHorizontal / nodeWidth
+              diffVertical = scale * nodeHeight
+
+              nodeLeft -= diffHorizontal / 2
+              nodeTop -= diffVertical / 2
+
               node.style.transform = `
                       translateX(${nodeLeft}px)
                       translateY(${nodeTop}px)
                       rotate(${angle}deg)`
               node.style.width = `${nodeWidth}px`
               node.style.height = `${nodeHeight}px`
-              manipulate({
+              debouncedManipulate({
                 width: nodeWidth,
                 height: nodeHeight,
                 left: nodeLeft,
                 top: nodeTop,
               })
             }
-            event.stopImmediatePropagation()
           })
         }
 
@@ -148,11 +187,6 @@ const useInteractWithFrame = ({
             }),
           ],
           onstart: event => {
-            event.target.addEventListener(
-              "click",
-              event => event.stopImmediatePropagation(),
-              { capture: true, once: true }
-            )
             node.style.zIndex = "9999"
             nodeLeft = left
             nodeTop = top
@@ -213,14 +247,14 @@ const useInteractWithFrame = ({
               rotate(${angle}deg)`
             node.style.width = `${nodeWidth}px`
             node.style.height = `${nodeHeight}px`
-          },
-          onend: () => {
-            manipulate({
+            debouncedManipulate({
               left: nodeLeft,
               top: nodeTop,
               width: nodeWidth,
               height: nodeHeight,
             })
+          },
+          onend: () => {
             node.style.transform = ``
             node.style.width = ``
             node.style.height = ``
@@ -242,8 +276,6 @@ const useInteractWithFrame = ({
             }
           },
           onmove: (event: GestureEvent) => {
-            // todo parametrize this (rotating frame)
-            // angle = event.angle - fingerAngleOffset
             const newWidth = gesturableStart.width * event.scale
             const newHeight = gesturableStart.height * event.scale
             nodeLeft += (nodeWidth - newWidth) / 2
@@ -256,15 +288,14 @@ const useInteractWithFrame = ({
               rotate(${nodeAngle}deg)`
             node.style.width = `${nodeWidth}px`
             node.style.height = `${nodeHeight}px`
-          },
-          onend: () => {
-            manipulate({
+            debouncedManipulate({
               width: nodeWidth,
               height: nodeHeight,
               left: nodeLeft,
               top: nodeTop,
-              angle: nodeAngle,
             })
+          },
+          onend: () => {
             node.style.transform = ``
             node.style.width = ``
             node.style.height = ``
@@ -283,11 +314,12 @@ const useInteractWithFrame = ({
       angle,
       isFullscreenAllowed,
       bringToFront,
-      isMovingAllowed,
       isResizingAllowed,
       isResizingWithWheelAllowed,
+      isMovingAllowed,
       toggleFullscreen,
       isFullscreen,
+      debouncedManipulate,
       manipulate,
     ]
   )

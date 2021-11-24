@@ -35,8 +35,7 @@ interface StyledPlaybackControlsProps {
 }
 
 const StyledPlaybackControls = styled.div`
-  //background: rgba(255, 0, 0, 0.5);
-  width: clamp(300px, 40%, 600px);
+  width: clamp(30%, 40%, 40%);
   height: clamp(100px, 20%, 20%);
   position: absolute;
   left: 50%;
@@ -81,7 +80,6 @@ const StyledPlaybackButtons = styled.div`
 `
 
 const StyledScrubBar = styled.div`
-  //background: rgba(0, 255, 0, 0.4);
   display: flex;
   align-items: center;
 `
