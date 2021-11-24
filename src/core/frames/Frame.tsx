@@ -174,44 +174,6 @@ const useInteractWithFrame = ({
           })
         }
 
-        interactiveNode.draggable({
-          enabled: isMovingAllowed,
-          allowFrom: "[data-drag-handle]",
-          inertia: {
-            resistance: 8,
-          },
-          modifiers: [
-            interact.modifiers.restrictRect({
-              restriction: "parent",
-              endOnly: true,
-            }),
-          ],
-          onstart: event => {
-            node.style.zIndex = "9999"
-            nodeLeft = left
-            nodeTop = top
-          },
-          onmove: event => {
-            const { dx, dy } = event
-            nodeLeft += dx
-            nodeTop += dy
-            node.style.transform = `
-              translateX(${nodeLeft}px)
-              translateY(${nodeTop}px)
-              rotate(${angle}deg)`
-            node.style.width = `${nodeWidth}px`
-            node.style.height = `${nodeHeight}px`
-          },
-          onend: () => {
-            bringToFront()
-            manipulate({ left: nodeLeft, top: nodeTop })
-            node.style.transform = ``
-            node.style.width = ``
-            node.style.height = ``
-            node.style.zIndex = ``
-          },
-        })
-
         interactiveNode.resizable({
           enabled: isResizingAllowed,
           edges: {
@@ -220,7 +182,7 @@ const useInteractWithFrame = ({
             bottom: true,
             top: true,
           },
-          invert: "reposition",
+          invert: "none",
           onmove: event => {
             const aspectRatio = nodeWidth / nodeHeight
             const { width: rectWidth, height: rectHeight } = event.rect
@@ -239,6 +201,17 @@ const useInteractWithFrame = ({
               nodeHeight = rectHeight
               nodeWidth = nodeHeight * aspectRatio
             }
+
+            if (isFrameTooSmall(nodeWidth, nodeHeight)) {
+              if (aspectRatio >= 1) {
+                nodeWidth = config.MINIMUM_FRAME_LONG_SIDE
+                nodeHeight = nodeWidth / aspectRatio
+              } else {
+                nodeHeight = config.MINIMUM_FRAME_LONG_SIDE
+                nodeWidth = nodeHeight * aspectRatio
+              }
+            }
+
             nodeLeft += deltaLeft
             nodeTop += deltaTop
             node.style.transform = `
@@ -276,8 +249,20 @@ const useInteractWithFrame = ({
             }
           },
           onmove: (event: GestureEvent) => {
-            const newWidth = gesturableStart.width * event.scale
-            const newHeight = gesturableStart.height * event.scale
+            const newWidth = Math.min(
+              Math.max(
+                gesturableStart.width * event.scale,
+                config.MINIMUM_FRAME_LONG_SIDE
+              ),
+              config.MAXIMUM_FRAME_LONG_SIDE
+            )
+            const newHeight = Math.min(
+              Math.max(
+                gesturableStart.height * event.scale,
+                config.MINIMUM_FRAME_LONG_SIDE
+              ),
+              config.MAXIMUM_FRAME_LONG_SIDE
+            )
             nodeLeft += (nodeWidth - newWidth) / 2
             nodeTop += (nodeHeight - newHeight) / 2
             nodeWidth = newWidth
@@ -296,6 +281,44 @@ const useInteractWithFrame = ({
             })
           },
           onend: () => {
+            node.style.transform = ``
+            node.style.width = ``
+            node.style.height = ``
+            node.style.zIndex = ``
+          },
+        })
+
+        interactiveNode.draggable({
+          enabled: isMovingAllowed,
+          allowFrom: "[data-drag-handle]",
+          inertia: {
+            resistance: 8,
+          },
+          modifiers: [
+            interact.modifiers.restrictRect({
+              restriction: "parent",
+              endOnly: true,
+            }),
+          ],
+          onstart: event => {
+            node.style.zIndex = "9999"
+            nodeLeft = left
+            nodeTop = top
+          },
+          onmove: event => {
+            const { dx, dy } = event
+            nodeLeft += dx
+            nodeTop += dy
+            node.style.transform = `
+              translateX(${nodeLeft}px)
+              translateY(${nodeTop}px)
+              rotate(${angle}deg)`
+            node.style.width = `${nodeWidth}px`
+            node.style.height = `${nodeHeight}px`
+          },
+          onend: () => {
+            bringToFront()
+            manipulate({ left: nodeLeft, top: nodeTop })
             node.style.transform = ``
             node.style.width = ``
             node.style.height = ``
