@@ -219,6 +219,14 @@ const useInteractWithFrame = ({
                 nodeHeight = config.MINIMUM_FRAME_LONG_SIDE
                 nodeWidth = nodeHeight * aspectRatio
               }
+            } else if (isFrameTooBig(nodeWidth, nodeHeight)) {
+              if (aspectRatio >= 1) {
+                nodeWidth = config.MAXIMUM_FRAME_LONG_SIDE
+                nodeHeight = nodeWidth / aspectRatio
+              } else {
+                nodeHeight = config.MAXIMUM_FRAME_LONG_SIDE
+                nodeWidth = nodeHeight * aspectRatio
+              }
             }
 
             nodeLeft += deltaLeft
