@@ -82,6 +82,16 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
 
             <BrowsingHistorySelector />
 
+            {!hideUpButton ? (
+              <Tooltip title="Move to the parent directory">
+                <span>
+                  <IconButton onClick={navigateUp} color={"primary"}>
+                    <ArrowUpward />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            ) : null}
+
             <Tooltip title="Move to the home directory">
               <span>
                 <IconButton
@@ -93,16 +103,6 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
                 </IconButton>
               </span>
             </Tooltip>
-
-            {!hideUpButton ? (
-              <Tooltip title="Move to the parent directory">
-                <span>
-                  <IconButton onClick={navigateUp} color={"primary"}>
-                    <ArrowUpward />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            ) : null}
           </Grid>
 
           <Grid item xs>
