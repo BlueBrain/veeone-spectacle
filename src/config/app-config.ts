@@ -23,6 +23,7 @@ let config: ApplicationConfig = {
   ),
   ALLOW_SCALE_WITH_MOUSEWHEEL: true,
   ALLOW_MAX_LAUNCHER_MENUS: 1,
+  DISPLAY_MOUSE_CURSOR: true,
 }
 
 config = {
