@@ -170,16 +170,17 @@ export const useInteractiveFrame = ({
           },
           invert: "none",
           onmove: event => {
-            const aspectRatio = nodeWidth / nodeHeight
             const { width: rectWidth, height: rectHeight } = event.rect
-            const {
+            let {
               left: deltaLeft,
               top: deltaTop,
               width: deltaWidth,
             } = event.deltaRect
+
             if (resizeByWidth === null) {
               resizeByWidth = deltaWidth !== 0
             }
+
             if (resizeByWidth) {
               nodeWidth = rectWidth
               nodeHeight = nodeWidth / aspectRatio
@@ -206,12 +207,13 @@ export const useInteractiveFrame = ({
               }
             }
 
+            if (event.edges.top && (event.edges.left || event.edges.right)) {
+              deltaTop = -deltaWidth / aspectRatio
+            }
+
             nodeLeft += deltaLeft
             nodeTop += deltaTop
-            node.style.transform = `
-              translateX(${nodeLeft}px)
-              translateY(${nodeTop}px)
-              rotate(${angle}deg)`
+            node.style.transform = `translateX(${nodeLeft}px) translateY(${nodeTop}px)`
             node.style.width = `${nodeWidth}px`
             node.style.height = `${nodeHeight}px`
           },
