@@ -11,6 +11,7 @@ import fileService from "../../veedrive/service"
 import { FrameContext } from "../../core/frames"
 import FrameControlBar from "../../core/frames/FrameControlBar"
 import { Size } from "../../common/types"
+import { CircularProgress, Grid } from "@mui/material"
 
 const StyledImageBlock = styled.div`
   width: 100%;
@@ -63,7 +64,7 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
     } else {
       // todo handle invalid images/paths/responses
     }
-  }, [imagePath])
+  }, [imagePath, loadImageWithDimensions])
 
   useEffect(() => {
     void loadThumbnail()
@@ -79,7 +80,18 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
           style={imgStyle}
           alt={""}
         />
-      ) : null}
+      ) : (
+        <Grid
+          container
+          justifyContent={"center"}
+          alignItems={"center"}
+          sx={{ height: "100%" }}
+        >
+          <Grid item>
+            <CircularProgress />
+          </Grid>
+        </Grid>
+      )}
       <FrameControlBar floating={true} />
     </StyledImageBlock>
   )
