@@ -16,7 +16,7 @@ let config: ApplicationConfig = {
   VEEDRIVE_WS_PATH: "ws://localhost:4444/ws",
   FILE_BROWSER_WIDTH: 500,
   FILE_BROWSER_HEIGHT: 400,
-  MINIMUM_FRAME_LONG_SIDE: viewportLongSide / 5,
+  MINIMUM_FRAME_LONG_SIDE: Math.max(viewportLongSide / 12, 200),
   MAXIMUM_FRAME_LONG_SIDE: Math.min(
     viewportLongSide * 0.8,
     viewportShortSide * 0.95
