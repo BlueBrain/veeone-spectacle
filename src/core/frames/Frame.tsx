@@ -253,18 +253,15 @@ const useInteractWithFrame = ({
               rotate(${angle}deg)`
             node.style.width = `${nodeWidth}px`
             node.style.height = `${nodeHeight}px`
-            debouncedManipulate({
+          },
+          onend: () => {
+            manipulate({
               left: nodeLeft,
               top: nodeTop,
               width: nodeWidth,
               height: nodeHeight,
             })
-          },
-          onend: () => {
-            node.style.transform = ``
-            node.style.width = ``
-            node.style.height = ``
-            node.style.zIndex = ``
+            debouncedResetStyle(node)
           },
         })
 
