@@ -15,6 +15,7 @@ import { FrameContext } from "../../core/frames"
 import PlaybackControls from "./PlaybackControls"
 import VideoBlockContext, { VideoBlockContextProps } from "./VideoBlockContext"
 import FrameControlBar from "../../core/frames/FrameControlBar"
+import { CircularProgress, Grid } from "@mui/material"
 
 const StyledVideoBlock = styled.div`
   background: #000;
@@ -97,9 +98,20 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
           >
             <source src={videoSource} />
           </video>
-        ) : null}
+        ) : (
+          <Grid
+            container
+            justifyContent={"center"}
+            alignItems={"center"}
+            sx={{ height: "100%" }}
+          >
+            <Grid item>
+              <CircularProgress />
+            </Grid>
+          </Grid>
+        )}
         <StyledOverlay onClick={handleOverlayClick} />
-        <PlaybackControls videoRef={videoRef} />
+        {videoSource ? <PlaybackControls videoRef={videoRef} /> : null}
       </StyledVideoBlock>
       <FrameControlBar floating={true} />
     </VideoBlockContext.Provider>
