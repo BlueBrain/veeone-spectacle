@@ -7,4 +7,6 @@ export interface ApplicationConfig {
   MINIMUM_FRAME_LONG_SIDE: number
   MAXIMUM_FRAME_LONG_SIDE: number
   ALLOW_SCALE_WITH_MOUSEWHEEL: boolean
+  ALLOW_MAX_LAUNCHER_MENUS: number
+  DISPLAY_MOUSE_CURSOR: boolean
 }

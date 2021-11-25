@@ -89,6 +89,18 @@ const useInteractWithFrame = ({
     () => debounce((situation: Situation) => manipulate(situation), 200),
     [manipulate]
   )
+
+  const debouncedResetStyle = useMemo(
+    () =>
+      debounce(node => {
+        node.style.transform = ``
+        node.style.width = ``
+        node.style.height = ``
+        node.style.zIndex = ``
+      }, 100),
+    []
+  )
+
   const frameRefReceiver = useCallback(
     node => {
       if (frameRef.current) {
@@ -96,6 +108,10 @@ const useInteractWithFrame = ({
       }
 
       if (node) {
+        node.style.transform = ``
+        node.style.width = ``
+        node.style.height = ``
+        node.style.zIndex = ``
         let nodeLeft = left
         let nodeTop = top
         let nodeWidth = width
@@ -237,18 +253,15 @@ const useInteractWithFrame = ({
               rotate(${angle}deg)`
             node.style.width = `${nodeWidth}px`
             node.style.height = `${nodeHeight}px`
-            debouncedManipulate({
+          },
+          onend: () => {
+            manipulate({
               left: nodeLeft,
               top: nodeTop,
               width: nodeWidth,
               height: nodeHeight,
             })
-          },
-          onend: () => {
-            node.style.transform = ``
-            node.style.width = ``
-            node.style.height = ``
-            node.style.zIndex = ``
+            debouncedResetStyle(node)
           },
         })
 
@@ -266,42 +279,45 @@ const useInteractWithFrame = ({
             }
           },
           onmove: (event: GestureEvent) => {
-            const newWidth = Math.min(
-              Math.max(
-                gesturableStart.width * event.scale,
-                config.MINIMUM_FRAME_LONG_SIDE
-              ),
-              config.MAXIMUM_FRAME_LONG_SIDE
-            )
-            const newHeight = Math.min(
-              Math.max(
-                gesturableStart.height * event.scale,
-                config.MINIMUM_FRAME_LONG_SIDE
-              ),
-              config.MAXIMUM_FRAME_LONG_SIDE
-            )
-            nodeLeft += (nodeWidth - newWidth) / 2
-            nodeTop += (nodeHeight - newHeight) / 2
+            const desiredScale = event.scale
+            const desiredWidth = gesturableStart.width * desiredScale
+            const desiredHeight = gesturableStart.height * desiredScale
+            let newWidth = desiredWidth
+            let newHeight = desiredHeight
+            let scale = desiredScale
+
+            if (aspectRatio >= 1) {
+              newWidth = Math.min(
+                Math.max(newWidth, config.MINIMUM_FRAME_LONG_SIDE),
+                config.MAXIMUM_FRAME_LONG_SIDE
+              )
+              newHeight = newWidth / aspectRatio
+            } else {
+              newHeight = Math.min(
+                Math.max(newHeight, config.MINIMUM_FRAME_LONG_SIDE),
+                config.MAXIMUM_FRAME_LONG_SIDE
+              )
+              newWidth = newHeight * aspectRatio
+            }
+            if (newWidth !== desiredWidth) {
+              scale = newWidth / width
+            }
             nodeWidth = newWidth
             nodeHeight = newHeight
             node.style.transform = `
               translateX(${nodeLeft}px)
               translateY(${nodeTop}px)
+              scale(${scale})
               rotate(${nodeAngle}deg)`
-            node.style.width = `${nodeWidth}px`
-            node.style.height = `${nodeHeight}px`
-            debouncedManipulate({
-              width: nodeWidth,
-              height: nodeHeight,
-              left: nodeLeft,
-              top: nodeTop,
-            })
           },
           onend: () => {
-            node.style.transform = ``
-            node.style.width = ``
-            node.style.height = ``
-            node.style.zIndex = ``
+            manipulate({
+              width: nodeWidth,
+              height: nodeHeight,
+              left: nodeLeft + (width - nodeWidth) / 2,
+              top: nodeTop + (height - nodeHeight) / 2,
+            })
+            debouncedResetStyle(node)
           },
         })
 

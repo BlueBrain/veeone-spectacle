@@ -10,6 +10,7 @@ import { ContentBlockProps } from "../types"
 import fileService from "../../veedrive/service"
 import { FrameContext } from "../../core/frames"
 import FrameControlBar from "../../core/frames/FrameControlBar"
+import { Size } from "../../common/types"
 
 const StyledImageBlock = styled.div`
   width: 100%;
@@ -30,8 +31,10 @@ const imgStyle: CSSProperties = {
 
 const ImageBlock: React.FC<ContentBlockProps> = props => {
   const [imageUrl, setImageUrl] = useState<string>("")
+  const [imageSize, setImageSize] = useState<Size>({ width: 0, height: 0 })
   const { path: imagePath } = (props.contentData as unknown) as ImageBlockParams
   const { updateAspectRatio } = useContext(FrameContext)
+  const { width, height } = imageSize
 
   const loadImageWithDimensions = useCallback(
     url => {
@@ -41,6 +44,8 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
         // @ts-ignore
         console.log("Image loaded", url, this.width, this.height)
         setImageUrl(url)
+        // @ts-ignore
+        setImageSize({ width: this.width, height: this.height })
         // @ts-ignore
         const aspectRatio = this.width / this.height
         updateAspectRatio(aspectRatio)
@@ -66,7 +71,15 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
 
   return (
     <StyledImageBlock data-drag-handle={true}>
-      {imageUrl ? <img src={imageUrl} style={imgStyle} alt={""} /> : null}
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          width={width}
+          height={height}
+          style={imgStyle}
+          alt={""}
+        />
+      ) : null}
       <FrameControlBar floating={true} />
     </StyledImageBlock>
   )

@@ -12,6 +12,9 @@ const StyledDeskWrapper = styled("div")({
 })
 
 export const Spectacle = () => {
+  if (!config.DISPLAY_MOUSE_CURSOR) {
+    require("./hideCursor.scss")
+  }
   return (
     <ThemeProvider theme={bbpTheme}>
       <StyledDeskWrapper>

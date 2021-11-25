@@ -472,6 +472,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const frameContext = useContext(FrameContext)
   useEffect(() => {
     frameContext.preventResizingWithWheel()
+    frameContext.preventResizing()
     frameContext.preventFullscreen()
   }, [frameContext])
 
