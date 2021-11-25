@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react"
-import { Position } from "../common/types"
+import { Position, Situation, Size } from "../common/types"
 import { useDispatch } from "react-redux"
 import { addFrame, closeLauncherMenu } from "../core/redux/actions"
 import LauncherPrimaryMenu from "./LauncherPrimaryMenu"
@@ -9,6 +9,7 @@ import { generateFrameId } from "../core/frames/utils"
 import { config } from "../config"
 import { styled } from "@mui/material/styles"
 import interact from "interactjs"
+import { makeFramePositionSafe } from "../core/frames/makeFramePositionSafe"
 
 interface LauncherMenuProps {
   menuId: string
@@ -17,17 +18,16 @@ interface LauncherMenuProps {
 
 const StyledLauncherMenuWrapper = styled("div")`
   padding: 5rem 5rem;
-  //background: rgba(255, 0, 0, 0.2);
   position: absolute;
   transform: translate(-50%, -50%);
   width: 28rem;
   box-sizing: content-box;
+  z-index: 9999;
 `
 
 const StyledLauncherMenu = styled("div")`
   display: flex;
   flex-direction: column;
-  z-index: 9999;
   overflow: visible;
   padding: 1rem 1rem;
 `
@@ -46,6 +46,11 @@ const StyledLauncherMenuBackground = styled("div")(
 `
 )
 
+interface OpenNewFrameArgs {
+  type: ContentBlockTypes
+  size: Size
+}
+
 const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
   const mainRef = useRef()
   const dispatch = useDispatch()
@@ -60,13 +65,17 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
     })
   }, [close, dispatch, menuId])
 
-  const newFrame = payload => {
+  const openNewFrameFromLauncher = ({ type, size }: OpenNewFrameArgs) => {
     close()
+    position = makeFramePositionSafe(position, size)
+
     dispatch(
       addFrame({
         frameId: generateFrameId(),
-        position: position,
-        ...payload,
+        position,
+        size,
+        type,
+        contentData: null,
       })
     )
   }
@@ -74,7 +83,7 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
   const handleAction = (action: LauncherMenuAction) => {
     switch (action) {
       case LauncherMenuAction.OpenMedia: {
-        newFrame({
+        openNewFrameFromLauncher({
           type: ContentBlockTypes.FileBrowser,
           size: {
             width: config.FILE_BROWSER_WIDTH,
@@ -84,21 +93,21 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
         break
       }
       case LauncherMenuAction.OpenImage: {
-        newFrame({
+        openNewFrameFromLauncher({
           type: ContentBlockTypes.Image,
-          size: { width: 400, height: 400 },
+          size: { width: 300, height: 300 },
         })
         break
       }
       case LauncherMenuAction.OpenVideo: {
-        newFrame({
+        openNewFrameFromLauncher({
           type: ContentBlockTypes.SampleVideo,
           size: { width: 800, height: 400 },
         })
         break
       }
       case LauncherMenuAction.OpenSampleVimeo: {
-        newFrame({
+        openNewFrameFromLauncher({
           type: ContentBlockTypes.Vimeo,
           size: { width: 800, height: 400 },
         })
