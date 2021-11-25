@@ -17,17 +17,16 @@ interface LauncherMenuProps {
 
 const StyledLauncherMenuWrapper = styled("div")`
   padding: 5rem 5rem;
-  //background: rgba(255, 0, 0, 0.2);
   position: absolute;
   transform: translate(-50%, -50%);
   width: 28rem;
   box-sizing: content-box;
+  z-index: 9999;
 `
 
 const StyledLauncherMenu = styled("div")`
   display: flex;
   flex-direction: column;
-  z-index: 9999;
   overflow: visible;
   padding: 1rem 1rem;
 `
