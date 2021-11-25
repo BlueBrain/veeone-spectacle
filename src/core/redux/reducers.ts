@@ -113,12 +113,21 @@ export const launcherMenuReducer = (
   launcherMenus: LauncherMenuData[],
   action: ReduxAction
 ) => {
+  const launcherWidthRem = 28
+  const baseFontSize = 16
+  const minLeft = (launcherWidthRem / 2) * baseFontSize
+  const minTop = 4 * baseFontSize
+  const maxTop = config.VIEWPORT_HEIGHT - minTop
+  const maxLeft = config.VIEWPORT_WIDTH - minLeft
   switch (action.type) {
     case Actions.OpenLauncherMenu:
       const { left, top } = action.payload.position
       const newLauncherMenu = {
         menuId: generateRandomId(4),
-        position: { left, top },
+        position: {
+          left: Math.min(maxLeft, Math.max(left, minLeft)),
+          top: Math.min(maxTop, Math.max(top, minTop)),
+        },
       }
       return [
         ...launcherMenus.slice(
