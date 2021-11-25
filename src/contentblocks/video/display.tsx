@@ -1,6 +1,9 @@
 import { padStart } from "lodash"
 
 export function friendlyFormatTime(totalSeconds: number) {
+  if (!isFinite(totalSeconds) || totalSeconds === null) {
+    return "--:--"
+  }
   const seconds = Math.floor(totalSeconds % 60)
   const remainingSeconds = totalSeconds - seconds
   const minutes = Math.floor((remainingSeconds / 60) % 60)
