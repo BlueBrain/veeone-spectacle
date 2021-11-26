@@ -211,6 +211,13 @@ export const useInteractiveFrame = ({
               deltaTop = -deltaWidth / aspectRatio
             }
 
+            if (
+              Math.max(nodeWidth, nodeHeight) === config.MINIMUM_FRAME_LONG_SIDE
+            ) {
+              deltaTop = 0
+              deltaLeft = 0
+            }
+
             nodeLeft += deltaLeft
             nodeTop += deltaTop
             node.style.transform = `translateX(${nodeLeft}px) translateY(${nodeTop}px)`
