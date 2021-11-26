@@ -4,9 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react"
 import SwiperCore, { Navigation, Pagination } from "swiper/core"
 import "swiper/swiper-bundle.min.css"
 import LauncherMenuItem from "./LauncherMenuItem"
-import { faFolderOpen, faGlobe } from "@fortawesome/free-solid-svg-icons"
 import { LauncherMenuAction } from "./launcher-menu-actions"
-import { faVimeo } from "@fortawesome/free-brands-svg-icons"
 
 SwiperCore.use([Pagination, Navigation])
 
@@ -54,15 +52,22 @@ const LauncherPrimaryMenu = (props: LauncherPrimaryMenuProps) => {
         <SwiperSlide>
           <LauncherMenuItem
             label={"Open media"}
-            faSvgIcon={faFolderOpen}
             onSelected={() =>
               props.onActionSelected(LauncherMenuAction.OpenMedia)
             }
           />
         </SwiperSlide>
         <SwiperSlide>
-          <LauncherMenuItem label={"Web"} faSvgIcon={faGlobe} />
+          <LauncherMenuItem
+            label={"Save presentation"}
+            onSelected={() =>
+              props.onActionSelected(LauncherMenuAction.OpenMedia)
+            }
+          />
         </SwiperSlide>
+        {/*<SwiperSlide>*/}
+        {/*  <LauncherMenuItem label={"Web"} faSvgIcon={faGlobe} />*/}
+        {/*</SwiperSlide>*/}
       </Swiper>
     </StyledLauncherMenu>
   )

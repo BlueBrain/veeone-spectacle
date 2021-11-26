@@ -1,13 +1,11 @@
 import * as React from "react"
-import styled from "styled-components"
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import useInteractable from "../core/interactable/useInteractable"
 import { useRef } from "react"
+import styled from "styled-components"
+import useInteractable from "../core/interactable/useInteractable"
+import { OpenInBrowser } from "@mui/icons-material"
 
 interface LauncherMenuItemProps {
   label: string
-  faSvgIcon?: IconDefinition
 
   onSelected?()
 }
@@ -52,7 +50,6 @@ const StyledIconWrapper = styled.div`
 
 const LauncherMenuItem: React.FC<LauncherMenuItemProps> = ({
   label,
-  faSvgIcon,
   onSelected,
 }) => {
   const ref = useRef()
@@ -67,7 +64,7 @@ const LauncherMenuItem: React.FC<LauncherMenuItemProps> = ({
   return (
     <StyledLauncherMenuItem ref={ref}>
       <StyledIconWrapper>
-        {faSvgIcon ? <FontAwesomeIcon icon={faSvgIcon} /> : null}
+        <OpenInBrowser />
       </StyledIconWrapper>
       {label}
     </StyledLauncherMenuItem>
