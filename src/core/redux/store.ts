@@ -3,16 +3,8 @@ import { SceneStateData } from "../scenes/interfaces"
 import { rootReducer } from "../../redux/root"
 
 const initialSpectacleState: SceneStateData = {
-  frames: {
-    // abcdef: {
-    //   situation: { left: 100, top: 200, width: 500, height: 400, angle: 0 }
-    // },
-    // efghij: {
-    //   situation: { left: 400, top: 100, width: 200, height: 200, angle: 0 }
-    // }
-  },
+  frames: {},
   frameStack: [],
-  launcherMenus: [],
 }
 export const spectacleStore = createStore(
   rootReducer,

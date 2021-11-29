@@ -27,7 +27,6 @@ export interface LauncherMenuData {
 export interface SceneStateData {
   frames: FramesRegister
   frameStack: FrameStack
-  launcherMenus: LauncherMenuData[]
 }
 
 export type FrameSituation = {

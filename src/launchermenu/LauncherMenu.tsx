@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from "react"
-import { Position, Situation, Size } from "../common/types"
+import { Position, Size } from "../common/types"
 import { useDispatch } from "react-redux"
-import { addFrame, closeLauncherMenu } from "../core/redux/actions"
+import { addFrame } from "../core/redux/actions"
 import LauncherPrimaryMenu from "./LauncherPrimaryMenu"
 import { LauncherMenuAction } from "./launcher-menu-actions"
 import { ContentBlockTypes } from "../contentblocks/types"
@@ -14,6 +14,7 @@ import { makeFramePositionSafe } from "../core/frames/makeFramePositionSafe"
 interface LauncherMenuProps {
   menuId: string
   position: Position
+  onClose: (args: CloseLauncherMenuArgs) => void
 }
 
 const StyledLauncherMenuWrapper = styled("div")`
@@ -51,12 +52,20 @@ interface OpenNewFrameArgs {
   size: Size
 }
 
-const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
+export interface CloseLauncherMenuArgs {
+  menuId: string
+}
+
+const LauncherMenu: React.FC<LauncherMenuProps> = ({
+  menuId,
+  position,
+  onClose,
+}) => {
   const mainRef = useRef()
   const dispatch = useDispatch()
 
   const close = useCallback(() => {
-    dispatch(closeLauncherMenu({ menuId }))
+    onClose({ menuId })
   }, [dispatch, menuId])
 
   useEffect(() => {
@@ -102,13 +111,6 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
       case LauncherMenuAction.OpenVideo: {
         openNewFrameFromLauncher({
           type: ContentBlockTypes.SampleVideo,
-          size: { width: 800, height: 400 },
-        })
-        break
-      }
-      case LauncherMenuAction.OpenSampleVimeo: {
-        openNewFrameFromLauncher({
-          type: ContentBlockTypes.Vimeo,
           size: { width: 800, height: 400 },
         })
         break

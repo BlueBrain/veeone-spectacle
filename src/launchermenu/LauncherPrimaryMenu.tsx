@@ -60,27 +60,6 @@ const LauncherPrimaryMenu = (props: LauncherPrimaryMenuProps) => {
             }
           />
         </SwiperSlide>
-        {/*<SwiperSlide>*/}
-        {/*  <LauncherMenuItem*/}
-        {/*    label={"Open image"}*/}
-        {/*    faSvgIcon={faImage}*/}
-        {/*    onSelected={() => props.onActionSelected(LauncherMenuAction.OpenSampleImage)} />*/}
-        {/*</SwiperSlide>*/}
-        {/*<SwiperSlide>*/}
-        {/*  <LauncherMenuItem*/}
-        {/*    label={"Open video"}*/}
-        {/*    faSvgIcon={faVideo}*/}
-        {/*    onSelected={() => props.onActionSelected(LauncherMenuAction.OpenSampleVideo)} />*/}
-        {/*</SwiperSlide>*/}
-        <SwiperSlide>
-          <LauncherMenuItem
-            label={"Vimeo sample"}
-            faSvgIcon={faVimeo}
-            onSelected={() =>
-              props.onActionSelected(LauncherMenuAction.OpenSampleVimeo)
-            }
-          />
-        </SwiperSlide>
         <SwiperSlide>
           <LauncherMenuItem label={"Web"} faSvgIcon={faGlobe} />
         </SwiperSlide>

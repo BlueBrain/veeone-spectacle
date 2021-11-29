@@ -14,8 +14,6 @@ export enum Actions {
   CloseFrame,
   BringFrameToFront,
   SendFrameToBack,
-  OpenLauncherMenu,
-  CloseLauncherMenu,
   CloseAllFrames,
   UpdateFrameData,
 }
@@ -74,24 +72,6 @@ export const closeFrame = (frameId: FrameId) => ({
 export const closeAllFrames = () => ({
   type: Actions.CloseAllFrames,
   payload: {},
-})
-
-export interface OpenLauncherMenuPayload {
-  position: Position
-}
-
-export const openLauncherMenu = (payload: OpenLauncherMenuPayload) => ({
-  type: Actions.OpenLauncherMenu,
-  payload: payload,
-})
-
-export interface CloseLauncherMenuPayload {
-  menuId: string
-}
-
-export const closeLauncherMenu = (payload: CloseLauncherMenuPayload) => ({
-  type: Actions.CloseLauncherMenu,
-  payload: payload,
 })
 
 export const loadScene = (payload: SceneDataPayload) => ({

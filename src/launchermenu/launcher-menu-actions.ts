@@ -3,5 +3,4 @@ export enum LauncherMenuAction {
   OpenWeb,
   OpenImage,
   OpenVideo,
-  OpenSampleVimeo,
 }
