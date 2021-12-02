@@ -211,8 +211,11 @@ export const useInteractiveFrame = ({
               deltaTop = -deltaWidth / aspectRatio
             }
 
+            let nodeLongSide = Math.max(nodeWidth, nodeHeight)
+
             if (
-              Math.max(nodeWidth, nodeHeight) === config.MINIMUM_FRAME_LONG_SIDE
+              nodeLongSide <= config.MINIMUM_FRAME_LONG_SIDE ||
+              nodeLongSide >= config.MAXIMUM_FRAME_LONG_SIDE
             ) {
               deltaTop = 0
               deltaLeft = 0
