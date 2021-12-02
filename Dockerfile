@@ -28,11 +28,11 @@ COPY --from=builder ${SPECTACLE_BUILD_PATH} ${SPECTACLE_NGINX_HTML_ROOT}
 RUN test -e /var/run || ln -s /run /var/run
 
 # Add Nginx configuration file and change the base path
-ADD ./deployment/nginx/default.conf /etc/nginx/conf.d
-ADD deployment/nginx/alias.locations /etc/nginx/conf.d
+ADD ./nginx/default.conf /etc/nginx/conf.d
+ADD ./nginx/alias.locations /etc/nginx/conf.d
 
 # Set up Nginx cache and log directories
-ADD ./deployment/nginx/setup-nginx.sh /tmp
+ADD ./nginx/setup-nginx.sh /tmp
 RUN chmod +x /tmp/setup-nginx.sh && /tmp/setup-nginx.sh
 
 # Add permissions for Nginx user
