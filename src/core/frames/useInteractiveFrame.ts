@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef } from "react"
 import { debounce } from "lodash"
 import { Situation } from "../../common/types"
 import interact from "interactjs"
-import { FrameSituation, FrameSituationUpdate } from "../scenes/interfaces"
+import { FrameSituation, FrameSituationUpdate } from "../types"
 import { config } from "../../config"
 import { GestureEvent } from "@interactjs/types"
 

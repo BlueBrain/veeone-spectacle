@@ -1,5 +1,5 @@
 import { Actions, AddFramePayload, UpdateFrameDataPayload } from "./actions"
-import { FramesRegister, FrameStack } from "../scenes/interfaces"
+import { FramesRegister, FrameStack } from "../types"
 import { ReduxAction } from "../../redux/actions"
 
 export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {

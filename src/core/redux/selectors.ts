@@ -1,5 +1,4 @@
-import { FrameId } from "../scenes/interfaces"
-import { SpectaclePresentation } from "../types"
+import { FrameId, SpectaclePresentation } from "../types"
 
 export const getFrames = (store: SpectaclePresentation) =>
   store.scenes.scenes[store.scenes.activeSceneKey].frames

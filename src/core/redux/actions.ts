@@ -1,11 +1,6 @@
 import { Position, Size } from "../../common/types"
 import { ContentBlockTypes } from "../../contentblocks/types"
-import {
-  FrameData,
-  FrameId,
-  FrameSituationUpdate,
-  SceneDataPayload,
-} from "../scenes/interfaces"
+import { FrameData, FrameId, FrameSituationUpdate } from "../types"
 
 export enum Actions {
   LoadScene,

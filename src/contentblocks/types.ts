@@ -1,4 +1,4 @@
-import { FrameId } from "../core/scenes/interfaces"
+import { FrameId } from "../core/types"
 import { Json } from "../common/types"
 
 export enum ContentBlockTypes {
