@@ -1,4 +1,4 @@
-import { Json, Position } from "../../common/types"
+import { Json } from "../../common/types"
 import { ContentBlockTypes } from "../../contentblocks/types"
 
 export type FrameId = string
@@ -17,11 +17,6 @@ export interface FrameEntry {
 
 export interface FramesRegister {
   [key: string]: FrameEntry
-}
-
-export interface LauncherMenuData {
-  menuId: string
-  position: Position
 }
 
 export type FrameSituation = {
