@@ -71,7 +71,7 @@
     "prepare": "husky install",
     "build": "webpack --mode=production",
     "docs": "rm -rf docs/source/en && node script/docs/index.js && cd docs && make html",
-    "lint": "eslint -c .eslintrc.js 'src/**/*.ts' 'src/**/*.tsx'",
+    "lint": "eslint -c .eslintrc.yaml 'src/**/*.ts' 'src/**/*.tsx'",
     "start": "webpack serve --mode=development",
     "test": "jest",
     "test:watch": "jest --watch",

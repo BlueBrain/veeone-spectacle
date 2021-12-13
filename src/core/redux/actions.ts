@@ -68,13 +68,3 @@ export const closeFrame = (frameId: FrameId) => ({
     frameId,
   },
 })
-
-export const closeAllFrames = () => ({
-  type: Actions.CloseAllFrames,
-  payload: {},
-})
-
-export const loadScene = (payload: SceneDataPayload) => ({
-  type: Actions.LoadScene,
-  payload: payload,
-})

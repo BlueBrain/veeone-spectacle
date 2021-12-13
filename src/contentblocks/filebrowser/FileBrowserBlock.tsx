@@ -19,7 +19,7 @@ import {
 import { ContentBlockProps } from "../types"
 import { useDispatch, useSelector } from "react-redux"
 import { updateFrameData } from "../../core/redux/actions"
-import { FrameEntry, SceneStateData } from "../../core/scenes/interfaces"
+import { FrameEntry } from "../../core/scenes/interfaces"
 import { getFrame } from "../../core/redux/selectors"
 import {
   FileBrowserContext,
@@ -33,6 +33,7 @@ import { fileOpenerService } from "../../file-opener"
 import FileSystemBusyIndicator from "./FileSystemBusyIndicator"
 import { delay } from "../../common/asynchronous"
 import FileBrowserBackgroundProgressIndicator from "./FileBrowserBackgroundProgressIndicator"
+import { SpectacleScene } from "../../core/types"
 
 const SEARCH_QUERY_CHANGE_DEBOUNCE_MS = 500
 const SEARCH_RESULTS_FETCH_INTERVAL_MS = 1000
@@ -100,7 +101,7 @@ async function* newFilesystemSearch(
 const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const dispatch = useDispatch()
 
-  const frameData = (useSelector<SceneStateData>(state =>
+  const frameData = (useSelector<SpectacleScene>(state =>
     getFrame(state, frameId)
   ) as unknown) as FrameEntry
 

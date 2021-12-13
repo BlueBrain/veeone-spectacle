@@ -2,7 +2,7 @@ import * as React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import Frame from "../frames/Frame"
 import { LauncherMenu } from "../../launchermenu"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import { getFrames, getFrameStack } from "../redux/selectors"
 import interact from "interactjs"
 import { Target } from "@interactjs/types"
@@ -54,7 +54,6 @@ function isAnyLauncherNearby(
 
 const Desk: React.FC = () => {
   const deskRef = useRef()
-  const dispatch = useDispatch()
   const frames = useSelector(getFrames)
   const frameStack = useSelector(getFrameStack)
   const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])

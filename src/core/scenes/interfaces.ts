@@ -1,5 +1,6 @@
 import { Json, Position } from "../../common/types"
 import { ContentBlockTypes } from "../../contentblocks/types"
+import { SpectacleScene } from "../types"
 
 export type FrameId = string
 
@@ -24,11 +25,6 @@ export interface LauncherMenuData {
   position: Position
 }
 
-export interface SceneStateData {
-  frames: FramesRegister
-  frameStack: FrameStack
-}
-
 export type FrameSituation = {
   left: number
   top: number
@@ -50,5 +46,5 @@ export type FrameSituationUpdate = {
 
 export interface SceneDataPayload {
   id: string
-  state: SceneStateData
+  state: SpectacleScene
 }
