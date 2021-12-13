@@ -59,27 +59,30 @@ const Desk: React.FC = () => {
   const frameStack = useSelector(getFrameStack)
   const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])
 
-  const openLauncherMenu = ({ top, left }: Position) => {
-    const launcherWidthRem = 28
-    const baseFontSize = 16
-    const minLeft = (launcherWidthRem / 2) * baseFontSize
-    const minTop = 4 * baseFontSize
-    const maxTop = config.VIEWPORT_HEIGHT - minTop
-    const maxLeft = config.VIEWPORT_WIDTH - minLeft
-    const newLauncherMenu = {
-      menuId: generateRandomId(4),
-      position: {
-        left: Math.min(maxLeft, Math.max(left, minLeft)),
-        top: Math.min(maxTop, Math.max(top, minTop)),
-      },
-    }
-    setLauncherMenus([
-      ...launcherMenus.slice(
-        launcherMenus.length - config.ALLOW_MAX_LAUNCHER_MENUS + 1
-      ),
-      newLauncherMenu,
-    ])
-  }
+  const openLauncherMenu = useCallback(
+    ({ top, left }: Position) => {
+      const launcherWidthRem = 28
+      const baseFontSize = 16
+      const minLeft = (launcherWidthRem / 2) * baseFontSize
+      const minTop = 4 * baseFontSize
+      const maxTop = config.VIEWPORT_HEIGHT - minTop
+      const maxLeft = config.VIEWPORT_WIDTH - minLeft
+      const newLauncherMenu = {
+        menuId: generateRandomId(4),
+        position: {
+          left: Math.min(maxLeft, Math.max(left, minLeft)),
+          top: Math.min(maxTop, Math.max(top, minTop)),
+        },
+      }
+      setLauncherMenus([
+        ...launcherMenus.slice(
+          launcherMenus.length - config.ALLOW_MAX_LAUNCHER_MENUS + 1
+        ),
+        newLauncherMenu,
+      ])
+    },
+    [launcherMenus]
+  )
 
   const closeLauncherMenu = ({ menuId }: CloseLauncherMenuArgs) => {
     setLauncherMenus(launcherMenus.filter(menu => menu.menuId !== menuId))
@@ -98,7 +101,7 @@ const Desk: React.FC = () => {
         }
       }
     },
-    [dispatch, launcherMenus]
+    [launcherMenus, openLauncherMenu]
   )
 
   useEffect(() => {
