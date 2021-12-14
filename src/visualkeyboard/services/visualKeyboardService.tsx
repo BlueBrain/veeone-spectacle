@@ -62,6 +62,7 @@ class VisualKeyboardService {
     keyboardWrapper.style.left = `${targetRect.left}px`
     keyboardWrapper.style.top = `${targetRect.bottom}px`
     keyboardWrapper.style.marginTop = "10px"
+    keyboardWrapper.style.zIndex = "2000"
 
     do {
       parent = parent?.parentElement || target?.parentElement

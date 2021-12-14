@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react"
+import React, { useCallback, useContext, useEffect, useRef } from "react"
 import { Position, Size } from "../common/types"
 import { useDispatch } from "react-redux"
 import { addFrame } from "../core/redux/actions"
@@ -10,6 +10,7 @@ import { config } from "../config"
 import { styled } from "@mui/material/styles"
 import interact from "interactjs"
 import { makeFramePositionSafe } from "../core/frames/makeFramePositionSafe"
+import { SpectacleContext } from "../core/spectacle/SpectacleContext"
 
 interface LauncherMenuProps {
   menuId: string
@@ -63,6 +64,7 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
 }) => {
   const mainRef = useRef()
   const dispatch = useDispatch()
+  const spectacleContext = useContext(SpectacleContext)
 
   const close = useCallback(() => {
     onClose({ menuId })
@@ -113,6 +115,11 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
           type: ContentBlockTypes.SampleVideo,
           size: { width: 800, height: 400 },
         })
+        break
+      }
+      case LauncherMenuAction.SavePresentation: {
+        close()
+        spectacleContext.savePresentation.openModal()
         break
       }
       default: {

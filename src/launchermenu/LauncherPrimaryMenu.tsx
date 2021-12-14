@@ -34,7 +34,9 @@ interface LauncherPrimaryMenuProps {
   onActionSelected(action: LauncherMenuAction)
 }
 
-const LauncherPrimaryMenu = (props: LauncherPrimaryMenuProps) => {
+const LauncherPrimaryMenu: React.FC<LauncherPrimaryMenuProps> = ({
+  onActionSelected,
+}) => {
   return (
     <StyledLauncherMenu>
       <Swiper
@@ -52,22 +54,17 @@ const LauncherPrimaryMenu = (props: LauncherPrimaryMenuProps) => {
         <SwiperSlide>
           <LauncherMenuItem
             label={"Open media"}
-            onSelected={() =>
-              props.onActionSelected(LauncherMenuAction.OpenMedia)
-            }
+            onSelected={() => onActionSelected(LauncherMenuAction.OpenMedia)}
           />
         </SwiperSlide>
         <SwiperSlide>
           <LauncherMenuItem
             label={"Save presentation"}
             onSelected={() =>
-              props.onActionSelected(LauncherMenuAction.OpenMedia)
+              onActionSelected(LauncherMenuAction.SavePresentation)
             }
           />
         </SwiperSlide>
-        {/*<SwiperSlide>*/}
-        {/*  <LauncherMenuItem label={"Web"} faSvgIcon={faGlobe} />*/}
-        {/*</SwiperSlide>*/}
       </Swiper>
     </StyledLauncherMenu>
   )

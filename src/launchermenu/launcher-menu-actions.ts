@@ -3,4 +3,6 @@ export enum LauncherMenuAction {
   OpenWeb,
   OpenImage,
   OpenVideo,
+  SavePresentation,
+  LoadPresentation,
 }
