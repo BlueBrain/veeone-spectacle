@@ -6,7 +6,7 @@ export const rootReducer = (
   state: SpectaclePresentation,
   action: ReduxAction
 ) => {
-  const activeSceneKey = state.scenes.activeSceneKey
+  const activeSceneKey = state.scenes.activeScene
   const activeScene = state.scenes.scenes[activeSceneKey]
   return {
     ...state,

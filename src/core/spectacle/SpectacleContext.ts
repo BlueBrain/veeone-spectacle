@@ -1,10 +1,12 @@
 import React from "react"
 import { NotImplementedError } from "../../common/errors"
+import { SpectaclePresentation } from "../types"
 
 interface SavePresentationContextProps {
   isModalOpen: boolean
   openModal: () => void
   closeModal: (event, reason: string) => void
+  save: (data: Partial<SpectaclePresentation>) => void
 }
 
 export interface SpectacleContextProps {
@@ -18,6 +20,9 @@ export const SpectacleContext = React.createContext<SpectacleContextProps>({
       throw new NotImplementedError()
     },
     closeModal: () => {
+      throw new NotImplementedError()
+    },
+    save: () => {
       throw new NotImplementedError()
     },
   },

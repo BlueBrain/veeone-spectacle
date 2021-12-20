@@ -10,7 +10,7 @@ import React, {
 } from "react"
 import styled from "styled-components"
 import { ContentBlockProps } from "../types"
-import fileService from "../../veedrive/service"
+import fileService from "../../veedrive"
 import { FrameContext } from "../../core/frames"
 import PlaybackControls from "./PlaybackControls"
 import VideoBlockContext, { VideoBlockContextProps } from "./VideoBlockContext"

@@ -6,6 +6,10 @@ import { config } from "../../config"
 import { SpectacleContext, SpectacleContextProps } from "./SpectacleContext"
 import { useMemo, useState } from "react"
 import SavePresentationModal from "../../presentation-loader/SavePresentationModal"
+import { useSelector } from "react-redux"
+import veeDriveService from "../../veedrive"
+import { SpectaclePresentation } from "../types"
+
 const StyledDeskWrapper = styled("div")({
   width: `${config.VIEWPORT_WIDTH}px`,
   height: `${config.VIEWPORT_HEIGHT}px`,
@@ -15,6 +19,10 @@ const StyledDeskWrapper = styled("div")({
 
 export const Spectacle = () => {
   const [saveModalVisible, setSaveModalVisible] = useState(false)
+  const presentationStore: SpectaclePresentation = useSelector(
+    store => store
+  ) as SpectaclePresentation
+
   if (!config.DISPLAY_MOUSE_CURSOR) {
     require("./hideCursor.scss")
   }
@@ -33,9 +41,14 @@ export const Spectacle = () => {
           }
           setSaveModalVisible(false)
         },
+        save: async data => {
+          const storeToSave = { ...presentationStore, ...data }
+          console.debug("Saving presentation...", JSON.stringify(storeToSave))
+          await veeDriveService.savePresentation(storeToSave)
+        },
       },
     }),
-    [saveModalVisible]
+    [presentationStore, saveModalVisible]
   )
 
   return (

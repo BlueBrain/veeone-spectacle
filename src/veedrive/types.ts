@@ -1,3 +1,5 @@
+import { SpectaclePresentation } from "../core/types"
+
 export interface VeeDriveListDirectoryRequest {
   path: string
   filters?: string[]
@@ -53,5 +55,9 @@ export interface VeeDriveDirectory {
   directories: VeeDriveDirectory[]
   files: VeeDriveFile[]
 }
+
+export type VeeDriveSavePresentationRequest = SpectaclePresentation
+
+export interface VeeDriveSavePresentationResponse {}
 
 export type VeeDriveSearchResultDirectory = string

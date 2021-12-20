@@ -43,6 +43,10 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
     }
   }, [keyboardId])
 
+  const handleSaveClick = () => {
+    spectacleContext.savePresentation.save({ name: presentationName })
+  }
+
   return (
     <Dialog
       open={spectacleContext.savePresentation.isModalOpen}
@@ -77,7 +81,7 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
         >
           Cancel
         </Button>
-        <Button>Save</Button>
+        <Button onClick={handleSaveClick}>Save</Button>
       </DialogActions>
     </Dialog>
   )

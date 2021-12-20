@@ -6,6 +6,7 @@ import { config } from "../../config"
 const now = Date.now()
 
 const initialSpectacleState: SpectaclePresentation = {
+  id: crypto.randomUUID(),
   name: "Untitled",
   createdAt: now,
   updatedAt: now,
@@ -16,7 +17,7 @@ const initialSpectacleState: SpectaclePresentation = {
     },
   },
   scenes: {
-    activeSceneKey: "main",
+    activeScene: "main",
     sceneOrder: ["main"],
     scenes: {
       main: {

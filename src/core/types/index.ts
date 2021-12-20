@@ -48,7 +48,7 @@ export interface SpectacleSceneRegistry {
 }
 
 export interface SpectacleScenes {
-  activeSceneKey: string
+  activeScene: string
   sceneOrder: string[]
   scenes: SpectacleSceneRegistry
 }
@@ -63,6 +63,7 @@ export interface SpectaclePresentationMeta {
 }
 
 export interface SpectaclePresentation {
+  id: string
   name: string
   createdAt: number
   updatedAt: number

@@ -6,6 +6,8 @@ import {
   VeeDriveImageResponse,
   VeeDriveListDirectoryRequest,
   VeeDriveListDirectoryResponse,
+  VeeDriveSavePresentationRequest,
+  VeeDriveSavePresentationResponse,
   VeeDriveSearchFileSystemRequest,
   VeeDriveSearchFileSystemResponse,
 } from "./types"
@@ -56,6 +58,11 @@ class VeeDriveService extends NetworkFileBrowsingServiceBase {
       yield currentResults
     }
   }
+
+  public readonly savePresentation = async (
+    store: VeeDriveSavePresentationRequest
+  ): Promise<VeeDriveSavePresentationResponse> =>
+    this.sendRequest(VeeDriveConfig.endpointNames.savePresentation, store)
 }
 
 export default new VeeDriveService()

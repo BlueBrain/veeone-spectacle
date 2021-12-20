@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
-import fileService from "../../veedrive/service"
+import fileService from "../../veedrive"
 import { VeeDriveSearchFileSystemRequest } from "../../veedrive/types"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import _ from "lodash"
