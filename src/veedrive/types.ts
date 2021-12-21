@@ -58,6 +58,18 @@ export interface VeeDriveDirectory {
 
 export type VeeDriveSavePresentationRequest = SpectaclePresentation
 
+interface SpectaclePresentationListEntry {
+  id: string
+  name: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface VeeDriveListPresentationsResponse {
+  count: number
+  results: SpectaclePresentationListEntry[]
+}
+
 export interface VeeDriveSavePresentationResponse {}
 
 export type VeeDriveSearchResultDirectory = string

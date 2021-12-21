@@ -16,6 +16,8 @@ import React, {
 } from "react"
 import { SpectacleContext } from "../core/spectacle/SpectacleContext"
 import { visualKeyboardService } from "../visualkeyboard"
+import { SpectaclePresentation } from "../core/types"
+import { generateRandomPresentationId } from "../core/presentations/utils"
 
 interface SavePresentationModalProps {}
 
@@ -43,8 +45,23 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
     }
   }, [keyboardId])
 
+  const savePresentation = useCallback(
+    (extraData: Partial<SpectaclePresentation> = {}) => {
+      return spectacleContext.savePresentation.save({
+        name: presentationName,
+        savedAt: Date.now(),
+        ...extraData,
+      })
+    },
+    [presentationName, spectacleContext.savePresentation]
+  )
+
   const handleSaveClick = () => {
-    spectacleContext.savePresentation.save({ name: presentationName })
+    savePresentation()
+  }
+
+  const handleSaveAsNewClick = () => {
+    savePresentation({ id: generateRandomPresentationId() })
   }
 
   return (
@@ -81,6 +98,7 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
         >
           Cancel
         </Button>
+        <Button onClick={handleSaveAsNewClick}>Save as new</Button>
         <Button onClick={handleSaveClick}>Save</Button>
       </DialogActions>
     </Dialog>

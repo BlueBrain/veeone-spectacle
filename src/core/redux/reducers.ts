@@ -63,10 +63,6 @@ export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
       }
     }
 
-    case Actions.LoadScene: {
-      return action.payload.state.frames
-    }
-
     default: {
       return frames
     }
@@ -94,9 +90,6 @@ export const frameStackReducer = (
     case Actions.SendFrameToBack: {
       const frameId = action.payload.frameId
       return [frameId, ...frameStack.filter(id => id !== frameId)]
-    }
-    case Actions.LoadScene: {
-      return action.payload.state.frameStack
     }
     default:
       return frameStack

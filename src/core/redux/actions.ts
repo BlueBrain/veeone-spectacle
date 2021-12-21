@@ -1,9 +1,14 @@
 import { Position, Size } from "../../common/types"
 import { ContentBlockTypes } from "../../contentblocks/types"
-import { FrameData, FrameId, FrameSituationUpdate } from "../types"
+import {
+  FrameData,
+  FrameId,
+  FrameSituationUpdate,
+  SpectaclePresentation,
+} from "../types"
 
 export enum Actions {
-  LoadScene,
+  LoadPresentation,
   AddFrame,
   ManipulateFrame,
   CloseFrame,
@@ -62,4 +67,9 @@ export const closeFrame = (frameId: FrameId) => ({
   payload: {
     frameId,
   },
+})
+
+export const loadPresentationStore = (newStore: SpectaclePresentation) => ({
+  type: Actions.LoadPresentation,
+  payload: newStore,
 })

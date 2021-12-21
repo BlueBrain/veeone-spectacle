@@ -9,6 +9,7 @@ import SavePresentationModal from "../../presentation-loader/SavePresentationMod
 import { useSelector } from "react-redux"
 import veeDriveService from "../../veedrive"
 import { SpectaclePresentation } from "../types"
+import LoadPresentationModal from "../../presentation-loader/LoadPresentationModal"
 
 const StyledDeskWrapper = styled("div")({
   width: `${config.VIEWPORT_WIDTH}px`,
@@ -19,6 +20,7 @@ const StyledDeskWrapper = styled("div")({
 
 export const Spectacle = () => {
   const [saveModalVisible, setSaveModalVisible] = useState(false)
+  const [loadModalVisible, setLoadModalVisible] = useState(false)
   const presentationStore: SpectaclePresentation = useSelector(
     store => store
   ) as SpectaclePresentation
@@ -47,8 +49,24 @@ export const Spectacle = () => {
           await veeDriveService.savePresentation(storeToSave)
         },
       },
+      loadPresentation: {
+        isModalOpen: loadModalVisible,
+        openModal: () => setLoadModalVisible(true),
+        closeModal: (event, reason) => {
+          if (reason === "backdropClick") {
+            return
+          }
+          setLoadModalVisible(false)
+        },
+        listPresentations: async () =>
+          await veeDriveService.listPresentations(),
+        load: async (presentationId: string) => {
+          console.debug("Loading presentation...")
+          return await veeDriveService.getPresentation(presentationId)
+        },
+      },
     }),
-    [presentationStore, saveModalVisible]
+    [loadModalVisible, presentationStore, saveModalVisible]
   )
 
   return (
@@ -58,6 +76,9 @@ export const Spectacle = () => {
           <Desk />
           {spectacleContext.savePresentation.isModalOpen ? (
             <SavePresentationModal />
+          ) : null}
+          {spectacleContext.loadPresentation.isModalOpen ? (
+            <LoadPresentationModal />
           ) : null}
         </StyledDeskWrapper>
       </SpectacleContext.Provider>

@@ -67,6 +67,7 @@ export interface SpectaclePresentation {
   name: string
   createdAt: number
   updatedAt: number
+  savedAt: number
   meta: SpectaclePresentationMeta
   scenes: SpectacleScenes
 }

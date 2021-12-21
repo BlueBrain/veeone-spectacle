@@ -2,14 +2,16 @@ import { createStore } from "redux"
 import { rootReducer } from "../../redux/root"
 import { SpectaclePresentation } from "../types"
 import { config } from "../../config"
+import { generateRandomPresentationId } from "../presentations/utils"
 
 const now = Date.now()
 
 const initialSpectacleState: SpectaclePresentation = {
-  id: crypto.randomUUID(),
+  id: generateRandomPresentationId(),
   name: "Untitled",
   createdAt: now,
   updatedAt: now,
+  savedAt: null,
   meta: {
     viewport: {
       width: config.VIEWPORT_WIDTH,

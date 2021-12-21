@@ -9,6 +9,8 @@ const VeeDriveConfig = {
     searchFiles: "Search",
     searchResults: "SearchResult",
     savePresentation: "SavePresentation",
+    listPresentations: "ListPresentations",
+    getPresentation: "GetPresentation",
   },
   minSearchQueryLength: 3,
 }

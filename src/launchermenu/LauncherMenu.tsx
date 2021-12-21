@@ -122,6 +122,11 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
         spectacleContext.savePresentation.openModal()
         break
       }
+      case LauncherMenuAction.LoadPresentation: {
+        close()
+        spectacleContext.loadPresentation.openModal()
+        break
+      }
       default: {
         break
       }

@@ -65,6 +65,14 @@ const LauncherPrimaryMenu: React.FC<LauncherPrimaryMenuProps> = ({
             }
           />
         </SwiperSlide>
+        <SwiperSlide>
+          <LauncherMenuItem
+            label={"Load presentation"}
+            onSelected={() =>
+              onActionSelected(LauncherMenuAction.LoadPresentation)
+            }
+          />
+        </SwiperSlide>
       </Swiper>
     </StyledLauncherMenu>
   )
