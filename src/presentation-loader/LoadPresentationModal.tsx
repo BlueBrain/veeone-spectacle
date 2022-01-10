@@ -48,19 +48,25 @@ const LoadPresentationModal: React.FC<LoadPresentationModalProps> = () => {
         <Grid container alignItems={"center"} sx={{ py: 3 }}>
           <Grid item xs>
             <List>
-              {presentationList.map((presentationItem, i) => (
-                <ListItemButton
-                  key={i}
-                  onClick={() =>
-                    handlePresentationItemClick(presentationItem.id)
-                  }
-                >
-                  <ListItemText
-                    primary={presentationItem.name}
-                    secondary={presentationItem.updatedAt}
-                  />
-                </ListItemButton>
-              ))}
+              {presentationList.map((presentationItem, i) => {
+                const friendlyDateTime = new Date(
+                  presentationItem.updatedAt
+                ).toLocaleString()
+
+                return (
+                  <ListItemButton
+                    key={i}
+                    onClick={() =>
+                      handlePresentationItemClick(presentationItem.id)
+                    }
+                  >
+                    <ListItemText
+                      primary={presentationItem.name}
+                      secondary={friendlyDateTime}
+                    />
+                  </ListItemButton>
+                )
+              })}
             </List>
           </Grid>
         </Grid>
