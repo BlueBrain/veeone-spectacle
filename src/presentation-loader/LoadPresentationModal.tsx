@@ -26,7 +26,7 @@ const LoadPresentationModal: React.FC<LoadPresentationModalProps> = () => {
       setPresentationList(response.results)
     }
     void loadPresentations()
-  }, [])
+  }, [spectacleContext.loadPresentation])
 
   const handlePresentationItemClick = async (presentationId: string) => {
     const newStore = await spectacleContext.loadPresentation.load(
@@ -46,7 +46,7 @@ const LoadPresentationModal: React.FC<LoadPresentationModalProps> = () => {
       <DialogTitle>Load presentation</DialogTitle>
       <DialogContent>
         <Grid container alignItems={"center"} sx={{ py: 3 }}>
-          <Grid item xs>
+          <Grid item xs md={4}>
             <List>
               {presentationList.map((presentationItem, i) => {
                 const friendlyDateTime = new Date(
@@ -68,6 +68,9 @@ const LoadPresentationModal: React.FC<LoadPresentationModalProps> = () => {
                 )
               })}
             </List>
+          </Grid>
+          <Grid item xs md={8}>
+            Versions
           </Grid>
         </Grid>
       </DialogContent>

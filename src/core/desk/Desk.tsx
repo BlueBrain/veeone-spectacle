@@ -12,6 +12,7 @@ import { LauncherMenuData } from "./types"
 import { generateRandomId } from "../../common/random"
 import { config } from "../../config"
 import { CloseLauncherMenuArgs } from "../../launchermenu/LauncherMenu"
+import { DeskBranding } from "./DeskBranding"
 
 interact.pointerMoveTolerance(4)
 
@@ -118,6 +119,7 @@ const Desk: React.FC = () => {
 
   return (
     <StyledDesk ref={deskRef}>
+      <DeskBranding />
       {Object.keys(frames).map(frameId => {
         const frame = frames[frameId]
         return typeof frame !== "undefined" ? (

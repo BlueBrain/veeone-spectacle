@@ -13,39 +13,17 @@ interface LauncherMenuItemProps {
 const StyledLauncherMenuItem = styled.div`
   height: 100%;
   display: flex;
-  background: #1976d2;
   flex-grow: 1;
-  flex-direction: column;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 400;
   padding: 0.5rem 0;
   box-sizing: border-box;
   align-self: stretch;
+  align-items: center;
+  justify-content: center;
   color: #fff;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
   text-align: center;
-`
-
-const StyledIconWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  min-height: 3rem;
-  padding: 0.3rem;
-  --shadow: drop-shadow(0 0.2rem 20px rgba(0, 0, 0, 0.4));
-
-  svg {
-    //display: flex;
-    //align-self: center;
-    box-sizing: border-box;
-    width: 50% !important;
-    height: auto !important;
-  }
-
-  path {
-    fill: white;
-    -webkit-filter: var(--shadow);
-    filter: var(--shadow);
-  }
 `
 
 const LauncherMenuItem: React.FC<LauncherMenuItemProps> = ({
@@ -61,14 +39,7 @@ const LauncherMenuItem: React.FC<LauncherMenuItemProps> = ({
     onTap: handleTap,
   })
 
-  return (
-    <StyledLauncherMenuItem ref={ref}>
-      <StyledIconWrapper>
-        <OpenInBrowser />
-      </StyledIconWrapper>
-      {label}
-    </StyledLauncherMenuItem>
-  )
+  return <StyledLauncherMenuItem ref={ref}>{label}</StyledLauncherMenuItem>
 }
 
 export default LauncherMenuItem

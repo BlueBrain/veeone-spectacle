@@ -12,21 +12,20 @@ const StyledLauncherMenu = styled.div`
   display: flex;
   flex-grow: 1;
   z-index: 9999;
-  //overflow: hidden;
-  //backdrop-filter: blur(10px);
+
   -webkit-mask-image: -webkit-gradient(
     linear,
     left top,
     right top,
     color-stop(0, rgba(0, 0, 0, 0)),
-    color-stop(0.2, rgba(0, 0, 0, 1)),
-    color-stop(0.8, rgba(0, 0, 0, 1)),
+    color-stop(0.1, rgba(0, 0, 0, 1)),
+    color-stop(0.9, rgba(0, 0, 0, 1)),
     color-stop(1, rgba(0, 0, 0, 0))
   );
 
   .swiper-button-prev,
   .swiper-button-next {
-    color: rgba(0, 0, 0, 0.8);
+    color: rgba(255, 255, 255, 0.4);
   }
 `
 
