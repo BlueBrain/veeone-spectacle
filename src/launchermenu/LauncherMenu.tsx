@@ -68,7 +68,7 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
 
   const close = useCallback(() => {
     onClose({ menuId })
-  }, [dispatch, menuId])
+  }, [menuId, onClose])
 
   useEffect(() => {
     interact(mainRef.current).on("doubletap", () => {
@@ -118,13 +118,17 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
         break
       }
       case LauncherMenuAction.SavePresentation: {
+        spectacleContext.savePresentation.openModal({
+          position: { ...position },
+        })
         close()
-        spectacleContext.savePresentation.openModal()
         break
       }
       case LauncherMenuAction.LoadPresentation: {
+        spectacleContext.loadPresentation.openModal({
+          position: { ...position },
+        })
         close()
-        spectacleContext.loadPresentation.openModal()
         break
       }
       default: {

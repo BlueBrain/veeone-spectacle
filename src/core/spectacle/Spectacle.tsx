@@ -21,6 +21,14 @@ const StyledDeskWrapper = styled("div")({
 export const Spectacle = () => {
   const [saveModalVisible, setSaveModalVisible] = useState(false)
   const [loadModalVisible, setLoadModalVisible] = useState(false)
+  const [
+    loadPresentationModalPosition,
+    setLoadPresentationModalPosition,
+  ] = useState(null)
+  const [
+    savePresentationModalPosition,
+    setSavePresentationModalPosition,
+  ] = useState(null)
   const presentationStore: SpectaclePresentation = useSelector(
     store => store
   ) as SpectaclePresentation
@@ -49,9 +57,14 @@ export const Spectacle = () => {
           await veeDriveService.savePresentation(storeToSave)
         },
       },
+      loadPresentationModalPosition,
+      savePresentationModalPosition,
       loadPresentation: {
         isModalOpen: loadModalVisible,
-        openModal: () => setLoadModalVisible(true),
+        openModal: ({ position }) => {
+          setLoadPresentationModalPosition(position)
+          setLoadModalVisible(true)
+        },
         closeModal: (event, reason) => {
           if (reason === "backdropClick") {
             return
@@ -66,7 +79,13 @@ export const Spectacle = () => {
         },
       },
     }),
-    [loadModalVisible, presentationStore, saveModalVisible]
+    [
+      loadModalVisible,
+      loadPresentationModalPosition,
+      presentationStore,
+      saveModalVisible,
+      savePresentationModalPosition,
+    ]
   )
 
   return (

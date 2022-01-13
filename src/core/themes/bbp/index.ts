@@ -10,6 +10,7 @@ declare module "@mui/material/styles/createPalette" {
 
 export const bbpTheme = createTheme({
   palette: {
+    mode: "light",
     primary: { main: `#007DDE` },
     secondary: { main: `#3ec5ff` },
     error: red,
