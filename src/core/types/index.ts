@@ -1,4 +1,4 @@
-import { Json, Position } from "../../common/types"
+import { Json } from "../../common/types"
 import { ContentBlockTypes } from "../../contentblocks/types"
 
 export type FrameId = string
@@ -17,17 +17,6 @@ export interface FrameEntry {
 
 export interface FramesRegister {
   [key: string]: FrameEntry
-}
-
-export interface LauncherMenuData {
-  menuId: string
-  position: Position
-}
-
-export interface SceneStateData {
-  frames: FramesRegister
-  frameStack: FrameStack
-  launcherMenus: LauncherMenuData[]
 }
 
 export type FrameSituation = {
@@ -49,7 +38,36 @@ export type FrameSituationUpdate = {
   isFullscreen?: boolean
 }
 
-export interface SceneDataPayload {
+export interface SpectacleScene {
+  frames: FramesRegister
+  frameStack: FrameStack
+}
+
+export interface SpectacleSceneRegistry {
+  [key: string]: SpectacleScene
+}
+
+export interface SpectacleScenes {
+  activeScene: string
+  sceneOrder: string[]
+  scenes: SpectacleSceneRegistry
+}
+
+export interface SpectacleViewport {
+  width: number
+  height: number
+}
+
+export interface SpectaclePresentationMeta {
+  viewport: SpectacleViewport
+}
+
+export interface SpectaclePresentation {
   id: string
-  state: SceneStateData
+  name: string
+  createdAt: number
+  updatedAt: number
+  savedAt: number
+  meta: SpectaclePresentationMeta
+  scenes: SpectacleScenes
 }

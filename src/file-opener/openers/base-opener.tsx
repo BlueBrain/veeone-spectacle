@@ -1,10 +1,10 @@
 import { Position } from "../../common/types"
 import { ContentBlockTypes } from "../../contentblocks/types"
-import { FrameData, FrameId } from "../../core/scenes/interfaces"
+import { FrameData, FrameId } from "../../core/types"
 import { generateFrameId } from "../../core/frames/utils"
 import { spectacleStore } from "../../core/redux/store"
 import { addFrame, bringFrameToFront } from "../../core/redux/actions"
-import { NotImplementedError } from "../../common/errors"
+
 interface OpenerProps {
   filePath: string
   position: Position

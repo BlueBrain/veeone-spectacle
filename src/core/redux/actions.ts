@@ -4,18 +4,16 @@ import {
   FrameData,
   FrameId,
   FrameSituationUpdate,
-  SceneDataPayload,
-} from "../scenes/interfaces"
+  SpectaclePresentation,
+} from "../types"
 
 export enum Actions {
-  LoadScene,
+  LoadPresentation,
   AddFrame,
   ManipulateFrame,
   CloseFrame,
   BringFrameToFront,
   SendFrameToBack,
-  OpenLauncherMenu,
-  CloseLauncherMenu,
   CloseAllFrames,
   UpdateFrameData,
 }
@@ -71,30 +69,7 @@ export const closeFrame = (frameId: FrameId) => ({
   },
 })
 
-export const closeAllFrames = () => ({
-  type: Actions.CloseAllFrames,
-  payload: {},
-})
-
-export interface OpenLauncherMenuPayload {
-  position: Position
-}
-
-export const openLauncherMenu = (payload: OpenLauncherMenuPayload) => ({
-  type: Actions.OpenLauncherMenu,
-  payload: payload,
-})
-
-export interface CloseLauncherMenuPayload {
-  menuId: string
-}
-
-export const closeLauncherMenu = (payload: CloseLauncherMenuPayload) => ({
-  type: Actions.CloseLauncherMenu,
-  payload: payload,
-})
-
-export const loadScene = (payload: SceneDataPayload) => ({
-  type: Actions.LoadScene,
-  payload: payload,
+export const loadPresentationStore = (newStore: SpectaclePresentation) => ({
+  type: Actions.LoadPresentation,
+  payload: newStore,
 })

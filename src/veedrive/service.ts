@@ -6,12 +6,16 @@ import {
   VeeDriveImageResponse,
   VeeDriveListDirectoryRequest,
   VeeDriveListDirectoryResponse,
+  VeeDriveListPresentationsResponse,
+  VeeDriveSavePresentationRequest,
+  VeeDriveSavePresentationResponse,
   VeeDriveSearchFileSystemRequest,
   VeeDriveSearchFileSystemResponse,
 } from "./types"
 import WebsocketAdapter from "./adapters"
 import NetworkFileBrowsingServiceBase from "./base-service"
 import VeeDriveConfig from "./config"
+import { SpectaclePresentation } from "../core/types"
 
 class VeeDriveService extends NetworkFileBrowsingServiceBase {
   protected readonly communicationAdapter = new WebsocketAdapter(
@@ -56,6 +60,19 @@ class VeeDriveService extends NetworkFileBrowsingServiceBase {
       yield currentResults
     }
   }
+
+  public readonly savePresentation = async (
+    store: VeeDriveSavePresentationRequest
+  ): Promise<VeeDriveSavePresentationResponse> =>
+    this.sendRequest(VeeDriveConfig.endpointNames.savePresentation, store)
+
+  public readonly listPresentations = async (): Promise<VeeDriveListPresentationsResponse> =>
+    this.sendRequest(VeeDriveConfig.endpointNames.listPresentations)
+
+  public readonly getPresentation = async (
+    id: string
+  ): Promise<SpectaclePresentation> =>
+    this.sendRequest(VeeDriveConfig.endpointNames.getPresentation, { id })
 }
 
 export default new VeeDriveService()

@@ -1,13 +1,30 @@
-import { SceneStateData } from "../core/scenes/interfaces"
 import { ReduxAction } from "./actions"
-import {
-  framesReducer,
-  frameStackReducer,
-  launcherMenuReducer,
-} from "../core/redux/reducers"
+import { framesReducer, frameStackReducer } from "../core/redux/reducers"
+import { SpectaclePresentation } from "../core/types"
+import { Actions } from "../core/redux/actions"
 
-export const rootReducer = (state: SceneStateData, action: ReduxAction) => ({
-  frames: framesReducer(state.frames, action),
-  frameStack: frameStackReducer(state.frameStack, action),
-  launcherMenus: launcherMenuReducer(state.launcherMenus, action),
-})
+export const rootReducer = (
+  state: SpectaclePresentation,
+  action: ReduxAction
+) => {
+  const activeSceneKey = state.scenes.activeScene
+  const activeScene = state.scenes.scenes[activeSceneKey]
+
+  if (action.type === Actions.LoadPresentation) {
+    return { ...action.payload }
+  }
+
+  return {
+    ...state,
+    scenes: {
+      ...state.scenes,
+      scenes: {
+        ...state.scenes.scenes,
+        [activeSceneKey]: {
+          frames: framesReducer(activeScene.frames, action),
+          frameStack: frameStackReducer(activeScene.frameStack, action),
+        },
+      },
+    },
+  }
+}

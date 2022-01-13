@@ -1,15 +1,18 @@
 import * as React from "react"
-import { useCallback, useEffect, useRef } from "react"
-import Frame from "../frames/Frame"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
+import { Frame } from "../frames"
 import { LauncherMenu } from "../../launchermenu"
-import { useDispatch, useSelector } from "react-redux"
-import { getFrames, getFrameStack, getLauncherMenus } from "../redux/selectors"
-import { openLauncherMenu } from "../redux/actions"
+import { useSelector } from "react-redux"
+import { getFrames, getFrameStack } from "../redux/selectors"
 import interact from "interactjs"
 import { Target } from "@interactjs/types"
 import { styled } from "@mui/material/styles"
 import { Position } from "../../common/types"
-import { LauncherMenuData } from "../scenes/interfaces"
+import { LauncherMenuData } from "./types"
+import { generateRandomId } from "../../common/random"
+import { config } from "../../config"
+import { CloseLauncherMenuArgs } from "../../launchermenu/LauncherMenu"
+import { DeskBranding } from "./DeskBranding"
 
 interact.pointerMoveTolerance(4)
 
@@ -52,10 +55,38 @@ function isAnyLauncherNearby(
 
 const Desk: React.FC = () => {
   const deskRef = useRef()
-  const dispatch = useDispatch()
   const frames = useSelector(getFrames)
   const frameStack = useSelector(getFrameStack)
-  const launcherMenus: LauncherMenuData[] = useSelector(getLauncherMenus)
+  const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])
+
+  const openLauncherMenu = useCallback(
+    ({ top, left }: Position) => {
+      const launcherWidthRem = 28
+      const baseFontSize = 16
+      const minLeft = (launcherWidthRem / 2) * baseFontSize
+      const minTop = 4 * baseFontSize
+      const maxTop = config.VIEWPORT_HEIGHT - minTop
+      const maxLeft = config.VIEWPORT_WIDTH - minLeft
+      const newLauncherMenu = {
+        menuId: generateRandomId(4),
+        position: {
+          left: Math.min(maxLeft, Math.max(left, minLeft)),
+          top: Math.min(maxTop, Math.max(top, minTop)),
+        },
+      }
+      setLauncherMenus([
+        ...launcherMenus.slice(
+          launcherMenus.length - config.ALLOW_MAX_LAUNCHER_MENUS + 1
+        ),
+        newLauncherMenu,
+      ])
+    },
+    [launcherMenus]
+  )
+
+  const closeLauncherMenu = ({ menuId }: CloseLauncherMenuArgs) => {
+    setLauncherMenus(launcherMenus.filter(menu => menu.menuId !== menuId))
+  }
 
   const handleHold = useCallback(
     event => {
@@ -63,14 +94,14 @@ const Desk: React.FC = () => {
       if (event.target === deskRef.current) {
         console.debug("Holding...", event)
         if (!isAnyLauncherNearby(position, launcherMenus)) {
-          dispatch(openLauncherMenu({ position: position }))
+          openLauncherMenu(position)
         } else {
           // todo any feedback to the user that the launcher couldn't have been opened?
           console.debug("Too close to other launcher menus. Not opening.")
         }
       }
     },
-    [dispatch, launcherMenus]
+    [launcherMenus, openLauncherMenu]
   )
 
   useEffect(() => {
@@ -88,6 +119,7 @@ const Desk: React.FC = () => {
 
   return (
     <StyledDesk ref={deskRef}>
+      <DeskBranding />
       {Object.keys(frames).map(frameId => {
         const frame = frames[frameId]
         return typeof frame !== "undefined" ? (
@@ -114,6 +146,7 @@ const Desk: React.FC = () => {
             <LauncherMenu
               menuId={launcherMenu.menuId}
               position={launcherMenu.position}
+              onClose={closeLauncherMenu}
             />
           </div>
         )

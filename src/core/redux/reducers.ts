@@ -1,12 +1,6 @@
 import { Actions, AddFramePayload, UpdateFrameDataPayload } from "./actions"
-import {
-  FramesRegister,
-  FrameStack,
-  LauncherMenuData,
-} from "../scenes/interfaces"
-import { generateRandomId } from "../../common/random"
+import { FramesRegister, FrameStack } from "../types"
 import { ReduxAction } from "../../redux/actions"
-import { config } from "../../config"
 
 export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
   switch (action.type) {
@@ -69,10 +63,6 @@ export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
       }
     }
 
-    case Actions.LoadScene: {
-      return action.payload.state.frames
-    }
-
     default: {
       return frames
     }
@@ -101,49 +91,7 @@ export const frameStackReducer = (
       const frameId = action.payload.frameId
       return [frameId, ...frameStack.filter(id => id !== frameId)]
     }
-    case Actions.LoadScene: {
-      return action.payload.state.frameStack
-    }
     default:
       return frameStack
-  }
-}
-
-export const launcherMenuReducer = (
-  launcherMenus: LauncherMenuData[],
-  action: ReduxAction
-) => {
-  const launcherWidthRem = 28
-  const baseFontSize = 16
-  const minLeft = (launcherWidthRem / 2) * baseFontSize
-  const minTop = 4 * baseFontSize
-  const maxTop = config.VIEWPORT_HEIGHT - minTop
-  const maxLeft = config.VIEWPORT_WIDTH - minLeft
-  switch (action.type) {
-    case Actions.OpenLauncherMenu:
-      const { left, top } = action.payload.position
-      const newLauncherMenu = {
-        menuId: generateRandomId(4),
-        position: {
-          left: Math.min(maxLeft, Math.max(left, minLeft)),
-          top: Math.min(maxTop, Math.max(top, minTop)),
-        },
-      }
-      return [
-        ...launcherMenus.slice(
-          launcherMenus.length - config.ALLOW_MAX_LAUNCHER_MENUS + 1
-        ),
-        newLauncherMenu,
-      ]
-
-    case Actions.CloseLauncherMenu:
-      return launcherMenus.filter(menu => menu.menuId !== action.payload.menuId)
-
-    case Actions.LoadScene: {
-      return action.payload.state.launcherMenus
-    }
-
-    default:
-      return launcherMenus
   }
 }

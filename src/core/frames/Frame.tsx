@@ -8,7 +8,7 @@ import {
   manipulateFrame,
   sendFrameToBack,
 } from "../redux/actions"
-import { FrameEntry, FrameId, FrameSituationUpdate } from "../scenes/interfaces"
+import { FrameEntry, FrameId, FrameSituationUpdate } from "../types"
 import styled from "styled-components"
 import { contentBlockRegister } from "../../contentblocks/content-block-register"
 import { FrameContextProps } from "./types"

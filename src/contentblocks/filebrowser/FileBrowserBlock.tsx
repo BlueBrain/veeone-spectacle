@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
-import fileService from "../../veedrive/service"
+import fileService from "../../veedrive"
 import { VeeDriveSearchFileSystemRequest } from "../../veedrive/types"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import _ from "lodash"
@@ -19,7 +19,7 @@ import {
 import { ContentBlockProps } from "../types"
 import { useDispatch, useSelector } from "react-redux"
 import { updateFrameData } from "../../core/redux/actions"
-import { FrameEntry, SceneStateData } from "../../core/scenes/interfaces"
+import { FrameEntry, SpectaclePresentation } from "../../core/types"
 import { getFrame } from "../../core/redux/selectors"
 import {
   FileBrowserContext,
@@ -100,7 +100,7 @@ async function* newFilesystemSearch(
 const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const dispatch = useDispatch()
 
-  const frameData = (useSelector<SceneStateData>(state =>
+  const frameData = (useSelector<SpectaclePresentation>(state =>
     getFrame(state, frameId)
   ) as unknown) as FrameEntry
 

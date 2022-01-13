@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useRef } from "react"
-import { Position, Situation, Size } from "../common/types"
+import React, { useCallback, useContext, useEffect, useRef } from "react"
+import { Position, Size } from "../common/types"
 import { useDispatch } from "react-redux"
-import { addFrame, closeLauncherMenu } from "../core/redux/actions"
+import { addFrame } from "../core/redux/actions"
 import LauncherPrimaryMenu from "./LauncherPrimaryMenu"
 import { LauncherMenuAction } from "./launcher-menu-actions"
 import { ContentBlockTypes } from "../contentblocks/types"
@@ -10,10 +10,12 @@ import { config } from "../config"
 import { styled } from "@mui/material/styles"
 import interact from "interactjs"
 import { makeFramePositionSafe } from "../core/frames/makeFramePositionSafe"
+import { SpectacleContext } from "../core/spectacle/SpectacleContext"
 
 interface LauncherMenuProps {
   menuId: string
   position: Position
+  onClose: (args: CloseLauncherMenuArgs) => void
 }
 
 const StyledLauncherMenuWrapper = styled("div")`
@@ -51,13 +53,22 @@ interface OpenNewFrameArgs {
   size: Size
 }
 
-const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
+export interface CloseLauncherMenuArgs {
+  menuId: string
+}
+
+const LauncherMenu: React.FC<LauncherMenuProps> = ({
+  menuId,
+  position,
+  onClose,
+}) => {
   const mainRef = useRef()
   const dispatch = useDispatch()
+  const spectacleContext = useContext(SpectacleContext)
 
   const close = useCallback(() => {
-    dispatch(closeLauncherMenu({ menuId }))
-  }, [dispatch, menuId])
+    onClose({ menuId })
+  }, [menuId, onClose])
 
   useEffect(() => {
     interact(mainRef.current).on("doubletap", () => {
@@ -106,11 +117,18 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({ menuId, position }) => {
         })
         break
       }
-      case LauncherMenuAction.OpenSampleVimeo: {
-        openNewFrameFromLauncher({
-          type: ContentBlockTypes.Vimeo,
-          size: { width: 800, height: 400 },
+      case LauncherMenuAction.SavePresentation: {
+        spectacleContext.savePresentation.openModal({
+          position: { ...position },
         })
+        close()
+        break
+      }
+      case LauncherMenuAction.LoadPresentation: {
+        spectacleContext.loadPresentation.openModal({
+          position: { ...position },
+        })
+        close()
         break
       }
       default: {

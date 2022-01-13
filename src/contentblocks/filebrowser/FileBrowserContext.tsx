@@ -1,5 +1,5 @@
 import React from "react"
-import { FrameId } from "../../core/scenes/interfaces"
+import { FrameId } from "../../core/types"
 import { FileBrowserViewTypes } from "./types"
 
 export interface FileBrowserContextProps {

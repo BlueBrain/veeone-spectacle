@@ -8,6 +8,9 @@ const VeeDriveConfig = {
     requestImage: "RequestImage",
     searchFiles: "Search",
     searchResults: "SearchResult",
+    savePresentation: "SavePresentation",
+    listPresentations: "ListPresentations",
+    getPresentation: "GetPresentation",
   },
   minSearchQueryLength: 3,
 }

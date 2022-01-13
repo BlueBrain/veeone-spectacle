@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef } from "react"
 import { debounce } from "lodash"
 import { Situation } from "../../common/types"
 import interact from "interactjs"
-import { FrameSituation, FrameSituationUpdate } from "../scenes/interfaces"
+import { FrameSituation, FrameSituationUpdate } from "../types"
 import { config } from "../../config"
 import { GestureEvent } from "@interactjs/types"
 
@@ -211,8 +211,11 @@ export const useInteractiveFrame = ({
               deltaTop = -deltaWidth / aspectRatio
             }
 
+            let nodeLongSide = Math.max(nodeWidth, nodeHeight)
+
             if (
-              Math.max(nodeWidth, nodeHeight) === config.MINIMUM_FRAME_LONG_SIDE
+              nodeLongSide <= config.MINIMUM_FRAME_LONG_SIDE ||
+              nodeLongSide >= config.MAXIMUM_FRAME_LONG_SIDE
             ) {
               deltaTop = 0
               deltaLeft = 0

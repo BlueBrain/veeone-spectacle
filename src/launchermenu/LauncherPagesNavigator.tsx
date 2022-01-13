@@ -90,11 +90,6 @@ const PagePrev = () => {
 const LauncherPagesNavigator = () => {
   return (
     <StyledLauncherPagesNavigator>
-      {/*<StyledOptionsBar>*/}
-      {/*  1 of 4 pages*/}
-      {/*  <FontAwesomeIcon icon={faCog} />*/}
-      {/*</StyledOptionsBar>*/}
-
       <StyledSwiper>
         <Swiper
           effect={"coverflow"}
