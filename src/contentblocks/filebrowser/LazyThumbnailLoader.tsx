@@ -15,13 +15,6 @@ const LazyThumbnailLoader: React.FC = ({ children }) => {
       const currentRect = ref.current.getBoundingClientRect()
       const parentRect = scrollableAreaRef.getBoundingClientRect()
       const distance = parentRect.bottom - currentRect.top
-      console.debug(
-        "scroll handler...",
-        currentRect.top,
-        parentRect.bottom,
-        "distance=",
-        distance
-      )
       if (distance > 10) {
         setVisible(true)
       }
@@ -31,7 +24,6 @@ const LazyThumbnailLoader: React.FC = ({ children }) => {
   useEffect(() => {
     const currentReference = ref.current
     if (scrollableAreaRef) {
-      console.debug("Init Lazy loader", currentReference)
       scrollableAreaRef.addEventListener(
         "scroll",
         handleThumbnailVisibility,
@@ -40,7 +32,6 @@ const LazyThumbnailLoader: React.FC = ({ children }) => {
     }
     handleThumbnailVisibility()
     return () => {
-      console.debug("Destroy Lazy loader")
       scrollableAreaRef.removeEventListener("scroll", handleThumbnailVisibility)
     }
   }, [handleThumbnailVisibility, scrollableAreaRef])
