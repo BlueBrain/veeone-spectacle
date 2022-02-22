@@ -1,5 +1,4 @@
-import React, { useContext } from "react"
-import { FileBrowserContext } from "./FileBrowserContext"
+import React from "react"
 import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"

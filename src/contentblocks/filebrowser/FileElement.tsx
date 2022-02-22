@@ -5,6 +5,7 @@ import { BrowserFile } from "../../veedrive/common/models"
 import { FileBrowserContext } from "./FileBrowserContext"
 import { InsertDriveFile } from "@mui/icons-material"
 import useInteractable from "../../core/interactable/useInteractable"
+import LazyThumbnailLoader from "./LazyThumbnailLoader"
 
 interface FileElementProps {
   classes: any
@@ -55,7 +56,9 @@ const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
       <div className={classes.gridTileThumbnail}>
         <div className={classes.gridTileThumbnailBody}>
           {thumbnailUrl ? (
-            <StyledImage src={thumbnailUrl} />
+            <LazyThumbnailLoader>
+              <StyledImage src={thumbnailUrl} />
+            </LazyThumbnailLoader>
           ) : (
             <InsertDriveFile fontSize={"large"} />
           )}

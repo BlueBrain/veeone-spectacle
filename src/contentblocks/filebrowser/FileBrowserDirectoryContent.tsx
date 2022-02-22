@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useRef } from "react"
+import React, { useCallback, useContext, useEffect, useRef } from "react"
 import styled from "styled-components"
 import { FileBrowserContext } from "./FileBrowserContext"
 import { FileBrowserViewTypes } from "./types"
@@ -33,9 +33,12 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
   dirs = [],
   files = [],
 }) => {
-  const { viewType, isSearchingInProgress, frameId } = useContext(
-    FileBrowserContext
-  )
+  const {
+    viewType,
+    isSearchingInProgress,
+    frameId,
+    setScrollableAreaRef,
+  } = useContext(FileBrowserContext)
 
   const displayType = viewType ?? FileBrowserViewTypes.Thumbnails
 
@@ -48,10 +51,23 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
     visualKeyboardService.closeKeyboard(frameId)
   }, [frameId])
 
+  const scrollableContentRef = useRef(null)
+
+  useEffect(() => {
+    const currentRef = scrollableContentRef.current
+    if (currentRef) {
+      setScrollableAreaRef(currentRef)
+    }
+    return () => {
+      setScrollableAreaRef(null)
+    }
+  }, [setScrollableAreaRef])
+
   return (
     <StyledFileBrowserFileList
       onTouchEnd={closeAnyKeyboards}
       onMouseUp={closeAnyKeyboards}
+      ref={scrollableContentRef}
     >
       {isEmpty && !isSearchingInProgress ? (
         <EmptyResults />
