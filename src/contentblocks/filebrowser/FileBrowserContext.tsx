@@ -17,6 +17,7 @@ import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import fileService from "../../veedrive/service"
 import _ from "lodash"
 import { updateFrameData } from "../../core/redux/actions"
+import { FileBrowserSelectionModeContextProvider } from "./FileBrowserSelectionModeContext"
 
 interface FileBrowserContextProviderProps {
   frameId: FrameId
@@ -143,7 +144,9 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
       <FileBrowserSearchContextProvider>
         <FileBrowserFilterContextProvider frameId={frameId}>
           <FileBrowserNavigatorContextProvider frameId={frameId}>
-            {children}
+            <FileBrowserSelectionModeContextProvider>
+              {children}
+            </FileBrowserSelectionModeContextProvider>
           </FileBrowserNavigatorContextProvider>
         </FileBrowserFilterContextProvider>
       </FileBrowserSearchContextProvider>

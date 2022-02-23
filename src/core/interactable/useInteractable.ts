@@ -1,14 +1,21 @@
-import { ReactElement, RefObject, useEffect } from "react"
+import { RefObject, useEffect } from "react"
 import interact from "interactjs"
 
-const useInteractable = (ref: RefObject<any>, { onTap }) => {
+const useInteractable = (ref: RefObject<any>, { onTap, onHold }) => {
   useEffect(() => {
     const target = ref.current
-    interact(target).on("tap", onTap)
+    if (target) {
+      if (onTap) {
+        interact(target).on("tap", onTap)
+      }
+      if (onHold) {
+        interact(target).on("hold", onHold)
+      }
+    }
     return () => {
       interact(target).unset()
     }
-  }, [onTap, ref])
+  }, [onHold, onTap, ref])
 }
 
 export default useInteractable

@@ -37,12 +37,10 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
 }) => {
   const { frameId, viewType } = useFileBrowser()
   const { setScrollableAreaRef } = useFileBrowserNavigator()
-
   const { isSearchingInProgress } = useFileBrowserSearch()
-
   const displayType = viewType ?? FileBrowserViewTypes.Thumbnails
-
   const isEmpty = !dirs.length && !files.length
+  const scrollableContentRef = useRef(null)
 
   const closeAnyKeyboards = useCallback(() => {
     console.debug(
@@ -50,8 +48,6 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
     )
     visualKeyboardService.closeKeyboard(frameId)
   }, [frameId])
-
-  const scrollableContentRef = useRef(null)
 
   useEffect(() => {
     const currentRef = scrollableContentRef.current
