@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import fileService from "../../veedrive"
 import { BrowserFile } from "../../veedrive/common/models"
-import { FileBrowserContext, useFileBrowser } from "./FileBrowserContext"
+import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { InsertDriveFile } from "@mui/icons-material"
 import useInteractable from "../../core/interactable/useInteractable"
 import LazyThumbnailLoader from "./LazyThumbnailLoader"
@@ -21,7 +21,7 @@ const StyledImage = styled.img`
 
 const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
   const [thumbnailUrl, setThumbnailUrl] = useState("")
-  const { requestFile } = useFileBrowser()
+  const { requestFile } = useFileBrowserNavigator()
 
   useEffect(() => {
     let isMounted = true

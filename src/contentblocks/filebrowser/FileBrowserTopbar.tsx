@@ -7,7 +7,7 @@ import {
   Home,
   Search,
 } from "@mui/icons-material"
-import { useFileBrowser } from "./FileBrowserContext"
+import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import BrowsingHistorySelector from "./BrowsingHistorySelector"
 import ViewTypeSelector from "./ViewTypeSelector"
 import SearchFilesBar from "./SearchFilesBar"
@@ -15,18 +15,17 @@ import FiltersSelector from "./FiltersSelector"
 import PathParts from "./PathParts"
 import FrameControlBar from "../../core/frames/FrameControlBar"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
+import { useFileBrowser } from "./FileBrowserContext"
 
 const FileBrowserTopbar: React.FC = () => {
+  const { history, historyIndex, activePath } = useFileBrowser()
   const {
     openDirectoryByPathPartIndex,
-    activePath,
-    history,
-    historyIndex,
     navigateBack,
     navigateForward,
     navigateUp,
     navigateDirectory,
-  } = useFileBrowser()
+  } = useFileBrowserNavigator()
 
   const { searchMode, setSearchMode } = useFileBrowserSearch()
 

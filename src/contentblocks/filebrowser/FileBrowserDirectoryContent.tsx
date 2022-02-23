@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react"
 import styled from "styled-components"
-import { useFileBrowser } from "./FileBrowserContext"
+import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { FileBrowserViewTypes } from "./types"
 import DirectoryThumbnails from "./DirectoryThumbnails"
 import DirectoryList from "./DirectoryList"
@@ -8,6 +8,7 @@ import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import EmptyResults from "./EmptyResults"
 import { visualKeyboardService } from "../../visualkeyboard"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
+import { useFileBrowser } from "./FileBrowserContext"
 
 interface Props {
   files: BrowserFile[]
@@ -34,7 +35,8 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
   dirs = [],
   files = [],
 }) => {
-  const { viewType, frameId, setScrollableAreaRef } = useFileBrowser()
+  const { frameId, viewType } = useFileBrowser()
+  const { setScrollableAreaRef } = useFileBrowserNavigator()
 
   const { isSearchingInProgress } = useFileBrowserSearch()
 

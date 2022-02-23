@@ -1,7 +1,8 @@
 import React from "react"
 import styled from "styled-components"
-import { useFileBrowser } from "./FileBrowserContext"
+import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { Button, Grid } from "@mui/material"
+import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 
 const StyledFooter = styled.div`
   font-size: 0.8rem;
@@ -12,12 +13,8 @@ const StyledFooter = styled.div`
 interface FileBrowserFooterProps {}
 
 const FileBrowserFooter: React.FC<FileBrowserFooterProps> = () => {
-  const {
-    nameFilterQuery,
-    filterByName,
-    totalFilesCount,
-    hiddenFilesCount,
-  } = useFileBrowser()
+  const { totalFilesCount, hiddenFilesCount } = useFileBrowserNavigator()
+  const { nameFilterQuery, filterByName } = useFileBrowserFilter()
 
   const clearFilters = () => {
     filterByName("")

@@ -3,12 +3,13 @@ import React, { useContext, useEffect } from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import { ContentBlockProps } from "../types"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { FileBrowserNavigatorContext } from "./FileBrowserNavigatorContext"
 import FileBrowserFooter from "./FileBrowserFooter"
 import { FrameContext } from "../../core/frames"
 import FileSystemBusyIndicator from "./FileSystemBusyIndicator"
 import FileBrowserBackgroundProgressIndicator from "./FileBrowserBackgroundProgressIndicator"
-import { FileBrowserBlockContextWrapper } from "./FileBrowserBlockContextWrapper"
+import { FileBrowserContextProvider } from "./FileBrowserContext"
+import { FileBrowserFilterContext } from "./FileBrowserFilterContext"
 
 const StyledFileBrowserBlock = styled.div`
   background: #fafafa;
@@ -39,29 +40,33 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   }, [frameContext])
 
   return (
-    <FileBrowserBlockContextWrapper frameId={frameId}>
+    <FileBrowserContextProvider frameId={frameId}>
       <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
-        <FileBrowserContext.Consumer>
-          {({ isLoading, filteredDirs, filteredFiles }) => (
-            <StyledBlockContent>
-              <FileBrowserTopbar />
-              <FileBrowserBackgroundProgressIndicator />
-              <StyledMain>
-                {!isLoading ? (
-                  <FileBrowserDirectoryContent
-                    dirs={filteredDirs}
-                    files={filteredFiles}
-                  />
-                ) : (
-                  <FileSystemBusyIndicator />
-                )}
-              </StyledMain>
-              {!isLoading ? <FileBrowserFooter /> : null}
-            </StyledBlockContent>
+        <FileBrowserNavigatorContext.Consumer>
+          {({ isLoading }) => (
+            <FileBrowserFilterContext.Consumer>
+              {({ filteredDirs, filteredFiles }) => (
+                <StyledBlockContent>
+                  <FileBrowserTopbar />
+                  <FileBrowserBackgroundProgressIndicator />
+                  <StyledMain>
+                    {!isLoading ? (
+                      <FileBrowserDirectoryContent
+                        dirs={filteredDirs}
+                        files={filteredFiles}
+                      />
+                    ) : (
+                      <FileSystemBusyIndicator />
+                    )}
+                  </StyledMain>
+                  {!isLoading ? <FileBrowserFooter /> : null}
+                </StyledBlockContent>
+              )}
+            </FileBrowserFilterContext.Consumer>
           )}
-        </FileBrowserContext.Consumer>
+        </FileBrowserNavigatorContext.Consumer>
       </StyledFileBrowserBlock>
-    </FileBrowserBlockContextWrapper>
+    </FileBrowserContextProvider>
   )
 }
 

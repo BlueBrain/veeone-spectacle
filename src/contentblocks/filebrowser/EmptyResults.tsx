@@ -2,9 +2,10 @@ import React from "react"
 import { Button, IconButton, Tooltip } from "@mui/material"
 import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
-import { useFileBrowser } from "./FileBrowserContext"
+import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { ArrowUpward } from "@mui/icons-material"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
+import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -23,13 +24,15 @@ const useStyles = makeStyles(theme =>
 )
 const EmptyResults: React.FC = () => {
   const {
-    nameFilterQuery,
     filterByName,
+    nameFilterQuery,
+    displayAllHiddenFiles,
+  } = useFileBrowserFilter()
+  const {
     totalFilesCount,
     hiddenFilesCount,
-    displayAllHiddenFiles,
     navigateUp,
-  } = useFileBrowser()
+  } = useFileBrowserNavigator()
 
   const { searchQuery, searchMode, requestSearch } = useFileBrowserSearch()
 

@@ -7,10 +7,10 @@ import {
   Typography,
 } from "@mui/material"
 import { Clear, Search } from "@mui/icons-material"
-import { useFileBrowser } from "./FileBrowserContext"
+import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 
 const NameFilterMenuItem: React.FC = () => {
-  const { nameFilterQuery, filterByName } = useFileBrowser()
+  const { nameFilterQuery, filterByName } = useFileBrowserFilter()
   const [isFilterActive, setIsFilterActive] = useState<boolean>(false)
   const isFilteringByNameActive = isFilterActive || nameFilterQuery.length > 0
 

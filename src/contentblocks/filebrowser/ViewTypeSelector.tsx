@@ -1,8 +1,8 @@
 import React from "react"
 import { IconButton, Tooltip } from "@mui/material"
 import { ViewColumn, ViewComfy } from "@mui/icons-material"
-import { useFileBrowser } from "./FileBrowserContext"
 import { FileBrowserViewTypes } from "./types"
+import { useFileBrowser } from "./FileBrowserContext"
 
 const VIEW_TYPES = {
   [FileBrowserViewTypes.Thumbnails]: {

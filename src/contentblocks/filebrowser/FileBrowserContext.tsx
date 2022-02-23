@@ -1,76 +1,39 @@
 import React, {
+  createContext,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react"
+import { FileBrowserSearchContextProvider } from "./FileBrowserSearchContext"
 import { FrameEntry, FrameId, SpectaclePresentation } from "../../core/types"
-import { FileBrowserBlockPayload, FileBrowserViewTypes } from "./types"
-import { updateFrameData } from "../../core/redux/actions"
+import { FileBrowserNavigatorContextProvider } from "./FileBrowserNavigatorContext"
+import { FileBrowserFilterContextProvider } from "./FileBrowserFilterContext"
 import { useDispatch, useSelector } from "react-redux"
-import { fileOpenerService } from "../../file-opener"
 import { getFrame } from "../../core/redux/selectors"
-import VeeDriveConfig from "../../veedrive/config"
-import {
-  BrowserContents,
-  BrowserDirectory,
-  BrowserFile,
-} from "../../veedrive/common/models"
-import { delay } from "../../common/asynchronous"
-import _ from "lodash"
+import { FileBrowserBlockPayload, FileBrowserViewTypes } from "./types"
+import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import fileService from "../../veedrive/service"
-import { VeeDriveSearchFileSystemRequest } from "../../veedrive/types"
-import {
-  FileBrowserSearchContextProvider,
-  useFileBrowserSearch,
-} from "./FileBrowserSearchContext"
-//
-// const SEARCH_QUERY_CHANGE_DEBOUNCE_MS = 500
-// const SEARCH_RESULTS_FETCH_INTERVAL_MS = 1000
-
-type FilterableElement = BrowserFile | BrowserDirectory
-
-type FilterFunction = (element: FilterableElement) => boolean
-
-export interface FileBrowserContextProps {
-  frameId?: FrameId
-  activePath: string
-  historyIndex: number
-  history: string[]
-  viewType: FileBrowserViewTypes
-  isShowingUnsupportedFiles: boolean
-  isShowingHiddenFiles: boolean
-  toggleShowHiddenFilesFilter(): void
-  toggleShowUnsupportedFilesFilter(): void
-  resetFilters(): void
-  navigateUp(): void
-  navigateBack(): void
-  navigateForward(): void
-  navigateToIndex(historyIndex: number): void
-  navigateDirectory(dirPath: string): void
-  requestFile(fileName: string): void
-  changeViewType(newViewType: FileBrowserViewTypes): void
-  // searchModeOn: boolean
-  // searchQuery: string
-  // setSearchMode(enabled: boolean): void
-  // requestSearch(query: string): void
-  nameFilterQuery: string
-  filterByName(query: string): void
-  hiddenFilesCount: number
-  totalFilesCount: number
-  displayAllHiddenFiles(): void
-  // isSearchingInProgress: boolean
-  scrollableAreaRef: HTMLElement
-  setScrollableAreaRef(HTMLElement): void
-  openDirectoryByPathPartIndex(pathPartIndex: number): void
-  isLoading: boolean
-  filteredFiles: BrowserFile[]
-  filteredDirs: BrowserDirectory[]
-}
+import _ from "lodash"
+import { updateFrameData } from "../../core/redux/actions"
 
 interface FileBrowserContextProviderProps {
   frameId: FrameId
+}
+
+interface FileBrowserContextProps {
+  frameId: FrameId
+  activePath: string
+  activePathFiles: BrowserFile[]
+  activePathDirs: BrowserDirectory[]
+  pathLoaded: string | null
+  history: string[]
+  historyIndex: number
+  isShowingUnsupportedFiles: boolean
+  isShowingHiddenFiles: boolean
+  viewType: FileBrowserViewTypes
+  changeViewType(newViewType: FileBrowserViewTypes): void
 }
 
 const fetchDirectoryContents = async dirPath => {
@@ -97,19 +60,12 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
   frameId,
   children,
 }) => {
-  const {
-    setSearchMode,
-    searchMode,
-    shouldDisplaySearchResults,
-    searchResults,
-  } = useFileBrowserSearch()
   const dispatch = useDispatch()
 
   const frameData = (useSelector<SpectaclePresentation>(state =>
     getFrame(state, frameId)
   ) as unknown) as FrameEntry
 
-  const situation = frameData.situation
   const blockData = (frameData.data as unknown) as FileBrowserBlockPayload
   const history = useMemo(() => blockData?.history ?? [""], [
     blockData?.history,
@@ -120,11 +76,10 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
   const activePath = history[historyIndex]
   const viewType = blockData?.viewType ?? FileBrowserViewTypes.Thumbnails
 
-  // View filters
   const isShowingUnsupportedFiles =
     blockData?.isShowingUnsupportedFiles ?? false
   const isShowingHiddenFiles = blockData?.isShowingHiddenFiles ?? false
-  const nameFilterQuery = blockData?.nameFilterQuery ?? ""
+
   const [pathLoaded, setPathLoaded] = useState<string | null>(null)
   const [activePathFiles, setActivePathFiles] = useState([] as BrowserFile[])
   const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
@@ -140,74 +95,6 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
     setActivePathFiles(files)
   }, [activePath])
 
-  useEffect(() => {
-    void initializeTree()
-  }, [initializeTree, activePath])
-
-  const addToBrowsingHistory = useCallback(
-    dirPath => {
-      const recentPath = history.length > 0 ? history[historyIndex] : ""
-      if (dirPath === recentPath) {
-        return
-      }
-      const newHistory = [dirPath, ...history.slice(historyIndex)]
-      const newHistoryIndex = 0
-      const newFrameData: FileBrowserBlockPayload = {
-        history: newHistory,
-        historyIndex: newHistoryIndex,
-      }
-      console.debug("addToBrowsingHistory", newFrameData)
-      dispatch(updateFrameData(frameId, newFrameData))
-    },
-    [dispatch, frameId, history, historyIndex]
-  )
-
-  const openParentDirectory = useCallback(async () => {
-    const upperPath = activePath.split("/").slice(0, -1).join("/")
-    addToBrowsingHistory(upperPath)
-  }, [activePath, addToBrowsingHistory])
-
-  const openDirectoryByPathPartIndex = useMemo(
-    () => async (pathPartIndex: number) => {
-      const path = activePath.split("/").slice(0, pathPartIndex).join("/")
-      return addToBrowsingHistory(path)
-    },
-    [activePath, addToBrowsingHistory]
-  )
-
-  const setBrowsingHistoryIndex = useCallback(
-    async (newIndex: number) => {
-      let newHistoryIndex = newIndex
-      if (newHistoryIndex + 1 >= history.length) {
-        newHistoryIndex = history.length - 1
-      }
-      const newFrameData: FileBrowserBlockPayload = {
-        history: history,
-        historyIndex: newHistoryIndex,
-      }
-      dispatch(updateFrameData(frameId, newFrameData))
-    },
-    [dispatch, frameId, history]
-  )
-
-  const moveBrowsingHistoryIndex = useCallback(
-    async (delta: number) => {
-      let newHistoryIndex = historyIndex + delta
-      if (newHistoryIndex < 0) {
-        newHistoryIndex = 0
-      }
-      if (newHistoryIndex + 1 >= history.length) {
-        newHistoryIndex = history.length - 1
-      }
-      const newFrameData: FileBrowserBlockPayload = {
-        history: history,
-        historyIndex: newHistoryIndex,
-      }
-      dispatch(updateFrameData(frameId, newFrameData))
-    },
-    [dispatch, frameId, history, historyIndex]
-  )
-
   const changeViewType = useCallback(
     async (newType: FileBrowserViewTypes) => {
       const newFrameData = {
@@ -218,215 +105,37 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
     [dispatch, frameId]
   )
 
-  const openPreviousDirectory = useCallback(async () => {
-    await moveBrowsingHistoryIndex(1)
-  }, [moveBrowsingHistoryIndex])
+  useEffect(() => {
+    void initializeTree()
+  }, [initializeTree, activePath])
 
-  const openNextDirectory = useCallback(async () => {
-    await moveBrowsingHistoryIndex(-1)
-  }, [moveBrowsingHistoryIndex])
-
-  const openFile = useCallback(
-    async (filePath: string) => {
-      console.debug(`Requesting ${filePath} from frame=${frameId}`)
-      await fileOpenerService.handleFile(filePath, {
-        left: situation.left + situation.width / 2,
-        top: situation.top + situation.height / 2,
-      })
-    },
-    [frameId, situation.height, situation.left, situation.top, situation.width]
-  )
-
-  const hiddenFileOrDirectoryFilter: FilterFunction = useCallback(
-    element => isShowingHiddenFiles || !element.name.startsWith("."),
-    [isShowingHiddenFiles]
-  )
-
-  const supportedContentFilter: FilterFunction = useCallback(
-    element =>
-      isShowingUnsupportedFiles ||
-      fileOpenerService.doesSupportFileExtension(element.name.split(".").pop()),
-    [isShowingUnsupportedFiles]
-  )
-
-  const nameFilter: FilterFunction = useCallback(
-    element =>
-      element.name.toLowerCase().includes(nameFilterQuery.toLowerCase()),
-    [nameFilterQuery]
-  )
-
-  const combinedFileFilter: FilterFunction = useCallback(
-    element =>
-      hiddenFileOrDirectoryFilter(element) &&
-      supportedContentFilter(element) &&
-      nameFilter(element),
-    [hiddenFileOrDirectoryFilter, supportedContentFilter, nameFilter]
-  )
-
-  const combinedDirFilter: FilterFunction = useCallback(
-    element => hiddenFileOrDirectoryFilter(element) && nameFilter(element),
-    [hiddenFileOrDirectoryFilter, nameFilter]
-  )
-
-  const filteredFiles = useMemo(
-    () =>
-      (shouldDisplaySearchResults
-        ? searchResults.files
-        : activePathFiles
-      ).filter(combinedFileFilter),
-    [
-      shouldDisplaySearchResults,
-      activePathFiles,
-      searchResults.files,
-      combinedFileFilter,
-    ]
-  )
-
-  const filteredDirs = useMemo(
-    () =>
-      (shouldDisplaySearchResults
-        ? searchResults.directories
-        : activePathDirs
-      ).filter(combinedDirFilter),
-    [
-      shouldDisplaySearchResults,
-      activePathDirs,
-      combinedDirFilter,
-      searchResults.directories,
-    ]
-  )
-
-  const totalFilesCount = useMemo<number>(
-    () =>
-      shouldDisplaySearchResults
-        ? searchResults.files.length
-        : activePathFiles.length,
-    [activePathFiles, searchResults.files, shouldDisplaySearchResults]
-  )
-  const hiddenFilesCount = useMemo(
-    () => totalFilesCount - filteredFiles.length,
-    [filteredFiles.length, totalFilesCount]
-  )
-
-  const isLoading = !searchMode && activePath !== pathLoaded
-
-  const [scrollableAreaRef, setScrollableAreaRef] = useState(null)
-
-  const providerValue: FileBrowserContextProps = useMemo(
-    () => ({
-      frameId: frameId,
-      activePath: activePath,
-      historyIndex: historyIndex,
-      history: history,
-      viewType: viewType,
-      isShowingHiddenFiles: isShowingHiddenFiles,
-      isShowingUnsupportedFiles: isShowingUnsupportedFiles,
-      navigateUp() {
-        void openParentDirectory()
-      },
-      navigateBack() {
-        void openPreviousDirectory()
-      },
-      navigateForward() {
-        void openNextDirectory()
-      },
-      navigateToIndex(historyIndex: number) {
-        void setBrowsingHistoryIndex(historyIndex)
-      },
-      navigateDirectory(dirPath: string) {
-        setSearchMode(false)
-        void addToBrowsingHistory(dirPath)
-      },
-      openDirectoryByPathPartIndex,
-      requestFile(fileName: string) {
-        void openFile(fileName)
-      },
-      changeViewType(newViewType: FileBrowserViewTypes) {
-        void changeViewType(newViewType)
-      },
-      toggleShowHiddenFilesFilter: () => {
-        dispatch(
-          updateFrameData(frameId, {
-            isShowingHiddenFiles: !isShowingHiddenFiles,
-          } as FileBrowserBlockPayload)
-        )
-      },
-      toggleShowUnsupportedFilesFilter: () => {
-        dispatch(
-          updateFrameData(frameId, {
-            isShowingUnsupportedFiles: !isShowingUnsupportedFiles,
-          } as FileBrowserBlockPayload)
-        )
-      },
-      nameFilterQuery: nameFilterQuery,
-      filterByName(query: string) {
-        dispatch(
-          updateFrameData(frameId, {
-            nameFilterQuery: query,
-          } as FileBrowserBlockPayload)
-        )
-      },
-      resetFilters() {
-        dispatch(
-          updateFrameData(frameId, {
-            nameFilterQuery: "",
-            isShowingHiddenFiles: false,
-            isShowingUnsupportedFiles: false,
-          } as FileBrowserBlockPayload)
-        )
-      },
-      totalFilesCount: totalFilesCount,
-      hiddenFilesCount: hiddenFilesCount,
-      displayAllHiddenFiles() {
-        dispatch(
-          updateFrameData(frameId, {
-            isShowingHiddenFiles: true,
-            isShowingUnsupportedFiles: true,
-          } as FileBrowserBlockPayload)
-        )
-      },
-      scrollableAreaRef,
-      setScrollableAreaRef,
-      isLoading,
-      filteredFiles,
-      filteredDirs,
-    }),
-    [
-      frameId,
-      activePath,
-      historyIndex,
-      history,
-      viewType,
-      isShowingHiddenFiles,
-      isShowingUnsupportedFiles,
-      openDirectoryByPathPartIndex,
-      nameFilterQuery,
-      totalFilesCount,
-      hiddenFilesCount,
-      scrollableAreaRef,
-      isLoading,
-      filteredFiles,
-      filteredDirs,
-      openParentDirectory,
-      openPreviousDirectory,
-      openNextDirectory,
-      setBrowsingHistoryIndex,
-      addToBrowsingHistory,
-      openFile,
-      changeViewType,
-      dispatch,
-    ]
-  )
+  const providerValue = {
+    frameId,
+    activePath,
+    activePathFiles,
+    activePathDirs,
+    history,
+    historyIndex,
+    isShowingUnsupportedFiles,
+    isShowingHiddenFiles,
+    viewType,
+    changeViewType,
+    pathLoaded,
+  }
 
   return (
     <FileBrowserContext.Provider value={providerValue}>
-      {children}
+      <FileBrowserSearchContextProvider>
+        <FileBrowserFilterContextProvider frameId={frameId}>
+          <FileBrowserNavigatorContextProvider frameId={frameId}>
+            {children}
+          </FileBrowserNavigatorContextProvider>
+        </FileBrowserFilterContextProvider>
+      </FileBrowserSearchContextProvider>
     </FileBrowserContext.Provider>
   )
 }
 
-export const FileBrowserContext = React.createContext<FileBrowserContextProps>(
-  null
-)
+export const FileBrowserContext = createContext<FileBrowserContextProps>(null)
 
 export const useFileBrowser = () => useContext(FileBrowserContext)

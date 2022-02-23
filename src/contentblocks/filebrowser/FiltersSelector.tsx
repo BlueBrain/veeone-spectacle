@@ -10,17 +10,18 @@ import {
 } from "@mui/material"
 import { Check, FilterList } from "@mui/icons-material"
 import React, { useState } from "react"
-import { useFileBrowser } from "./FileBrowserContext"
 import NameFilterMenuItem from "./NameFilterMenuItem"
+import { useFileBrowser } from "./FileBrowserContext"
+import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 
 const FiltersSelector: React.FC = () => {
+  const { isShowingHiddenFiles, isShowingUnsupportedFiles } = useFileBrowser()
   const {
-    isShowingHiddenFiles,
-    isShowingUnsupportedFiles,
     toggleShowHiddenFilesFilter,
     toggleShowUnsupportedFilesFilter,
     nameFilterQuery,
-  } = useFileBrowser()
+  } = useFileBrowserFilter()
+
   const [
     viewTypeAnchorElement,
     setViewTypeAnchorElement,
