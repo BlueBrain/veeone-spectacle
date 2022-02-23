@@ -51,6 +51,9 @@ export interface FileBrowserContextProps {
   displayAllHiddenFiles(): void
 
   isSearchingInProgress: boolean
+
+  scrollableAreaRef: HTMLElement
+  setScrollableAreaRef(HTMLElement): void
 }
 
 export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
@@ -108,4 +111,8 @@ export const FileBrowserContext = React.createContext<FileBrowserContextProps>({
     throw new Error("Not implemented")
   },
   isSearchingInProgress: false,
+  scrollableAreaRef: null,
+  setScrollableAreaRef() {
+    throw new Error("Not implemented")
+  },
 })

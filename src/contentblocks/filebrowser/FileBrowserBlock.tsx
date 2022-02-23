@@ -362,6 +362,8 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
 
   const isLoading = !searchMode && activePath !== pathLoaded
 
+  const [scrollableAreaRef, setScrollableAreaRef] = useState(null)
+
   const fileBrowserContextProvider: FileBrowserContextProps = useMemo(
     () => ({
       frameId: frameId,
@@ -443,29 +445,32 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
         )
       },
       isSearchingInProgress,
+      scrollableAreaRef,
+      setScrollableAreaRef,
     }),
     [
-      activePath,
-      addToBrowsingHistory,
-      changeViewType,
-      dispatch,
       frameId,
-      hiddenFilesCount,
-      history,
+      activePath,
       historyIndex,
+      history,
+      viewType,
       isShowingHiddenFiles,
       isShowingUnsupportedFiles,
-      nameFilterQuery,
-      openFile,
-      openNextDirectory,
-      openParentDirectory,
-      openPreviousDirectory,
       searchMode,
       searchQuery,
-      setBrowsingHistoryIndex,
+      nameFilterQuery,
       totalFilesCount,
-      viewType,
+      hiddenFilesCount,
       isSearchingInProgress,
+      scrollableAreaRef,
+      openParentDirectory,
+      openPreviousDirectory,
+      openNextDirectory,
+      setBrowsingHistoryIndex,
+      addToBrowsingHistory,
+      openFile,
+      changeViewType,
+      dispatch,
     ]
   )
 
