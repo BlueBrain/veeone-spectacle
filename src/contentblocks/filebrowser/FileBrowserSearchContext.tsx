@@ -107,19 +107,28 @@ export const FileBrowserSearchContextProvider: React.FC = ({ children }) => {
   const shouldDisplaySearchResults =
     searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
 
-  const providerValue: FileBrowserSearchContextProps = {
-    searchMode,
-    searchQuery,
-    searchResults,
-    shouldDisplaySearchResults,
-    isSearchingInProgress,
-    setSearchMode(enabled: boolean) {
-      setSearchMode(enabled)
-    },
-    async requestSearch(query: string) {
-      setSearchQuery(query)
-    },
+  const requestSearch = async (query: string) => {
+    setSearchQuery(query)
   }
+
+  const providerValue: FileBrowserSearchContextProps = useMemo(
+    () => ({
+      searchMode,
+      searchQuery,
+      searchResults,
+      shouldDisplaySearchResults,
+      isSearchingInProgress,
+      setSearchMode,
+      requestSearch,
+    }),
+    [
+      isSearchingInProgress,
+      searchMode,
+      searchQuery,
+      searchResults,
+      shouldDisplaySearchResults,
+    ]
+  )
 
   return (
     <FileBrowserSearchContext.Provider value={providerValue}>

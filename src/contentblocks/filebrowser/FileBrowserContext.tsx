@@ -109,19 +109,34 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
     void initializeTree()
   }, [initializeTree, activePath])
 
-  const providerValue = {
-    frameId,
-    activePath,
-    activePathFiles,
-    activePathDirs,
-    history,
-    historyIndex,
-    isShowingUnsupportedFiles,
-    isShowingHiddenFiles,
-    viewType,
-    changeViewType,
-    pathLoaded,
-  }
+  const providerValue = useMemo(
+    () => ({
+      frameId,
+      activePath,
+      activePathFiles,
+      activePathDirs,
+      history,
+      historyIndex,
+      isShowingUnsupportedFiles,
+      isShowingHiddenFiles,
+      viewType,
+      changeViewType,
+      pathLoaded,
+    }),
+    [
+      activePath,
+      activePathDirs,
+      activePathFiles,
+      changeViewType,
+      frameId,
+      history,
+      historyIndex,
+      isShowingHiddenFiles,
+      isShowingUnsupportedFiles,
+      pathLoaded,
+      viewType,
+    ]
+  )
 
   return (
     <FileBrowserContext.Provider value={providerValue}>

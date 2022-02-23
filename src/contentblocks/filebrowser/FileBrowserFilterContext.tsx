@@ -113,51 +113,79 @@ export const FileBrowserFilterContextProvider: React.FC<FileBrowserFilterContext
     ]
   )
 
-  const providerValue: FileBrowserFilterContextProps = {
-    isShowingHiddenFiles,
-    isShowingUnsupportedFiles,
-    filteredFiles,
-    filteredDirs,
-    nameFilterQuery,
-    filterByName(query: string) {
+  const filterByName = useCallback(
+    (query: string) => {
       dispatch(
         updateFrameData(frameId, {
           nameFilterQuery: query,
         } as FileBrowserBlockPayload)
       )
     },
-    resetFilters() {
-      dispatch(
-        updateFrameData(frameId, {
-          nameFilterQuery: "",
-          isShowingHiddenFiles: false,
-          isShowingUnsupportedFiles: false,
-        } as FileBrowserBlockPayload)
-      )
-    },
-    toggleShowHiddenFilesFilter: () => {
-      dispatch(
-        updateFrameData(frameId, {
-          isShowingHiddenFiles: !isShowingHiddenFiles,
-        } as FileBrowserBlockPayload)
-      )
-    },
-    toggleShowUnsupportedFilesFilter: () => {
-      dispatch(
-        updateFrameData(frameId, {
-          isShowingUnsupportedFiles: !isShowingUnsupportedFiles,
-        } as FileBrowserBlockPayload)
-      )
-    },
-    displayAllHiddenFiles() {
-      dispatch(
-        updateFrameData(frameId, {
-          isShowingHiddenFiles: true,
-          isShowingUnsupportedFiles: true,
-        } as FileBrowserBlockPayload)
-      )
-    },
-  }
+    [dispatch, frameId]
+  )
+
+  const resetFilters = useCallback(() => {
+    dispatch(
+      updateFrameData(frameId, {
+        nameFilterQuery: "",
+        isShowingHiddenFiles: false,
+        isShowingUnsupportedFiles: false,
+      } as FileBrowserBlockPayload)
+    )
+  }, [dispatch, frameId])
+
+  const toggleShowHiddenFilesFilter = useCallback(() => {
+    dispatch(
+      updateFrameData(frameId, {
+        isShowingHiddenFiles: !isShowingHiddenFiles,
+      } as FileBrowserBlockPayload)
+    )
+  }, [dispatch, frameId, isShowingHiddenFiles])
+
+  const toggleShowUnsupportedFilesFilter = useCallback(() => {
+    dispatch(
+      updateFrameData(frameId, {
+        isShowingUnsupportedFiles: !isShowingUnsupportedFiles,
+      } as FileBrowserBlockPayload)
+    )
+  }, [dispatch, frameId, isShowingUnsupportedFiles])
+
+  const displayAllHiddenFiles = useCallback(() => {
+    dispatch(
+      updateFrameData(frameId, {
+        isShowingHiddenFiles: true,
+        isShowingUnsupportedFiles: true,
+      } as FileBrowserBlockPayload)
+    )
+  }, [dispatch, frameId])
+
+  const providerValue: FileBrowserFilterContextProps = useMemo(
+    () => ({
+      isShowingHiddenFiles,
+      isShowingUnsupportedFiles,
+      filteredFiles,
+      filteredDirs,
+      nameFilterQuery,
+      filterByName,
+      resetFilters,
+      toggleShowHiddenFilesFilter,
+      toggleShowUnsupportedFilesFilter,
+      displayAllHiddenFiles,
+    }),
+    [
+      displayAllHiddenFiles,
+      filterByName,
+      filteredDirs,
+      filteredFiles,
+      isShowingHiddenFiles,
+      isShowingUnsupportedFiles,
+      nameFilterQuery,
+      resetFilters,
+      toggleShowHiddenFilesFilter,
+      toggleShowUnsupportedFilesFilter,
+    ]
+  )
+
   return (
     <FileBrowserFilterContext.Provider value={providerValue}>
       {children}

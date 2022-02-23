@@ -56,8 +56,9 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
 
   const situation = frameData.situation
 
-  const addToBrowsingHistory = useCallback(
+  const navigateDirectory = useCallback(
     dirPath => {
+      setSearchMode(false)
       const recentPath = history.length > 0 ? history[historyIndex] : ""
       if (dirPath === recentPath) {
         return
@@ -71,23 +72,23 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       console.debug("addToBrowsingHistory", newFrameData)
       dispatch(updateFrameData(frameId, newFrameData))
     },
-    [dispatch, frameId, history, historyIndex]
+    [dispatch, frameId, history, historyIndex, setSearchMode]
   )
 
-  const openParentDirectory = useCallback(async () => {
+  const navigateUp = useCallback(async () => {
     const upperPath = activePath.split("/").slice(0, -1).join("/")
-    addToBrowsingHistory(upperPath)
-  }, [activePath, addToBrowsingHistory])
+    navigateDirectory(upperPath)
+  }, [activePath, navigateDirectory])
 
   const openDirectoryByPathPartIndex = useMemo(
     () => async (pathPartIndex: number) => {
       const path = activePath.split("/").slice(0, pathPartIndex).join("/")
-      return addToBrowsingHistory(path)
+      return navigateDirectory(path)
     },
-    [activePath, addToBrowsingHistory]
+    [activePath, navigateDirectory]
   )
 
-  const setBrowsingHistoryIndex = useCallback(
+  const navigateToIndex = useCallback(
     async (newIndex: number) => {
       let newHistoryIndex = newIndex
       if (newHistoryIndex + 1 >= history.length) {
@@ -120,15 +121,15 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
     [dispatch, frameId, history, historyIndex]
   )
 
-  const openPreviousDirectory = useCallback(async () => {
+  const navigateBack = useCallback(async () => {
     await moveBrowsingHistoryIndex(1)
   }, [moveBrowsingHistoryIndex])
 
-  const openNextDirectory = useCallback(async () => {
+  const navigateForward = useCallback(async () => {
     await moveBrowsingHistoryIndex(-1)
   }, [moveBrowsingHistoryIndex])
 
-  const openFile = useCallback(
+  const requestFile = useCallback(
     async (filePath: string) => {
       console.debug(`Requesting ${filePath} from frame=${frameId}`)
       await fileOpenerService.handleFile(filePath, {
@@ -157,28 +158,15 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
 
   const providerValue: FileBrowserNavigatorContextProps = useMemo(
     () => ({
-      navigateUp() {
-        void openParentDirectory()
-      },
-      navigateBack() {
-        void openPreviousDirectory()
-      },
-      navigateForward() {
-        void openNextDirectory()
-      },
-      navigateToIndex(historyIndex: number) {
-        void setBrowsingHistoryIndex(historyIndex)
-      },
-      navigateDirectory(dirPath: string) {
-        setSearchMode(false)
-        void addToBrowsingHistory(dirPath)
-      },
+      navigateUp,
+      navigateBack,
+      navigateForward,
+      navigateToIndex,
+      navigateDirectory,
       openDirectoryByPathPartIndex,
-      requestFile(fileName: string) {
-        void openFile(fileName)
-      },
-      totalFilesCount: totalFilesCount,
-      hiddenFilesCount: hiddenFilesCount,
+      requestFile,
+      totalFilesCount,
+      hiddenFilesCount,
       scrollableAreaRef,
       setScrollableAreaRef,
       isLoading,
@@ -189,13 +177,12 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       hiddenFilesCount,
       scrollableAreaRef,
       isLoading,
-      openParentDirectory,
-      openPreviousDirectory,
-      openNextDirectory,
-      setBrowsingHistoryIndex,
-      setSearchMode,
-      addToBrowsingHistory,
-      openFile,
+      navigateUp,
+      navigateBack,
+      navigateForward,
+      navigateToIndex,
+      navigateDirectory,
+      requestFile,
     ]
   )
 
