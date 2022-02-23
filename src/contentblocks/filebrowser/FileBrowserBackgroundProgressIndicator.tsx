@@ -1,9 +1,9 @@
-import React, { useContext } from "react"
+import React from "react"
 import { Box, LinearProgress } from "@mui/material"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { useFileBrowser } from "./FileBrowserContext"
 
 const FileBrowserBackgroundProgressIndicator: React.FC = () => {
-  const { isSearchingInProgress } = useContext(FileBrowserContext)
+  const { isSearchingInProgress } = useFileBrowser()
   return (
     <Box
       sx={{

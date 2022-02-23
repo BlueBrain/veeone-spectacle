@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useState } from "react"
 import {
   IconButton,
   ListItemIcon,
@@ -7,10 +7,10 @@ import {
   Typography,
 } from "@mui/material"
 import { Clear, Search } from "@mui/icons-material"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { useFileBrowser } from "./FileBrowserContext"
 
 const NameFilterMenuItem: React.FC = () => {
-  const { nameFilterQuery, filterByName } = useContext(FileBrowserContext)
+  const { nameFilterQuery, filterByName } = useFileBrowser()
   const [isFilterActive, setIsFilterActive] = useState<boolean>(false)
   const isFilteringByNameActive = isFilterActive || nameFilterQuery.length > 0
 

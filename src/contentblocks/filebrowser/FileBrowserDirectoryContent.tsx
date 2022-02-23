@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useEffect, useRef } from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 import styled from "styled-components"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { useFileBrowser } from "./FileBrowserContext"
 import { FileBrowserViewTypes } from "./types"
 import DirectoryThumbnails from "./DirectoryThumbnails"
 import DirectoryList from "./DirectoryList"
@@ -38,7 +38,7 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
     isSearchingInProgress,
     frameId,
     setScrollableAreaRef,
-  } = useContext(FileBrowserContext)
+  } = useFileBrowser()
 
   const displayType = viewType ?? FileBrowserViewTypes.Thumbnails
 

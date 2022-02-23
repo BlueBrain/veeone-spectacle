@@ -1,12 +1,12 @@
-import React, { useContext, useState } from "react"
+import React, { useState } from "react"
 import { IconButton, Menu, MenuItem, Tooltip } from "@mui/material"
 import { History } from "@mui/icons-material"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { useFileBrowser } from "./FileBrowserContext"
 
 interface BrowsingHistorySelectorProps {}
 
 const BrowsingHistorySelector: React.FC<BrowsingHistorySelectorProps> = () => {
-  const { navigateToIndex, history } = useContext(FileBrowserContext)
+  const { navigateToIndex, history } = useFileBrowser()
   const [
     viewTypeAnchorElement,
     setViewTypeAnchorElement,

@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
-import { FileBrowserContext } from "./FileBrowserContext"
+import React, { useEffect, useMemo, useRef, useState } from "react"
+import { useFileBrowser } from "./FileBrowserContext"
 import _ from "lodash"
 import { CircularProgress } from "@mui/material"
 
 const LazyThumbnailLoader: React.FC = ({ children }) => {
-  const { scrollableAreaRef } = useContext(FileBrowserContext)
+  const { scrollableAreaRef } = useFileBrowser()
   const ref = useRef(null)
   const [visible, setVisible] = useState(false)
 

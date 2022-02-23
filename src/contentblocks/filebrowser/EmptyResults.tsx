@@ -1,8 +1,8 @@
-import React, { useContext } from "react"
+import React from "react"
 import { Button, IconButton, Tooltip } from "@mui/material"
 import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { useFileBrowser } from "./FileBrowserContext"
 import { ArrowUpward } from "@mui/icons-material"
 
 const useStyles = makeStyles(theme =>
@@ -31,7 +31,7 @@ const EmptyResults: React.FC = () => {
     hiddenFilesCount,
     displayAllHiddenFiles,
     navigateUp,
-  } = useContext(FileBrowserContext)
+  } = useFileBrowser()
   let message
 
   const classes = useStyles()

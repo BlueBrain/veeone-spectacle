@@ -1,7 +1,7 @@
 import { Folder } from "@mui/icons-material"
-import React, { useContext, useRef } from "react"
-import { FileBrowserContext } from "./FileBrowserContext"
-import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
+import React, { useRef } from "react"
+import { useFileBrowser } from "./FileBrowserContext"
+import { BrowserDirectory } from "../../veedrive/common/models"
 import useInteractable from "../../core/interactable/useInteractable"
 
 interface FolderElementProps {
@@ -9,7 +9,7 @@ interface FolderElementProps {
   dir: BrowserDirectory
 }
 const FolderElement: React.FC<FolderElementProps> = ({ dir, classes }) => {
-  const { navigateDirectory } = useContext(FileBrowserContext)
+  const { navigateDirectory } = useFileBrowser()
   const ref = useRef()
 
   useInteractable(ref, {

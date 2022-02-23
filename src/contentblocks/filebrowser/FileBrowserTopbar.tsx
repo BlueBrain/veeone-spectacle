@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React from "react"
 import { Grid, IconButton, Tooltip } from "@mui/material"
 import {
   ArrowBack,
@@ -7,7 +7,7 @@ import {
   Home,
   Search,
 } from "@mui/icons-material"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { useFileBrowser } from "./FileBrowserContext"
 import BrowsingHistorySelector from "./BrowsingHistorySelector"
 import ViewTypeSelector from "./ViewTypeSelector"
 import SearchFilesBar from "./SearchFilesBar"
@@ -15,12 +15,9 @@ import FiltersSelector from "./FiltersSelector"
 import PathParts from "./PathParts"
 import FrameControlBar from "../../core/frames/FrameControlBar"
 
-interface Props {
-  onSelectPathPart(pathPart: number)
-}
-
-const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
+const FileBrowserTopbar: React.FC = () => {
   const {
+    openDirectoryByPathPartIndex,
     activePath,
     history,
     historyIndex,
@@ -30,7 +27,7 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
     navigateDirectory,
     setSearchMode,
     searchModeOn,
-  } = useContext(FileBrowserContext)
+  } = useFileBrowser()
 
   const navigateHome = () => {
     void navigateDirectory("")
@@ -106,7 +103,10 @@ const FileBrowserTopbar: React.FC<Props> = ({ onSelectPathPart }) => {
           </Grid>
 
           <Grid item xs>
-            <PathParts path={activePath} onSelectPathPart={onSelectPathPart} />
+            <PathParts
+              path={activePath}
+              onSelectPathPart={openDirectoryByPathPartIndex}
+            />
           </Grid>
 
           <Grid item>

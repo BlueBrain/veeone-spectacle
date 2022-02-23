@@ -9,8 +9,8 @@ import {
   Typography,
 } from "@mui/material"
 import { Check, FilterList } from "@mui/icons-material"
-import React, { useContext, useState } from "react"
-import { FileBrowserContext } from "./FileBrowserContext"
+import React, { useState } from "react"
+import { useFileBrowser } from "./FileBrowserContext"
 import NameFilterMenuItem from "./NameFilterMenuItem"
 
 const FiltersSelector: React.FC = () => {
@@ -20,7 +20,7 @@ const FiltersSelector: React.FC = () => {
     toggleShowHiddenFilesFilter,
     toggleShowUnsupportedFilesFilter,
     nameFilterQuery,
-  } = useContext(FileBrowserContext)
+  } = useFileBrowser()
   const [
     viewTypeAnchorElement,
     setViewTypeAnchorElement,

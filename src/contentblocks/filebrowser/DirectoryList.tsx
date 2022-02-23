@@ -4,7 +4,7 @@ import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material"
 import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
 import { Folder, InsertDriveFile } from "@mui/icons-material"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { FileBrowserContext, useFileBrowser } from "./FileBrowserContext"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 
 interface DirectoryListProps {
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme =>
 
 const DirectoryList: React.FC<DirectoryListProps> = ({ dirs, files }) => {
   const classes = useStyles()
-  const { navigateDirectory, requestFile } = useContext(FileBrowserContext)
+  const { navigateDirectory, requestFile } = useFileBrowser()
 
   return (
     <StyledDataGrid>

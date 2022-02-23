@@ -1,6 +1,6 @@
-import React, { useContext } from "react"
+import React from "react"
 import styled from "styled-components"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { useFileBrowser } from "./FileBrowserContext"
 import { Button, Grid } from "@mui/material"
 
 const StyledFooter = styled.div`
@@ -17,7 +17,7 @@ const FileBrowserFooter: React.FC<FileBrowserFooterProps> = () => {
     filterByName,
     totalFilesCount,
     hiddenFilesCount,
-  } = useContext(FileBrowserContext)
+  } = useFileBrowser()
 
   const clearFilters = () => {
     filterByName("")
