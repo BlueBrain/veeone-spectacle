@@ -3,14 +3,12 @@ import React, { useContext, useEffect } from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import FileBrowserTopbar from "./FileBrowserTopbar"
 import { ContentBlockProps } from "../types"
-import {
-  FileBrowserContext,
-  FileBrowserContextProvider,
-} from "./FileBrowserContext"
+import { FileBrowserContext } from "./FileBrowserContext"
 import FileBrowserFooter from "./FileBrowserFooter"
 import { FrameContext } from "../../core/frames"
 import FileSystemBusyIndicator from "./FileSystemBusyIndicator"
 import FileBrowserBackgroundProgressIndicator from "./FileBrowserBackgroundProgressIndicator"
+import { FileBrowserBlockContextWrapper } from "./FileBrowserBlockContextWrapper"
 
 const StyledFileBrowserBlock = styled.div`
   background: #fafafa;
@@ -41,7 +39,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   }, [frameContext])
 
   return (
-    <FileBrowserContextProvider frameId={frameId}>
+    <FileBrowserBlockContextWrapper frameId={frameId}>
       <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
         <FileBrowserContext.Consumer>
           {({ isLoading, filteredDirs, filteredFiles }) => (
@@ -63,7 +61,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
           )}
         </FileBrowserContext.Consumer>
       </StyledFileBrowserBlock>
-    </FileBrowserContextProvider>
+    </FileBrowserBlockContextWrapper>
   )
 }
 

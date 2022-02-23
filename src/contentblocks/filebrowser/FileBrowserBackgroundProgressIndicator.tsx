@@ -1,9 +1,9 @@
 import React from "react"
 import { Box, LinearProgress } from "@mui/material"
-import { useFileBrowser } from "./FileBrowserContext"
+import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 
 const FileBrowserBackgroundProgressIndicator: React.FC = () => {
-  const { isSearchingInProgress } = useFileBrowser()
+  const { isSearchingInProgress, searchMode } = useFileBrowserSearch()
   return (
     <Box
       sx={{
@@ -11,7 +11,9 @@ const FileBrowserBackgroundProgressIndicator: React.FC = () => {
         height: 8,
       }}
     >
-      {isSearchingInProgress ? <LinearProgress sx={{ height: 8 }} /> : null}
+      {isSearchingInProgress && searchMode ? (
+        <LinearProgress sx={{ height: 8 }} />
+      ) : null}
     </Box>
   )
 }

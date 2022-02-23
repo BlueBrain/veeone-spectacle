@@ -21,9 +21,13 @@ import { delay } from "../../common/asynchronous"
 import _ from "lodash"
 import fileService from "../../veedrive/service"
 import { VeeDriveSearchFileSystemRequest } from "../../veedrive/types"
-
-const SEARCH_QUERY_CHANGE_DEBOUNCE_MS = 500
-const SEARCH_RESULTS_FETCH_INTERVAL_MS = 1000
+import {
+  FileBrowserSearchContextProvider,
+  useFileBrowserSearch,
+} from "./FileBrowserSearchContext"
+//
+// const SEARCH_QUERY_CHANGE_DEBOUNCE_MS = 500
+// const SEARCH_RESULTS_FETCH_INTERVAL_MS = 1000
 
 type FilterableElement = BrowserFile | BrowserDirectory
 
@@ -47,16 +51,16 @@ export interface FileBrowserContextProps {
   navigateDirectory(dirPath: string): void
   requestFile(fileName: string): void
   changeViewType(newViewType: FileBrowserViewTypes): void
-  searchModeOn: boolean
-  searchQuery: string
-  setSearchMode(enabled: boolean): void
-  requestSearch(query: string): void
+  // searchModeOn: boolean
+  // searchQuery: string
+  // setSearchMode(enabled: boolean): void
+  // requestSearch(query: string): void
   nameFilterQuery: string
   filterByName(query: string): void
   hiddenFilesCount: number
   totalFilesCount: number
   displayAllHiddenFiles(): void
-  isSearchingInProgress: boolean
+  // isSearchingInProgress: boolean
   scrollableAreaRef: HTMLElement
   setScrollableAreaRef(HTMLElement): void
   openDirectoryByPathPartIndex(pathPartIndex: number): void
@@ -89,26 +93,16 @@ const fetchDirectoryContents = async dirPath => {
   return { dirs, files }
 }
 
-async function* newFilesystemSearch(
-  query: string
-): AsyncIterableIterator<BrowserContents> {
-  const payload: VeeDriveSearchFileSystemRequest = {
-    name: query,
-  }
-  for await (const { files, directories } of fileService.searchFileSystem(
-    payload
-  )) {
-    yield {
-      files: files.map(file => new BrowserFile(file.name, file.size)),
-      directories: directories.map(dirPath => new BrowserDirectory(dirPath)),
-    }
-  }
-}
-
 export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProps> = ({
   frameId,
   children,
 }) => {
+  const {
+    setSearchMode,
+    searchMode,
+    shouldDisplaySearchResults,
+    searchResults,
+  } = useFileBrowserSearch()
   const dispatch = useDispatch()
 
   const frameData = (useSelector<SpectaclePresentation>(state =>
@@ -131,16 +125,6 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
     blockData?.isShowingUnsupportedFiles ?? false
   const isShowingHiddenFiles = blockData?.isShowingHiddenFiles ?? false
   const nameFilterQuery = blockData?.nameFilterQuery ?? ""
-
-  const [searchMode, setSearchMode] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [searchResults, setSearchResults] = useState<BrowserContents>({
-    files: [],
-    directories: [],
-  })
-  const [isSearchingInProgress, setIsSearchingInProgress] = useState<boolean>(
-    false
-  )
   const [pathLoaded, setPathLoaded] = useState<string | null>(null)
   const [activePathFiles, setActivePathFiles] = useState([] as BrowserFile[])
   const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
@@ -183,10 +167,13 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
     addToBrowsingHistory(upperPath)
   }, [activePath, addToBrowsingHistory])
 
-  const openDirectoryByPathPartIndex = async (pathPartIndex: number) => {
-    const path = activePath.split("/").slice(0, pathPartIndex).join("/")
-    return addToBrowsingHistory(path)
-  }
+  const openDirectoryByPathPartIndex = useMemo(
+    () => async (pathPartIndex: number) => {
+      const path = activePath.split("/").slice(0, pathPartIndex).join("/")
+      return addToBrowsingHistory(path)
+    },
+    [activePath, addToBrowsingHistory]
+  )
 
   const setBrowsingHistoryIndex = useCallback(
     async (newIndex: number) => {
@@ -249,56 +236,6 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
     },
     [frameId, situation.height, situation.left, situation.top, situation.width]
   )
-
-  const triggerSearchQueryChange = useCallback(async (newQuery, stopper) => {
-    setSearchResults({
-      files: [],
-      directories: [],
-    })
-    setIsSearchingInProgress(true)
-    console.debug(`Starting new search for "${newQuery}"`)
-    for await (const result of newFilesystemSearch(newQuery)) {
-      if (stopper.stopped) {
-        break
-      }
-      const { files, directories } = result
-      setSearchResults({ files, directories })
-      await delay(SEARCH_RESULTS_FETCH_INTERVAL_MS)
-    }
-    setIsSearchingInProgress(false)
-    console.debug("Finished searching process")
-  }, [])
-
-  const debouncedSearchQueryChange = useMemo(
-    () =>
-      _.debounce(
-        (newQuery: string, stopper) =>
-          triggerSearchQueryChange(newQuery, stopper),
-        SEARCH_QUERY_CHANGE_DEBOUNCE_MS
-      ),
-    [triggerSearchQueryChange]
-  )
-
-  useEffect(() => {
-    const stopper = {
-      stopped: false,
-      stop: function () {
-        console.debug("Stop fetching results")
-        this.stopped = true
-      },
-    }
-    if (searchQuery.length >= VeeDriveConfig.minSearchQueryLength) {
-      debouncedSearchQueryChange(searchQuery, stopper)
-    } else {
-      setSearchResults({ files: [], directories: [] })
-    }
-    return () => {
-      stopper.stop()
-    }
-  }, [debouncedSearchQueryChange, searchQuery, triggerSearchQueryChange])
-
-  const shouldDisplaySearchResults =
-    searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
 
   const hiddenFileOrDirectoryFilter: FilterFunction = useCallback(
     element => isShowingHiddenFiles || !element.name.startsWith("."),
@@ -375,7 +312,7 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
 
   const [scrollableAreaRef, setScrollableAreaRef] = useState(null)
 
-  const fileBrowserContextProvider: FileBrowserContextProps = useMemo(
+  const providerValue: FileBrowserContextProps = useMemo(
     () => ({
       frameId: frameId,
       activePath: activePath,
@@ -406,14 +343,6 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
       },
       changeViewType(newViewType: FileBrowserViewTypes) {
         void changeViewType(newViewType)
-      },
-      searchModeOn: searchMode,
-      searchQuery: searchQuery,
-      setSearchMode(enabled: boolean) {
-        setSearchMode(enabled)
-      },
-      async requestSearch(query: string) {
-        setSearchQuery(query)
       },
       toggleShowHiddenFilesFilter: () => {
         dispatch(
@@ -456,7 +385,6 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
           } as FileBrowserBlockPayload)
         )
       },
-      isSearchingInProgress,
       scrollableAreaRef,
       setScrollableAreaRef,
       isLoading,
@@ -471,17 +399,17 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
       viewType,
       isShowingHiddenFiles,
       isShowingUnsupportedFiles,
-      searchMode,
-      searchQuery,
+      openDirectoryByPathPartIndex,
       nameFilterQuery,
       totalFilesCount,
       hiddenFilesCount,
-      isSearchingInProgress,
       scrollableAreaRef,
+      isLoading,
+      filteredFiles,
+      filteredDirs,
       openParentDirectory,
       openPreviousDirectory,
       openNextDirectory,
-      openDirectoryByPathPartIndex,
       setBrowsingHistoryIndex,
       addToBrowsingHistory,
       openFile,
@@ -491,7 +419,7 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
   )
 
   return (
-    <FileBrowserContext.Provider value={fileBrowserContextProvider}>
+    <FileBrowserContext.Provider value={providerValue}>
       {children}
     </FileBrowserContext.Provider>
   )

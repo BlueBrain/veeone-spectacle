@@ -14,6 +14,7 @@ import SearchFilesBar from "./SearchFilesBar"
 import FiltersSelector from "./FiltersSelector"
 import PathParts from "./PathParts"
 import FrameControlBar from "../../core/frames/FrameControlBar"
+import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 
 const FileBrowserTopbar: React.FC = () => {
   const {
@@ -25,9 +26,9 @@ const FileBrowserTopbar: React.FC = () => {
     navigateForward,
     navigateUp,
     navigateDirectory,
-    setSearchMode,
-    searchModeOn,
   } = useFileBrowser()
+
+  const { searchMode, setSearchMode } = useFileBrowserSearch()
 
   const navigateHome = () => {
     void navigateDirectory("")
@@ -39,7 +40,7 @@ const FileBrowserTopbar: React.FC = () => {
 
   return (
     <>
-      {searchModeOn ? (
+      {searchMode ? (
         <Grid container alignItems="center">
           <Grid item>
             <FrameControlBar />

@@ -1,16 +1,16 @@
-import React, { useCallback, useContext, useEffect, useRef } from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 import { Grid, IconButton, TextField } from "@mui/material"
 import { Close } from "@mui/icons-material"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { useFileBrowser } from "./FileBrowserContext"
 import ViewTypeSelector from "./ViewTypeSelector"
 import FiltersSelector from "./FiltersSelector"
 import { visualKeyboardService } from "../../visualkeyboard"
 import useInteractable from "../../core/interactable/useInteractable"
+import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 
 const SearchFilesBar: React.FC = () => {
-  const { setSearchMode, requestSearch, searchQuery, frameId } = useContext(
-    FileBrowserContext
-  )
+  const { frameId } = useFileBrowser()
+  const { setSearchMode, requestSearch, searchQuery } = useFileBrowserSearch()
 
   const onSearchQueryChange = async (
     event: React.ChangeEvent<HTMLInputElement>

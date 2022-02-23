@@ -7,6 +7,7 @@ import DirectoryList from "./DirectoryList"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import EmptyResults from "./EmptyResults"
 import { visualKeyboardService } from "../../visualkeyboard"
+import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 
 interface Props {
   files: BrowserFile[]
@@ -33,12 +34,9 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
   dirs = [],
   files = [],
 }) => {
-  const {
-    viewType,
-    isSearchingInProgress,
-    frameId,
-    setScrollableAreaRef,
-  } = useFileBrowser()
+  const { viewType, frameId, setScrollableAreaRef } = useFileBrowser()
+
+  const { isSearchingInProgress } = useFileBrowserSearch()
 
   const displayType = viewType ?? FileBrowserViewTypes.Thumbnails
 
