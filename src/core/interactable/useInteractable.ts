@@ -1,7 +1,15 @@
 import { RefObject, useEffect } from "react"
 import interact from "interactjs"
 
-const useInteractable = (ref: RefObject<any>, { onTap, onHold }) => {
+interface UseInteracatableArgs {
+  onTap?(event): void
+  onHold?(event): void
+}
+
+const useInteractable = (
+  ref: RefObject<any>,
+  { onTap, onHold }: UseInteracatableArgs
+) => {
   useEffect(() => {
     const target = ref.current
     if (target) {

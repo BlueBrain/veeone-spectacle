@@ -13,7 +13,7 @@ const viewportShortSide = Math.min(viewportWidth, viewportHeight)
 let config: ApplicationConfig = {
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
-  VEEDRIVE_WS_PATH: "ws://localhost:4444/ws",
+  VEEDRIVE_WS_PATH: "wss://bbpcd013.bbp.epfl.ch:8080/ws",
   FILE_BROWSER_WIDTH: 500,
   FILE_BROWSER_HEIGHT: 400,
   MINIMUM_FRAME_LONG_SIDE: Math.max(viewportLongSide / 12, 200),
@@ -34,8 +34,8 @@ config = {
 
 config = {
   ...config,
-  FILE_BROWSER_WIDTH: config.VIEWPORT_WIDTH / 3,
-  FILE_BROWSER_HEIGHT: config.VIEWPORT_HEIGHT / 2.5,
+  FILE_BROWSER_WIDTH: Math.max(config.VIEWPORT_WIDTH / 3, 600),
+  FILE_BROWSER_HEIGHT: Math.max(config.VIEWPORT_HEIGHT / 2.5, 400),
 }
 
 const AppConfigWithOverrides: ApplicationConfig = queryParamOverrides.wrap(

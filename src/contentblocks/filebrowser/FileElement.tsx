@@ -1,27 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import styled from "styled-components"
 import fileService from "../../veedrive"
 import { BrowserFile } from "../../veedrive/common/models"
 import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { InsertDriveFile } from "@mui/icons-material"
-import LazyThumbnailLoader from "./LazyThumbnailLoader"
 import { useFileBrowserSelectionMode } from "./FileBrowserSelectionModeContext"
 import interact from "interactjs"
 import FileThumbnailSelected from "./FileThumbnailSelected"
+import { Box } from "@mui/material"
 
 interface FileElementProps {
-  classes: any
   file: BrowserFile
 }
 
-const StyledImage = styled.img`
-  width: 100%;
-  object-fit: contain;
-  aspect-ratio: 1;
-  overflow: hidden;
-`
-
-const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
+const FileElement: React.FC<FileElementProps> = ({ file }) => {
   const ref = useRef()
   const [thumbnailUrl, setThumbnailUrl] = useState("")
   const { requestFile } = useFileBrowserNavigator()
@@ -93,22 +84,36 @@ const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
   }, [handleHold, handleTap])
 
   return (
-    <div className={classes.gridTile} title={file.name} ref={ref}>
-      <div className={classes.gridTileThumbnail}>
-        <div className={classes.gridTileThumbnailBody}>
-          <FileThumbnailSelected isSelected={isSelected}>
-            {thumbnailUrl ? (
-              <LazyThumbnailLoader>
-                <StyledImage src={thumbnailUrl} />
-              </LazyThumbnailLoader>
-            ) : (
-              <InsertDriveFile fontSize={"large"} />
-            )}
-          </FileThumbnailSelected>
-        </div>
-      </div>
-      <div className={classes.gridTileLabel}>{file.name}</div>
-    </div>
+    <Box
+      title={file.name}
+      ref={ref}
+      className={"FileElement"}
+      sx={{
+        position: "relative",
+      }}
+    >
+      <Box className={"Thumbnail"}>
+        <Box className={"ThumbnailBody"}>
+          {thumbnailUrl ? (
+            <Box
+              component={"img"}
+              src={thumbnailUrl}
+              sx={{
+                objectFit: "contain",
+                maxWidth: "100%",
+                maxHeight: "100%",
+                opacity: 0.8,
+                boxShadow: 1,
+              }}
+            />
+          ) : (
+            <InsertDriveFile fontSize={"large"} />
+          )}
+        </Box>
+      </Box>
+      <Box className={"Label FileThumbnailLabel"}>{file.name}</Box>
+      <FileThumbnailSelected isSelected={isSelected} />
+    </Box>
   )
 }
 export default FileElement

@@ -1,70 +1,73 @@
-import React, { useMemo } from "react"
+import React from "react"
 import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material"
-import { createStyles, makeStyles } from "@mui/styles"
 import { useFileBrowserSelectionMode } from "./FileBrowserSelectionModeContext"
-import { alpha, Theme } from "@mui/material"
+import { alpha, Box } from "@mui/material"
 
 interface FileThumbnailSelectedProps {
   isSelected: boolean
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {},
-    checkbox: {
-      display: "flex",
-      position: "absolute",
-      right: "0",
-      top: "0",
-    },
-    overlay: {
-      display: "flex",
-      position: "absolute",
-      left: "0",
-      top: "0",
-      width: "100%",
-      height: "100%",
-      border: "2px solid",
-      boxSizing: "border-box",
-      borderColor: alpha(theme.palette.primary.main, 0.5),
-      transition: "background ease 200ms",
-      backgroundColor: alpha(theme.palette.primary.main, 0),
-    },
-    selected: {
-      "& $overlay": {
-        background: alpha(theme.palette.primary.main, 0.6),
-      },
-    },
-  })
-)
-
 const FileThumbnailSelected: React.FC<FileThumbnailSelectedProps> = ({
   isSelected,
   children,
 }) => {
-  const classes = useStyles()
   const { isSelectionModeEnabled } = useFileBrowserSelectionMode()
 
-  const rootClasses = useMemo(() => {
-    const cssList = [classes.root]
-    if (isSelected) {
-      cssList.push(classes.selected)
-    }
-    return cssList
-  }, [isSelected, classes])
-
   return (
-    <div className={rootClasses.join(" ")}>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        position: "absolute",
+        right: 0,
+        top: 0,
+      }}
+    >
       {children}
       {isSelectionModeEnabled ? (
         <>
-          <div className={classes.overlay} />
-          <div className={classes.checkbox}>
+          <Box
+            sx={[
+              {
+                display: "flex",
+                position: "absolute",
+                left: "0",
+                top: "0",
+                width: "100%",
+                height: "100%",
+                border: "1px solid",
+                boxSizing: "border-box",
+                borderRadius: ".3rem",
+                transition: "background ease 600ms",
+              },
+              theme => ({
+                borderColor: alpha(theme.palette.primary.main, 0.3),
+                backgroundColor: alpha(theme.palette.primary.main, 0),
+                ...(isSelected
+                  ? {
+                      borderColor: alpha(theme.palette.primary.main, 0.5),
+                      backgroundColor: alpha(theme.palette.primary.main, 0.3),
+                    }
+                  : {}),
+              }),
+            ]}
+          />
+          <Box
+            sx={{
+              display: "flex",
+              position: "absolute",
+              right: "0",
+              top: "0",
+              color: "primary.dark",
+              padding: ".2rem",
+            }}
+          >
             {isSelected ? <CheckBox /> : <CheckBoxOutlineBlank />}
-          </div>
+          </Box>
         </>
       ) : null}
-    </div>
+    </Box>
   )
 }
 
