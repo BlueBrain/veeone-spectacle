@@ -2,6 +2,9 @@ export interface ApplicationConfig {
   VEEDRIVE_WS_PATH: string
   FILE_BROWSER_WIDTH: number
   FILE_BROWSER_HEIGHT: number
+  FILE_BROWSER_OPEN_MEDIA_OFFSET: number
+  FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_X: number
+  FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_Y: number
   VIEWPORT_WIDTH: number
   VIEWPORT_HEIGHT: number
   MINIMUM_FRAME_LONG_SIDE: number
@@ -9,4 +12,6 @@ export interface ApplicationConfig {
   ALLOW_SCALE_WITH_MOUSEWHEEL: boolean
   ALLOW_MAX_LAUNCHER_MENUS: number
   DISPLAY_MOUSE_CURSOR: boolean
+  DEFAULT_NEW_FRAME_WIDTH: number
+  DEFAULT_NEW_FRAME_HEIGHT: number
 }

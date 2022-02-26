@@ -1,10 +1,12 @@
-import React, { useContext, useRef } from "react"
+import React, { useContext, useMemo, useRef } from "react"
 import { Box } from "@mui/material"
 import FrameContext from "./FrameContext"
 import useInteractable from "../interactable/useInteractable"
 import CloseIconButtonWithRef from "./frame-controls/CloseIconButton"
 import FullscreenIconButtonWithRef from "./frame-controls/FullscreenIconButton"
 import SendToBackIconButtonWithRef from "./frame-controls/SendToBackIconButton"
+import { useSelector } from "react-redux"
+import { getFrameStack } from "../redux/selectors"
 
 export interface FrameControlBarProps {
   showCloseButton?: boolean
@@ -17,7 +19,11 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
   showCloseButton = true,
   showFullscreenButton = true,
 }) => {
-  const { toggleFullscreen, close, sendToBack } = useContext(FrameContext)
+  const frameStack = useSelector(getFrameStack)
+
+  const { toggleFullscreen, close, sendToBack, frameId } = useContext(
+    FrameContext
+  )
 
   const closeRef = useRef()
   const sendToBackRef = useRef()
@@ -32,8 +38,25 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
   })
   useInteractable(fullscreenRef, { onTap: toggleFullscreen })
 
+  const isTopFrame = useMemo(
+    () => frameStack.indexOf(frameId) === frameStack.length - 1,
+    [frameId, frameStack]
+  )
+
   return (
-    <Box sx={{ padding: ".5rem .3rem" }}>
+    <Box
+      sx={[
+        { padding: ".5rem .3rem", transition: `opacity ease 500ms` },
+        isTopFrame
+          ? {
+              opacity: 1,
+            }
+          : {
+              opacity: 0.5,
+              filter: "grayscale(1)",
+            },
+      ]}
+    >
       <SendToBackIconButtonWithRef
         isVisible={showSendToBackButton}
         ref={sendToBackRef}

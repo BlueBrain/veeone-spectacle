@@ -117,6 +117,10 @@ const Desk: React.FC = () => {
     }
   }, [handleHold])
 
+  const getStackIndex = useCallback(frameId => frameStack.indexOf(frameId), [
+    frameStack,
+  ])
+
   return (
     <StyledDesk ref={deskRef}>
       <DeskBranding />
@@ -127,7 +131,7 @@ const Desk: React.FC = () => {
             frame={frame}
             key={frameId}
             frameId={frameId}
-            stackIndex={frameStack.indexOf(frameId)}
+            stackIndex={getStackIndex(frameId)}
           />
         ) : (
           ``

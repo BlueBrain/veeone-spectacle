@@ -25,7 +25,7 @@ type SelectedFilesMap = string[]
 export const FileBrowserSelectionModeContextProvider: React.FC = ({
   children,
 }) => {
-  const [isSelectionModeEnabled, setIsSelectionModeEnabled] = useState(false)
+  const [isSelectionModeEnabled, setIsSelectionModeEnabled] = useState(true)
   const [selectedFiles, setSelectedFiles] = useState<SelectedFilesMap>([])
 
   const isFileSelected = useCallback(

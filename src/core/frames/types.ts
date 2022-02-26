@@ -1,4 +1,7 @@
+import { FrameId } from "../types"
+
 export interface FrameContextProps {
+  frameId: FrameId
   updateAspectRatio: (aspectRatio: number) => void
   toggleFullscreen: () => void
   preventMoving: () => void

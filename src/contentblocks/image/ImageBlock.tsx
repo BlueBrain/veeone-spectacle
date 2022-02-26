@@ -16,12 +16,6 @@ interface ImageBlockParams {
   path: string
 }
 
-const imgStyle: CSSProperties = {
-  width: "100%",
-  height: "100%",
-  objectFit: "contain",
-}
-
 const ImageBlock: React.FC<ContentBlockProps> = props => {
   const [imageUrl, setImageUrl] = useState<string>("")
   const [imageSize, setImageSize] = useState<Size>({ width: 0, height: 0 })
@@ -73,12 +67,12 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
       }}
     >
       {imageUrl ? (
-        <img
+        <Box
+          component={"img"}
           src={imageUrl}
           width={width}
           height={height}
-          style={imgStyle}
-          alt={""}
+          sx={{ width: "100%", height: "100%", objectFit: "contain" }}
         />
       ) : (
         <Grid

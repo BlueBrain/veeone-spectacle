@@ -68,6 +68,7 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
 
   const frameContextProvider: FrameContextProps = useMemo(
     () => ({
+      frameId,
       updateAspectRatio: (aspectRatio: number) => {
         const newWidth = width
         const newHeight = width / aspectRatio

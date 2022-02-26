@@ -8,6 +8,8 @@ import { getFrame } from "../../core/redux/selectors"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 import { useFileBrowser } from "./FileBrowserContext"
+import { config } from "../../config"
+import { Position } from "../../common/types"
 
 export interface FileBrowserNavigatorContextProps {
   navigateUp(): void
@@ -15,7 +17,8 @@ export interface FileBrowserNavigatorContextProps {
   navigateForward(): void
   navigateToIndex(historyIndex: number): void
   navigateDirectory(dirPath: string): void
-  requestFile(fileName: string): void
+  requestFile(filePath: string): void
+  requestMultipleFiles(filePaths: string[]): void
   hiddenFilesCount: number
   totalFilesCount: number
   scrollableAreaRef: HTMLElement
@@ -129,15 +132,45 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
     await moveBrowsingHistoryIndex(-1)
   }, [moveBrowsingHistoryIndex])
 
+  const getNextAvailablePositionForFrame = useCallback(() => {
+    return {
+      left:
+        situation.left +
+        situation.width +
+        config.DEFAULT_NEW_FRAME_WIDTH / 2 +
+        config.FILE_BROWSER_OPEN_MEDIA_OFFSET,
+      top: situation.top + config.DEFAULT_NEW_FRAME_HEIGHT / 2,
+    }
+  }, [situation])
+
   const requestFile = useCallback(
-    async (filePath: string) => {
+    async (filePath: string, referencePosition?: Position) => {
       console.debug(`Requesting ${filePath} from frame=${frameId}`)
-      await fileOpenerService.handleFile(filePath, {
-        left: situation.left + situation.width / 2,
-        top: situation.top + situation.height / 2,
-      })
+      await fileOpenerService.handleFile(
+        filePath,
+        referencePosition ?? getNextAvailablePositionForFrame()
+      )
     },
-    [frameId, situation.height, situation.left, situation.top, situation.width]
+    [frameId, getNextAvailablePositionForFrame]
+  )
+
+  const requestMultipleFiles = useCallback(
+    async (filePaths: string[]) => {
+      const initialPosition: Position = getNextAvailablePositionForFrame()
+      let position
+      let frameCounter = 0
+      const offsetX = config.FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_X
+      const offsetY = config.FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_Y
+      for (const filePath of filePaths) {
+        position = {
+          left: initialPosition.left + offsetX * frameCounter,
+          top: initialPosition.top + offsetY * frameCounter,
+        }
+        await requestFile(filePath, position)
+        frameCounter++
+      }
+    },
+    [getNextAvailablePositionForFrame, requestFile]
   )
 
   const totalFilesCount = useMemo<number>(
@@ -165,6 +198,7 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       navigateDirectory,
       openDirectoryByPathPartIndex,
       requestFile,
+      requestMultipleFiles,
       totalFilesCount,
       hiddenFilesCount,
       scrollableAreaRef,
@@ -183,6 +217,7 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       navigateToIndex,
       navigateDirectory,
       requestFile,
+      requestMultipleFiles,
     ]
   )
 
