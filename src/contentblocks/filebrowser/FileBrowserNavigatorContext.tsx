@@ -163,10 +163,18 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       const offsetY = config.FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_Y
       for (const filePath of filePaths) {
         position = {
-          left: initialPosition.left + offsetX * frameCounter,
+          left:
+            initialPosition.left +
+            (frameCounter %
+              config.FILE_BROWSER_OPEN_MEDIA_CASCADE_MAX_PER_ROW) *
+              offsetX,
           top: initialPosition.top + offsetY * frameCounter,
         }
-        await requestFile(filePath, position)
+        let timeout = (p, fc) =>
+          setTimeout(async () => {
+            await requestFile(filePath, p)
+          }, config.FILE_BROWSER_OPEN_MEDIA_CASCADE_DELAY_MS * fc)
+        timeout(position, frameCounter)
         frameCounter++
       }
     },
