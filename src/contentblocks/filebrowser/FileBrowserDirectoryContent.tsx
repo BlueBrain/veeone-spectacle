@@ -54,7 +54,7 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
         overflowY: "scroll",
         overflowX: "visible",
         flexDirection: "column",
-        padding: "0 1rem",
+        padding: "0 .5rem 4rem .5rem",
         // Hide scrollbar
         scrollbarWidth: "none",
         "::-webkit-scrollbar": {

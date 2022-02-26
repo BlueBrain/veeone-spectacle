@@ -19,8 +19,10 @@ const HIDE_CURSOR_CSS = config.DISPLAY_MOUSE_CURSOR
 export const blueBrainTheme = createTheme({
   palette: {
     mode: "light",
-    primary: { main: `#007DDE` },
-    secondary: { main: `#3ec5ff` },
+    primary: {
+      main: `rgba(0, 125, 222, 1)`,
+    },
+    secondary: { main: `rgba(62, 197, 255, 1)` },
     error: red,
     success: green,
     info: grey,
@@ -72,6 +74,13 @@ body::-webkit-scrollbar {
 
 ${HIDE_CURSOR_CSS}
 `,
+    },
+    MuiButton: {
+      styleOverrides: {
+        text: {
+          textTransform: "none",
+        },
+      },
     },
   },
 })

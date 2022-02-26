@@ -16,6 +16,7 @@ import PathParts from "./PathParts"
 import FrameControlBar from "../../core/frames/FrameControlBar"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
+import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
 
 const FileBrowserTopbar: React.FC = () => {
   const { history, historyIndex, activePath } = useFileBrowser()
@@ -29,9 +30,9 @@ const FileBrowserTopbar: React.FC = () => {
 
   const { searchMode, setSearchMode } = useFileBrowserSearch()
 
-  const navigateHome = () => {
-    void navigateDirectory("")
-  }
+  // const navigateHome = () => {
+  //   void navigateDirectory("")
+  // }
 
   const disableForwardButton = historyIndex === 0
   const disableBackButton = historyIndex === history.length - 1
@@ -41,18 +42,18 @@ const FileBrowserTopbar: React.FC = () => {
     <>
       {searchMode ? (
         <Grid container alignItems="center">
-          <Grid item>
-            <FrameControlBar />
-          </Grid>
-          <Grid item xs>
+          <Grid item xs={8}>
             <SearchFilesBar />
           </Grid>
+          {/*<Grid item>*/}
+          {/*  <FrameControlBar />*/}
+          {/*</Grid>*/}
         </Grid>
       ) : (
         <Grid container alignItems="center" data-drag-handle={true}>
-          <Grid item>
-            <FrameControlBar />
-          </Grid>
+          {/*<Grid item>*/}
+          {/*  <FrameControlBar />*/}
+          {/*</Grid>*/}
           <Grid item>
             <Tooltip title="Back">
               <span>
@@ -60,6 +61,7 @@ const FileBrowserTopbar: React.FC = () => {
                   onClick={navigateBack}
                   disabled={disableBackButton}
                   color={"primary"}
+                  size={"large"}
                 >
                   <ArrowBack />
                 </IconButton>
@@ -71,57 +73,69 @@ const FileBrowserTopbar: React.FC = () => {
                   onClick={navigateForward}
                   disabled={disableForwardButton}
                   color={"primary"}
+                  size={"large"}
                 >
                   <ArrowForward />
                 </IconButton>
               </span>
             </Tooltip>
 
-            <BrowsingHistorySelector />
+            {/*<BrowsingHistorySelector />*/}
 
-            {!hideUpButton ? (
-              <Tooltip title="Move to the parent directory">
-                <span>
-                  <IconButton onClick={navigateUp} color={"primary"}>
-                    <ArrowUpward />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            ) : null}
+            {/*{!hideUpButton ? (*/}
+            {/*  <Tooltip title="Move to the parent directory">*/}
+            {/*    <span>*/}
+            {/*      <IconButton*/}
+            {/*        onClick={navigateUp}*/}
+            {/*        color={"primary"}*/}
+            {/*        size={"large"}*/}
+            {/*      >*/}
+            {/*        <ArrowUpward />*/}
+            {/*      </IconButton>*/}
+            {/*    </span>*/}
+            {/*  </Tooltip>*/}
+            {/*) : null}*/}
 
-            <Tooltip title="Move to the home directory">
-              <span>
-                <IconButton
-                  onClick={navigateHome}
-                  disabled={hideUpButton}
-                  color={"primary"}
-                >
-                  <Home />
-                </IconButton>
-              </span>
-            </Tooltip>
+            {/*<Tooltip title="Move to the home directory">*/}
+            {/*  <span>*/}
+            {/*    <IconButton*/}
+            {/*      onClick={navigateHome}*/}
+            {/*      disabled={hideUpButton}*/}
+            {/*      color={"primary"}*/}
+            {/*    >*/}
+            {/*      <Home />*/}
+            {/*    </IconButton>*/}
+            {/*  </span>*/}
+            {/*</Tooltip>*/}
           </Grid>
 
-          <Grid item xs>
-            <PathParts
-              path={activePath}
-              onSelectPathPart={openDirectoryByPathPartIndex}
-            />
-          </Grid>
+          {/*<Grid item xs>*/}
+          {/*  <PathParts*/}
+          {/*    path={activePath}*/}
+          {/*    onSelectPathPart={openDirectoryByPathPartIndex}*/}
+          {/*  />*/}
+          {/*</Grid>*/}
 
           <Grid item>
             <Tooltip title="Search files and directories">
-              <IconButton onClick={() => setSearchMode(true)} color={"primary"}>
+              <IconButton
+                onClick={() => setSearchMode(true)}
+                color={"primary"}
+                size={"large"}
+              >
                 <Search />
               </IconButton>
             </Tooltip>
 
             <FiltersSelector />
-
-            <ViewTypeSelector />
           </Grid>
+
+          {/*<Grid item>*/}
+          {/*  <FrameControlBar />*/}
+          {/*</Grid>*/}
         </Grid>
       )}
+      <FloatingFrameControlBar />
     </>
   )
 }

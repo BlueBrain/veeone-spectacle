@@ -1,14 +1,15 @@
 import React from "react"
 import styled from "styled-components"
 import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
-import { Button, Grid } from "@mui/material"
+import { Box, Button, Grid } from "@mui/material"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
+import ViewTypeSelector from "./ViewTypeSelector"
 
-const StyledFooter = styled.div`
-  font-size: 0.8rem;
-  padding: 0 1rem;
-  color: rgba(0, 0, 0, 0.4);
-`
+// const StyledFooter = styled.div`
+//   font-size: 0.8rem;
+//   padding: 0 1rem;
+//   color: rgba(0, 0, 0, 0.4);
+// `
 
 interface FileBrowserFooterProps {}
 
@@ -21,7 +22,13 @@ const FileBrowserFooter: React.FC<FileBrowserFooterProps> = () => {
   }
 
   return (
-    <StyledFooter>
+    <Box
+      sx={{
+        fontSize: "0.8rem",
+        padding: ".5rem 1rem",
+        color: `rgba(0, 0, 0, 0.4)`,
+      }}
+    >
       <Grid container alignItems="center" justifyContent={"space-between"}>
         <Grid item>
           Total: {totalFilesCount} {totalFilesCount === 1 ? "file" : "files"}{" "}
@@ -39,8 +46,11 @@ const FileBrowserFooter: React.FC<FileBrowserFooterProps> = () => {
             </>
           </Grid>
         ) : null}
+        <Grid item>
+          <ViewTypeSelector />
+        </Grid>
       </Grid>
-    </StyledFooter>
+    </Box>
   )
 }
 

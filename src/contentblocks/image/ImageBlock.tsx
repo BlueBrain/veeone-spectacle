@@ -11,7 +11,8 @@ import fileService from "../../veedrive"
 import { FrameContext } from "../../core/frames"
 import FrameControlBar from "../../core/frames/FrameControlBar"
 import { Size } from "../../common/types"
-import { CircularProgress, Grid } from "@mui/material"
+import { Box, CircularProgress, Grid } from "@mui/material"
+import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
 
 const StyledImageBlock = styled.div`
   width: 100%;
@@ -92,7 +93,7 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
           </Grid>
         </Grid>
       )}
-      <FrameControlBar floating={true} />
+      <FloatingFrameControlBar />
     </StyledImageBlock>
   )
 }

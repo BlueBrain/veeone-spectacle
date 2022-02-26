@@ -37,6 +37,7 @@ const BrowsingHistorySelector: React.FC<BrowsingHistorySelectorProps> = () => {
             onClick={openMenu}
             disabled={shouldDisableButton}
             color={"primary"}
+            size={"large"}
           >
             <History />
           </IconButton>

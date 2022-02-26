@@ -7,12 +7,13 @@ const FileBrowserBackgroundProgressIndicator: React.FC = () => {
   return (
     <Box
       sx={{
+        display: "flex",
         width: "100%",
-        height: 8,
+        height: 5,
       }}
     >
       {isSearchingInProgress && searchMode ? (
-        <LinearProgress sx={{ height: 8 }} />
+        <LinearProgress sx={{ height: 5 }} />
       ) : null}
     </Box>
   )

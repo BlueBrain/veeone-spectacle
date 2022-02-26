@@ -10,6 +10,7 @@ import FileBrowserBackgroundProgressIndicator from "./FileBrowserBackgroundProgr
 import { FileBrowserContextProvider } from "./FileBrowserContext"
 import { FileBrowserFilterContext } from "./FileBrowserFilterContext"
 import { Box } from "@mui/material"
+import FileBrowserBlockLayout from "./FileBrowserBlockLayout"
 
 const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const frameContext = useContext(FrameContext)
@@ -23,6 +24,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
     <FileBrowserContextProvider frameId={frameId}>
       <Box
         sx={{
+          display: "flex",
           background: "#fafafa",
           width: "100%",
           height: "100%",
@@ -30,37 +32,7 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
         }}
         onWheel={event => event.stopPropagation()}
       >
-        <FileBrowserNavigatorContext.Consumer>
-          {({ isLoading }) => (
-            <FileBrowserFilterContext.Consumer>
-              {({ filteredDirs, filteredFiles }) => (
-                <Box sx={{ width: "100%", height: "calc(100% - 6rem)" }}>
-                  <FileBrowserTopbar />
-                  <FileBrowserBackgroundProgressIndicator />
-                  <Box
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "row",
-                      flex: "1",
-                    }}
-                  >
-                    {!isLoading ? (
-                      <FileBrowserDirectoryContent
-                        dirs={filteredDirs}
-                        files={filteredFiles}
-                      />
-                    ) : (
-                      <FileSystemBusyIndicator />
-                    )}
-                  </Box>
-                  {!isLoading ? <FileBrowserFooter /> : null}
-                </Box>
-              )}
-            </FileBrowserFilterContext.Consumer>
-          )}
-        </FileBrowserNavigatorContext.Consumer>
+        <FileBrowserBlockLayout />
       </Box>
     </FileBrowserContextProvider>
   )

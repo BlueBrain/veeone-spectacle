@@ -79,7 +79,6 @@ const SearchFilesBar: React.FC = () => {
       </Grid>
       <Grid item>
         <FiltersSelector />
-        <ViewTypeSelector />
       </Grid>
     </Grid>
   )
