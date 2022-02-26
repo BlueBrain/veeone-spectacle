@@ -2,7 +2,7 @@ import React from "react"
 import { Box, LinearProgress } from "@mui/material"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 
-const FileBrowserBackgroundProgressIndicator: React.FC = () => {
+const BackgroundProgressIndicator: React.FC = () => {
   const { isSearchingInProgress, searchMode } = useFileBrowserSearch()
   const isProgressBarVisible = isSearchingInProgress && searchMode
   return (
@@ -20,4 +20,4 @@ const FileBrowserBackgroundProgressIndicator: React.FC = () => {
   )
 }
 
-export default FileBrowserBackgroundProgressIndicator
+export default BackgroundProgressIndicator

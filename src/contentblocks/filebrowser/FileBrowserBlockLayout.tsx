@@ -1,18 +1,16 @@
 import { Box } from "@mui/material"
 import React from "react"
-import FileBrowserTopbar from "./FileBrowserTopbar"
-import FileBrowserBackgroundProgressIndicator from "./FileBrowserBackgroundProgressIndicator"
-import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
-import FileSystemBusyIndicator from "./FileSystemBusyIndicator"
-import FileBrowserFooter from "./FileBrowserFooter"
+import NavigationAndSearchBar from "./NavigationAndSearchBar"
+import BackgroundProgressIndicator from "./BackgroundProgressIndicator"
+import DirectoryContent from "./DirectoryContent"
+import BusyIndicator from "./BusyIndicator"
+import Footer from "./Footer"
 import { useFileBrowser } from "./FileBrowserContext"
 import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 import PathParts from "./PathParts"
 
-interface FileBrowserBlockLayoutProps {}
-
-const FileBrowserBlockLayout: React.FC<FileBrowserBlockLayoutProps> = () => {
+const FileBrowserBlockLayout: React.FC = () => {
   const { activePath } = useFileBrowser()
   const { isLoading, openDirectoryByPathPartIndex } = useFileBrowserNavigator()
   const { filteredFiles, filteredDirs } = useFileBrowserFilter()
@@ -28,8 +26,8 @@ const FileBrowserBlockLayout: React.FC<FileBrowserBlockLayoutProps> = () => {
           boxShadow: 1,
         }}
       >
-        <FileBrowserTopbar />
-        <FileBrowserBackgroundProgressIndicator />
+        <NavigationAndSearchBar />
+        <BackgroundProgressIndicator />
         <Box sx={{ display: "flex" }}>
           <PathParts
             path={activePath}
@@ -47,15 +45,12 @@ const FileBrowserBlockLayout: React.FC<FileBrowserBlockLayoutProps> = () => {
         }}
       >
         {!isLoading ? (
-          <FileBrowserDirectoryContent
-            dirs={filteredDirs}
-            files={filteredFiles}
-          />
+          <DirectoryContent dirs={filteredDirs} files={filteredFiles} />
         ) : (
-          <FileSystemBusyIndicator />
+          <BusyIndicator />
         )}
       </Box>
-      {!isLoading ? <FileBrowserFooter /> : null}
+      {!isLoading ? <Footer /> : null}
     </Box>
   )
 }

@@ -8,7 +8,7 @@ import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
 import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
 
-const FileBrowserTopbar: React.FC = () => {
+const NavigationAndSearchBar: React.FC = () => {
   const { history, historyIndex } = useFileBrowser()
   const { navigateBack, navigateForward } = useFileBrowserNavigator()
   const { searchMode, setSearchMode } = useFileBrowserSearch()
@@ -70,4 +70,4 @@ const FileBrowserTopbar: React.FC = () => {
   )
 }
 
-export default FileBrowserTopbar
+export default NavigationAndSearchBar

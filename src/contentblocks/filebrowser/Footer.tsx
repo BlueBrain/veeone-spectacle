@@ -1,5 +1,4 @@
 import React from "react"
-import styled from "styled-components"
 import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { Box, Button, Grid } from "@mui/material"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
@@ -7,15 +6,7 @@ import ViewTypeSelector from "./ViewTypeSelector"
 import SelectionModeStatusBar from "./selection-mode/SelectionModeStatusBar"
 import { useFileBrowserSelectionMode } from "./selection-mode/FileBrowserSelectionModeContext"
 
-// const StyledFooter = styled.div`
-//   font-size: 0.8rem;
-//   padding: 0 1rem;
-//   color: rgba(0, 0, 0, 0.4);
-// `
-
-interface FileBrowserFooterProps {}
-
-const FileBrowserFooter: React.FC<FileBrowserFooterProps> = () => {
+const Footer: React.FC = () => {
   const { totalFilesCount, hiddenFilesCount } = useFileBrowserNavigator()
   const { nameFilterQuery, filterByName } = useFileBrowserFilter()
   const { isSelectionModeEnabled } = useFileBrowserSelectionMode()
@@ -62,4 +53,4 @@ const FileBrowserFooter: React.FC<FileBrowserFooterProps> = () => {
   )
 }
 
-export default FileBrowserFooter
+export default Footer

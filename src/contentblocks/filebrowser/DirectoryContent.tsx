@@ -10,12 +10,12 @@ import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
 import { Box } from "@mui/material"
 
-interface Props {
+interface DirectoryContentProps {
   files: BrowserFile[]
   dirs: BrowserDirectory[]
 }
 
-const FileBrowserDirectoryContent: React.FC<Props> = ({
+const DirectoryContent: React.FC<DirectoryContentProps> = ({
   dirs = [],
   files = [],
 }) => {
@@ -73,4 +73,4 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
   )
 }
 
-export default FileBrowserDirectoryContent
+export default DirectoryContent
