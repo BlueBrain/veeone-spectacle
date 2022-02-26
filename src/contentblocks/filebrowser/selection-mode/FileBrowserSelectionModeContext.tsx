@@ -15,6 +15,9 @@ interface FileBrowserSelectionModeContextProps {
   unselectFile(filePath: string): void
   toggleFileSelect(filePath: string): void
   resetSelectedFiles(): void
+  selectedFileCount: number
+  selectedFiles: string[]
+  setSelectedFiles(files: string[]): void
 }
 
 type SelectedFilesMap = string[]
@@ -74,6 +77,8 @@ export const FileBrowserSelectionModeContextProvider: React.FC = ({
     return newValue
   }, [isSelectionModeEnabled, resetSelectedFiles])
 
+  const selectedFileCount = useMemo(() => selectedFiles.length, [selectedFiles])
+
   const providerValue = useMemo<FileBrowserSelectionModeContextProps>(
     () => ({
       isSelectionModeEnabled,
@@ -84,6 +89,9 @@ export const FileBrowserSelectionModeContextProvider: React.FC = ({
       unselectFile,
       toggleFileSelect,
       resetSelectedFiles,
+      selectedFileCount,
+      selectedFiles,
+      setSelectedFiles,
     }),
     [
       isFileSelected,
@@ -93,6 +101,9 @@ export const FileBrowserSelectionModeContextProvider: React.FC = ({
       toggleSelectionMode,
       unselectFile,
       resetSelectedFiles,
+      selectedFileCount,
+      selectedFiles,
+      setSelectedFiles,
     ]
   )
 

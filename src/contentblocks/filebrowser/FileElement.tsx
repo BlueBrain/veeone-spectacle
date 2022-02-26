@@ -3,9 +3,9 @@ import fileService from "../../veedrive"
 import { BrowserFile } from "../../veedrive/common/models"
 import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { InsertDriveFile } from "@mui/icons-material"
-import { useFileBrowserSelectionMode } from "./FileBrowserSelectionModeContext"
+import { useFileBrowserSelectionMode } from "./selection-mode/FileBrowserSelectionModeContext"
 import interact from "interactjs"
-import FileThumbnailSelected from "./FileThumbnailSelected"
+import FileThumbnailSelected from "./selection-mode/FileThumbnailSelected"
 import { Box } from "@mui/material"
 import makeEllipsis, { EllipsisPosition } from "../../common/text/makeEllipsis"
 
@@ -110,9 +110,10 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
               loading={"lazy"}
               src={thumbnailUrl}
               sx={{
-                objectFit: "contain",
+                display: "flex",
                 maxWidth: "100%",
                 maxHeight: "100%",
+                objectFit: "contain",
                 opacity: 0.8,
                 boxShadow: 1,
               }}
@@ -121,9 +122,9 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
             <InsertDriveFile fontSize={"large"} />
           )}
         </Box>
+        <FileThumbnailSelected isSelected={isSelected} />
       </Box>
       <Box className={"Label FileThumbnailLabel"}>{fileNameEllipsis}</Box>
-      <FileThumbnailSelected isSelected={isSelected} />
     </Box>
   )
 }

@@ -17,7 +17,7 @@ import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import fileService from "../../veedrive/service"
 import _ from "lodash"
 import { updateFrameData } from "../../core/redux/actions"
-import { FileBrowserSelectionModeContextProvider } from "./FileBrowserSelectionModeContext"
+import { FileBrowserSelectionModeContextProvider } from "./selection-mode/FileBrowserSelectionModeContext"
 
 interface FileBrowserContextProviderProps {
   frameId: FrameId

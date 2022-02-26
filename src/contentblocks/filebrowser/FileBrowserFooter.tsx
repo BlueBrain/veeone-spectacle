@@ -4,6 +4,8 @@ import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { Box, Button, Grid } from "@mui/material"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 import ViewTypeSelector from "./ViewTypeSelector"
+import SelectionModeStatusBar from "./selection-mode/SelectionModeStatusBar"
+import { useFileBrowserSelectionMode } from "./selection-mode/FileBrowserSelectionModeContext"
 
 // const StyledFooter = styled.div`
 //   font-size: 0.8rem;
@@ -16,6 +18,7 @@ interface FileBrowserFooterProps {}
 const FileBrowserFooter: React.FC<FileBrowserFooterProps> = () => {
   const { totalFilesCount, hiddenFilesCount } = useFileBrowserNavigator()
   const { nameFilterQuery, filterByName } = useFileBrowserFilter()
+  const { isSelectionModeEnabled } = useFileBrowserSelectionMode()
 
   const clearFilters = () => {
     filterByName("")
@@ -30,6 +33,11 @@ const FileBrowserFooter: React.FC<FileBrowserFooterProps> = () => {
       }}
     >
       <Grid container alignItems="center" justifyContent={"space-between"}>
+        {isSelectionModeEnabled ? (
+          <Grid item>
+            <SelectionModeStatusBar />
+          </Grid>
+        ) : null}
         <Grid item>
           Total: {totalFilesCount} {totalFilesCount === 1 ? "file" : "files"}{" "}
         </Grid>

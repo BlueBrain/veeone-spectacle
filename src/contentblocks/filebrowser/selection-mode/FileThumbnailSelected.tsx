@@ -22,6 +22,7 @@ const FileThumbnailSelected: React.FC<FileThumbnailSelectedProps> = ({
         position: "absolute",
         right: 0,
         top: 0,
+        transform: "scale(1.1)",
       }}
     >
       {children}
