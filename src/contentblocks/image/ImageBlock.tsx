@@ -5,21 +5,12 @@ import React, {
   useEffect,
   useState,
 } from "react"
-import styled from "styled-components"
 import { ContentBlockProps } from "../types"
 import fileService from "../../veedrive"
 import { FrameContext } from "../../core/frames"
-import FrameControlBar from "../../core/frames/FrameControlBar"
 import { Size } from "../../common/types"
 import { Box, CircularProgress, Grid } from "@mui/material"
 import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
-
-const StyledImageBlock = styled.div`
-  width: 100%;
-  height: 100%;
-  background: black;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-`
 
 interface ImageBlockParams {
   path: string
@@ -72,7 +63,15 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
   }, [loadThumbnail])
 
   return (
-    <StyledImageBlock data-drag-handle={true}>
+    <Box
+      data-drag-handle={true}
+      sx={{
+        width: "100%",
+        height: "100%",
+        background: "black",
+        boxShadow: 3,
+      }}
+    >
       {imageUrl ? (
         <img
           src={imageUrl}
@@ -94,7 +93,7 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
         </Grid>
       )}
       <FloatingFrameControlBar />
-    </StyledImageBlock>
+    </Box>
   )
 }
 

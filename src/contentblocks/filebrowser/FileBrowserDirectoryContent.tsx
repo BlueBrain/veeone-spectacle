@@ -50,11 +50,11 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
       ref={scrollableContentRef}
       sx={{
         display: "flex",
-        flex: "2",
+        flex: "1",
         overflowY: "scroll",
         overflowX: "visible",
         flexDirection: "column",
-        padding: "0 .5rem 4rem .5rem",
+        padding: "1rem .5rem 4rem .5rem",
         // Hide scrollbar
         scrollbarWidth: "none",
         "::-webkit-scrollbar": {

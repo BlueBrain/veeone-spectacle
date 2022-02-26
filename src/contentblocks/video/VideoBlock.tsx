@@ -8,30 +8,13 @@ import React, {
   useRef,
   useState,
 } from "react"
-import styled from "styled-components"
 import { ContentBlockProps } from "../types"
 import fileService from "../../veedrive"
 import { FrameContext } from "../../core/frames"
 import PlaybackControls from "./PlaybackControls"
 import VideoBlockContext, { VideoBlockContextProps } from "./VideoBlockContext"
-import FrameControlBar from "../../core/frames/FrameControlBar"
-import { CircularProgress, Grid } from "@mui/material"
-
-const StyledVideoBlock = styled.div`
-  background: #000;
-  width: 100%;
-  height: 100%;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
-`
-
-const StyledOverlay = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-`
+import { Box, CircularProgress, Grid } from "@mui/material"
+import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
 
 interface VideoBlockParams {
   path: string
@@ -83,7 +66,15 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
 
   return (
     <VideoBlockContext.Provider value={contextProvider}>
-      <StyledVideoBlock data-drag-handle={true}>
+      <Box
+        data-drag-handle={true}
+        sx={{
+          background: "#000",
+          width: "100%",
+          height: "100%",
+          boxShadow: 3,
+        }}
+      >
         {videoSource ? (
           <video
             width={"100%"}
@@ -110,10 +101,20 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
             </Grid>
           </Grid>
         )}
-        <StyledOverlay onClick={handleOverlayClick} />
+        <Box
+          onClick={handleOverlayClick}
+          sx={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            width: "100%",
+            height: "100%",
+            opacity: 0,
+          }}
+        />
         {videoSource ? <PlaybackControls videoRef={videoRef} /> : null}
-      </StyledVideoBlock>
-      <FrameControlBar floating={true} />
+      </Box>
+      <FloatingFrameControlBar />
     </VideoBlockContext.Provider>
   )
 }

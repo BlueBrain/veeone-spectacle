@@ -82,5 +82,12 @@ ${HIDE_CURSOR_CSS}
         },
       },
     },
+    MuiSvgIcon: {
+      styleOverrides: {
+        fontSizeLarge: {
+          fontSize: "2rem",
+        },
+      },
+    },
   },
 })

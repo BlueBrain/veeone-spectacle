@@ -25,10 +25,10 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
       <Box
         sx={{
           display: "flex",
-          background: "#fafafa",
+          background: `rgba(255, 255, 255, .95)`,
           width: "100%",
           height: "100%",
-          boxShadow: "0 5px 10px rgba(0, 0, 0, 0.3)",
+          boxShadow: 3,
         }}
         onWheel={event => event.stopPropagation()}
       >

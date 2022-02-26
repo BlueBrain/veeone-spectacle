@@ -22,14 +22,21 @@ const FileBrowserBlockLayout: React.FC<FileBrowserBlockLayoutProps> = () => {
       sx={{ width: "100%", display: "flex", flexDirection: "column" }}
       className={"FileBrowserBlockLayout"}
     >
-      <FileBrowserTopbar />
-      <Box sx={{ display: "flex" }}>
-        <PathParts
-          path={activePath}
-          onSelectPathPart={openDirectoryByPathPartIndex}
-        />
+      <Box
+        sx={{
+          background: "white",
+          boxShadow: 1,
+        }}
+      >
+        <FileBrowserTopbar />
+        <FileBrowserBackgroundProgressIndicator />
+        <Box sx={{ display: "flex" }}>
+          <PathParts
+            path={activePath}
+            onSelectPathPart={openDirectoryByPathPartIndex}
+          />
+        </Box>
       </Box>
-      <FileBrowserBackgroundProgressIndicator />
       <Box
         sx={{
           width: "100%",

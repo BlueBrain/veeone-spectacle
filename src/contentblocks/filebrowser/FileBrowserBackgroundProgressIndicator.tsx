@@ -4,16 +4,17 @@ import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 
 const FileBrowserBackgroundProgressIndicator: React.FC = () => {
   const { isSearchingInProgress, searchMode } = useFileBrowserSearch()
+  const isProgressBarVisible = isSearchingInProgress && searchMode
   return (
     <Box
       sx={{
         display: "flex",
         width: "100%",
-        height: 5,
+        height: 3,
       }}
     >
-      {isSearchingInProgress && searchMode ? (
-        <LinearProgress sx={{ height: 5 }} />
+      {isProgressBarVisible ? (
+        <LinearProgress sx={{ display: "flex", flexGrow: 1, height: 3 }} />
       ) : null}
     </Box>
   )
