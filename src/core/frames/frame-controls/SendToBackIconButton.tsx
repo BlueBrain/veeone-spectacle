@@ -13,15 +13,17 @@ const SendToBackIconButton: React.FC<SendToBackIconButtonProps> = (
 ) => {
   return (
     <Tooltip title="Send to back">
-      <IconButton
-        ref={ref}
-        sx={{
-          ...controlBarButtonSx,
-          display: isVisible ? "inline-flex" : "none",
-        }}
-      >
-        <FlipToBack />
-      </IconButton>
+      <span>
+        <IconButton
+          ref={ref}
+          sx={{
+            ...controlBarButtonSx,
+            display: isVisible ? "inline-flex" : "none",
+          }}
+        >
+          <FlipToBack />
+        </IconButton>
+      </span>
     </Tooltip>
   )
 }

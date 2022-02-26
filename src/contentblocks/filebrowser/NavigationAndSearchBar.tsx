@@ -27,14 +27,16 @@ const NavigationAndSearchBar: React.FC = () => {
         <Grid container alignItems="center" data-drag-handle={true}>
           <Grid item>
             <Tooltip title="Back">
-              <IconButton
-                onClick={navigateBack}
-                disabled={disableBackButton}
-                color={"primary"}
-                size={"large"}
-              >
-                <ArrowBack fontSize={"large"} />
-              </IconButton>
+              <span>
+                <IconButton
+                  onClick={navigateBack}
+                  disabled={disableBackButton}
+                  color={"primary"}
+                  size={"large"}
+                >
+                  <ArrowBack fontSize={"large"} />
+                </IconButton>
+              </span>
             </Tooltip>
             <Tooltip title="Forward">
               <span>
@@ -52,13 +54,15 @@ const NavigationAndSearchBar: React.FC = () => {
 
           <Grid item>
             <Tooltip title="Search files and directories">
-              <IconButton
-                onClick={() => setSearchMode(true)}
-                color={"primary"}
-                size={"large"}
-              >
-                <Search />
-              </IconButton>
+              <span>
+                <IconButton
+                  onClick={() => setSearchMode(true)}
+                  color={"primary"}
+                  size={"large"}
+                >
+                  <Search />
+                </IconButton>
+              </span>
             </Tooltip>
 
             <FiltersSelector />

@@ -53,11 +53,13 @@ const FiltersSelector: React.FC = () => {
   return (
     <>
       <Tooltip title="Filter view">
-        <IconButton onClick={openMenu} color={"primary"} size={"large"}>
-          <Badge badgeContent={activeFiltersCount} color={"error"}>
-            <FilterList />
-          </Badge>
-        </IconButton>
+        <span>
+          <IconButton onClick={openMenu} color={"primary"} size={"large"}>
+            <Badge badgeContent={activeFiltersCount} color={"error"}>
+              <FilterList />
+            </Badge>
+          </IconButton>
+        </span>
       </Tooltip>
       <Menu
         id="viewType"

@@ -13,15 +13,17 @@ const FullscreenIconButton: React.FC<FullscreenIconButtonProps> = (
 ) => {
   return (
     <Tooltip title="Fullscreen">
-      <IconButton
-        ref={ref}
-        sx={{
-          ...controlBarButtonSx,
-          display: isVisible ? "inline-flex" : "none",
-        }}
-      >
-        <Fullscreen />
-      </IconButton>
+      <span>
+        <IconButton
+          ref={ref}
+          sx={{
+            ...controlBarButtonSx,
+            display: isVisible ? "inline-flex" : "none",
+          }}
+        >
+          <Fullscreen />
+        </IconButton>
+      </span>
     </Tooltip>
   )
 }

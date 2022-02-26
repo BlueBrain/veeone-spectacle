@@ -13,15 +13,17 @@ const CloseIconButton: React.FC<CloseIconButtonProps> = (
 ) => {
   return (
     <Tooltip title="Close">
-      <IconButton
-        ref={ref}
-        sx={{
-          ...controlBarButtonSx,
-          display: isVisible ? "inline-flex" : "none",
-        }}
-      >
-        <Close />
-      </IconButton>
+      <span>
+        <IconButton
+          ref={ref}
+          sx={{
+            ...controlBarButtonSx,
+            display: isVisible ? "inline-flex" : "none",
+          }}
+        >
+          <Close />
+        </IconButton>
+      </span>
     </Tooltip>
   )
 }

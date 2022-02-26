@@ -27,9 +27,11 @@ const ViewTypeSelector: React.FC = () => {
   return (
     <>
       <Tooltip title={VIEW_TYPES[viewType].tooltip}>
-        <IconButton onClick={toggleViewType} color={"primary"} size={"large"}>
-          {VIEW_TYPES[viewType].icon}
-        </IconButton>
+        <span>
+          <IconButton onClick={toggleViewType} color={"primary"} size={"large"}>
+            {VIEW_TYPES[viewType].icon}
+          </IconButton>
+        </span>
       </Tooltip>
     </>
   )

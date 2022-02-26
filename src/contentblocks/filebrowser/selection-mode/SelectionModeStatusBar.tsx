@@ -53,14 +53,18 @@ const SelectionModeStatusBar: React.FC = () => {
         {selectedFileCount > 1 ? "files" : "file"}
       </Button>
       <Tooltip title={"Select all"}>
-        <IconButton onClick={selectAllFiles}>
-          <SelectAll />
-        </IconButton>
+        <span>
+          <IconButton onClick={selectAllFiles}>
+            <SelectAll />
+          </IconButton>
+        </span>
       </Tooltip>
       <Tooltip title={"Deselect"}>
-        <IconButton onClick={deselectAllFiles}>
-          <Deselect />
-        </IconButton>
+        <span>
+          <IconButton onClick={deselectAllFiles}>
+            <Deselect />
+          </IconButton>
+        </span>
       </Tooltip>
       <Button
         onClick={turnOffSelectionMode}
