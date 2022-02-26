@@ -7,6 +7,7 @@ import { useFileBrowserSelectionMode } from "./FileBrowserSelectionModeContext"
 import interact from "interactjs"
 import FileThumbnailSelected from "./FileThumbnailSelected"
 import { Box } from "@mui/material"
+import makeEllipsis, { EllipsisPosition } from "../../common/text/makeEllipsis"
 
 interface FileElementProps {
   file: BrowserFile
@@ -83,6 +84,15 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
     }
   }, [handleHold, handleTap])
 
+  const fileNameEllipsis = useMemo(
+    () =>
+      makeEllipsis(file.name, {
+        ellipsisPosition: EllipsisPosition.MIDDLE,
+        visibleCharacters: 20,
+      }),
+    [file.name]
+  )
+
   return (
     <Box
       title={file.name}
@@ -97,6 +107,7 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
           {thumbnailUrl ? (
             <Box
               component={"img"}
+              loading={"lazy"}
               src={thumbnailUrl}
               sx={{
                 objectFit: "contain",
@@ -111,7 +122,7 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
           )}
         </Box>
       </Box>
-      <Box className={"Label FileThumbnailLabel"}>{file.name}</Box>
+      <Box className={"Label FileThumbnailLabel"}>{fileNameEllipsis}</Box>
       <FileThumbnailSelected isSelected={isSelected} />
     </Box>
   )

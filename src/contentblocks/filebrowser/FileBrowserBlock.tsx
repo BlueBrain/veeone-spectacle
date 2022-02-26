@@ -1,4 +1,3 @@
-import styled from "styled-components"
 import React, { useContext, useEffect } from "react"
 import FileBrowserDirectoryContent from "./FileBrowserDirectoryContent"
 import FileBrowserTopbar from "./FileBrowserTopbar"
@@ -10,26 +9,7 @@ import FileSystemBusyIndicator from "./FileSystemBusyIndicator"
 import FileBrowserBackgroundProgressIndicator from "./FileBrowserBackgroundProgressIndicator"
 import { FileBrowserContextProvider } from "./FileBrowserContext"
 import { FileBrowserFilterContext } from "./FileBrowserFilterContext"
-
-const StyledFileBrowserBlock = styled.div`
-  background: #fafafa;
-  width: 100%;
-  height: 100%;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-`
-
-const StyledBlockContent = styled.div`
-  width: 100%;
-  height: calc(100% - 6rem);
-`
-
-const StyledMain = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  flex: 1;
-`
+import { Box } from "@mui/material"
 
 const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
   const frameContext = useContext(FrameContext)
@@ -41,15 +21,31 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
 
   return (
     <FileBrowserContextProvider frameId={frameId}>
-      <StyledFileBrowserBlock onWheel={event => event.stopPropagation()}>
+      <Box
+        sx={{
+          background: "#fafafa",
+          width: "100%",
+          height: "100%",
+          boxShadow: "0 5px 10px rgba(0, 0, 0, 0.3)",
+        }}
+        onWheel={event => event.stopPropagation()}
+      >
         <FileBrowserNavigatorContext.Consumer>
           {({ isLoading }) => (
             <FileBrowserFilterContext.Consumer>
               {({ filteredDirs, filteredFiles }) => (
-                <StyledBlockContent>
+                <Box sx={{ width: "100%", height: "calc(100% - 6rem)" }}>
                   <FileBrowserTopbar />
                   <FileBrowserBackgroundProgressIndicator />
-                  <StyledMain>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "row",
+                      flex: "1",
+                    }}
+                  >
                     {!isLoading ? (
                       <FileBrowserDirectoryContent
                         dirs={filteredDirs}
@@ -58,14 +54,14 @@ const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
                     ) : (
                       <FileSystemBusyIndicator />
                     )}
-                  </StyledMain>
+                  </Box>
                   {!isLoading ? <FileBrowserFooter /> : null}
-                </StyledBlockContent>
+                </Box>
               )}
             </FileBrowserFilterContext.Consumer>
           )}
         </FileBrowserNavigatorContext.Consumer>
-      </StyledFileBrowserBlock>
+      </Box>
     </FileBrowserContextProvider>
   )
 }

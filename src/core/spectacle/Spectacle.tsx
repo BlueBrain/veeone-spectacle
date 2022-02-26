@@ -10,6 +10,7 @@ import { useSelector } from "react-redux"
 import veeDriveService from "../../veedrive"
 import { SpectaclePresentation } from "../types"
 import LoadPresentationModal from "../../presentation-loader/LoadPresentationModal"
+import ThemeGradients from "../themes/bbp/ThemeGradients"
 
 const StyledDeskWrapper = styled("div")({
   width: `${config.VIEWPORT_WIDTH}px`,
@@ -87,6 +88,7 @@ export const Spectacle = () => {
   return (
     <ThemeProvider theme={blueBrainTheme}>
       <CssBaseline />
+      <ThemeGradients />
       <SpectacleContext.Provider value={spectacleContext}>
         <StyledDeskWrapper>
           <Desk />

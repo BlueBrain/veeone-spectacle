@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme =>
   })
 )
 
-const DirectoryList: React.FC<DirectoryListProps> = ({ dirs, files }) => {
+const DirectoryListView: React.FC<DirectoryListProps> = ({ dirs, files }) => {
   const classes = useStyles()
   const { navigateDirectory, requestFile } = useFileBrowserNavigator()
 
@@ -86,4 +86,4 @@ const DirectoryList: React.FC<DirectoryListProps> = ({ dirs, files }) => {
   )
 }
 
-export default DirectoryList
+export default DirectoryListView

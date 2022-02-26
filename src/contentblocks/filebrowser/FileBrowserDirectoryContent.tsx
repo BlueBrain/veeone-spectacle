@@ -1,35 +1,19 @@
 import React, { useCallback, useEffect, useRef } from "react"
-import styled from "styled-components"
 import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { FileBrowserViewTypes } from "./types"
-import DirectoryThumbnails from "./DirectoryThumbnails"
-import DirectoryList from "./DirectoryList"
+import DirectoryThumbnailsView from "./DirectoryThumbnailsView"
+import DirectoryListView from "./DirectoryListView"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import EmptyResults from "./EmptyResults"
 import { visualKeyboardService } from "../../visualkeyboard"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
+import { Box } from "@mui/material"
 
 interface Props {
   files: BrowserFile[]
   dirs: BrowserDirectory[]
 }
-
-const StyledFileBrowserFileList = styled.div`
-  display: flex;
-  flex: 2;
-  overflow-y: scroll;
-  overflow-x: visible;
-  flex-direction: column;
-  padding: 0 1rem;
-
-  // Hide scrollbar
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  ::-webkit-scrollbar {
-    display: none;
-  }
-`
 
 const FileBrowserDirectoryContent: React.FC<Props> = ({
   dirs = [],
@@ -60,19 +44,32 @@ const FileBrowserDirectoryContent: React.FC<Props> = ({
   }, [setScrollableAreaRef])
 
   return (
-    <StyledFileBrowserFileList
+    <Box
       onTouchEnd={closeAnyKeyboards}
       onMouseUp={closeAnyKeyboards}
       ref={scrollableContentRef}
+      sx={{
+        display: "flex",
+        flex: "2",
+        overflowY: "scroll",
+        overflowX: "visible",
+        flexDirection: "column",
+        padding: "0 1rem",
+        // Hide scrollbar
+        scrollbarWidth: "none",
+        "::-webkit-scrollbar": {
+          display: "none",
+        },
+      }}
     >
       {isEmpty && !isSearchingInProgress ? (
         <EmptyResults />
       ) : displayType === FileBrowserViewTypes.Thumbnails ? (
-        <DirectoryThumbnails dirs={dirs} files={files} />
+        <DirectoryThumbnailsView dirs={dirs} files={files} />
       ) : (
-        <DirectoryList dirs={dirs} files={files} />
+        <DirectoryListView dirs={dirs} files={files} />
       )}
-    </StyledFileBrowserFileList>
+    </Box>
   )
 }
 
