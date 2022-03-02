@@ -248,7 +248,6 @@ export const useInteractiveFrame = ({
               width,
               height,
               angle,
-              disableWheelScaling: false,
             }
           },
           onmove: (event: GestureEvent) => {
@@ -350,6 +349,7 @@ export const useInteractiveFrame = ({
       isFullscreen,
       debouncedManipulate,
       manipulate,
+      debouncedResetStyle,
     ]
   )
   return [frameRefReceiver]

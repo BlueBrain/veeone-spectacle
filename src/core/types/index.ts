@@ -26,7 +26,6 @@ export type FrameSituation = {
   height: number
   angle: number
   isFullscreen?: boolean
-  disableWheelScaling: boolean
 }
 
 export type FrameSituationUpdate = {

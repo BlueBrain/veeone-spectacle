@@ -9,18 +9,19 @@ import {
   Typography,
 } from "@mui/material"
 import { Check, FilterList } from "@mui/icons-material"
-import React, { useContext, useState } from "react"
-import { FileBrowserContext } from "./FileBrowserContext"
+import React, { useState } from "react"
 import NameFilterMenuItem from "./NameFilterMenuItem"
+import { useFileBrowser } from "./FileBrowserContext"
+import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 
 const FiltersSelector: React.FC = () => {
+  const { isShowingHiddenFiles, isShowingUnsupportedFiles } = useFileBrowser()
   const {
-    isShowingHiddenFiles,
-    isShowingUnsupportedFiles,
     toggleShowHiddenFilesFilter,
     toggleShowUnsupportedFilesFilter,
     nameFilterQuery,
-  } = useContext(FileBrowserContext)
+  } = useFileBrowserFilter()
+
   const [
     viewTypeAnchorElement,
     setViewTypeAnchorElement,
@@ -52,11 +53,13 @@ const FiltersSelector: React.FC = () => {
   return (
     <>
       <Tooltip title="Filter view">
-        <IconButton onClick={openMenu} color={"primary"}>
-          <Badge badgeContent={activeFiltersCount} color={"error"}>
-            <FilterList />
-          </Badge>
-        </IconButton>
+        <span>
+          <IconButton onClick={openMenu} color={"primary"} size={"large"}>
+            <Badge badgeContent={activeFiltersCount} color={"error"}>
+              <FilterList />
+            </Badge>
+          </IconButton>
+        </span>
       </Tooltip>
       <Menu
         id="viewType"

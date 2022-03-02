@@ -1,9 +1,11 @@
-import React, { useContext } from "react"
+import React from "react"
 import { Button, IconButton, Tooltip } from "@mui/material"
 import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { ArrowUpward } from "@mui/icons-material"
+import { useFileBrowserSearch } from "./FileBrowserSearchContext"
+import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -22,16 +24,18 @@ const useStyles = makeStyles(theme =>
 )
 const EmptyResults: React.FC = () => {
   const {
-    nameFilterQuery,
-    searchQuery,
-    searchModeOn,
-    requestSearch,
     filterByName,
+    nameFilterQuery,
+    displayAllHiddenFiles,
+  } = useFileBrowserFilter()
+  const {
     totalFilesCount,
     hiddenFilesCount,
-    displayAllHiddenFiles,
     navigateUp,
-  } = useContext(FileBrowserContext)
+  } = useFileBrowserNavigator()
+
+  const { searchQuery, searchMode, requestSearch } = useFileBrowserSearch()
+
   let message
 
   const classes = useStyles()
@@ -41,7 +45,7 @@ const EmptyResults: React.FC = () => {
   const showAllFiles = () => displayAllHiddenFiles()
   const goToParentDirectory = () => navigateUp()
 
-  if (!!searchQuery.length && searchModeOn) {
+  if (!!searchQuery.length && searchMode) {
     message = (
       <div>
         {totalFilesCount > 0

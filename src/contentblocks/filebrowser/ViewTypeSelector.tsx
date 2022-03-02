@@ -1,8 +1,8 @@
-import React, { useContext } from "react"
+import React from "react"
 import { IconButton, Tooltip } from "@mui/material"
 import { ViewColumn, ViewComfy } from "@mui/icons-material"
-import { FileBrowserContext } from "./FileBrowserContext"
 import { FileBrowserViewTypes } from "./types"
+import { useFileBrowser } from "./FileBrowserContext"
 
 const VIEW_TYPES = {
   [FileBrowserViewTypes.Thumbnails]: {
@@ -18,7 +18,7 @@ const VIEW_TYPES = {
 }
 
 const ViewTypeSelector: React.FC = () => {
-  const { changeViewType, viewType } = useContext(FileBrowserContext)
+  const { changeViewType, viewType } = useFileBrowser()
 
   const toggleViewType = () => {
     changeViewType(VIEW_TYPES[viewType].switchTo)
@@ -27,9 +27,11 @@ const ViewTypeSelector: React.FC = () => {
   return (
     <>
       <Tooltip title={VIEW_TYPES[viewType].tooltip}>
-        <IconButton onClick={toggleViewType} color={"primary"}>
-          {VIEW_TYPES[viewType].icon}
-        </IconButton>
+        <span>
+          <IconButton onClick={toggleViewType} color={"primary"} size={"large"}>
+            {VIEW_TYPES[viewType].icon}
+          </IconButton>
+        </span>
       </Tooltip>
     </>
   )

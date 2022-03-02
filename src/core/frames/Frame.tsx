@@ -9,32 +9,17 @@ import {
   sendFrameToBack,
 } from "../redux/actions"
 import { FrameEntry, FrameId, FrameSituationUpdate } from "../types"
-import styled from "styled-components"
 import { contentBlockRegister } from "../../contentblocks/content-block-register"
 import { FrameContextProps } from "./types"
 import { FrameContext } from "./index"
 import { useInteractiveFrame } from "./useInteractiveFrame"
+import { Box } from "@mui/material"
 
 interface FrameProps {
   frame: FrameEntry
   frameId: FrameId
   stackIndex: number
 }
-
-const StyledFrame = styled.div(
-  ({ isFullscreen, width, height, left, top, angle, stackIndex }) => `
-  position: absolute;
-  will-change: transform;
-  z-index: ${stackIndex};
-  width: ${isFullscreen ? `100% !important` : `${width}px`};
-  height: ${isFullscreen ? `100% !important` : `${height}px`};
-  transform: ${
-    isFullscreen
-      ? `translateX(0) translateY(0) translateZ(0) !important`
-      : `translateZ(0) translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`
-  }
-`
-)
 
 const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   const dispatch = useDispatch()
@@ -83,6 +68,7 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
 
   const frameContextProvider: FrameContextProps = useMemo(
     () => ({
+      frameId,
       updateAspectRatio: (aspectRatio: number) => {
         const newWidth = width
         const newHeight = width / aspectRatio
@@ -120,15 +106,18 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   )
 
   return (
-    <StyledFrame
+    <Box
       ref={frameRefReceiver}
-      isFullscreen={isFullscreen}
-      width={width}
-      height={height}
-      left={left}
-      top={top}
-      stackIndex={stackIndex}
-      angle={angle}
+      sx={{
+        position: "absolute",
+        willChange: "transform",
+        zIndex: stackIndex,
+        width: isFullscreen ? `100% !important` : `${width}px`,
+        height: isFullscreen ? `100% !important` : `${height}px`,
+        transform: isFullscreen
+          ? `translateX(0) translateY(0) translateZ(0) !important`
+          : `translateZ(0) translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`,
+      }}
     >
       <FrameContext.Provider value={frameContextProvider}>
         <ContentBlockComponent
@@ -136,7 +125,7 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
           contentData={frameContentData}
         />
       </FrameContext.Provider>
-    </StyledFrame>
+    </Box>
   )
 }
 

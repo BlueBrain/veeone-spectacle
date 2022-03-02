@@ -1,12 +1,14 @@
-import React, { useContext, useState } from "react"
+import React, { useState } from "react"
 import { IconButton, Menu, MenuItem, Tooltip } from "@mui/material"
 import { History } from "@mui/icons-material"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
+import { useFileBrowser } from "./FileBrowserContext"
 
 interface BrowsingHistorySelectorProps {}
 
 const BrowsingHistorySelector: React.FC<BrowsingHistorySelectorProps> = () => {
-  const { navigateToIndex, history } = useContext(FileBrowserContext)
+  const { history } = useFileBrowser()
+  const { navigateToIndex } = useFileBrowserNavigator()
   const [
     viewTypeAnchorElement,
     setViewTypeAnchorElement,
@@ -35,6 +37,7 @@ const BrowsingHistorySelector: React.FC<BrowsingHistorySelectorProps> = () => {
             onClick={openMenu}
             disabled={shouldDisableButton}
             color={"primary"}
+            size={"large"}
           >
             <History />
           </IconButton>

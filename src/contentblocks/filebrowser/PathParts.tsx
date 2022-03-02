@@ -1,6 +1,7 @@
 import React from "react"
-import { Button } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { Box, Button, IconButton, Tooltip } from "@mui/material"
+import { Home } from "@mui/icons-material"
+import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 
 interface PathPartsProps {
   path: string
@@ -8,8 +9,32 @@ interface PathPartsProps {
 }
 
 const PathParts: React.FC<PathPartsProps> = ({ path, onSelectPathPart }) => {
+  const { navigateDirectory } = useFileBrowserNavigator()
+  const navigateHome = () => {
+    void navigateDirectory("")
+  }
+
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flex: "1",
+        flexDirection: "row",
+        textDecoration: "none",
+        padding: 0,
+        color: theme => theme.palette.primary.main,
+        "::after": {
+          content: `""`,
+        },
+      }}
+    >
+      <Tooltip title="Move to the home directory">
+        <span>
+          <IconButton onClick={navigateHome} color={"primary"}>
+            <Home />
+          </IconButton>
+        </span>
+      </Tooltip>
       {path
         .split("/")
         .filter(part => part !== "")
@@ -18,22 +43,8 @@ const PathParts: React.FC<PathPartsProps> = ({ path, onSelectPathPart }) => {
             {part}
           </Button>
         ))}
-    </>
+    </Box>
   )
 }
 
-const StyledPathParts = styled(PathParts)(
-  ({ theme }) => `
-  text-decoration: none;
-  padding: 0 0.2rem;
-  margin-right: 0.4rem;
-  box-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
-  color: ${theme.palette.primary.main};
-
-  ::after {
-    content: "/";
-  }
-`
-)
-
-export default StyledPathParts
+export default PathParts

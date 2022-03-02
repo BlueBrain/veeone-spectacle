@@ -1,15 +1,16 @@
 import * as React from "react"
+import { useMemo, useState } from "react"
 import { Desk } from "../desk"
-import { styled, ThemeProvider } from "@mui/material/styles"
-import { bbpTheme } from "../themes/bbp"
+import { CssBaseline, styled, ThemeProvider } from "@mui/material"
+import { blueBrainTheme } from "../themes/bbp"
 import { config } from "../../config"
 import { SpectacleContext, SpectacleContextProps } from "./SpectacleContext"
-import { useMemo, useState } from "react"
 import SavePresentationModal from "../../presentation-loader/SavePresentationModal"
 import { useSelector } from "react-redux"
 import veeDriveService from "../../veedrive"
 import { SpectaclePresentation } from "../types"
 import LoadPresentationModal from "../../presentation-loader/LoadPresentationModal"
+import ThemeGradients from "../themes/bbp/ThemeGradients"
 
 const StyledDeskWrapper = styled("div")({
   width: `${config.VIEWPORT_WIDTH}px`,
@@ -32,10 +33,6 @@ export const Spectacle = () => {
   const presentationStore: SpectaclePresentation = useSelector(
     store => store
   ) as SpectaclePresentation
-
-  if (!config.DISPLAY_MOUSE_CURSOR) {
-    require("./hideCursor.scss")
-  }
 
   const spectacleContext = useMemo<SpectacleContextProps>(
     () => ({
@@ -89,7 +86,9 @@ export const Spectacle = () => {
   )
 
   return (
-    <ThemeProvider theme={bbpTheme}>
+    <ThemeProvider theme={blueBrainTheme}>
+      <CssBaseline />
+      <ThemeGradients />
       <SpectacleContext.Provider value={spectacleContext}>
         <StyledDeskWrapper>
           <Desk />

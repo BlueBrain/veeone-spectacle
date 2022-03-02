@@ -5,29 +5,15 @@ import React, {
   useEffect,
   useState,
 } from "react"
-import styled from "styled-components"
 import { ContentBlockProps } from "../types"
 import fileService from "../../veedrive"
 import { FrameContext } from "../../core/frames"
-import FrameControlBar from "../../core/frames/FrameControlBar"
 import { Size } from "../../common/types"
-import { CircularProgress, Grid } from "@mui/material"
-
-const StyledImageBlock = styled.div`
-  width: 100%;
-  height: 100%;
-  background: black;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-`
+import { Box, CircularProgress, Grid, Grow } from "@mui/material"
+import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
 
 interface ImageBlockParams {
   path: string
-}
-
-const imgStyle: CSSProperties = {
-  width: "100%",
-  height: "100%",
-  objectFit: "contain",
 }
 
 const ImageBlock: React.FC<ContentBlockProps> = props => {
@@ -71,29 +57,39 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
   }, [loadThumbnail])
 
   return (
-    <StyledImageBlock data-drag-handle={true}>
-      {imageUrl ? (
-        <img
-          src={imageUrl}
-          width={width}
-          height={height}
-          style={imgStyle}
-          alt={""}
-        />
-      ) : (
-        <Grid
-          container
-          justifyContent={"center"}
-          alignItems={"center"}
-          sx={{ height: "100%" }}
-        >
-          <Grid item>
-            <CircularProgress />
+    <Grow in={true}>
+      <Box
+        data-drag-handle={true}
+        sx={{
+          width: "100%",
+          height: "100%",
+          background: "black",
+          boxShadow: 3,
+        }}
+      >
+        {imageUrl ? (
+          <Box
+            component={"img"}
+            src={imageUrl}
+            width={width}
+            height={height}
+            sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+          />
+        ) : (
+          <Grid
+            container
+            justifyContent={"center"}
+            alignItems={"center"}
+            sx={{ height: "100%" }}
+          >
+            <Grid item>
+              <CircularProgress />
+            </Grid>
           </Grid>
-        </Grid>
-      )}
-      <FrameControlBar floating={true} />
-    </StyledImageBlock>
+        )}
+        <FloatingFrameControlBar />
+      </Box>
+    </Grow>
   )
 }
 

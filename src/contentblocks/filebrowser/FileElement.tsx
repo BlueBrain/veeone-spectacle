@@ -1,32 +1,33 @@
-import React, { useContext, useEffect, useRef, useState } from "react"
-import styled from "styled-components"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import fileService from "../../veedrive"
 import { BrowserFile } from "../../veedrive/common/models"
-import { FileBrowserContext } from "./FileBrowserContext"
+import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { InsertDriveFile } from "@mui/icons-material"
-import useInteractable from "../../core/interactable/useInteractable"
-import LazyThumbnailLoader from "./LazyThumbnailLoader"
+import { useFileBrowserSelectionMode } from "./selection-mode/FileBrowserSelectionModeContext"
+import interact from "interactjs"
+import FileThumbnailSelected from "./selection-mode/FileThumbnailSelected"
+import { Box } from "@mui/material"
+import makeEllipsis, { EllipsisPosition } from "../../common/text/makeEllipsis"
 
 interface FileElementProps {
-  classes: any
   file: BrowserFile
 }
 
-const StyledImage = styled.img`
-  width: 100%;
-  object-fit: contain;
-  aspect-ratio: 1;
-  overflow: hidden;
-`
-
-const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
+const FileElement: React.FC<FileElementProps> = ({ file }) => {
+  const ref = useRef()
   const [thumbnailUrl, setThumbnailUrl] = useState("")
-  const { requestFile } = useContext(FileBrowserContext)
+  const { requestFile } = useFileBrowserNavigator()
+  const {
+    isFileSelected,
+    isSelectionModeEnabled,
+    toggleSelectionMode,
+    toggleFileSelect,
+    selectFile,
+  } = useFileBrowserSelectionMode()
 
   useEffect(() => {
     let isMounted = true
     const loadThumbnail = async () => {
-      console.debug("loadThumbnail", file.path)
       const response = await fileService.requestFile({
         path: file.path,
       })
@@ -42,30 +43,89 @@ const FileElement: React.FC<FileElementProps> = ({ file, classes }) => {
     }
   }, [file.path])
 
-  const ref = useRef()
+  const isSelected = useMemo<boolean>(() => {
+    return isFileSelected(file.path)
+  }, [file.path, isFileSelected])
 
-  useInteractable(ref, {
-    onTap: event => {
+  const handleTap = useCallback(
+    event => {
+      if (isSelectionModeEnabled) {
+        toggleFileSelect(file.path)
+      } else {
+        requestFile(file.path)
+      }
       event.stopPropagation()
-      requestFile(file.path)
     },
-  })
+    [file.path, isSelectionModeEnabled, requestFile, toggleFileSelect]
+  )
+
+  const handleHold = useCallback(
+    event => {
+      const selectionModeEnabled = toggleSelectionMode()
+      if (selectionModeEnabled) {
+        selectFile(file.path)
+      }
+    },
+    [file.path, selectFile, toggleSelectionMode]
+  )
+
+  useEffect(() => {
+    const currentRef = ref.current
+    if (currentRef) {
+      interact(currentRef)
+        .pointerEvents({
+          holdDuration: 400,
+        })
+        .on("tap", handleTap)
+        .on("hold", handleHold)
+    }
+    return () => {
+      interact(currentRef).unset()
+    }
+  }, [handleHold, handleTap])
+
+  const fileNameEllipsis = useMemo(
+    () =>
+      makeEllipsis(file.name, {
+        ellipsisPosition: EllipsisPosition.MIDDLE,
+        visibleCharacters: 20,
+      }),
+    [file.name]
+  )
 
   return (
-    <div className={classes.gridTile} title={file.name} ref={ref}>
-      <div className={classes.gridTileThumbnail}>
-        <div className={classes.gridTileThumbnailBody}>
+    <Box
+      title={file.name}
+      ref={ref}
+      className={"FileElement"}
+      sx={{
+        position: "relative",
+      }}
+    >
+      <Box className={"Thumbnail"}>
+        <Box className={"ThumbnailBody"}>
           {thumbnailUrl ? (
-            <LazyThumbnailLoader>
-              <StyledImage src={thumbnailUrl} />
-            </LazyThumbnailLoader>
+            <Box
+              component={"img"}
+              loading={"lazy"}
+              src={thumbnailUrl}
+              sx={{
+                display: "flex",
+                maxWidth: "100%",
+                maxHeight: "100%",
+                objectFit: "contain",
+                opacity: 0.8,
+                boxShadow: 1,
+              }}
+            />
           ) : (
             <InsertDriveFile fontSize={"large"} />
           )}
-        </div>
-      </div>
-      <div className={classes.gridTileLabel}>{file.name}</div>
-    </div>
+        </Box>
+        <FileThumbnailSelected isSelected={isSelected} />
+      </Box>
+      <Box className={"Label FileThumbnailLabel"}>{fileNameEllipsis}</Box>
+    </Box>
   )
 }
 export default FileElement

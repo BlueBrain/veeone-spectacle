@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
-import { FileBrowserContext } from "./FileBrowserContext"
+import React, { useEffect, useMemo, useRef, useState } from "react"
+import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import _ from "lodash"
 import { CircularProgress } from "@mui/material"
 
 const LazyThumbnailLoader: React.FC = ({ children }) => {
-  const { scrollableAreaRef } = useContext(FileBrowserContext)
+  const { scrollableAreaRef } = useFileBrowserNavigator()
   const ref = useRef(null)
   const [visible, setVisible] = useState(false)
 
@@ -18,11 +18,10 @@ const LazyThumbnailLoader: React.FC = ({ children }) => {
       if (distance > 10) {
         setVisible(true)
       }
-    }, 1000)
+    }, 500)
   }, [scrollableAreaRef])
 
   useEffect(() => {
-    const currentReference = ref.current
     if (scrollableAreaRef) {
       scrollableAreaRef.addEventListener(
         "scroll",

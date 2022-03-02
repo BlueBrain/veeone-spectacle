@@ -1,60 +1,29 @@
-import React, { useContext, useRef } from "react"
-import { Close, FlipToBack, Fullscreen } from "@mui/icons-material"
-import { IconButton, Tooltip } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import React, { useContext, useMemo, useRef } from "react"
+import { Box } from "@mui/material"
 import FrameContext from "./FrameContext"
 import useInteractable from "../interactable/useInteractable"
+import CloseIconButtonWithRef from "./frame-controls/CloseIconButton"
+import FullscreenIconButtonWithRef from "./frame-controls/FullscreenIconButton"
+import SendToBackIconButtonWithRef from "./frame-controls/SendToBackIconButton"
+import { useSelector } from "react-redux"
+import { getFrameStack } from "../redux/selectors"
 
-interface FrameControlBarProps {
-  floating?: boolean
+export interface FrameControlBarProps {
+  showCloseButton?: boolean
+  showFullscreenButton?: boolean
+  showSendToBackButton?: boolean
 }
-
-interface StyledFrameControlBarProps {
-  floating: number
-}
-
-const StyledFrameControlBar = styled("div")(
-  ({ floating }: StyledFrameControlBarProps) => ({
-    padding: ".5rem .3rem",
-    ...(floating
-      ? {
-          position: "absolute",
-          left: 0,
-          top: 0,
-        }
-      : {}),
-  })
-)
-
-const FrameControlIconButton = styled(IconButton)(({ theme }) => ({
-  padding: ".2rem",
-  margin: "0 .2rem",
-  background: theme.palette.primary.main,
-  svg: {
-    fill: "white",
-  },
-  "&:hover": {
-    opacity: 1,
-    background: theme.palette.primary.dark,
-  },
-}))
-
-const CloseIconButton = styled(FrameControlIconButton)(({ theme }) => ({
-  background: theme.palette.error.main,
-}))
-
-const FullscreenIconButton = styled(FrameControlIconButton)(({ theme }) => ({
-  // background: theme.palette.primary.main,
-}))
-
-const SendToBackIconButton = styled(FrameControlIconButton)(({ theme }) => ({
-  // background: theme.palette.primary.main,
-}))
 
 const FrameControlBar: React.FC<FrameControlBarProps> = ({
-  floating = false,
+  showSendToBackButton = true,
+  showCloseButton = true,
+  showFullscreenButton = true,
 }) => {
-  const { toggleFullscreen, close, sendToBack } = useContext(FrameContext)
+  const frameStack = useSelector(getFrameStack)
+
+  const { toggleFullscreen, close, sendToBack, frameId } = useContext(
+    FrameContext
+  )
 
   const closeRef = useRef()
   const sendToBackRef = useRef()
@@ -69,24 +38,35 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
   })
   useInteractable(fullscreenRef, { onTap: toggleFullscreen })
 
+  const isTopFrame = useMemo(
+    () => frameStack.indexOf(frameId) === frameStack.length - 1,
+    [frameId, frameStack]
+  )
+
   return (
-    <StyledFrameControlBar floating={floating ? 1 : 0}>
-      <Tooltip title="Close">
-        <CloseIconButton type={"button"} ref={closeRef}>
-          <Close />
-        </CloseIconButton>
-      </Tooltip>
-      <Tooltip title="Send to back">
-        <SendToBackIconButton type={"button"} ref={sendToBackRef}>
-          <FlipToBack />
-        </SendToBackIconButton>
-      </Tooltip>
-      <Tooltip title="Fullscreen">
-        <FullscreenIconButton type={"button"} ref={fullscreenRef}>
-          <Fullscreen />
-        </FullscreenIconButton>
-      </Tooltip>
-    </StyledFrameControlBar>
+    <Box
+      sx={[
+        { padding: ".5rem .3rem", transition: `opacity ease 500ms` },
+        isTopFrame
+          ? {
+              opacity: 1,
+            }
+          : {
+              opacity: 0.5,
+              filter: "grayscale(1)",
+            },
+      ]}
+    >
+      <SendToBackIconButtonWithRef
+        isVisible={showSendToBackButton}
+        ref={sendToBackRef}
+      />
+      <FullscreenIconButtonWithRef
+        isVisible={showFullscreenButton}
+        ref={fullscreenRef}
+      />
+      <CloseIconButtonWithRef isVisible={showCloseButton} ref={closeRef} />
+    </Box>
   )
 }
 

@@ -57,7 +57,15 @@ const Desk: React.FC = () => {
   const deskRef = useRef()
   const frames = useSelector(getFrames)
   const frameStack = useSelector(getFrameStack)
-  const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])
+  const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([
+    {
+      menuId: generateRandomId(4),
+      position: {
+        left: 400,
+        top: 400,
+      },
+    },
+  ])
 
   const openLauncherMenu = useCallback(
     ({ top, left }: Position) => {
@@ -117,8 +125,12 @@ const Desk: React.FC = () => {
     }
   }, [handleHold])
 
+  const getStackIndex = useCallback(frameId => frameStack.indexOf(frameId), [
+    frameStack,
+  ])
+
   return (
-    <StyledDesk ref={deskRef}>
+    <StyledDesk ref={deskRef} className={"Desk"}>
       <DeskBranding />
       {Object.keys(frames).map(frameId => {
         const frame = frames[frameId]
@@ -127,7 +139,7 @@ const Desk: React.FC = () => {
             frame={frame}
             key={frameId}
             frameId={frameId}
-            stackIndex={frameStack.indexOf(frameId)}
+            stackIndex={getStackIndex(frameId)}
           />
         ) : (
           ``
