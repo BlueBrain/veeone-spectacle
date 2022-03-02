@@ -1,13 +1,6 @@
 import { createTheme } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
-import React from "react"
 import { config } from "../../../config"
-
-declare module "@mui/material/styles/createPalette" {
-  interface TypeBackground {
-    light: React.CSSProperties["color"]
-  }
-}
 
 const HIDE_CURSOR_CSS = config.DISPLAY_MOUSE_CURSOR
   ? ``
@@ -34,7 +27,6 @@ export const blueBrainTheme = createTheme({
   typography: {
     fontFamily: ['"Titillium Web"', "sans-serif"].join(","),
     fontSize: 12,
-    // htmlFontSize: 12,
   },
   components: {
     MuiCssBaseline: {

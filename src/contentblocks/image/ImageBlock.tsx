@@ -9,7 +9,7 @@ import { ContentBlockProps } from "../types"
 import fileService from "../../veedrive"
 import { FrameContext } from "../../core/frames"
 import { Size } from "../../common/types"
-import { Box, CircularProgress, Grid } from "@mui/material"
+import { Box, CircularProgress, Grid, Grow } from "@mui/material"
 import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
 
 interface ImageBlockParams {
@@ -57,37 +57,39 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
   }, [loadThumbnail])
 
   return (
-    <Box
-      data-drag-handle={true}
-      sx={{
-        width: "100%",
-        height: "100%",
-        background: "black",
-        boxShadow: 3,
-      }}
-    >
-      {imageUrl ? (
-        <Box
-          component={"img"}
-          src={imageUrl}
-          width={width}
-          height={height}
-          sx={{ width: "100%", height: "100%", objectFit: "contain" }}
-        />
-      ) : (
-        <Grid
-          container
-          justifyContent={"center"}
-          alignItems={"center"}
-          sx={{ height: "100%" }}
-        >
-          <Grid item>
-            <CircularProgress />
+    <Grow in={true}>
+      <Box
+        data-drag-handle={true}
+        sx={{
+          width: "100%",
+          height: "100%",
+          background: "black",
+          boxShadow: 3,
+        }}
+      >
+        {imageUrl ? (
+          <Box
+            component={"img"}
+            src={imageUrl}
+            width={width}
+            height={height}
+            sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+          />
+        ) : (
+          <Grid
+            container
+            justifyContent={"center"}
+            alignItems={"center"}
+            sx={{ height: "100%" }}
+          >
+            <Grid item>
+              <CircularProgress />
+            </Grid>
           </Grid>
-        </Grid>
-      )}
-      <FloatingFrameControlBar />
-    </Box>
+        )}
+        <FloatingFrameControlBar />
+      </Box>
+    </Grow>
   )
 }
 

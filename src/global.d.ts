@@ -17,4 +17,10 @@ declare module "react" {
   ): (props: P & React.RefAttributes<T>) => React.ReactElement | null
 }
 
+declare module "@mui/material/styles/createPalette" {
+  interface TypeBackground {
+    light: React.CSSProperties["color"]
+  }
+}
+
 export {}
