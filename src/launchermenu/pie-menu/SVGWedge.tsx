@@ -2,43 +2,12 @@ import React, { useEffect, useRef } from "react"
 import { MenuItem } from "../types"
 import { Box } from "@mui/material"
 import useInteractable from "../../core/interactable/useInteractable"
+import { describeArc } from "./utils"
+
 interface SVGWedgeProps {
   menuItem: MenuItem
   index: number
   degreesPerItem: number
-}
-
-function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-  const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0
-
-  return {
-    x: centerX + radius * Math.cos(angleInRadians),
-    y: centerY + radius * Math.sin(angleInRadians),
-  }
-}
-
-function describeArc(x, y, radius, startAngle, endAngle) {
-  const start = polarToCartesian(x, y, radius, endAngle)
-  const end = polarToCartesian(x, y, radius, startAngle)
-  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1"
-
-  return [
-    "M",
-    start.x,
-    start.y,
-    "A",
-    radius,
-    radius,
-    0,
-    largeArcFlag,
-    0,
-    end.x,
-    end.y,
-    "L50 50",
-    "L",
-    start.x,
-    start.y,
-  ].join(" ")
 }
 
 const SVGWedge: React.FC<SVGWedgeProps> = ({
