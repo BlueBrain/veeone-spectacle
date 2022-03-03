@@ -23,8 +23,8 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
     <>
       <Box
         sx={{
-          position: "absolute",
           // background: `rgba(0,255,0,.2)`,
+          position: "absolute",
           left: "50%",
           top: "50%",
           textAlign: "center",
@@ -76,7 +76,7 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
               menuItem={menuItem}
               totalSubitemCount={total.length}
               mainRotationAngle={mainRotationAngle}
-              degreesPerMainItem={anglePerMainItem}
+              anglePerMainItem={anglePerMainItem}
             />
           ))}
         </>

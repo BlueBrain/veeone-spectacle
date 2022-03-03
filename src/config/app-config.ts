@@ -13,6 +13,7 @@ const viewportShortSide = Math.min(viewportWidth, viewportHeight)
 let config: ApplicationConfig = {
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
+  LAUNCHER_MENU_SIZE: Math.max(0.3 * viewportHeight, 350),
   VEEDRIVE_WS_PATH: "wss://bbpcd013.bbp.epfl.ch:8080/ws",
   FILE_BROWSER_WIDTH: 500,
   FILE_BROWSER_HEIGHT: 400,

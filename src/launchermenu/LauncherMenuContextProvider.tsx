@@ -122,11 +122,11 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
             icon: CloudDownload,
             action: savePresentation,
           },
-          {
-            label: "Test",
-            icon: Build,
-            action: savePresentation,
-          },
+          // {
+          //   label: "Test",
+          //   icon: Build,
+          //   action: savePresentation,
+          // },
         ],
       },
       {
@@ -138,6 +138,20 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
         label: "Open web",
         isEnabled: false,
         icon: Language,
+        children: [
+          {
+            label: "EPFL",
+            icon: Language,
+          },
+          {
+            label: "BBP",
+            icon: Language,
+          },
+          {
+            label: "Browser",
+            icon: Language,
+          },
+        ],
       },
       {
         label: "Share your screen",

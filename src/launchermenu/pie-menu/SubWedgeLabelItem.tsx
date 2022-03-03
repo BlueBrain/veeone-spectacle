@@ -9,25 +9,30 @@ interface SubWedgeLabelItemProps {
   index: number
   mainRotationAngle: number
   totalSubitemCount: number
-  degreesPerMainItem: number
+  anglePerMainItem: number
 }
 const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
   index,
   menuItem,
   mainRotationAngle,
   totalSubitemCount,
-  degreesPerMainItem,
+  anglePerMainItem,
 }) => {
   const { label, icon } = menuItem
   const animationId = useMemo(() => generateRandomId(), [])
-  const degreesPerSubWedge = useMemo(
-    () => degreesPerMainItem / totalSubitemCount,
-    [degreesPerMainItem, totalSubitemCount]
-  )
+  const anglePerSubWedge = useMemo(() => anglePerMainItem / totalSubitemCount, [
+    anglePerMainItem,
+    totalSubitemCount,
+  ])
   const IconComponent = useMemo<SvgIconComponent>(() => icon, [icon])
-  const rotationAngle = useMemo(
-    () => degreesPerSubWedge / 2 + degreesPerSubWedge * index,
-    [degreesPerSubWedge, index]
+  const indexRotationAngle = useMemo(
+    () => anglePerSubWedge / 2 + anglePerSubWedge * index,
+    [anglePerSubWedge, index]
+  )
+
+  const rotateAngle = useMemo(
+    () => -90 - anglePerMainItem / 2 + indexRotationAngle + mainRotationAngle,
+    [anglePerMainItem, mainRotationAngle, indexRotationAngle]
   )
 
   return (
@@ -45,9 +50,9 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
             opacity: 0,
             transform: `
               translate(-50%, -50%)
-              rotate(${rotationAngle}deg)
+              rotate(${rotateAngle}deg)
               translateX(8rem)
-              rotate(${-rotationAngle}deg)`,
+              rotate(${-rotateAngle}deg)`,
           },
           "30%": {
             opacity: 0,
@@ -56,9 +61,10 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
             opacity: 0.8,
             transform: `
               translate(-50%, -50%)
-              rotate(${rotationAngle}deg)
+              rotate(${rotateAngle}deg)
               translateX(13rem)
-              rotate(${-rotationAngle}deg)`,
+              rotate(${-rotateAngle}deg)
+              `,
           },
         },
       }}
@@ -72,8 +78,7 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
         }}
         className={"MenuItemLabel"}
       >
-        {/*{label}*/}
-        {mainRotationAngle}
+        {label}
       </Box>
     </Box>
   )

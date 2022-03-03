@@ -39,7 +39,7 @@ const SVGSubWedge: React.FC<SVGSubWedgeProps> = ({
             opacity: 0,
             transform: `
               rotate(${anglePerSubwedge * index}deg)
-              translateY(-3px)
+              translateY(-2px)
               scale(.7)
             `,
           },
@@ -47,7 +47,7 @@ const SVGSubWedge: React.FC<SVGSubWedgeProps> = ({
             opacity: 0.6,
             transform: `
               rotate(${anglePerSubwedge * index}deg)
-              translateY(-3px)
+              translateY(-2px)
               scale(.97)
             `,
           },
