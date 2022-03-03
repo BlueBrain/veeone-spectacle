@@ -12,10 +12,13 @@ import PieMenu from "./pie-menu/PieMenu"
 import { MenuData } from "./types"
 import {
   CloudDownload,
+  CloudSync,
   CloudUpload,
   GridView,
   ImageSearch,
   Language,
+  Person,
+  ScreenShare,
 } from "@mui/icons-material"
 
 interface LauncherMenuProps {
@@ -76,26 +79,6 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
         },
       },
       {
-        label: "Open presentation",
-        icon: CloudUpload,
-        action: () => {
-          spectacleContext.loadPresentation.openModal({
-            position: { ...position },
-          })
-          close()
-        },
-      },
-      {
-        label: "Save presentation",
-        icon: CloudDownload,
-        action: () => {
-          spectacleContext.savePresentation.openModal({
-            position: { ...position },
-          })
-          close()
-        },
-      },
-      {
         label: "Scenes",
         icon: GridView,
         action: () => {
@@ -103,8 +86,48 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
         },
       },
       {
-        label: "Web",
+        label: "Save / Load",
+        icon: CloudSync,
+        children: [
+          {
+            label: "Open",
+            icon: CloudDownload,
+            action: () => {
+              spectacleContext.loadPresentation.openModal({
+                position: { ...position },
+              })
+              close()
+            },
+          },
+          {
+            label: "Save",
+            icon: CloudUpload,
+            action: () => {
+              spectacleContext.savePresentation.openModal({
+                position: { ...position },
+              })
+              close()
+            },
+          },
+        ],
+      },
+      {
+        label: "Login",
+        icon: Person,
+        action: () => {
+          throw "Not implemented"
+        },
+      },
+      {
+        label: "Open web",
         icon: Language,
+        action: () => {
+          throw "Not implemented"
+        },
+      },
+      {
+        label: "Share your screen",
+        icon: ScreenShare,
         action: () => {
           throw "Not implemented"
         },

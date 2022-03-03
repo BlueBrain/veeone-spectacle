@@ -44,7 +44,7 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
             transform: `
                     translate(-50%)
                     rotate(${rotateDegrees}deg)
-                    translate(0, -7.2rem)
+                    translate(0, -7.4rem)
                     rotate(-${rotateDegrees}deg)
                     translateY(-50%)
                   `,
@@ -53,7 +53,7 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
       }}
     >
       <Box sx={{}} className={"MenuItemIcon"}>
-        <IconComponent sx={{ fontSize: "3rem" }} />
+        <IconComponent sx={{ fontSize: "2.7rem" }} />
       </Box>
       <Box
         sx={{
