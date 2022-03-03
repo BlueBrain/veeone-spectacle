@@ -1,49 +1,31 @@
 import * as React from "react"
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Frame } from "../frames"
 import { LauncherMenu } from "../../launchermenu"
 import { useSelector } from "react-redux"
 import { getFrames, getFrameStack } from "../redux/selectors"
 import interact from "interactjs"
 import { Target } from "@interactjs/types"
-import { styled } from "@mui/material/styles"
 import { Position } from "../../common/types"
 import { LauncherMenuData } from "./types"
 import { generateRandomId } from "../../common/random"
 import { config } from "../../config"
 import { CloseLauncherMenuArgs } from "../../launchermenu/LauncherMenu"
 import { DeskBranding } from "./DeskBranding"
+import { Box } from "@mui/material"
 
 interact.pointerMoveTolerance(4)
-
-const StyledDesk = styled(`div`)(({ theme }) => ({
-  background: `radial-gradient(
-          circle,
-          ${theme.palette.background.light} 0%,
-          ${theme.palette.background.default} 80%)`,
-  width: `100%`,
-  height: `100%`,
-  contain: `content`,
-  overflow: `hidden`,
-  position: `absolute`,
-}))
 
 function isAnyLauncherNearby(
   position: Position,
   launcherMenus: LauncherMenuData[]
 ) {
   return launcherMenus.some(launcher => {
-    // fixme this is hardcoded for now - should be calculated from launcher size
-    const top = launcher.position.top - 300
-    const bottom = launcher.position.top + 300
-    const left = launcher.position.left - 600
-    const right = launcher.position.left + 600
-    console.debug("Check position", launcher.menuId, position, {
-      top,
-      left,
-      bottom,
-      right,
-    })
+    // todo this is hardcoded for now - should be calculated from launcher size
+    const top = launcher.position.top - 200
+    const bottom = launcher.position.top + 200
+    const left = launcher.position.left - 200
+    const right = launcher.position.left + 200
     return (
       top <= position.top &&
       position.top <= bottom &&
@@ -57,15 +39,7 @@ const Desk: React.FC = () => {
   const deskRef = useRef()
   const frames = useSelector(getFrames)
   const frameStack = useSelector(getFrameStack)
-  const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([
-    {
-      menuId: generateRandomId(4),
-      position: {
-        left: 400,
-        top: 400,
-      },
-    },
-  ])
+  const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])
 
   const openLauncherMenu = useCallback(
     ({ top, left }: Position) => {
@@ -130,7 +104,23 @@ const Desk: React.FC = () => {
   ])
 
   return (
-    <StyledDesk ref={deskRef} className={"Desk"}>
+    <Box
+      ref={deskRef}
+      className={"Desk"}
+      sx={[
+        theme => ({
+          background: `radial-gradient(
+          circle,
+          ${theme.palette.background.light} 0%,
+          ${theme.palette.background.default} 80%)`,
+          width: `100%`,
+          height: `100%`,
+          contain: `content`,
+          overflow: `hidden`,
+          position: `absolute`,
+        }),
+      ]}
+    >
       <DeskBranding />
       {Object.keys(frames).map(frameId => {
         const frame = frames[frameId]
@@ -147,7 +137,7 @@ const Desk: React.FC = () => {
       })}
       {launcherMenus.map(launcherMenu => {
         return (
-          <div
+          <Box
             key={launcherMenu.menuId}
             style={{
               position: "absolute",
@@ -160,10 +150,10 @@ const Desk: React.FC = () => {
               position={launcherMenu.position}
               onClose={closeLauncherMenu}
             />
-          </div>
+          </Box>
         )
       })}
-    </StyledDesk>
+    </Box>
   )
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { MenuItem } from "../types"
 import { Box } from "@mui/material"
 import useInteractable from "../../core/interactable/useInteractable"
@@ -10,15 +10,48 @@ interface SVGWedgeProps {
   degreesPerItem: number
 }
 
+const getSubWedgeComponents = (menuItem: MenuItem, degreesPerItem: number) => {
+  const degreePerSubwedge = degreesPerItem / menuItem.children.length
+  const initialAngle = -degreesPerItem / 2
+  const wedges = []
+  menuItem.children.forEach((menuItem, i) => {
+    // const fromAngle = initialAngle + degreePerSubwedge * i
+    const fromAngle = -degreesPerItem / 2
+    const toAngle = fromAngle + degreePerSubwedge
+    wedges.push(
+      <Box
+        key={i}
+        mask={"url(#largeCircleMask)"}
+        component={"path"}
+        d={describeArc(50, 50, 75, fromAngle, toAngle)}
+        sx={{
+          fill: theme => theme.palette.primary.main,
+          opacity: 0.5,
+          transformOrigin: `center`,
+          transform: `
+            rotate(${degreePerSubwedge * i}deg)
+            translateY(-2px)
+            scale(.95)
+          `,
+        }}
+      />
+    )
+  })
+  return wedges
+}
+
 const SVGWedge: React.FC<SVGWedgeProps> = ({
   menuItem,
   degreesPerItem,
   index,
 }) => {
-  const arcRef = useRef()
+  const arcRef = useRef<SVGElement>()
+  const rotateDegrees = degreesPerItem * index
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false)
+  const [childWedges, setChildWedges] = useState(null)
 
   useEffect(() => {
-    const arc: SVGElement = arcRef.current
+    const arc = arcRef.current
     const startAngle = -degreesPerItem / 2
     const endAngle = startAngle + degreesPerItem
     if (arc) {
@@ -28,52 +61,71 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
 
   useInteractable(arcRef, {
     onTap: event => {
-      menuItem.action()
+      if (Array.isArray(menuItem.children) && menuItem.children.length > 0) {
+        setIsSubmenuOpen(!isSubmenuOpen)
+      } else {
+        menuItem.action()
+      }
     },
   })
+
+  useEffect(() => {
+    if (Array.isArray(menuItem.children) && menuItem.children.length > 0) {
+      setTimeout(() => {
+        setIsSubmenuOpen(true)
+      }, 1000)
+    }
+  }, [menuItem.children])
+
+  useEffect(() => {
+    if (Array.isArray(menuItem.children) && menuItem.children.length > 0) {
+      if (isSubmenuOpen) {
+        setChildWedges(getSubWedgeComponents(menuItem, degreesPerItem))
+      }
+    }
+  }, [degreesPerItem, isSubmenuOpen, menuItem, menuItem.children])
 
   return (
     <>
       <Box
         component={"g"}
-        mask={"url(#mymask)"}
+        mask={"url(#circleMask)"}
         sx={{
           "> path": {
-            transition: `fill ease 300ms`,
+            transition: `fill ease 500ms`,
           },
-          // ":hover": {
-          //   fill: `rgba(255,255,255,.8)`,
-          //   "> path": {
-          //     fill: `rgba(255,255,255,.8)`,
-          //   },
-          // },
           transformOrigin: `center`,
-          transform: `rotate(${degreesPerItem * index}deg)`,
           transition: `all ease 300ms`,
-          animation: "openPieEffect 1000ms ease",
-          "@keyframes openPieEffect": {
+          animation: `openPieEffect${index} 1s ease forwards`,
+          ["@keyframes openPieEffect" + index]: {
             "0%": {
-              opacity: 0.05,
+              opacity: 0.0,
               transform: `scale(0.1)`,
             },
             "20%": {
               opacity: 0.2,
-              transform: `scale(1)`,
+              transform: `scale(.95) `,
             },
             "100%": {
               opacity: 1,
+              transform: `
+                rotate(${rotateDegrees}deg)
+                translateY(-1px)
+                scale(.95)
+              `,
             },
           },
         }}
       >
         <Box
           component={"path"}
-          d={""}
           ref={arcRef}
           sx={{
-            fill: `rgba(255,255,255,${0.2 + 0.05 * index})`,
+            fill: theme => theme.palette.primary.main,
+            opacity: 0.9,
           }}
         />
+        {childWedges}
       </Box>
     </>
   )

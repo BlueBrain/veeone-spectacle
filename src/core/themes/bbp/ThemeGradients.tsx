@@ -1,8 +1,14 @@
 import * as React from "react"
+import { Box } from "@mui/material"
 
 const ThemeGradients = () => {
   return (
-    <svg width={0} height={0}>
+    <Box
+      component={"svg"}
+      width={0}
+      height={0}
+      sx={{ width: 0, height: 0, position: "absolute" }}
+    >
       <linearGradient
         id="linearColors"
         x1={1}
@@ -14,7 +20,7 @@ const ThemeGradients = () => {
         <stop offset={"0%"} stopColor="#00ecfd" />
         <stop offset={"100%"} stopColor="#4218b8" />
       </linearGradient>
-    </svg>
+    </Box>
   )
 }
 
