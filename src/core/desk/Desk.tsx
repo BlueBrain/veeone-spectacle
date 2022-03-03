@@ -143,6 +143,7 @@ const Desk: React.FC = () => {
               position: "absolute",
               left: `${launcherMenu.position.left}px`,
               top: `${launcherMenu.position.top}px`,
+              zIndex: 9999,
             }}
           >
             <LauncherMenu
