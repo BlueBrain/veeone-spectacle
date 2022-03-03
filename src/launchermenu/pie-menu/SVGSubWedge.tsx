@@ -1,21 +1,30 @@
 import { Box } from "@mui/material"
-import React from "react"
+import React, { useRef } from "react"
 import { describeArc } from "./utils"
+import useInteractable from "../../core/interactable/useInteractable"
 interface SVGSubWedgeProps {
   degreePerSubwedge: number
   fromAngle: number
   index: number
+  onTap(): void
 }
 const SVGSubWedge: React.FC<SVGSubWedgeProps> = ({
   degreePerSubwedge,
   fromAngle,
   index,
+  onTap,
 }) => {
+  const ref = useRef()
   const toAngle = fromAngle + degreePerSubwedge
   const svgPath = describeArc(50, 50, 75, fromAngle, toAngle)
 
+  useInteractable(ref, {
+    onTap,
+  })
+
   return (
     <Box
+      ref={ref}
       mask={"url(#largeCircleMask)"}
       component={"path"}
       d={svgPath}

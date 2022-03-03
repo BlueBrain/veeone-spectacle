@@ -19,6 +19,7 @@ const SVGSubWedges: React.FC<SVGSubWedgesProps> = ({
           degreePerSubwedge={degreesPerItem / items.length}
           fromAngle={-degreesPerItem / 2}
           index={i}
+          onTap={() => item.action()}
         />
       ))}
     </>

@@ -104,7 +104,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
       {
         label: "Save / Load",
         icon: CloudSync,
-        // isOpen: true,
+        isOpen: true,
         children: [
           {
             label: "Open",

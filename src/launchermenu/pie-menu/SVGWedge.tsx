@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useMemo, useRef } from "react"
 import { MenuItem } from "../types"
 import { Box } from "@mui/material"
 import useInteractable from "../../core/interactable/useInteractable"
@@ -11,48 +11,6 @@ interface SVGWedgeProps {
   degreesPerItem: number
   onTap(): void
 }
-//
-// const getSubWedgeComponents = (menuItem: MenuItem, degreesPerItem: number) => {
-//   const degreePerSubwedge = degreesPerItem / menuItem.children.length
-//   const wedges = []
-//   const fromAngle = -degreesPerItem / 2
-//   const toAngle = fromAngle + degreePerSubwedge
-//   const subwedgePath = describeArc(50, 50, 75, fromAngle, toAngle)
-//
-//   menuItem.children.forEach((menuItem, i) => {
-//     wedges.push(
-//       <Box
-//         key={i}
-//         mask={"url(#largeCircleMask)"}
-//         component={"path"}
-//         d={subwedgePath}
-//         sx={{
-//           fill: theme => theme.palette.primary.main,
-//           transformOrigin: `center`,
-//           animation: `openSubPieEffect${i} 500ms ease forwards`,
-//           ["@keyframes openSubPieEffect" + i]: {
-//             "0%": {
-//               opacity: 0,
-//               transform: `
-//                 rotate(${degreePerSubwedge * i}deg)
-//                 scale(.8)
-//               `,
-//             },
-//             "100%": {
-//               opacity: 0.6,
-//               transform: `
-//                 rotate(${degreePerSubwedge * i}deg)
-//                 translateY(-2px)
-//                 scale(.95)
-//               `,
-//             },
-//           },
-//         }}
-//       />
-//     )
-//   })
-//   return wedges
-// }
 
 const SVGWedge: React.FC<SVGWedgeProps> = ({
   menuItem,
@@ -73,14 +31,6 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
   useInteractable(arcRef, {
     onTap,
   })
-
-  // const childMenuItems = useMemo(() => {
-  //   if (menuItem.children?.length) {
-  //     return getSubWedgeComponents(menuItem, degreesPerItem)
-  //   } else {
-  //     return null
-  //   }
-  // }, [degreesPerItem, menuItem])
 
   return (
     <>
