@@ -1,89 +1,86 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { MenuItem } from "../types"
 import { Box } from "@mui/material"
 import useInteractable from "../../core/interactable/useInteractable"
 import { describeArc } from "./utils"
+import SVGSubWedges from "./SVGSubWedges"
 
 interface SVGWedgeProps {
   menuItem: MenuItem
   index: number
   degreesPerItem: number
+  onTap(): void
 }
-
-const getSubWedgeComponents = (menuItem: MenuItem, degreesPerItem: number) => {
-  const degreePerSubwedge = degreesPerItem / menuItem.children.length
-  const initialAngle = -degreesPerItem / 2
-  const wedges = []
-  menuItem.children.forEach((menuItem, i) => {
-    // const fromAngle = initialAngle + degreePerSubwedge * i
-    const fromAngle = -degreesPerItem / 2
-    const toAngle = fromAngle + degreePerSubwedge
-    wedges.push(
-      <Box
-        key={i}
-        mask={"url(#largeCircleMask)"}
-        component={"path"}
-        d={describeArc(50, 50, 75, fromAngle, toAngle)}
-        sx={{
-          fill: theme => theme.palette.primary.main,
-          opacity: 0.5,
-          transformOrigin: `center`,
-          transform: `
-            rotate(${degreePerSubwedge * i}deg)
-            translateY(-2px)
-            scale(.95)
-          `,
-        }}
-      />
-    )
-  })
-  return wedges
-}
+//
+// const getSubWedgeComponents = (menuItem: MenuItem, degreesPerItem: number) => {
+//   const degreePerSubwedge = degreesPerItem / menuItem.children.length
+//   const wedges = []
+//   const fromAngle = -degreesPerItem / 2
+//   const toAngle = fromAngle + degreePerSubwedge
+//   const subwedgePath = describeArc(50, 50, 75, fromAngle, toAngle)
+//
+//   menuItem.children.forEach((menuItem, i) => {
+//     wedges.push(
+//       <Box
+//         key={i}
+//         mask={"url(#largeCircleMask)"}
+//         component={"path"}
+//         d={subwedgePath}
+//         sx={{
+//           fill: theme => theme.palette.primary.main,
+//           transformOrigin: `center`,
+//           animation: `openSubPieEffect${i} 500ms ease forwards`,
+//           ["@keyframes openSubPieEffect" + i]: {
+//             "0%": {
+//               opacity: 0,
+//               transform: `
+//                 rotate(${degreePerSubwedge * i}deg)
+//                 scale(.8)
+//               `,
+//             },
+//             "100%": {
+//               opacity: 0.6,
+//               transform: `
+//                 rotate(${degreePerSubwedge * i}deg)
+//                 translateY(-2px)
+//                 scale(.95)
+//               `,
+//             },
+//           },
+//         }}
+//       />
+//     )
+//   })
+//   return wedges
+// }
 
 const SVGWedge: React.FC<SVGWedgeProps> = ({
   menuItem,
   degreesPerItem,
   index,
+  onTap,
 }) => {
   const arcRef = useRef<SVGElement>()
   const rotateDegrees = degreesPerItem * index
-  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false)
-  const [childWedges, setChildWedges] = useState(null)
+  const startAngle = -degreesPerItem / 2
+  const endAngle = startAngle + degreesPerItem
 
-  useEffect(() => {
-    const arc = arcRef.current
-    const startAngle = -degreesPerItem / 2
-    const endAngle = startAngle + degreesPerItem
-    if (arc) {
-      arc.setAttribute("d", describeArc(50, 50, 50, startAngle, endAngle))
-    }
-  }, [degreesPerItem, index])
+  const pathCommands = useMemo(
+    () => describeArc(50, 50, 50, startAngle, endAngle),
+    [endAngle, startAngle]
+  )
 
   useInteractable(arcRef, {
-    onTap: event => {
-      if (Array.isArray(menuItem.children) && menuItem.children.length > 0) {
-        setIsSubmenuOpen(!isSubmenuOpen)
-      } else {
-        menuItem.action()
-      }
-    },
+    onTap,
   })
 
-  useEffect(() => {
-    if (Array.isArray(menuItem.children) && menuItem.children.length > 0) {
-      setTimeout(() => {
-        setIsSubmenuOpen(true)
-      }, 1000)
-    }
-  }, [menuItem.children])
-
-  useEffect(() => {
-    if (Array.isArray(menuItem.children) && menuItem.children.length > 0) {
-      if (isSubmenuOpen) {
-        setChildWedges(getSubWedgeComponents(menuItem, degreesPerItem))
-      }
-    }
-  }, [degreesPerItem, isSubmenuOpen, menuItem, menuItem.children])
+  // const childMenuItems = useMemo(() => {
+  //   if (menuItem.children?.length) {
+  //     return getSubWedgeComponents(menuItem, degreesPerItem)
+  //   } else {
+  //     return null
+  //   }
+  // }, [degreesPerItem, menuItem])
 
   return (
     <>
@@ -117,15 +114,21 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
           },
         }}
       >
+        {menuItem.isOpen ? (
+          <SVGSubWedges
+            items={menuItem.children}
+            degreesPerItem={degreesPerItem}
+          />
+        ) : null}
         <Box
           component={"path"}
           ref={arcRef}
+          d={pathCommands}
           sx={{
             fill: theme => theme.palette.primary.main,
             opacity: 0.9,
           }}
         />
-        {childWedges}
       </Box>
     </>
   )
