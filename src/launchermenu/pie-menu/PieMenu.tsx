@@ -41,7 +41,7 @@ const PieMenu: React.FC<PieMenuProps> = () => {
           </mask>
           <mask id={"largeCircleMask"}>
             <rect x={-50} y={-50} width={400} height={400} fill={"white"} />
-            <circle r={51.5} cx={50} cy={50} fill={"black"} />
+            <circle r={49.5} cx={50} cy={50} fill={"black"} />
           </mask>
         </defs>
         {menuData.items.map((menuItem, index) => (

@@ -4,21 +4,17 @@ import SVGSubWedge from "./SVGSubWedge"
 
 interface SVGSubWedgesProps {
   items: MenuItem[]
-  degreesPerItem: number
+  anglePerItem: number
 }
 
-const SVGSubWedges: React.FC<SVGSubWedgesProps> = ({
-  items,
-  degreesPerItem,
-}) => {
+const SVGSubWedges: React.FC<SVGSubWedgesProps> = ({ items, anglePerItem }) => {
   return (
     <>
       {items.map((item, i) => (
         <SVGSubWedge
           key={i}
-          degreePerSubwedge={degreesPerItem / items.length}
-          fromAngle={-degreesPerItem / 2}
           index={i}
+          anglePerSubwedge={anglePerItem / items.length}
           onTap={() => item.action()}
         />
       ))}

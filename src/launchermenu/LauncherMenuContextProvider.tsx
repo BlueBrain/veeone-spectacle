@@ -14,7 +14,13 @@ import { config } from "../config"
 import LauncherMenuContext, {
   LauncherMenuContextProps,
 } from "./LauncherMenuContext"
-import React, { useCallback, useContext, useMemo, useState } from "react"
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
 import { SpectacleContext } from "../core/spectacle/SpectacleContext"
 import { makeFramePositionSafe } from "../core/frames/makeFramePositionSafe"
 import { addFrame } from "../core/redux/actions"
@@ -105,7 +111,6 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
       {
         label: "Save / Load",
         icon: CloudSync,
-        isOpen: true,
         children: [
           {
             label: "Open",
