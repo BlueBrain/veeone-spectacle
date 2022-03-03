@@ -1,4 +1,5 @@
 import {
+  Build,
   CloudDownload,
   CloudSync,
   CloudUpload,
@@ -108,12 +109,17 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
         children: [
           {
             label: "Open",
-            icon: CloudDownload,
+            icon: CloudUpload,
             action: openPresentation,
           },
           {
             label: "Save",
-            icon: CloudUpload,
+            icon: CloudDownload,
+            action: savePresentation,
+          },
+          {
+            label: "Test",
+            icon: Build,
             action: savePresentation,
           },
         ],

@@ -8,20 +8,20 @@ import SVGSubWedges from "./SVGSubWedges"
 interface SVGWedgeProps {
   menuItem: MenuItem
   index: number
-  degreesPerItem: number
+  anglePerMainItem: number
   onTap(): void
 }
 
 const SVGWedge: React.FC<SVGWedgeProps> = ({
   menuItem,
-  degreesPerItem,
+  anglePerMainItem,
   index,
   onTap,
 }) => {
   const arcRef = useRef<SVGElement>()
-  const rotateDegrees = degreesPerItem * index
-  const startAngle = -degreesPerItem / 2
-  const endAngle = startAngle + degreesPerItem
+  const rotateDegrees = anglePerMainItem * index
+  const startAngle = -anglePerMainItem / 2
+  const endAngle = startAngle + anglePerMainItem
 
   const pathCommands = useMemo(
     () => describeArc(50, 50, 50, startAngle, endAngle),
@@ -67,7 +67,7 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
         {menuItem.isOpen ? (
           <SVGSubWedges
             items={menuItem.children}
-            degreesPerItem={degreesPerItem}
+            degreesPerItem={anglePerMainItem}
           />
         ) : null}
         <Box

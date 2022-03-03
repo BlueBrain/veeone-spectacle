@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react"
+import React, { useMemo } from "react"
 import SVGWedge from "./SVGWedge"
 import { Box } from "@mui/material"
 import PieLabelItem from "./PieLabelItem"
@@ -10,7 +10,7 @@ interface PieMenuProps {}
 const PieMenu: React.FC<PieMenuProps> = () => {
   const { menuData, setMenuData } = useLauncherMenu()
   const itemCount = useMemo(() => menuData.items.length, [menuData.items])
-  const degreesPerItem = useMemo(() => 360 / itemCount, [itemCount])
+  const anglePerMainItem = useMemo(() => 360 / itemCount, [itemCount])
 
   const handleWedgeTap = (menuItem: MenuItem, index: number) => {
     const newMenuData = { ...menuData }
@@ -49,7 +49,7 @@ const PieMenu: React.FC<PieMenuProps> = () => {
             menuItem={menuItem}
             key={index}
             index={index}
-            degreesPerItem={degreesPerItem}
+            anglePerMainItem={anglePerMainItem}
             onTap={() => handleWedgeTap(menuItem, index)}
           />
         ))}
@@ -70,10 +70,9 @@ const PieMenu: React.FC<PieMenuProps> = () => {
         {menuData.items.map((menuItem, index) => (
           <PieLabelItem
             key={index}
-            label={menuItem.label}
-            icon={menuItem.icon}
-            rotateDegrees={degreesPerItem * index}
             index={index}
+            menuItem={menuItem}
+            anglePerMainItem={anglePerMainItem}
           />
         ))}
       </Box>
