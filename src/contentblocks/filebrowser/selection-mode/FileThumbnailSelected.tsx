@@ -9,7 +9,6 @@ interface FileThumbnailSelectedProps {
 
 const FileThumbnailSelected: React.FC<FileThumbnailSelectedProps> = ({
   isSelected,
-  children,
 }) => {
   const { isSelectionModeEnabled } = useFileBrowserSelectionMode()
 
@@ -25,7 +24,6 @@ const FileThumbnailSelected: React.FC<FileThumbnailSelectedProps> = ({
         transform: "scale(1.1)",
       }}
     >
-      {children}
       {isSelectionModeEnabled ? (
         <>
           <Box
