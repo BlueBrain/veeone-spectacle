@@ -30,8 +30,8 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
         <Box
           sx={{
             // background: `rgba(255,0,0,.3)`,
-            width: `${config.LAUNCHER_MENU_SIZE}px`,
-            height: `${config.LAUNCHER_MENU_SIZE}px`,
+            width: config.LAUNCHER_MENU_SIZE,
+            height: config.LAUNCHER_MENU_SIZE,
           }}
         >
           <PieMenu />

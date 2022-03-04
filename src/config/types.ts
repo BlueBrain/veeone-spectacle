@@ -16,5 +16,5 @@ export interface ApplicationConfig {
   DISPLAY_MOUSE_CURSOR: boolean
   DEFAULT_NEW_FRAME_WIDTH: number
   DEFAULT_NEW_FRAME_HEIGHT: number
-  LAUNCHER_MENU_SIZE: number
+  LAUNCHER_MENU_SIZE: string
 }
