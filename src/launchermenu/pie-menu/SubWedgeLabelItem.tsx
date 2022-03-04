@@ -62,7 +62,7 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
             transform: `
               translate(-50%, -50%)
               rotate(${rotateAngle}deg)
-              translateX(13rem)
+              translateX(13.4rem)
               rotate(${-rotateAngle}deg)
               `,
           },
