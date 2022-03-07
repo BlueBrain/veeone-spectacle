@@ -1,5 +1,4 @@
-import React from "react"
-import { NotImplementedError } from "../../common/errors"
+import React, { useContext } from "react"
 import { SpectaclePresentation } from "../types"
 import { VeeDriveListPresentationsResponse } from "../../veedrive/types"
 import { Position } from "../../common/types"
@@ -34,34 +33,8 @@ export interface SpectacleContextProps {
   savePresentationModalPosition: Position
 }
 
-export const SpectacleContext = React.createContext<SpectacleContextProps>({
-  savePresentation: {
-    isModalOpen: false,
-    openModal: () => {
-      throw new NotImplementedError()
-    },
-    closeModal: () => {
-      throw new NotImplementedError()
-    },
-    save: () => {
-      throw new NotImplementedError()
-    },
-  },
-  loadPresentation: {
-    isModalOpen: false,
-    openModal: () => {
-      throw new NotImplementedError()
-    },
-    closeModal: () => {
-      throw new NotImplementedError()
-    },
-    listPresentations: () => {
-      throw new NotImplementedError()
-    },
-    load: () => {
-      throw new NotImplementedError()
-    },
-  },
-  savePresentationModalPosition: null,
-  loadPresentationModalPosition: null,
-})
+const SpectacleContext = React.createContext<SpectacleContextProps>(null)
+
+export const useSpectacle = () => useContext(SpectacleContext)
+
+export default SpectacleContext

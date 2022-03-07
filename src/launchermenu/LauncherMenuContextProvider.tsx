@@ -1,5 +1,4 @@
 import {
-  Build,
   CloudDownload,
   CloudSync,
   CloudUpload,
@@ -21,7 +20,7 @@ import React, {
   useMemo,
   useState,
 } from "react"
-import { SpectacleContext } from "../core/spectacle/SpectacleContext"
+import SpectacleContext from "../core/spectacle/SpectacleContext"
 import { makeFramePositionSafe } from "../core/frames/makeFramePositionSafe"
 import { addFrame } from "../core/redux/actions"
 import { generateFrameId } from "../core/frames/utils"

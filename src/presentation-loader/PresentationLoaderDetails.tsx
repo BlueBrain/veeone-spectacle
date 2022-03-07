@@ -8,7 +8,7 @@ import {
   TableCell,
   TableRow,
 } from "@mui/material"
-import { SpectacleContext } from "../core/spectacle/SpectacleContext"
+import SpectacleContext from "../core/spectacle/SpectacleContext"
 import { SpectaclePresentation } from "../core/types"
 import { friendlyDisplayDateTime } from "../common/datetime"
 

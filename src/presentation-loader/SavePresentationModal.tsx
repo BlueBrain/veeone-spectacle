@@ -14,7 +14,7 @@ import React, {
   useRef,
   useState,
 } from "react"
-import { SpectacleContext } from "../core/spectacle/SpectacleContext"
+import SpectacleContext from "../core/spectacle/SpectacleContext"
 import { visualKeyboardService } from "../visualkeyboard"
 import { SpectaclePresentation } from "../core/types"
 import { generateRandomPresentationId } from "../core/presentations/utils"
