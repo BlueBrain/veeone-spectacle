@@ -2,6 +2,7 @@ import {
   Actions,
   AddFramePayload,
   AddScenePayload,
+  SetScenePayload,
   UpdateFrameDataPayload,
 } from "./actions"
 import {
@@ -51,6 +52,11 @@ export const scenesReducer = (
         currentActiveSceneIndex > 0 ? currentActiveSceneIndex - 1 : 0
       const newActiveScene = state.scenes.sceneOrder[newActiveSceneIndex]
       return { ...state.scenes, activeScene: newActiveScene }
+    }
+
+    case Actions.SetActiveScene: {
+      const { sceneId } = action.payload as SetScenePayload
+      return { ...state.scenes, activeScene: sceneId }
     }
 
     default: {

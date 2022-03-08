@@ -49,8 +49,8 @@ export interface SpectacleSceneRegistry {
 }
 
 export interface SpectacleScenes {
-  activeScene: string
-  sceneOrder: string[]
+  activeScene: SceneId
+  sceneOrder: SceneId[]
   scenes: SpectacleSceneRegistry
 }
 

@@ -2,8 +2,6 @@ import * as React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Frame } from "../frames"
 import { LauncherMenu } from "../../launchermenu"
-import { useSelector } from "react-redux"
-import { getScene } from "../redux/selectors"
 import interact from "interactjs"
 import { Target } from "@interactjs/types"
 import { Position } from "../../common/types"
@@ -16,7 +14,6 @@ import { Box } from "@mui/material"
 import SavePresentationModal from "../../presentation-loader/SavePresentationModal"
 import LoadPresentationModal from "../../presentation-loader/LoadPresentationModal"
 import { useSpectacle } from "../spectacle/SpectacleContext"
-import { SpectaclePresentation, SpectacleScene } from "../types"
 import { useDesk } from "./DeskContext"
 
 interact.pointerMoveTolerance(4)
@@ -44,14 +41,15 @@ const Desk: React.FC = () => {
   const deskRef = useRef()
   const { scene } = useDesk()
   const spectacleContext = useSpectacle()
+  const meta = spectacleContext.presentationStore.meta
   const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([
-    {
-      menuId: generateRandomId(4),
-      position: {
-        left: 350,
-        top: 300,
-      },
-    },
+    // {
+    //   menuId: generateRandomId(4),
+    //   position: {
+    //     left: 350,
+    //     top: 300,
+    //   },
+    // },
   ])
 
   const openLauncherMenu = useCallback(
@@ -127,8 +125,8 @@ const Desk: React.FC = () => {
           circle,
           ${theme.palette.background.light} 0%,
           ${theme.palette.background.default} 80%)`,
-          width: `100%`,
-          height: `100%`,
+          width: `${meta.viewport.width}px`,
+          height: `${meta.viewport.height}px`,
           contain: `content`,
           overflow: `hidden`,
           position: `absolute`,

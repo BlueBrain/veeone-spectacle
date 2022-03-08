@@ -36,6 +36,10 @@ export interface AddScenePayload {
   sceneId: SceneId
 }
 
+export interface SetScenePayload {
+  sceneId: SceneId
+}
+
 export const addFrame = (payload: AddFramePayload) => ({
   type: Actions.AddFrame,
   payload,
@@ -92,6 +96,11 @@ export const switchToNextScene = () => ({
 export const switchToPreviousScene = () => ({
   type: Actions.PreviousScene,
   payload: null,
+})
+
+export const setActiveScene = (sceneId: SceneId) => ({
+  type: Actions.SetActiveScene,
+  payload: { sceneId },
 })
 
 export const loadPresentationStore = (newStore: SpectaclePresentation) => ({

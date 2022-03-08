@@ -60,6 +60,8 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
       previousSceneId,
       nextSceneId,
       activeSceneId,
+      activeSceneIndex,
+      sceneIds,
       savePresentationModal: {
         visible: saveModalVisible,
       },
@@ -101,15 +103,21 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
       },
       viewMode,
       setViewMode,
+      presentationStore,
     }),
     [
-      loadModalVisible,
-      loadPresentationModalPosition,
-      presentationStore,
+      sceneManager,
+      previousSceneId,
+      nextSceneId,
+      activeSceneId,
+      activeSceneIndex,
+      sceneIds,
       saveModalVisible,
+      loadPresentationModalPosition,
       savePresentationModalPosition,
+      loadModalVisible,
       viewMode,
-      setViewMode,
+      presentationStore,
     ]
   )
   return (

@@ -43,6 +43,9 @@ export interface SpectacleContextProps {
   activeSceneId: SceneId
   nextSceneId: SceneId
   previousSceneId: SceneId
+  activeSceneIndex: number
+  sceneIds: SceneId[]
+  presentationStore: SpectaclePresentation
 }
 
 const SpectacleContext = React.createContext<SpectacleContextProps>(null)

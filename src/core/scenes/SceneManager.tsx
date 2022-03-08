@@ -2,10 +2,12 @@ import { spectacleStore } from "../redux/store"
 import {
   addScene,
   AddScenePayload,
+  setActiveScene,
   switchToNextScene,
   switchToPreviousScene,
 } from "../redux/actions"
 import { generateRandomId } from "../../common/random"
+import { SceneId } from "../types"
 
 class SceneManager {
   public addNewScene() {
@@ -23,6 +25,10 @@ class SceneManager {
 
   public switchToPreviousScene() {
     spectacleStore.dispatch(switchToPreviousScene())
+  }
+
+  public setActiveScene(sceneId: SceneId) {
+    spectacleStore.dispatch(setActiveScene(sceneId))
   }
 }
 
