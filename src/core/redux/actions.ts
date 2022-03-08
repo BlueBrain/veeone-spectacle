@@ -4,6 +4,7 @@ import {
   FrameData,
   FrameId,
   FrameSituationUpdate,
+  SceneId,
   SpectaclePresentation,
 } from "../types"
 
@@ -16,6 +17,11 @@ export enum Actions {
   SendFrameToBack,
   CloseAllFrames,
   UpdateFrameData,
+  AddScene,
+  NextScene,
+  PreviousScene,
+  SetActiveScene,
+  RemoveScene,
 }
 
 export interface AddFramePayload {
@@ -26,9 +32,13 @@ export interface AddFramePayload {
   contentData: FrameData
 }
 
+export interface AddScenePayload {
+  sceneId: SceneId
+}
+
 export const addFrame = (payload: AddFramePayload) => ({
   type: Actions.AddFrame,
-  payload: payload,
+  payload,
 })
 
 export const manipulateFrame = (
@@ -67,6 +77,21 @@ export const closeFrame = (frameId: FrameId) => ({
   payload: {
     frameId,
   },
+})
+
+export const addScene = (payload: AddScenePayload) => ({
+  type: Actions.AddScene,
+  payload,
+})
+
+export const switchToNextScene = () => ({
+  type: Actions.NextScene,
+  payload: null,
+})
+
+export const switchToPreviousScene = () => ({
+  type: Actions.PreviousScene,
+  payload: null,
 })
 
 export const loadPresentationStore = (newStore: SpectaclePresentation) => ({

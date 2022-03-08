@@ -1,7 +1,74 @@
-import { Actions, AddFramePayload, UpdateFrameDataPayload } from "./actions"
-import { FramesRegister, FrameStack } from "../types"
+import {
+  Actions,
+  AddFramePayload,
+  AddScenePayload,
+  UpdateFrameDataPayload,
+} from "./actions"
+import {
+  FramesRegister,
+  FrameStack,
+  SpectaclePresentation,
+  SpectacleScene,
+} from "../types"
 import { ReduxAction } from "../../redux/actions"
 import { config } from "../../config"
+
+export const scenesReducer = (
+  state: SpectaclePresentation,
+  action: ReduxAction
+) => {
+  switch (action.type) {
+    case Actions.AddScene: {
+      const { sceneId } = action.payload as AddScenePayload
+      const newScene: SpectacleScene = { frames: {}, frameStack: [] }
+      console.debug("Add new scene....")
+      return {
+        ...state.scenes,
+        sceneOrder: [...state.scenes.sceneOrder, sceneId],
+        scenes: { ...state.scenes.scenes, [sceneId]: newScene },
+      }
+    }
+
+    case Actions.NextScene: {
+      const currentActiveScene = state.scenes.activeScene
+      const currentActiveSceneIndex = state.scenes.sceneOrder.indexOf(
+        currentActiveScene
+      )
+      const newActiveSceneIndex =
+        currentActiveSceneIndex + 1 < state.scenes.sceneOrder.length
+          ? currentActiveSceneIndex + 1
+          : currentActiveSceneIndex
+      const newActiveScene = state.scenes.sceneOrder[newActiveSceneIndex]
+      return { ...state.scenes, activeScene: newActiveScene }
+    }
+
+    case Actions.PreviousScene: {
+      const currentActiveScene = state.scenes.activeScene
+      const currentActiveSceneIndex = state.scenes.sceneOrder.indexOf(
+        currentActiveScene
+      )
+      const newActiveSceneIndex =
+        currentActiveSceneIndex > 0 ? currentActiveSceneIndex - 1 : 0
+      const newActiveScene = state.scenes.sceneOrder[newActiveSceneIndex]
+      return { ...state.scenes, activeScene: newActiveScene }
+    }
+
+    default: {
+      const activeSceneKey = state.scenes.activeScene
+      const activeScene = state.scenes.scenes[activeSceneKey]
+      return {
+        ...state.scenes,
+        scenes: {
+          ...state.scenes.scenes,
+          [activeSceneKey]: {
+            frames: framesReducer(activeScene.frames, action),
+            frameStack: frameStackReducer(activeScene.frameStack, action),
+          },
+        },
+      }
+    }
+  }
+}
 
 export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
   switch (action.type) {
@@ -90,7 +157,9 @@ export const frameStackReducer = (
     }
     case Actions.BringFrameToFront: {
       const frameId = action.payload.frameId
-      return [...frameStack.filter(id => id !== frameId), frameId]
+      return frameStack.includes(frameId)
+        ? [...frameStack.filter(id => id !== frameId), frameId]
+        : frameStack
     }
     case Actions.SendFrameToBack: {
       const frameId = action.payload.frameId

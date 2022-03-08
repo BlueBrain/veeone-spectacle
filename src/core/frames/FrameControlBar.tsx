@@ -7,6 +7,7 @@ import FullscreenIconButtonWithRef from "./frame-controls/FullscreenIconButton"
 import SendToBackIconButtonWithRef from "./frame-controls/SendToBackIconButton"
 import { useSelector } from "react-redux"
 import { getFrameStack } from "../redux/selectors"
+import { useDesk } from "../desk/DeskContext"
 
 export interface FrameControlBarProps {
   showCloseButton?: boolean
@@ -19,7 +20,7 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
   showCloseButton = true,
   showFullscreenButton = true,
 }) => {
-  const frameStack = useSelector(getFrameStack)
+  const { scene } = useDesk()
 
   const { toggleFullscreen, close, sendToBack, frameId } = useContext(
     FrameContext
@@ -39,8 +40,8 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
   useInteractable(fullscreenRef, { onTap: toggleFullscreen })
 
   const isTopFrame = useMemo(
-    () => frameStack.indexOf(frameId) === frameStack.length - 1,
-    [frameId, frameStack]
+    () => scene.frameStack.indexOf(frameId) === scene.frameStack.length - 1,
+    [frameId, scene.frameStack]
   )
 
   return (

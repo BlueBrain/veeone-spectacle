@@ -1,7 +1,8 @@
 import React, { useContext } from "react"
-import { SpectaclePresentation } from "../types"
+import { SceneId, SpectaclePresentation } from "../types"
 import { VeeDriveListPresentationsResponse } from "../../veedrive/types"
 import { Position } from "../../common/types"
+import SceneManager from "../scenes/SceneManager"
 
 interface SavePresentationOpenModalProps {
   position: Position
@@ -38,6 +39,10 @@ export interface SpectacleContextProps {
   savePresentationModalPosition: Position
   viewMode: ViewMode
   setViewMode(newViewMode: ViewMode): void
+  sceneManager: SceneManager
+  activeSceneId: SceneId
+  nextSceneId: SceneId
+  previousSceneId: SceneId
 }
 
 const SpectacleContext = React.createContext<SpectacleContextProps>(null)
