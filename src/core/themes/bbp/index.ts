@@ -24,6 +24,7 @@ export const blueBrainTheme = createTheme({
       light: `rgba(3, 86, 150, 1)`,
     },
   },
+  branding: { main: `rgba(62, 197, 255, 1)` },
   typography: {
     fontFamily: ['"Titillium Web"', "sans-serif"].join(","),
     fontSize: 12,
@@ -58,6 +59,7 @@ body {
   user-select: none;
   touch-action: none;
   scrollbar-width: none;
+  background: black;
 }
 
 body::-webkit-scrollbar {

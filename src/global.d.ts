@@ -23,4 +23,18 @@ declare module "@mui/material/styles/createPalette" {
   }
 }
 
+declare module "@mui/material/styles" {
+  interface Theme {
+    branding: {
+      main: string
+    }
+  }
+
+  interface ThemeOptions {
+    branding: {
+      main: string
+    }
+  }
+}
+
 export {}
