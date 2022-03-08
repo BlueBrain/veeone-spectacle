@@ -26,11 +26,18 @@ interface LoadPresentationContextProps {
   load: (id: string) => Promise<SpectaclePresentation>
 }
 
+export enum ViewMode {
+  Desk,
+  SceneOverview,
+}
+
 export interface SpectacleContextProps {
   savePresentation: SavePresentationContextProps
   loadPresentation: LoadPresentationContextProps
   loadPresentationModalPosition: Position
   savePresentationModalPosition: Position
+  viewMode: ViewMode
+  setViewMode(newViewMode: ViewMode): void
 }
 
 const SpectacleContext = React.createContext<SpectacleContextProps>(null)

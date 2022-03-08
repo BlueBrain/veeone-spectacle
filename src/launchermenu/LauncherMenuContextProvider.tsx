@@ -13,14 +13,8 @@ import { config } from "../config"
 import LauncherMenuContext, {
   LauncherMenuContextProps,
 } from "./LauncherMenuContext"
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react"
-import SpectacleContext from "../core/spectacle/SpectacleContext"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useSpectacle, ViewMode } from "../core/spectacle/SpectacleContext"
 import { makeFramePositionSafe } from "../core/frames/makeFramePositionSafe"
 import { addFrame } from "../core/redux/actions"
 import { generateFrameId } from "../core/frames/utils"
@@ -46,7 +40,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   onClose,
   children,
 }) => {
-  const spectacleContext = useContext(SpectacleContext)
+  const spectacleContext = useSpectacle()
 
   const dispatch = useDispatch()
 
@@ -96,6 +90,12 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
     close()
   }, [close, position, spectacleContext.savePresentation])
 
+  const switchToScenesView = useCallback(() => {
+    console.debug("switchToScenesView to scene overview...")
+    close()
+    spectacleContext.setViewMode(ViewMode.SceneOverview)
+  }, [close, spectacleContext])
+
   const [menuData, setMenuData] = useState<MenuData>({
     items: [
       {
@@ -106,6 +106,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
       {
         label: "Scenes",
         icon: GridView,
+        action: switchToScenesView,
       },
       {
         label: "Save / Load",

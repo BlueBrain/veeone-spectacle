@@ -1,17 +1,9 @@
 import * as React from "react"
-import { Desk } from "../desk"
-import { CssBaseline, styled, ThemeProvider } from "@mui/material"
+import { CssBaseline, ThemeProvider } from "@mui/material"
 import { blueBrainTheme } from "../themes/bbp"
-import { config } from "../../config"
 import ThemeGradients from "../themes/bbp/ThemeGradients"
 import SpectacleContextProvider from "./SpectacleContextProvider"
-
-const StyledDeskWrapper = styled("div")({
-  width: `${config.VIEWPORT_WIDTH}px`,
-  height: `${config.VIEWPORT_HEIGHT}px`,
-  overflow: "hidden",
-  contain: `content`,
-})
+import SpectacleScreen from "./SpectacleScreen"
 
 export const Spectacle = () => {
   return (
@@ -19,9 +11,7 @@ export const Spectacle = () => {
       <CssBaseline />
       <ThemeGradients />
       <SpectacleContextProvider>
-        <StyledDeskWrapper>
-          <Desk />
-        </StyledDeskWrapper>
+        <SpectacleScreen />
       </SpectacleContextProvider>
     </ThemeProvider>
   )

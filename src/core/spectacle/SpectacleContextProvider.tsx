@@ -1,8 +1,12 @@
 import React, { useMemo, useState } from "react"
-import SpectacleContext, { SpectacleContextProps } from "./SpectacleContext"
+import SpectacleContext, {
+  SpectacleContextProps,
+  ViewMode,
+} from "./SpectacleContext"
 import veeDriveService from "../../veedrive/service"
 import { SpectaclePresentation } from "../types"
 import { useSelector } from "react-redux"
+
 interface SpectacleContextProviderProps {}
 const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
   children,
@@ -17,6 +21,12 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
     savePresentationModalPosition,
     setSavePresentationModalPosition,
   ] = useState(null)
+
+  const [viewMode, setViewMode] = useState(
+    ViewMode.SceneOverview
+    // ViewMode.Desk
+  )
+
   const presentationStore: SpectaclePresentation = useSelector(
     store => store
   ) as SpectaclePresentation
@@ -62,6 +72,8 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
           return await veeDriveService.getPresentation(presentationId)
         },
       },
+      viewMode,
+      setViewMode,
     }),
     [
       loadModalVisible,
@@ -69,6 +81,8 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
       presentationStore,
       saveModalVisible,
       savePresentationModalPosition,
+      viewMode,
+      setViewMode,
     ]
   )
   return (
