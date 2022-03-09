@@ -41,7 +41,6 @@ const SceneCarouselItem: React.FC<SceneCarouselItemProps> = ({
       ref={ref}
       onClick={setActive}
       sx={{
-        display: "flex",
         flexShrink: 0,
         background: `rgba(0, 255, 0, .3)`,
         position: "relative",
@@ -55,8 +54,19 @@ const SceneCarouselItem: React.FC<SceneCarouselItemProps> = ({
         `,
       }}
     >
-      {/*<Box component={"h1"}>{sceneId}</Box>*/}
       <Scene sceneId={sceneId} />
+      <Box
+        sx={{
+          transform: `translate(0, -100%)`,
+          paddingBottom: "3rem",
+          fontSize: "3rem",
+          fontWeight: 300,
+          textAlign: "center",
+          color: `rgba(255, 255, 255, .3)`,
+        }}
+      >
+        Scene {index + 1}
+      </Box>
     </Box>
   )
 }

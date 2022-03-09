@@ -26,12 +26,10 @@ const SceneCarouselNavigator: React.FC = () => {
 
   const sceneCarouselItems = useMemo(
     () =>
-      1 === 1 // isScenesOverviewMode
-        ? sceneIds.map((sceneId, i) => (
-            <SceneCarouselItem sceneId={sceneId} index={i} key={i} />
-          ))
-        : [<SceneCarouselItem sceneId={activeSceneId} index={0} key={0} />],
-    [activeSceneId, isScenesOverviewMode, sceneIds]
+      sceneIds.map((sceneId, i) => (
+        <SceneCarouselItem sceneId={sceneId} index={i} key={i} />
+      )),
+    [sceneIds]
   )
 
   return (
