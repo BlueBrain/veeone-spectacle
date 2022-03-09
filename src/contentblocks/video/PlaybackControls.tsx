@@ -21,6 +21,8 @@ import interact from "interactjs"
 import { friendlyFormatTime } from "./display"
 import { FrameContext } from "../../core/frames"
 import VideoBlockContext from "./VideoBlockContext"
+import { useSpectacle, ViewMode } from "../../core/spectacle/SpectacleContext"
+import { useDesk } from "../../core/desk/DeskContext"
 
 const CONTROLS_FADING_TIME_MS = 500
 const CONTROLS_AUTO_HIDE_AFTER_MS = 5000
@@ -116,6 +118,13 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
   const [active, setActive] = useState(true)
   const [activeCssDisplay, setActiveCssDisplay] = useState(active)
   const [autoHideTimeoutId, setAutoHideTimeoutId] = useState(null)
+  const { viewMode, activeSceneId } = useSpectacle()
+  const { sceneId } = useDesk()
+
+  const isPlayingAllowed = useMemo(
+    () => viewMode === ViewMode.Desk && sceneId === activeSceneId,
+    [activeSceneId, sceneId, viewMode]
+  )
 
   const handlePlayButton = () => {
     setIsPlaying(!isPlaying)
@@ -171,7 +180,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
     }
 
     async function handlePlaybackState() {
-      if (isPlaying) {
+      if (isPlaying && isPlayingAllowed) {
         await videoRef.current.play()
       } else {
         await videoRef.current.pause()
@@ -179,7 +188,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
     }
 
     void handlePlaybackState()
-  }, [videoRef, isPlaying])
+  }, [videoRef, isPlaying, isPlayingAllowed])
 
   // Indicate current time
   const refreshVideoTime = useCallback(() => {

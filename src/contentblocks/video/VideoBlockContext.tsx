@@ -5,10 +5,6 @@ export interface VideoBlockContextProps {
   setActiveModeToggleHandler: (handlerFunction: Function) => void
 }
 
-const VideoBlockContext = createContext<VideoBlockContextProps>({
-  setActiveModeToggleHandler: () => {
-    throw new NotImplementedError()
-  },
-})
+const VideoBlockContext = createContext<VideoBlockContextProps>(null)
 
 export default VideoBlockContext
