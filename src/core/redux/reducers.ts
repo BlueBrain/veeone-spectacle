@@ -2,17 +2,43 @@ import {
   Actions,
   AddFramePayload,
   AddScenePayload,
+  MoveScenePayload,
+  RemoveScenePayload,
   SetScenePayload,
   UpdateFrameDataPayload,
 } from "./actions"
 import {
   FramesRegister,
   FrameStack,
+  SceneId,
   SpectaclePresentation,
   SpectacleScene,
 } from "../types"
 import { ReduxAction } from "../../redux/actions"
 import { config } from "../../config"
+
+enum MoveSceneDirection {
+  Left = -1,
+  Right = 1,
+}
+
+function getNewSceneOrder(
+  sceneOrder: SceneId[],
+  sceneId: SceneId,
+  direction: MoveSceneDirection
+) {
+  const newSceneOrder = [...sceneOrder]
+  const sceneIndex = sceneOrder.indexOf(sceneId)
+  let targetIndex = sceneIndex + direction
+  if (targetIndex < 0) {
+    targetIndex = 0
+  } else if (targetIndex >= sceneOrder.length) {
+    targetIndex = sceneOrder.length - 1
+  }
+  newSceneOrder[sceneIndex] = newSceneOrder[targetIndex]
+  newSceneOrder[targetIndex] = sceneId
+  return newSceneOrder
+}
 
 export const scenesReducer = (
   state: SpectaclePresentation,
@@ -30,7 +56,7 @@ export const scenesReducer = (
       }
     }
 
-    case Actions.NextScene: {
+    case Actions.SwitchToNextScene: {
       const currentActiveScene = state.scenes.activeScene
       const currentActiveSceneIndex = state.scenes.sceneOrder.indexOf(
         currentActiveScene
@@ -43,7 +69,7 @@ export const scenesReducer = (
       return { ...state.scenes, activeScene: newActiveScene }
     }
 
-    case Actions.PreviousScene: {
+    case Actions.SwitchToPreviousScene: {
       const currentActiveScene = state.scenes.activeScene
       const currentActiveSceneIndex = state.scenes.sceneOrder.indexOf(
         currentActiveScene
@@ -57,6 +83,43 @@ export const scenesReducer = (
     case Actions.SetActiveScene: {
       const { sceneId } = action.payload as SetScenePayload
       return { ...state.scenes, activeScene: sceneId }
+    }
+
+    case Actions.RemoveScene: {
+      const { sceneId } = action.payload as RemoveScenePayload
+      console.error("remove scene...")
+      const newScenes = { ...state.scenes.scenes }
+      delete newScenes[sceneId]
+      const newSceneOrder = state.scenes.sceneOrder.filter(
+        value => value !== sceneId
+      )
+      const newActiveScene = newSceneOrder[0]
+      return {
+        ...state.scenes,
+        scenes: newScenes,
+        activeScene: newActiveScene,
+        sceneOrder: newSceneOrder,
+      }
+    }
+
+    case Actions.MoveSceneLeft: {
+      const { sceneId } = action.payload as MoveScenePayload
+      const newSceneOrder = getNewSceneOrder(
+        state.scenes.sceneOrder,
+        sceneId,
+        MoveSceneDirection.Left
+      )
+      return { ...state.scenes, sceneOrder: newSceneOrder }
+    }
+
+    case Actions.MoveSceneRight: {
+      const { sceneId } = action.payload as MoveScenePayload
+      const newSceneOrder = getNewSceneOrder(
+        state.scenes.sceneOrder,
+        sceneId,
+        MoveSceneDirection.Right
+      )
+      return { ...state.scenes, sceneOrder: newSceneOrder }
     }
 
     default: {
@@ -114,6 +177,9 @@ export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
     }
 
     case Actions.ManipulateFrame: {
+      if (!frames[action.payload.frameId]) {
+        return frames
+      }
       const newSituation = {
         ...frames[action.payload.frameId].situation,
         ...action.payload.situationUpdate,

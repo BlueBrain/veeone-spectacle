@@ -2,6 +2,9 @@ import { spectacleStore } from "../redux/store"
 import {
   addScene,
   AddScenePayload,
+  moveSceneLeft,
+  moveSceneRight,
+  removeScene,
   setActiveScene,
   switchToNextScene,
   switchToPreviousScene,
@@ -29,6 +32,18 @@ class SceneManager {
 
   public setActiveScene(sceneId: SceneId) {
     spectacleStore.dispatch(setActiveScene(sceneId))
+  }
+
+  public moveSceneRight(sceneId: SceneId) {
+    spectacleStore.dispatch(moveSceneRight(sceneId))
+  }
+
+  public moveSceneLeft(sceneId: SceneId) {
+    spectacleStore.dispatch(moveSceneLeft(sceneId))
+  }
+
+  public removeScene(sceneId: SceneId) {
+    spectacleStore.dispatch(removeScene(sceneId))
   }
 }
 

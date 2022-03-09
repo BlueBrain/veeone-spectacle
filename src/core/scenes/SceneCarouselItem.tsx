@@ -30,7 +30,6 @@ const SceneCarouselItem: React.FC<SceneCarouselItemProps> = ({
     if (!isActive) {
       sceneManager.setActiveScene(sceneId)
     } else {
-      // open desk mode
       setViewMode(ViewMode.Desk)
     }
   }
@@ -42,7 +41,6 @@ const SceneCarouselItem: React.FC<SceneCarouselItemProps> = ({
       onClick={setActive}
       sx={{
         flexShrink: 0,
-        background: `rgba(0, 255, 0, .3)`,
         position: "relative",
         width: `${width}px`,
         height: `${height}px`,
@@ -55,18 +53,18 @@ const SceneCarouselItem: React.FC<SceneCarouselItemProps> = ({
       }}
     >
       <Scene sceneId={sceneId} />
-      <Box
-        sx={{
-          transform: `translate(0, -100%)`,
-          paddingBottom: "3rem",
-          fontSize: "3rem",
-          fontWeight: 300,
-          textAlign: "center",
-          color: `rgba(255, 255, 255, .3)`,
-        }}
-      >
-        Scene {index + 1}
-      </Box>
+      {/*<Box*/}
+      {/*  sx={{*/}
+      {/*    transform: `translate(0, -100%)`,*/}
+      {/*    paddingBottom: "3rem",*/}
+      {/*    fontSize: "3rem",*/}
+      {/*    fontWeight: 300,*/}
+      {/*    textAlign: "center",*/}
+      {/*    color: `rgba(255, 255, 255, .3)`,*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  Scene {index + 1}*/}
+      {/*</Box>*/}
     </Box>
   )
 }

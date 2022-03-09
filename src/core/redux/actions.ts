@@ -18,10 +18,12 @@ export enum Actions {
   CloseAllFrames,
   UpdateFrameData,
   AddScene,
-  NextScene,
-  PreviousScene,
   SetActiveScene,
   RemoveScene,
+  SwitchToNextScene,
+  SwitchToPreviousScene,
+  MoveSceneLeft,
+  MoveSceneRight,
 }
 
 export interface AddFramePayload {
@@ -37,6 +39,14 @@ export interface AddScenePayload {
 }
 
 export interface SetScenePayload {
+  sceneId: SceneId
+}
+
+export interface RemoveScenePayload {
+  sceneId: SceneId
+}
+
+export interface MoveScenePayload {
   sceneId: SceneId
 }
 
@@ -89,12 +99,12 @@ export const addScene = (payload: AddScenePayload) => ({
 })
 
 export const switchToNextScene = () => ({
-  type: Actions.NextScene,
+  type: Actions.SwitchToNextScene,
   payload: null,
 })
 
 export const switchToPreviousScene = () => ({
-  type: Actions.PreviousScene,
+  type: Actions.SwitchToPreviousScene,
   payload: null,
 })
 
@@ -106,4 +116,19 @@ export const setActiveScene = (sceneId: SceneId) => ({
 export const loadPresentationStore = (newStore: SpectaclePresentation) => ({
   type: Actions.LoadPresentation,
   payload: newStore,
+})
+
+export const moveSceneLeft = (sceneId: SceneId) => ({
+  type: Actions.MoveSceneLeft,
+  payload: { sceneId },
+})
+
+export const moveSceneRight = (sceneId: SceneId) => ({
+  type: Actions.MoveSceneRight,
+  payload: { sceneId },
+})
+
+export const removeScene = (sceneId: SceneId) => ({
+  type: Actions.RemoveScene,
+  payload: { sceneId },
 })
