@@ -44,8 +44,8 @@ const SceneCarouselItem: React.FC<SceneCarouselItemProps> = ({
         position: "relative",
         width: `${width}px`,
         height: `${height}px`,
-        transition: `transform ease 1000ms`,
         boxShadow: `0 3rem 4rem rgba(0, 0, 0, .4)`,
+        transition: `transform ease 1000ms`,
         zIndex: isActive ? 100 : 0,
         transform: `
         ${isActive ? `scale(1)` : `scale(0.8)`}
@@ -53,18 +53,6 @@ const SceneCarouselItem: React.FC<SceneCarouselItemProps> = ({
       }}
     >
       <Scene sceneId={sceneId} />
-      {/*<Box*/}
-      {/*  sx={{*/}
-      {/*    transform: `translate(0, -100%)`,*/}
-      {/*    paddingBottom: "3rem",*/}
-      {/*    fontSize: "3rem",*/}
-      {/*    fontWeight: 300,*/}
-      {/*    textAlign: "center",*/}
-      {/*    color: `rgba(255, 255, 255, .3)`,*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  Scene {index + 1}*/}
-      {/*</Box>*/}
     </Box>
   )
 }

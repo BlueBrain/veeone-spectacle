@@ -79,7 +79,8 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
       <Box
         sx={{
           width: "100%",
-          paddingTop: "2rem",
+          boxSizing: "border-box",
+          padding: "2rem 2rem 0 2rem",
           fontWeight: 300,
           textAlign: "center",
           color: `rgba(255, 255, 255, .5)`,
@@ -88,7 +89,6 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
           justifyContent: "space-between",
         }}
       >
-        <Box>Scene {index + 1}</Box>
         <Tooltip title="Show options">
           <span>
             <IconButton
@@ -123,6 +123,8 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
             <Typography>Delete scene</Typography>
           </MenuItem>
         </Menu>
+
+        <Box sx={{ fontSize: "3rem" }}>{index + 1}</Box>
       </Box>
     </Box>
   )
