@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import React, { useMemo } from "react"
-import { useSpectacle, ViewMode } from "../spectacle/SpectacleContext"
+import { useSpectacle, ViewMode } from "../../spectacle/SpectacleContext"
 import SceneCarouselItem from "./SceneCarouselItem"
 import SceneCarouselItemToolbar from "./SceneCarouselItemToolbar"
 

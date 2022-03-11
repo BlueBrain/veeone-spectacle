@@ -1,8 +1,8 @@
 import React, { useMemo, useRef } from "react"
-import Scene from "./Scene"
+import Scene from "../Scene"
 import { Box } from "@mui/material"
-import { SceneId } from "../types"
-import { useSpectacle, ViewMode } from "../spectacle/SpectacleContext"
+import { SceneId } from "../../types"
+import { useSpectacle, ViewMode } from "../../spectacle/SpectacleContext"
 
 interface SceneCarouselItemProps {
   index: number

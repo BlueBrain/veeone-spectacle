@@ -26,8 +26,8 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
   ] = useState(null)
 
   const [viewMode, setViewMode] = useState(
-    ViewMode.SceneOverview
-    // ViewMode.Desk
+    // ViewMode.SceneOverview
+    ViewMode.Desk
   )
 
   const presentationStore: SpectaclePresentation = useSelector(

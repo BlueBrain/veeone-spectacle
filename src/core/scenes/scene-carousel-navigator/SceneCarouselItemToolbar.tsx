@@ -8,14 +8,14 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
-import { useSpectacle } from "../spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleContext"
 import {
   ArrowLeftRounded,
   ArrowRightRounded,
   DeleteRounded,
   Menu as MenuIcon,
 } from "@mui/icons-material"
-import { SceneId } from "../types"
+import { SceneId } from "../../types"
 
 interface SceneCarouselItemToolbarProps {
   sceneId: SceneId

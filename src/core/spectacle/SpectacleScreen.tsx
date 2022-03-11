@@ -2,10 +2,10 @@ import React, { useCallback } from "react"
 import { Box, Button } from "@mui/material"
 import { config } from "../../config"
 import { useSpectacle } from "./SpectacleContext"
-import SceneCarouselNavigator from "../scenes/SceneCarouselNavigator"
+import SceneCarouselNavigator from "../scenes/scene-carousel-navigator"
 
 const SpectacleScreen: React.FC = () => {
-  const { sceneManager, nextSceneId, previousSceneId } = useSpectacle()
+  const { sceneManager } = useSpectacle()
 
   const addNewScene = useCallback(() => {
     sceneManager.addNewScene()
