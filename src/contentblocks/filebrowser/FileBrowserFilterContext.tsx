@@ -3,11 +3,11 @@ import { fileOpenerService } from "../../file-opener"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import { updateFrameData } from "../../core/redux/actions"
 import { FileBrowserBlockPayload } from "./types"
-import { useDispatch, useSelector } from "react-redux"
-import { FrameEntry, FrameId, SpectaclePresentation } from "../../core/types"
-import { getFrame } from "../../core/redux/selectors"
+import { useDispatch } from "react-redux"
+import { FrameId } from "../../core/types"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
+import { useDesk } from "../../core/desk/DeskContext"
 
 interface FileBrowserFilterContextProps {
   filteredFiles: BrowserFile[]
@@ -42,10 +42,8 @@ export const FileBrowserFilterContextProvider: React.FC<FileBrowserFilterContext
 
   const { searchResults, shouldDisplaySearchResults } = useFileBrowserSearch()
   const { activePathFiles, activePathDirs } = useFileBrowser()
-
-  const frameData = (useSelector<SpectaclePresentation>(state =>
-    getFrame(state, frameId)
-  ) as unknown) as FrameEntry
+  const { getFrame } = useDesk()
+  const frameData = useMemo(() => getFrame(frameId), [frameId, getFrame])
 
   const blockData = (frameData.data as unknown) as FileBrowserBlockPayload
 

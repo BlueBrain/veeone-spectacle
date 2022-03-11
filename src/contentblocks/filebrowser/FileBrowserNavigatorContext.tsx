@@ -1,15 +1,15 @@
 import React, { useCallback, useContext, useMemo, useState } from "react"
-import { FrameEntry, FrameId, SpectaclePresentation } from "../../core/types"
+import { FrameId } from "../../core/types"
 import { FileBrowserBlockPayload } from "./types"
 import { updateFrameData } from "../../core/redux/actions"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { fileOpenerService } from "../../file-opener"
-import { getFrame } from "../../core/redux/selectors"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 import { useFileBrowser } from "./FileBrowserContext"
 import { config } from "../../config"
 import { Position } from "../../common/types"
+import { useDesk } from "../../core/desk/DeskContext"
 
 export interface FileBrowserNavigatorContextProps {
   navigateUp(): void
@@ -53,9 +53,8 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
 
   const dispatch = useDispatch()
 
-  const frameData = (useSelector<SpectaclePresentation>(state =>
-    getFrame(state, frameId)
-  ) as unknown) as FrameEntry
+  const { getFrame } = useDesk()
+  const frameData = useMemo(() => getFrame(frameId), [frameId, getFrame])
 
   const situation = frameData.situation
 

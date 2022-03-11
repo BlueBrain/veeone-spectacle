@@ -10,7 +10,7 @@ import {
   ListItemText,
 } from "@mui/material"
 import React, { useContext, useEffect, useState } from "react"
-import { SpectacleContext } from "../core/spectacle/SpectacleContext"
+import SpectacleContext from "../core/spectacle/SpectacleContext"
 import { useDispatch } from "react-redux"
 import { loadPresentationStore } from "../core/redux/actions"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"

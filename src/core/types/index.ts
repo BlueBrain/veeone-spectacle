@@ -3,6 +3,8 @@ import { ContentBlockTypes } from "../../contentblocks/types"
 
 export type FrameId = string
 
+export type SceneId = string
+
 export type FrameStack = FrameId[]
 
 export interface FrameData {
@@ -47,8 +49,8 @@ export interface SpectacleSceneRegistry {
 }
 
 export interface SpectacleScenes {
-  activeScene: string
-  sceneOrder: string[]
+  activeScene: SceneId
+  sceneOrder: SceneId[]
   scenes: SpectacleSceneRegistry
 }
 

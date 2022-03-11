@@ -1,8 +1,8 @@
-import React from "react"
-import { NotImplementedError } from "../../common/errors"
-import { SpectaclePresentation } from "../types"
+import React, { useContext } from "react"
+import { SceneId, SpectaclePresentation } from "../types"
 import { VeeDriveListPresentationsResponse } from "../../veedrive/types"
 import { Position } from "../../common/types"
+import SceneManager from "../scenes/SceneManager"
 
 interface SavePresentationOpenModalProps {
   position: Position
@@ -27,41 +27,29 @@ interface LoadPresentationContextProps {
   load: (id: string) => Promise<SpectaclePresentation>
 }
 
+export enum ViewMode {
+  Desk,
+  SceneOverview,
+}
+
 export interface SpectacleContextProps {
   savePresentation: SavePresentationContextProps
   loadPresentation: LoadPresentationContextProps
   loadPresentationModalPosition: Position
   savePresentationModalPosition: Position
+  viewMode: ViewMode
+  setViewMode(newViewMode: ViewMode): void
+  sceneManager: SceneManager
+  activeSceneId: SceneId
+  nextSceneId: SceneId
+  previousSceneId: SceneId
+  activeSceneIndex: number
+  sceneIds: SceneId[]
+  presentationStore: SpectaclePresentation
 }
 
-export const SpectacleContext = React.createContext<SpectacleContextProps>({
-  savePresentation: {
-    isModalOpen: false,
-    openModal: () => {
-      throw new NotImplementedError()
-    },
-    closeModal: () => {
-      throw new NotImplementedError()
-    },
-    save: () => {
-      throw new NotImplementedError()
-    },
-  },
-  loadPresentation: {
-    isModalOpen: false,
-    openModal: () => {
-      throw new NotImplementedError()
-    },
-    closeModal: () => {
-      throw new NotImplementedError()
-    },
-    listPresentations: () => {
-      throw new NotImplementedError()
-    },
-    load: () => {
-      throw new NotImplementedError()
-    },
-  },
-  savePresentationModalPosition: null,
-  loadPresentationModalPosition: null,
-})
+const SpectacleContext = React.createContext<SpectacleContextProps>(null)
+
+export const useSpectacle = () => useContext(SpectacleContext)
+
+export default SpectacleContext

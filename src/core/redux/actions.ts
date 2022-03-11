@@ -4,6 +4,7 @@ import {
   FrameData,
   FrameId,
   FrameSituationUpdate,
+  SceneId,
   SpectaclePresentation,
 } from "../types"
 
@@ -16,6 +17,13 @@ export enum Actions {
   SendFrameToBack,
   CloseAllFrames,
   UpdateFrameData,
+  AddScene,
+  SetActiveScene,
+  RemoveScene,
+  SwitchToNextScene,
+  SwitchToPreviousScene,
+  MoveSceneLeft,
+  MoveSceneRight,
 }
 
 export interface AddFramePayload {
@@ -26,9 +34,25 @@ export interface AddFramePayload {
   contentData: FrameData
 }
 
+export interface AddScenePayload {
+  sceneId: SceneId
+}
+
+export interface SetScenePayload {
+  sceneId: SceneId
+}
+
+export interface RemoveScenePayload {
+  sceneId: SceneId
+}
+
+export interface MoveScenePayload {
+  sceneId: SceneId
+}
+
 export const addFrame = (payload: AddFramePayload) => ({
   type: Actions.AddFrame,
-  payload: payload,
+  payload,
 })
 
 export const manipulateFrame = (
@@ -69,7 +93,42 @@ export const closeFrame = (frameId: FrameId) => ({
   },
 })
 
+export const addScene = (payload: AddScenePayload) => ({
+  type: Actions.AddScene,
+  payload,
+})
+
+export const switchToNextScene = () => ({
+  type: Actions.SwitchToNextScene,
+  payload: null,
+})
+
+export const switchToPreviousScene = () => ({
+  type: Actions.SwitchToPreviousScene,
+  payload: null,
+})
+
+export const setActiveScene = (sceneId: SceneId) => ({
+  type: Actions.SetActiveScene,
+  payload: { sceneId },
+})
+
 export const loadPresentationStore = (newStore: SpectaclePresentation) => ({
   type: Actions.LoadPresentation,
   payload: newStore,
+})
+
+export const moveSceneLeft = (sceneId: SceneId) => ({
+  type: Actions.MoveSceneLeft,
+  payload: { sceneId },
+})
+
+export const moveSceneRight = (sceneId: SceneId) => ({
+  type: Actions.MoveSceneRight,
+  payload: { sceneId },
+})
+
+export const removeScene = (sceneId: SceneId) => ({
+  type: Actions.RemoveScene,
+  payload: { sceneId },
 })

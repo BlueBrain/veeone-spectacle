@@ -2,8 +2,6 @@ import * as React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Frame } from "../frames"
 import { LauncherMenu } from "../../launchermenu"
-import { useSelector } from "react-redux"
-import { getFrames, getFrameStack } from "../redux/selectors"
 import interact from "interactjs"
 import { Target } from "@interactjs/types"
 import { Position } from "../../common/types"
@@ -13,6 +11,10 @@ import { config } from "../../config"
 import { CloseLauncherMenuArgs } from "../../launchermenu/LauncherMenu"
 import { DeskBranding } from "./DeskBranding"
 import { Box } from "@mui/material"
+import SavePresentationModal from "../../presentation-loader/SavePresentationModal"
+import LoadPresentationModal from "../../presentation-loader/LoadPresentationModal"
+import { useSpectacle } from "../spectacle/SpectacleContext"
+import { useDesk } from "./DeskContext"
 
 interact.pointerMoveTolerance(4)
 
@@ -37,9 +39,18 @@ function isAnyLauncherNearby(
 
 const Desk: React.FC = () => {
   const deskRef = useRef()
-  const frames = useSelector(getFrames)
-  const frameStack = useSelector(getFrameStack)
-  const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])
+  const { scene } = useDesk()
+  const spectacleContext = useSpectacle()
+  const meta = spectacleContext.presentationStore.meta
+  const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([
+    // {
+    //   menuId: generateRandomId(4),
+    //   position: {
+    //     left: 350,
+    //     top: 300,
+    //   },
+    // },
+  ])
 
   const openLauncherMenu = useCallback(
     ({ top, left }: Position) => {
@@ -99,9 +110,10 @@ const Desk: React.FC = () => {
     }
   }, [handleHold])
 
-  const getStackIndex = useCallback(frameId => frameStack.indexOf(frameId), [
-    frameStack,
-  ])
+  const getStackIndex = useCallback(
+    frameId => scene.frameStack.indexOf(frameId),
+    [scene.frameStack]
+  )
 
   return (
     <Box
@@ -113,8 +125,8 @@ const Desk: React.FC = () => {
           circle,
           ${theme.palette.background.light} 0%,
           ${theme.palette.background.default} 80%)`,
-          width: `100%`,
-          height: `100%`,
+          width: `${meta.viewport.width}px`,
+          height: `${meta.viewport.height}px`,
           contain: `content`,
           overflow: `hidden`,
           position: `absolute`,
@@ -122,8 +134,8 @@ const Desk: React.FC = () => {
       ]}
     >
       <DeskBranding />
-      {Object.keys(frames).map(frameId => {
-        const frame = frames[frameId]
+      {Object.keys(scene.frames).map(frameId => {
+        const frame = scene.frames[frameId]
         return typeof frame !== "undefined" ? (
           <Frame
             frame={frame}
@@ -135,6 +147,7 @@ const Desk: React.FC = () => {
           ``
         )
       })}
+
       {launcherMenus.map(launcherMenu => {
         return (
           <Box
@@ -154,6 +167,14 @@ const Desk: React.FC = () => {
           </Box>
         )
       })}
+
+      {spectacleContext.savePresentation.isModalOpen ? (
+        <SavePresentationModal />
+      ) : null}
+
+      {spectacleContext.loadPresentation.isModalOpen ? (
+        <LoadPresentationModal />
+      ) : null}
     </Box>
   )
 }
