@@ -27,8 +27,8 @@ const Footer: React.FC = () => {
         <Grid item>
           Total: {totalFilesCount} {totalFilesCount === 1 ? "file" : "files"}{" "}
         </Grid>
-        <Grid item>
-          {hiddenFilesCount > 0 ? `(${hiddenFilesCount} hidden)` : null}
+        <Grid item sx={{ paddingLeft: ".3rem" }}>
+          {hiddenFilesCount > 0 ? `(${hiddenFilesCount} not shown)` : null}
         </Grid>
         {nameFilterQuery.length > 0 ? (
           <Grid item>
