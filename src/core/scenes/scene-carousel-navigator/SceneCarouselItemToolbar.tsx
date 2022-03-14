@@ -10,10 +10,11 @@ import {
 } from "@mui/material"
 import { useSpectacle } from "../../spectacle/SpectacleContext"
 import {
-  ArrowLeftRounded,
-  ArrowRightRounded,
   DeleteRounded,
   Menu as MenuIcon,
+  PlayArrowRounded,
+  SkipNextRounded,
+  SkipPreviousRounded,
 } from "@mui/icons-material"
 import { SceneId } from "../../types"
 
@@ -54,6 +55,15 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
   const moveSceneLeft = useCallback(() => {
     closeMenu()
     sceneManager.moveSceneLeft(sceneId)
+  }, [sceneId, sceneManager])
+  const moveSceneToBeginning = useCallback(() => {
+    closeMenu()
+    sceneManager.moveSceneToBeginning(sceneId)
+  }, [sceneId, sceneManager])
+
+  const moveSceneToEnd = useCallback(() => {
+    closeMenu()
+    sceneManager.moveSceneToEnd(sceneId)
   }, [sceneId, sceneManager])
 
   const moveSceneRight = useCallback(() => {
@@ -106,16 +116,28 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
           onClose={closeMenu}
         >
           {index > 0 ? (
-            <MenuItem onClick={moveSceneLeft}>
-              <ArrowLeftRounded />
-              <Typography>Move left</Typography>
-            </MenuItem>
+            <>
+              <MenuItem onClick={moveSceneToBeginning}>
+                <SkipPreviousRounded />
+                <Typography>Move to the beginning</Typography>
+              </MenuItem>
+              <MenuItem onClick={moveSceneLeft}>
+                <PlayArrowRounded sx={{ transform: "scale(-1,-1)" }} />
+                <Typography>Move left</Typography>
+              </MenuItem>
+            </>
           ) : null}
           {index + 1 < sceneIds.length ? (
-            <MenuItem onClick={moveSceneRight}>
-              <ArrowRightRounded />
-              <Typography>Move right</Typography>
-            </MenuItem>
+            <>
+              <MenuItem onClick={moveSceneRight}>
+                <PlayArrowRounded />
+                <Typography>Move right</Typography>
+              </MenuItem>
+              <MenuItem onClick={moveSceneToEnd}>
+                <SkipNextRounded />
+                <Typography>Move to the end</Typography>
+              </MenuItem>
+            </>
           ) : null}
           <Divider />
           <MenuItem onClick={removeScene}>

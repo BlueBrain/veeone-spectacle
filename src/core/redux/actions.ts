@@ -24,6 +24,8 @@ export enum Actions {
   SwitchToPreviousScene,
   MoveSceneLeft,
   MoveSceneRight,
+  MoveSceneToBeginning,
+  MoveSceneToEnd,
 }
 
 export interface AddFramePayload {
@@ -120,6 +122,16 @@ export const loadPresentationStore = (newStore: SpectaclePresentation) => ({
 
 export const moveSceneLeft = (sceneId: SceneId) => ({
   type: Actions.MoveSceneLeft,
+  payload: { sceneId },
+})
+
+export const moveSceneToBeginning = (sceneId: SceneId) => ({
+  type: Actions.MoveSceneToBeginning,
+  payload: { sceneId },
+})
+
+export const moveSceneToEnd = (sceneId: SceneId) => ({
+  type: Actions.MoveSceneToEnd,
   payload: { sceneId },
 })
 

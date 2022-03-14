@@ -4,6 +4,8 @@ import {
   AddScenePayload,
   moveSceneLeft,
   moveSceneRight,
+  moveSceneToBeginning,
+  moveSceneToEnd,
   removeScene,
   setActiveScene,
   switchToNextScene,
@@ -40,6 +42,14 @@ class SceneManager {
 
   public moveSceneLeft(sceneId: SceneId) {
     spectacleStore.dispatch(moveSceneLeft(sceneId))
+  }
+
+  public moveSceneToBeginning(sceneId: SceneId) {
+    spectacleStore.dispatch(moveSceneToBeginning(sceneId))
+  }
+
+  public moveSceneToEnd(sceneId: SceneId) {
+    spectacleStore.dispatch(moveSceneToEnd(sceneId))
   }
 
   public removeScene(sceneId: SceneId) {
