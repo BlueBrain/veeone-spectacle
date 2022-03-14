@@ -39,7 +39,10 @@ const SceneDeskNavigation: React.FC = () => {
         disabled={!canGoLeft}
         onClick={goToPreviousScene}
         size={"large"}
-        sx={{ opacity: canGoLeft ? 1 : 0.4, transition: "opacity ease 300ms" }}
+        sx={{
+          opacity: canGoLeft ? 1 : 0.4,
+          transition: "opacity ease 300ms",
+        }}
       >
         <ChevronLeft
           sx={{
@@ -51,7 +54,10 @@ const SceneDeskNavigation: React.FC = () => {
         onClick={goToNextScene}
         disabled={!canGoRight}
         size={"large"}
-        sx={{ opacity: canGoRight ? 1 : 0.4, transition: "opacity ease 300ms" }}
+        sx={{
+          opacity: canGoRight ? 1 : 0.4,
+          transition: "opacity ease 300ms",
+        }}
       >
         <ChevronRight
           sx={{
