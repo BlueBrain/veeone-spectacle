@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react"
 import { Box, Grid, IconButton, TextField } from "@mui/material"
 import { Close } from "@mui/icons-material"
-import ViewTypeSelector from "./ViewTypeSelector"
 import FiltersSelector from "./FiltersSelector"
 import { visualKeyboardService } from "../../visualkeyboard"
 import useInteractable from "../../core/interactable/useInteractable"
