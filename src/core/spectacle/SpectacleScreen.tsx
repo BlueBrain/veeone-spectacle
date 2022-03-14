@@ -2,6 +2,7 @@ import React from "react"
 import { Box } from "@mui/material"
 import { config } from "../../config"
 import SceneCarouselNavigator from "../scenes/scene-carousel-navigator"
+import SceneDeskNavigation from "../scenes/SceneDeskNavigation"
 
 const SpectacleScreen: React.FC = () => {
   return (
@@ -16,6 +17,12 @@ const SpectacleScreen: React.FC = () => {
       }}
     >
       <SceneCarouselNavigator />
+      <Box sx={{ position: "absolute", left: ".2rem", top: "40%" }}>
+        <SceneDeskNavigation />
+      </Box>
+      <Box sx={{ position: "absolute", right: ".2rem", top: "40%" }}>
+        <SceneDeskNavigation />
+      </Box>
     </Box>
   )
 }
