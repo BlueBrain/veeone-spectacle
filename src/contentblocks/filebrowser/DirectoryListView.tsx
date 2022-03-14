@@ -19,14 +19,7 @@ const DirectoryListView: React.FC<DirectoryListProps> = ({ dirs, files }) => {
     <Box sx={{ width: "100%" }}>
       <List>
         {dirs.map(dir => (
-          <Box
-            key={dir.path}
-            sx={{
-              "-webkit-column-break-inside": "avoid",
-              pageBreakInside: "avoid",
-              breakInside: "avoid",
-            }}
-          >
+          <Box key={dir.path}>
             <ListItem
               key={dir.path}
               sx={{
@@ -51,14 +44,7 @@ const DirectoryListView: React.FC<DirectoryListProps> = ({ dirs, files }) => {
           </Box>
         ))}
         {files.map((file, i) => (
-          <Box
-            key={i}
-            sx={{
-              "-webkit-column-break-inside": "avoid",
-              pageBreakInside: "avoid",
-              breakInside: "avoid",
-            }}
-          >
+          <Box key={i}>
             <ListItem
               key={file.name}
               sx={{
