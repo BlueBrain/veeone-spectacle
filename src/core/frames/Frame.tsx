@@ -69,6 +69,7 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   const frameContextProvider: FrameContextProps = useMemo(
     () => ({
       frameId,
+      isFullscreen,
       updateAspectRatio: (aspectRatio: number) => {
         const newWidth = width
         const newHeight = width / aspectRatio
@@ -97,7 +98,7 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
         dispatch(sendFrameToBack(frameId))
       },
     }),
-    [width, manipulate, toggleFullscreen, dispatch, frameId]
+    [frameId, isFullscreen, width, manipulate, toggleFullscreen, dispatch]
   )
 
   const ContentBlockComponent = useMemo(

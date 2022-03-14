@@ -9,22 +9,16 @@ import { useSelector } from "react-redux"
 import { getFrameStack } from "../redux/selectors"
 import { useDesk } from "../desk/DeskContext"
 
-export interface FrameControlBarProps {
-  showCloseButton?: boolean
-  showFullscreenButton?: boolean
-  showSendToBackButton?: boolean
-}
-
-const FrameControlBar: React.FC<FrameControlBarProps> = ({
-  showSendToBackButton = true,
-  showCloseButton = true,
-  showFullscreenButton = true,
-}) => {
+const FrameControlBar: React.FC = () => {
   const { scene } = useDesk()
 
-  const { toggleFullscreen, close, sendToBack, frameId } = useContext(
-    FrameContext
-  )
+  const {
+    toggleFullscreen,
+    close,
+    sendToBack,
+    frameId,
+    isFullscreen,
+  } = useContext(FrameContext)
 
   const closeRef = useRef()
   const sendToBackRef = useRef()
@@ -47,26 +41,33 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
   return (
     <Box
       sx={[
-        { padding: ".5rem .3rem", transition: `opacity ease 500ms` },
-        isTopFrame
+        {
+          padding: ".5rem .3rem",
+          transition: `opacity ease 500ms`,
+        },
+        isTopFrame && !isFullscreen
           ? {
               opacity: 1,
             }
+          : isFullscreen
+          ? { opacity: 0 }
           : {
-              opacity: 0.5,
-              filter: "grayscale(1)",
+              opacity: 0.4,
             },
+        {
+          ...(!isTopFrame
+            ? {
+                ".MuiIconButton-root": {
+                  background: `rgba(0, 0, 0, .7)`,
+                },
+              }
+            : {}),
+        },
       ]}
     >
-      <SendToBackIconButtonWithRef
-        isVisible={showSendToBackButton}
-        ref={sendToBackRef}
-      />
-      <FullscreenIconButtonWithRef
-        isVisible={showFullscreenButton}
-        ref={fullscreenRef}
-      />
-      <CloseIconButtonWithRef isVisible={showCloseButton} ref={closeRef} />
+      <SendToBackIconButtonWithRef isVisible={isTopFrame} ref={sendToBackRef} />
+      <FullscreenIconButtonWithRef isVisible={isTopFrame} ref={fullscreenRef} />
+      <CloseIconButtonWithRef isVisible={true} ref={closeRef} />
     </Box>
   )
 }
