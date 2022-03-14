@@ -12,7 +12,7 @@ const FullscreenIconButton: React.FC<FullscreenIconButtonProps> = (
   ref
 ) => {
   return (
-    <Tooltip title="Fullscreen">
+    <Tooltip title="Fullscreen" enterDelay={1000}>
       <span>
         <IconButton
           ref={ref}

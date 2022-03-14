@@ -12,7 +12,7 @@ const SendToBackIconButton: React.FC<SendToBackIconButtonProps> = (
   ref
 ) => {
   return (
-    <Tooltip title="Send to back">
+    <Tooltip title="Send to back" enterDelay={1000}>
       <span>
         <IconButton
           ref={ref}
