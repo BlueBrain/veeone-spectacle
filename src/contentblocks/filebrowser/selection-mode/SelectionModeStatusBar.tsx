@@ -4,20 +4,17 @@ import { Box, Button, IconButton, Tooltip } from "@mui/material"
 import { Deselect, SelectAll } from "@mui/icons-material"
 import { useFileBrowserFilter } from "../FileBrowserFilterContext"
 import { useFileBrowserNavigator } from "../FileBrowserNavigatorContext"
+import SelectionModeSwitch from "./SelectionModeSwitch"
 
 const SelectionModeStatusBar: React.FC = () => {
   const {
+    isSelectionModeEnabled,
     selectedFileCount,
-    setIsSelectionModeEnabled,
     setSelectedFiles,
     selectedFiles,
   } = useFileBrowserSelectionMode()
 
   const { requestMultipleFiles } = useFileBrowserNavigator()
-
-  const turnOffSelectionMode = () => {
-    setIsSelectionModeEnabled(false)
-  }
 
   const { filteredFiles } = useFileBrowserFilter()
 
@@ -43,36 +40,35 @@ const SelectionModeStatusBar: React.FC = () => {
   }
 
   return (
-    <Box>
-      <Button
-        onClick={openSelectedFiles}
-        variant={"contained"}
-        sx={{ display: selectedFileCount > 0 ? "inline-flex" : "none" }}
-      >
-        Open {selectedFileCount} selected{" "}
-        {selectedFileCount > 1 ? "files" : "file"}
-      </Button>
-      <Tooltip title={"Select all"}>
-        <span>
-          <IconButton onClick={selectAllFiles}>
-            <SelectAll />
-          </IconButton>
-        </span>
-      </Tooltip>
-      <Tooltip title={"Deselect"}>
-        <span>
-          <IconButton onClick={deselectAllFiles}>
-            <Deselect />
-          </IconButton>
-        </span>
-      </Tooltip>
-      <Button
-        onClick={turnOffSelectionMode}
-        variant={"outlined"}
-        color={"secondary"}
-      >
-        Exit selection mode
-      </Button>
+    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+      <SelectionModeSwitch />
+
+      {isSelectionModeEnabled ? (
+        <>
+          <Tooltip title={"Select all"}>
+            <span>
+              <IconButton onClick={selectAllFiles}>
+                <SelectAll />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <Tooltip title={"Deselect"}>
+            <span>
+              <IconButton onClick={deselectAllFiles}>
+                <Deselect />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <Button
+            onClick={openSelectedFiles}
+            variant={"contained"}
+            sx={{ display: selectedFileCount > 0 ? "inline-flex" : "none" }}
+          >
+            Open {selectedFileCount} selected{" "}
+            {selectedFileCount > 1 ? "files" : "file"}
+          </Button>
+        </>
+      ) : null}
     </Box>
   )
 }
