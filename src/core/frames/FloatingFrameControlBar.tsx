@@ -1,9 +1,8 @@
 import React from "react"
 import { Box } from "@mui/material"
-import FrameControlBar, { FrameControlBarProps } from "./FrameControlBar"
+import FrameControlBar from "./FrameControlBar"
 
-interface FloatingFrameControlBarProps extends FrameControlBarProps {}
-const FloatingFrameControlBar: React.FC<FloatingFrameControlBarProps> = props => (
+const FloatingFrameControlBar: React.FC = props => (
   <Box
     sx={{
       position: "absolute",

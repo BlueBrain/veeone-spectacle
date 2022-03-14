@@ -52,13 +52,17 @@ const FrameControlBar: React.FC = () => {
           : isFullscreen
           ? { opacity: 0 }
           : {
-              opacity: 0.4,
+              opacity: 0.6,
             },
         {
+          ".MuiIconButton-root": {
+            transition: `transform ease 500ms`,
+          },
           ...(!isTopFrame
             ? {
                 ".MuiIconButton-root": {
-                  background: `rgba(0, 0, 0, .7)`,
+                  background: `rgba(0, 0, 0, .5)`,
+                  transform: "scale(80%)",
                 },
               }
             : {}),

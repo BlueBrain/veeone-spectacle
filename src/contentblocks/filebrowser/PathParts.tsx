@@ -38,7 +38,7 @@ const PathParts: React.FC<PathPartsProps> = ({ path, onSelectPathPart }) => {
           },
         }}
       >
-        <Tooltip title="Move to the home directory">
+        <Tooltip title="Home directory" enterDelay={1000}>
           <span>
             <IconButton onClick={navigateHome} color={"primary"}>
               <Home />
@@ -49,7 +49,11 @@ const PathParts: React.FC<PathPartsProps> = ({ path, onSelectPathPart }) => {
           .split("/")
           .filter(part => part !== "")
           .map((part, index, all) => (
-            <Button onClick={() => onSelectPathPart(index + 1)} key={index}>
+            <Button
+              onClick={() => onSelectPathPart(index + 1)}
+              key={index}
+              color={"primary"}
+            >
               {part}
             </Button>
           ))}

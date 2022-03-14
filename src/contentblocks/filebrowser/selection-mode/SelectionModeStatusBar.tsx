@@ -45,14 +45,14 @@ const SelectionModeStatusBar: React.FC = () => {
 
       {isSelectionModeEnabled ? (
         <>
-          <Tooltip title={"Select all"}>
+          <Tooltip title={"Select all"} enterDelay={1000}>
             <span>
               <IconButton onClick={selectAllFiles}>
                 <SelectAll />
               </IconButton>
             </span>
           </Tooltip>
-          <Tooltip title={"Deselect"}>
+          <Tooltip title={"Deselect"} enterDelay={1000}>
             <span>
               <IconButton onClick={deselectAllFiles}>
                 <Deselect />
