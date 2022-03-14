@@ -15,6 +15,7 @@ export const blueBrainTheme = createTheme({
     primary: {
       main: `rgba(0, 125, 222, 1)`,
       pale: `rgba(0, 125, 222, .2)`,
+      dark: `rgba(0, 100, 190, 1)`,
     },
     secondary: {
       main: `rgba(62, 197, 255, 1)`,

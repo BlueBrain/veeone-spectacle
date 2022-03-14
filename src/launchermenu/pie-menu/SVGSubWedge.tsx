@@ -40,17 +40,21 @@ const SVGSubWedge: React.FC<SVGSubWedgeProps> = ({
             transform: `
               rotate(${anglePerSubwedge * index}deg)
               translateY(-2px)
-              scale(.7)
+              scale(0.7)
             `,
           },
           "100%": {
-            opacity: 0.6,
+            opacity: 0.7,
             transform: `
               rotate(${anglePerSubwedge * index}deg)
               translateY(-2px)
-              scale(.97)
+              scale(0.97)
             `,
           },
+        },
+        transition: `fill ease 300ms`,
+        ":hover": {
+          fill: theme => theme.palette.primary.dark,
         },
       }}
     />

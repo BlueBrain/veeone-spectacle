@@ -98,6 +98,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   }, [close, spectacleContext])
 
   const newPresentation = useCallback(() => {
+    // todo make new presentation
     close()
   }, [close])
 
