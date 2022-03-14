@@ -9,7 +9,7 @@ import {
 } from "../types"
 
 export enum Actions {
-  LoadPresentation,
+  OpenPresentation,
   AddFrame,
   ManipulateFrame,
   CloseFrame,
@@ -116,7 +116,7 @@ export const setActiveScene = (sceneId: SceneId) => ({
 })
 
 export const loadPresentationStore = (newStore: SpectaclePresentation) => ({
-  type: Actions.LoadPresentation,
+  type: Actions.OpenPresentation,
   payload: newStore,
 })
 

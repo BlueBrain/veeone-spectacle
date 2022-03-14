@@ -21,7 +21,7 @@ export const DeskBranding: React.FC<DeskBrandingProps> = () => {
           component={"img"}
           src={EPFLLogo}
           sx={{
-            height: "1.2vh",
+            height: "1rem",
             margin: "2vh",
           }}
         />

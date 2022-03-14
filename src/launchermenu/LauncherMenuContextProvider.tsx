@@ -1,5 +1,6 @@
 import {
   CloudDownload,
+  CloudQueueRounded,
   CloudSync,
   CloudUpload,
   GridView,
@@ -77,11 +78,11 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   }, [openNewFrameFromLauncher])
 
   const openPresentation = useCallback(() => {
-    spectacleContext.loadPresentation.openModal({
+    spectacleContext.openPresentation.openModal({
       position: { ...position },
     })
     close()
-  }, [close, position, spectacleContext.loadPresentation])
+  }, [close, position, spectacleContext.openPresentation])
 
   const savePresentation = useCallback(() => {
     spectacleContext.savePresentation.openModal({
@@ -96,6 +97,10 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
     spectacleContext.setViewMode(ViewMode.SceneOverview)
   }, [close, spectacleContext])
 
+  const newPresentation = useCallback(() => {
+    close()
+  }, [close])
+
   const [menuData, setMenuData] = useState<MenuData>({
     items: [
       {
@@ -109,9 +114,14 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
         action: switchToScenesView,
       },
       {
-        label: "Save / Load",
+        label: "Save / Open",
         icon: CloudSync,
         children: [
+          {
+            label: "New",
+            icon: CloudQueueRounded,
+            action: newPresentation,
+          },
           {
             label: "Open",
             icon: CloudUpload,
@@ -122,11 +132,6 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
             icon: CloudDownload,
             action: savePresentation,
           },
-          // {
-          //   label: "Test",
-          //   icon: Build,
-          //   action: savePresentation,
-          // },
         ],
       },
       {

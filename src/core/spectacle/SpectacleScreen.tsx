@@ -3,13 +3,17 @@ import { Box } from "@mui/material"
 import { config } from "../../config"
 import SceneCarouselNavigator from "../scenes/scene-carousel-navigator"
 import SceneDeskNavigation from "../scenes/SceneDeskNavigation"
+import SavePresentationModal from "../../presentation-loader/SavePresentationModal"
+import OpenPresentationModal from "../../presentation-loader/OpenPresentationModal"
+import { useSpectacle } from "./SpectacleContext"
 
 const SpectacleScreen: React.FC = () => {
+  const { openPresentation, savePresentation } = useSpectacle()
   return (
     <Box
       className={"SpectacleScreen"}
       sx={{
-        background: `rgba(30, 30, 30, 1)`,
+        background: theme => theme.palette.screen.main,
         width: `${config.VIEWPORT_WIDTH}px`,
         height: `${config.VIEWPORT_HEIGHT}px`,
         overflow: "hidden",
@@ -23,6 +27,10 @@ const SpectacleScreen: React.FC = () => {
       <Box sx={{ position: "absolute", right: ".2rem", top: "40%" }}>
         <SceneDeskNavigation />
       </Box>
+
+      {savePresentation.isModalOpen ? <SavePresentationModal /> : null}
+
+      {openPresentation.isModalOpen ? <OpenPresentationModal /> : null}
     </Box>
   )
 }

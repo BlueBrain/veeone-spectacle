@@ -121,6 +121,12 @@ class VisualKeyboardService {
       console.warn("Keyboard does not exist", keyboardId)
     }
   }
+
+  public readonly updateKeyboardState = (keyboardId, newValue) => {
+    if (this.keyboards[keyboardId]) {
+      // todo state should be updated
+    }
+  }
 }
 
 export const visualKeyboardService = new VisualKeyboardService()

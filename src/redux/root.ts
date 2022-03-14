@@ -7,7 +7,7 @@ export const rootReducer = (
   state: SpectaclePresentation,
   action: ReduxAction
 ) => {
-  if (action.type === Actions.LoadPresentation) {
+  if (action.type === Actions.OpenPresentation) {
     return { ...action.payload }
   }
 
