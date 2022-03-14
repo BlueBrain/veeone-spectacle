@@ -6,6 +6,7 @@ import {
   TableBody,
   TableCell,
   TableRow,
+  Typography,
 } from "@mui/material"
 import SpectacleContext from "../core/spectacle/SpectacleContext"
 import { SpectaclePresentation } from "../core/types"
@@ -68,13 +69,19 @@ export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
   return isLoading || !presentationData ? (
     <CircularProgress />
   ) : (
-    <Box sx={{ marginLeft: "1rem", display: "flex", flex: "1" }}>
-      <Table sx={{ width: "100%" }}>
+    <Box
+      sx={{
+        marginLeft: "1rem",
+        display: "flex",
+        flex: "1",
+        flexDirection: "column",
+      }}
+    >
+      <Typography variant={"h4"} mb={2}>
+        {presentationData.name}
+      </Typography>
+      <Table sx={{ width: "100%" }} size={"small"}>
         <TableBody>
-          <TableRow>
-            <TableCell sx={{ width: "30%" }}>Title</TableCell>
-            <TableCell>{presentationData.name}</TableCell>
-          </TableRow>
           <TableRow>
             <TableCell colSpan={2}>
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -120,6 +127,12 @@ export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
             <TableCell>Last updated</TableCell>
             <TableCell>
               {friendlyDisplayDateTime(presentationData.updatedAt)}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>
+              <Box sx={{ fontSize: "0.7rem" }}>{presentationData.id}</Box>
             </TableCell>
           </TableRow>
         </TableBody>

@@ -133,7 +133,12 @@ const OpenPresentationModal: React.FC<LoadPresentationModalProps> = () => {
             <List>{presentations}</List>
           </Grid>
           {selectedPresentationId ? (
-            <Grid item xs md={8} sx={{ display: "flex" }}>
+            <Grid
+              item
+              xs
+              md={8}
+              sx={{ display: "flex", maxHeight: "30vh", overflowY: "scroll" }}
+            >
               <PresentationLoaderDetails
                 presentationId={selectedPresentationId}
               />

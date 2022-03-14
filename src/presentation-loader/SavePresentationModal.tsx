@@ -29,12 +29,14 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
   const presentationNameFieldRef = useRef()
   const spectacleContext = useSpectacle()
   const { left, top } = spectacleContext.savePresentationModalPosition
-  const [presentationName, setPresentationName] = useState("")
+  const [presentationTitle, setPresentationTitle] = useState(
+    spectacleContext.presentationStore.name
+  )
 
   const showVisualKeyboard = useCallback((target, initialValue: string) => {
     visualKeyboardService.newKeyboard(
       target,
-      newValue => setPresentationName(newValue),
+      newValue => setPresentationTitle(newValue),
       {
         initialValue,
         keyboardId,
@@ -50,26 +52,28 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
 
   const savePresentation = useCallback(
     (extraData: Partial<SpectaclePresentation> = {}) => {
-      return spectacleContext.savePresentation.save({
-        name: presentationName,
+      spectacleContext.savePresentation.save({
+        name: presentationTitle,
         savedAt: Date.now(),
         ...extraData,
       })
     },
-    [presentationName, spectacleContext.savePresentation]
+    [presentationTitle, spectacleContext.savePresentation]
   )
 
-  const handleSaveClick = () => {
+  const handleSaveClick = event => {
     savePresentation()
+    spectacleContext.savePresentation.closeModal(event, "saved")
   }
 
-  const handleSaveAsNewClick = () => {
+  const handleSaveAsNewClick = event => {
     savePresentation({ id: generateRandomPresentationId() })
+    spectacleContext.savePresentation.closeModal(event, "saved")
   }
 
   const handleTextInputChange = event => {
     const value = event.target.value
-    setPresentationName(value)
+    setPresentationTitle(value)
     visualKeyboardService.updateKeyboardState(keyboardId, value)
   }
 
@@ -98,10 +102,10 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
               label={"Name of your presentation"}
               autoFocus={true}
               fullWidth={true}
-              value={presentationName}
+              value={presentationTitle}
               onChange={handleTextInputChange}
               onFocus={event =>
-                showVisualKeyboard(event.target, presentationName)
+                showVisualKeyboard(event.target, presentationTitle)
               }
             />
           </Grid>
@@ -116,7 +120,9 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
           Cancel
         </Button>
         <Button onClick={handleSaveAsNewClick}>Save as new</Button>
-        <Button onClick={handleSaveClick}>Save</Button>
+        <Button onClick={handleSaveClick} variant={"contained"}>
+          Save
+        </Button>
       </DialogActions>
     </Dialog>
   )
