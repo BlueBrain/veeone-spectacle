@@ -1,4 +1,5 @@
 import React from "react"
+import { PaletteOptions } from "@mui/material/styles/createPalette"
 
 declare module "*.svg" {
   const content: any
@@ -34,6 +35,22 @@ declare module "@mui/material/styles" {
     branding: {
       main: string
     }
+  }
+
+  interface SimplePaletteColorOptions {
+    pale: string
+  }
+
+  interface PaletteColor {
+    pale: string
+  }
+
+  interface PaletteOptions {
+    screen: SimplePaletteColorOptions
+  }
+
+  interface Palette {
+    screen: SimplePaletteColorOptions
   }
 }
 

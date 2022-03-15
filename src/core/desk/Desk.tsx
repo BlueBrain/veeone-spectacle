@@ -11,8 +11,6 @@ import { config } from "../../config"
 import { CloseLauncherMenuArgs } from "../../launchermenu/LauncherMenu"
 import { DeskBranding } from "./DeskBranding"
 import { Box } from "@mui/material"
-import SavePresentationModal from "../../presentation-loader/SavePresentationModal"
-import LoadPresentationModal from "../../presentation-loader/LoadPresentationModal"
 import { useSpectacle } from "../spectacle/SpectacleContext"
 import { useDesk } from "./DeskContext"
 
@@ -167,14 +165,6 @@ const Desk: React.FC = () => {
           </Box>
         )
       })}
-
-      {spectacleContext.savePresentation.isModalOpen ? (
-        <SavePresentationModal />
-      ) : null}
-
-      {spectacleContext.loadPresentation.isModalOpen ? (
-        <LoadPresentationModal />
-      ) : null}
     </Box>
   )
 }

@@ -9,7 +9,7 @@ import {
 } from "../types"
 
 export enum Actions {
-  LoadPresentation,
+  OpenPresentation,
   AddFrame,
   ManipulateFrame,
   CloseFrame,
@@ -24,6 +24,8 @@ export enum Actions {
   SwitchToPreviousScene,
   MoveSceneLeft,
   MoveSceneRight,
+  MoveSceneToBeginning,
+  MoveSceneToEnd,
 }
 
 export interface AddFramePayload {
@@ -114,12 +116,22 @@ export const setActiveScene = (sceneId: SceneId) => ({
 })
 
 export const loadPresentationStore = (newStore: SpectaclePresentation) => ({
-  type: Actions.LoadPresentation,
+  type: Actions.OpenPresentation,
   payload: newStore,
 })
 
 export const moveSceneLeft = (sceneId: SceneId) => ({
   type: Actions.MoveSceneLeft,
+  payload: { sceneId },
+})
+
+export const moveSceneToBeginning = (sceneId: SceneId) => ({
+  type: Actions.MoveSceneToBeginning,
+  payload: { sceneId },
+})
+
+export const moveSceneToEnd = (sceneId: SceneId) => ({
+  type: Actions.MoveSceneToEnd,
   payload: { sceneId },
 })
 

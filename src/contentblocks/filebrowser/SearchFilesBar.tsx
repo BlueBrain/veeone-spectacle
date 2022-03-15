@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react"
-import { Grid, IconButton, TextField } from "@mui/material"
+import { Box, Grid, IconButton, TextField } from "@mui/material"
 import { Close } from "@mui/icons-material"
-import ViewTypeSelector from "./ViewTypeSelector"
 import FiltersSelector from "./FiltersSelector"
 import { visualKeyboardService } from "../../visualkeyboard"
 import useInteractable from "../../core/interactable/useInteractable"
@@ -56,19 +55,21 @@ const SearchFilesBar: React.FC = () => {
       <Grid item xs>
         <Grid container alignItems={"center"}>
           <Grid item xs>
-            <TextField
-              type={"text"}
-              size={"small"}
-              variant={"outlined"}
-              margin={"dense"}
-              label={"Search filesystem"}
-              autoFocus={true}
-              fullWidth={true}
-              value={searchQuery}
-              onChange={onSearchQueryChange}
-              onFocus={event => showVisualKeyboard(event.target, searchQuery)}
-              inputRef={searchFieldRef}
-            />
+            <Box sx={{ paddingLeft: ".3rem" }}>
+              <TextField
+                type={"text"}
+                size={"small"}
+                variant={"outlined"}
+                margin={"dense"}
+                label={"Search filesystem"}
+                autoFocus={true}
+                fullWidth={true}
+                value={searchQuery}
+                onChange={onSearchQueryChange}
+                onFocus={event => showVisualKeyboard(event.target, searchQuery)}
+                inputRef={searchFieldRef}
+              />
+            </Box>
           </Grid>
           <Grid item>
             <IconButton onClick={() => setSearchMode(false)} size={"small"}>

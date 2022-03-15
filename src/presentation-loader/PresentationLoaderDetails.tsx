@@ -1,25 +1,24 @@
 import React, { FC, useContext, useEffect, useMemo, useState } from "react"
 import {
   Box,
-  Button,
   CircularProgress,
   Table,
   TableBody,
   TableCell,
   TableRow,
+  Typography,
 } from "@mui/material"
 import SpectacleContext from "../core/spectacle/SpectacleContext"
 import { SpectaclePresentation } from "../core/types"
 import { friendlyDisplayDateTime } from "../common/datetime"
+import { Crop32Rounded } from "@mui/icons-material"
 
 interface PresentationLoaderDetailsProps {
   presentationId: string
-  onLoadRequest: (event) => void
 }
 
 export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
   presentationId,
-  onLoadRequest,
 }) => {
   const spectacleContext = useContext(SpectacleContext)
   const [
@@ -29,12 +28,12 @@ export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
 
   useEffect(() => {
     async function loadPresentationData() {
-      const data = await spectacleContext.loadPresentation.load(presentationId)
+      const data = await spectacleContext.openPresentation.load(presentationId)
       console.debug("Load presentation data", data)
       setPresentationData(data)
     }
     void loadPresentationData()
-  }, [presentationId, spectacleContext.loadPresentation])
+  }, [presentationId, spectacleContext.openPresentation])
 
   const isLoading = presentationData === null
 
@@ -56,38 +55,88 @@ export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
       : []
   }, [presentationData])
 
-  return isLoading ? (
+  const aspectRatio = useMemo(
+    () =>
+      presentationData
+        ? Math.round(
+            (10 * presentationData.meta.viewport.width) /
+              presentationData.meta.viewport.height
+          ) / 10
+        : 0,
+    [presentationData]
+  )
+
+  return isLoading || !presentationData ? (
     <CircularProgress />
   ) : (
-    <Box>
-      <h2>{presentationData.name}</h2>
-      <Table>
+    <Box
+      sx={{
+        marginLeft: "1rem",
+        display: "flex",
+        flex: "1",
+        flexDirection: "column",
+      }}
+    >
+      <Typography variant={"h4"} mb={2}>
+        {presentationData.name}
+      </Typography>
+      <Table sx={{ width: "100%" }} size={"small"}>
         <TableBody>
           <TableRow>
-            <TableCell>Created at</TableCell>
+            <TableCell colSpan={2}>
+              <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                {sceneSummaries.map((item, i) => {
+                  return (
+                    <Box
+                      key={i}
+                      sx={{
+                        background: theme => theme.palette.secondary.pale,
+                        opacity: 1,
+                        padding: "1rem 0.5rem",
+                        margin: ".2rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                        aspectRatio: `${aspectRatio}`,
+                      }}
+                    >
+                      {item.frameCount} &times;
+                      <Crop32Rounded />
+                    </Box>
+                  )
+                })}
+              </Box>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Screen size</TableCell>
+            <TableCell>
+              {presentationData.meta.viewport.width}
+              &times;
+              {presentationData.meta.viewport.height}({aspectRatio})
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Created</TableCell>
             <TableCell>
               {friendlyDisplayDateTime(presentationData.createdAt)}
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Last updated at</TableCell>
+            <TableCell>Last updated</TableCell>
             <TableCell>
               {friendlyDisplayDateTime(presentationData.updatedAt)}
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Scenes</TableCell>
+            <TableCell>ID</TableCell>
             <TableCell>
-              {sceneSummaries.map((item, i) => {
-                return <div key={i}>Frames: {item.frameCount}</div>
-              })}
+              <Box sx={{ fontSize: "0.7rem" }}>{presentationData.id}</Box>
             </TableCell>
           </TableRow>
         </TableBody>
       </Table>
-      <Button onClick={onLoadRequest} variant={"contained"} fullWidth={true}>
-        Open presentation
-      </Button>
     </Box>
   )
 }

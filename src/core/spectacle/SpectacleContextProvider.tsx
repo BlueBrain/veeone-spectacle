@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import SpectacleContext, {
   SpectacleContextProps,
   ViewMode,
@@ -12,12 +12,12 @@ interface SpectacleContextProviderProps {}
 const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
   children,
 }) => {
-  const [saveModalVisible, setSaveModalVisible] = useState(false)
-  const [loadModalVisible, setLoadModalVisible] = useState(false)
+  const [isSaveModalVisible, setIsSaveModalVisible] = useState(false)
+  const [isOpenModalVisible, setIsOpenModalVisible] = useState(false)
 
   const [
-    loadPresentationModalPosition,
-    setLoadPresentationModalPosition,
+    openPresentationModalPosition,
+    setOpenPresentationModalPosition,
   ] = useState(null)
 
   const [
@@ -63,16 +63,19 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
       activeSceneIndex,
       sceneIds,
       savePresentationModal: {
-        visible: saveModalVisible,
+        visible: isSaveModalVisible,
       },
       savePresentation: {
-        isModalOpen: saveModalVisible,
-        openModal: () => setSaveModalVisible(true),
+        isModalOpen: isSaveModalVisible,
+        openModal: ({ position }) => {
+          setSavePresentationModalPosition(position)
+          setIsSaveModalVisible(true)
+        },
         closeModal: (event, reason) => {
           if (reason === "backdropClick") {
             return
           }
-          setSaveModalVisible(false)
+          setIsSaveModalVisible(false)
         },
         save: async data => {
           const storeToSave = { ...presentationStore, ...data }
@@ -80,19 +83,19 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
           await veeDriveService.savePresentation(storeToSave)
         },
       },
-      loadPresentationModalPosition,
+      openPresentationModalPosition: openPresentationModalPosition,
       savePresentationModalPosition,
-      loadPresentation: {
-        isModalOpen: loadModalVisible,
+      openPresentation: {
+        isModalOpen: isOpenModalVisible,
         openModal: ({ position }) => {
-          setLoadPresentationModalPosition(position)
-          setLoadModalVisible(true)
+          setOpenPresentationModalPosition(position)
+          setIsOpenModalVisible(true)
         },
         closeModal: (event, reason) => {
           if (reason === "backdropClick") {
             return
           }
-          setLoadModalVisible(false)
+          setIsOpenModalVisible(false)
         },
         listPresentations: async () =>
           await veeDriveService.listPresentations(),
@@ -112,10 +115,10 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
       activeSceneId,
       activeSceneIndex,
       sceneIds,
-      saveModalVisible,
-      loadPresentationModalPosition,
+      isSaveModalVisible,
+      openPresentationModalPosition,
       savePresentationModalPosition,
-      loadModalVisible,
+      isOpenModalVisible,
       viewMode,
       presentationStore,
     ]

@@ -14,8 +14,17 @@ export const blueBrainTheme = createTheme({
     mode: "light",
     primary: {
       main: `rgba(0, 125, 222, 1)`,
+      pale: `rgba(0, 125, 222, .2)`,
+      dark: `rgba(0, 100, 190, 1)`,
     },
-    secondary: { main: `rgba(62, 197, 255, 1)` },
+    secondary: {
+      main: `rgba(62, 197, 255, 1)`,
+      pale: `rgba(62, 197, 255, .2)`,
+    },
+    screen: {
+      main: `rgba(30, 30, 30, 1)`,
+      pale: `rgba(30, 30, 30, .2)`,
+    },
     error: red,
     success: green,
     info: grey,

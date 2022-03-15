@@ -12,7 +12,7 @@ const CloseIconButton: React.FC<CloseIconButtonProps> = (
   ref
 ) => {
   return (
-    <Tooltip title="Close">
+    <Tooltip title="Close" enterDelay={1000}>
       <span>
         <IconButton
           ref={ref}

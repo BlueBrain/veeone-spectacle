@@ -58,8 +58,7 @@ const DirectoryThumbnailsView: React.FC<DirectoryThumbnailsProps> = ({
             },
           },
           "> .Label.MuiBox-root": {
-            // whiteSpace: "nowrap",
-            // textOverflow: "ellipsis",
+            whiteSpace: "normal",
             overflow: "hidden",
             fontSize: ".7rem",
             textAlign: "center",

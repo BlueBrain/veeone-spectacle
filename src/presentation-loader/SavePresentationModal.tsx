@@ -14,24 +14,29 @@ import React, {
   useRef,
   useState,
 } from "react"
-import SpectacleContext from "../core/spectacle/SpectacleContext"
+import SpectacleContext, {
+  useSpectacle,
+} from "../core/spectacle/SpectacleContext"
 import { visualKeyboardService } from "../visualkeyboard"
 import { SpectaclePresentation } from "../core/types"
 import { generateRandomPresentationId } from "../core/presentations/utils"
 
 interface SavePresentationModalProps {}
 
-const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
-  const spectacleContext = useContext(SpectacleContext)
-  const presentationNameFieldRef = useRef()
-  const [presentationName, setPresentationName] = useState("")
+const keyboardId = "savePresentationName"
 
-  const keyboardId = "presentationName"
+const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
+  const presentationNameFieldRef = useRef()
+  const spectacleContext = useSpectacle()
+  const { left, top } = spectacleContext.savePresentationModalPosition
+  const [presentationTitle, setPresentationTitle] = useState(
+    spectacleContext.presentationStore.name
+  )
 
   const showVisualKeyboard = useCallback((target, initialValue: string) => {
     visualKeyboardService.newKeyboard(
       target,
-      newValue => setPresentationName(newValue),
+      newValue => setPresentationTitle(newValue),
       {
         initialValue,
         keyboardId,
@@ -43,25 +48,33 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
     return () => {
       visualKeyboardService.closeKeyboard(keyboardId)
     }
-  }, [keyboardId])
+  }, [])
 
   const savePresentation = useCallback(
     (extraData: Partial<SpectaclePresentation> = {}) => {
-      return spectacleContext.savePresentation.save({
-        name: presentationName,
+      spectacleContext.savePresentation.save({
+        name: presentationTitle,
         savedAt: Date.now(),
         ...extraData,
       })
     },
-    [presentationName, spectacleContext.savePresentation]
+    [presentationTitle, spectacleContext.savePresentation]
   )
 
-  const handleSaveClick = () => {
+  const handleSaveClick = event => {
     savePresentation()
+    spectacleContext.savePresentation.closeModal(event, "saved")
   }
 
-  const handleSaveAsNewClick = () => {
+  const handleSaveAsNewClick = event => {
     savePresentation({ id: generateRandomPresentationId() })
+    spectacleContext.savePresentation.closeModal(event, "saved")
+  }
+
+  const handleTextInputChange = event => {
+    const value = event.target.value
+    setPresentationTitle(value)
+    visualKeyboardService.updateKeyboardState(keyboardId, value)
   }
 
   return (
@@ -69,12 +82,19 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
       open={spectacleContext.savePresentation.isModalOpen}
       onClose={spectacleContext.savePresentation.closeModal}
       fullWidth={true}
-      sx={{ top: "-40%" }}
+      PaperProps={{
+        sx: {
+          position: "absolute",
+          transform: "translate(-50%, -50%)",
+          left,
+          top,
+        },
+      }}
     >
       <DialogTitle>Save presentation</DialogTitle>
       <DialogContent>
         <Grid container alignItems={"center"} sx={{ py: 3 }}>
-          <Grid item xs>
+          <Grid item xs sx={{ paddingBottom: "15rem" }}>
             <TextField
               inputRef={presentationNameFieldRef}
               type={"text"}
@@ -82,9 +102,10 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
               label={"Name of your presentation"}
               autoFocus={true}
               fullWidth={true}
-              value={presentationName}
+              value={presentationTitle}
+              onChange={handleTextInputChange}
               onFocus={event =>
-                showVisualKeyboard(event.target, presentationName)
+                showVisualKeyboard(event.target, presentationTitle)
               }
             />
           </Grid>
@@ -99,7 +120,9 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
           Cancel
         </Button>
         <Button onClick={handleSaveAsNewClick}>Save as new</Button>
-        <Button onClick={handleSaveClick}>Save</Button>
+        <Button onClick={handleSaveClick} variant={"contained"}>
+          Save
+        </Button>
       </DialogActions>
     </Dialog>
   )

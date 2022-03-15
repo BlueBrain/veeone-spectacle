@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material"
+import { Box, List, ListItem, ListItemIcon, ListItemText } from "@mui/material"
 import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
 import { Folder, InsertDriveFile } from "@mui/icons-material"
@@ -12,42 +12,19 @@ interface DirectoryListProps {
   dirs: BrowserDirectory[]
 }
 
-const StyledDataGrid = styled.div`
-  width: 100%;
-  columns: 3;
-`
-
-const StyledListItem = styled.div`
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
-  break-inside: avoid;
-`
-
-const useStyles = makeStyles(theme =>
-  createStyles({
-    listItem: {
-      overflow: "hidden",
-    },
-    listItemText: {
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-    },
-  })
-)
-
 const DirectoryListView: React.FC<DirectoryListProps> = ({ dirs, files }) => {
-  const classes = useStyles()
   const { navigateDirectory, requestFile } = useFileBrowserNavigator()
 
   return (
-    <StyledDataGrid>
+    <Box sx={{ width: "100%" }}>
       <List>
         {dirs.map(dir => (
-          <StyledListItem key={dir.path}>
+          <Box key={dir.path}>
             <ListItem
-              className={classes.listItem}
               key={dir.path}
+              sx={{
+                overflow: "hidden",
+              }}
               button
               onClick={() => navigateDirectory(dir.path)}
               title={dir.name}
@@ -56,17 +33,23 @@ const DirectoryListView: React.FC<DirectoryListProps> = ({ dirs, files }) => {
                 <Folder />
               </ListItemIcon>
               <ListItemText
-                classes={{ primary: classes.listItemText }}
+                sx={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
                 primary={dir.name}
               />
             </ListItem>
-          </StyledListItem>
+          </Box>
         ))}
         {files.map((file, i) => (
-          <StyledListItem key={i}>
+          <Box key={i}>
             <ListItem
-              className={classes.listItem}
               key={file.name}
+              sx={{
+                overflow: "hidden",
+              }}
               button
               onClick={() => requestFile(file.path)}
               title={file.name}
@@ -75,14 +58,18 @@ const DirectoryListView: React.FC<DirectoryListProps> = ({ dirs, files }) => {
                 <InsertDriveFile />
               </ListItemIcon>
               <ListItemText
-                classes={{ primary: classes.listItemText }}
+                sx={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
                 primary={file.name}
               />
             </ListItem>
-          </StyledListItem>
+          </Box>
         ))}
       </List>
-    </StyledDataGrid>
+    </Box>
   )
 }
 

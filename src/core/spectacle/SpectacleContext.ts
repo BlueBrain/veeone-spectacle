@@ -15,13 +15,13 @@ interface SavePresentationContextProps {
   save: (data: Partial<SpectaclePresentation>) => void
 }
 
-interface LoadPresentationOpenModalProps {
+interface OpenPresentationOpenModalProps {
   position: Position
 }
 
-interface LoadPresentationContextProps {
+interface OpenPresentationContextProps {
   isModalOpen: boolean
-  openModal: (props: LoadPresentationOpenModalProps) => void
+  openModal: (props: OpenPresentationOpenModalProps) => void
   closeModal: (event, reason: string) => void
   listPresentations: () => Promise<VeeDriveListPresentationsResponse>
   load: (id: string) => Promise<SpectaclePresentation>
@@ -34,8 +34,8 @@ export enum ViewMode {
 
 export interface SpectacleContextProps {
   savePresentation: SavePresentationContextProps
-  loadPresentation: LoadPresentationContextProps
-  loadPresentationModalPosition: Position
+  openPresentation: OpenPresentationContextProps
+  openPresentationModalPosition: Position
   savePresentationModalPosition: Position
   viewMode: ViewMode
   setViewMode(newViewMode: ViewMode): void

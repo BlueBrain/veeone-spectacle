@@ -4,13 +4,10 @@ import { Box, Button, Grid } from "@mui/material"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 import ViewTypeSelector from "./ViewTypeSelector"
 import SelectionModeStatusBar from "./selection-mode/SelectionModeStatusBar"
-import { useFileBrowserSelectionMode } from "./selection-mode/FileBrowserSelectionModeContext"
 
 const Footer: React.FC = () => {
   const { totalFilesCount, hiddenFilesCount } = useFileBrowserNavigator()
   const { nameFilterQuery, filterByName } = useFileBrowserFilter()
-  const { isSelectionModeEnabled } = useFileBrowserSelectionMode()
-
   const clearFilters = () => {
     filterByName("")
   }
@@ -24,16 +21,14 @@ const Footer: React.FC = () => {
       }}
     >
       <Grid container alignItems="center" justifyContent={"space-between"}>
-        {isSelectionModeEnabled ? (
-          <Grid item>
-            <SelectionModeStatusBar />
-          </Grid>
-        ) : null}
+        <Grid item xs>
+          <SelectionModeStatusBar />
+        </Grid>
         <Grid item>
           Total: {totalFilesCount} {totalFilesCount === 1 ? "file" : "files"}{" "}
         </Grid>
-        <Grid item xs>
-          {hiddenFilesCount > 0 ? `(${hiddenFilesCount} hidden)` : null}
+        <Grid item sx={{ paddingLeft: ".3rem" }}>
+          {hiddenFilesCount > 0 ? `(${hiddenFilesCount} not shown)` : null}
         </Grid>
         {nameFilterQuery.length > 0 ? (
           <Grid item>

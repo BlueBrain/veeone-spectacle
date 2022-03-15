@@ -42,8 +42,8 @@ config = {
 
 config = {
   ...config,
-  FILE_BROWSER_WIDTH: Math.max(config.VIEWPORT_WIDTH / 3, 600),
-  FILE_BROWSER_HEIGHT: Math.max(config.VIEWPORT_HEIGHT / 2.5, 400),
+  FILE_BROWSER_WIDTH: Math.max(config.VIEWPORT_WIDTH / 3, 800),
+  FILE_BROWSER_HEIGHT: Math.max(config.VIEWPORT_HEIGHT / 2.5, 600),
 }
 
 const AppConfigWithOverrides: ApplicationConfig = queryParamOverrides.wrap(

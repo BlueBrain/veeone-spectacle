@@ -122,6 +122,22 @@ export const scenesReducer = (
       return { ...state.scenes, sceneOrder: newSceneOrder }
     }
 
+    case Actions.MoveSceneToBeginning: {
+      const { sceneId } = action.payload as MoveScenePayload
+      const newSceneOrder = state.scenes.sceneOrder.filter(id => id !== sceneId)
+      newSceneOrder.unshift(sceneId)
+      return { ...state.scenes, sceneOrder: newSceneOrder }
+    }
+
+    case Actions.MoveSceneToEnd: {
+      const { sceneId } = action.payload as MoveScenePayload
+      const newSceneOrder = [
+        ...state.scenes.sceneOrder.filter(id => id !== sceneId),
+        sceneId,
+      ]
+      return { ...state.scenes, sceneOrder: newSceneOrder }
+    }
+
     default: {
       const activeSceneKey = state.scenes.activeScene
       const activeScene = state.scenes.scenes[activeSceneKey]

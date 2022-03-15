@@ -94,12 +94,18 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
           ref={arcRef}
           d={pathCommands}
           sx={{
-            fill: theme => theme.palette.primary.main,
+            fill: theme =>
+              menuItem.isOpen
+                ? theme.palette.primary.dark
+                : theme.palette.primary.main,
             opacity: 0.8,
             transformOrigin: "center",
             transform: `
               translateY(-1px)
               scale(.95)`,
+            ":hover": {
+              fill: theme => theme.palette.primary.dark,
+            },
           }}
         />
       </Box>

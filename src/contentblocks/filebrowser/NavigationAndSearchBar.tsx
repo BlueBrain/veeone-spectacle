@@ -26,7 +26,7 @@ const NavigationAndSearchBar: React.FC = () => {
       ) : (
         <Grid container alignItems="center" data-drag-handle={true}>
           <Grid item>
-            <Tooltip title="Back">
+            <Tooltip title="Back" enterDelay={1000}>
               <span>
                 <IconButton
                   onClick={navigateBack}
@@ -38,7 +38,7 @@ const NavigationAndSearchBar: React.FC = () => {
                 </IconButton>
               </span>
             </Tooltip>
-            <Tooltip title="Forward">
+            <Tooltip title="Forward" enterDelay={1000}>
               <span>
                 <IconButton
                   onClick={navigateForward}
@@ -53,7 +53,7 @@ const NavigationAndSearchBar: React.FC = () => {
           </Grid>
 
           <Grid item>
-            <Tooltip title="Search files and directories">
+            <Tooltip title="Search files and directories" enterDelay={1000}>
               <span>
                 <IconButton
                   onClick={() => setSearchMode(true)}

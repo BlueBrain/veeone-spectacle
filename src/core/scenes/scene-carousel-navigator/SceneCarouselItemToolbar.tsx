@@ -10,10 +10,11 @@ import {
 } from "@mui/material"
 import { useSpectacle } from "../../spectacle/SpectacleContext"
 import {
-  ArrowLeftRounded,
-  ArrowRightRounded,
   DeleteRounded,
   Menu as MenuIcon,
+  PlayArrowRounded,
+  SkipNextRounded,
+  SkipPreviousRounded,
 } from "@mui/icons-material"
 import { SceneId } from "../../types"
 
@@ -55,6 +56,15 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
     closeMenu()
     sceneManager.moveSceneLeft(sceneId)
   }, [sceneId, sceneManager])
+  const moveSceneToBeginning = useCallback(() => {
+    closeMenu()
+    sceneManager.moveSceneToBeginning(sceneId)
+  }, [sceneId, sceneManager])
+
+  const moveSceneToEnd = useCallback(() => {
+    closeMenu()
+    sceneManager.moveSceneToEnd(sceneId)
+  }, [sceneId, sceneManager])
 
   const moveSceneRight = useCallback(() => {
     closeMenu()
@@ -79,7 +89,8 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
       <Box
         sx={{
           width: "100%",
-          paddingTop: "2rem",
+          boxSizing: "border-box",
+          padding: "2rem 2rem 0 2rem",
           fontWeight: 300,
           textAlign: "center",
           color: `rgba(255, 255, 255, .5)`,
@@ -88,7 +99,6 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
           justifyContent: "space-between",
         }}
       >
-        <Box>Scene {index + 1}</Box>
         <Tooltip title="Show options">
           <span>
             <IconButton
@@ -106,16 +116,28 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
           onClose={closeMenu}
         >
           {index > 0 ? (
-            <MenuItem onClick={moveSceneLeft}>
-              <ArrowLeftRounded />
-              <Typography>Move left</Typography>
-            </MenuItem>
+            <>
+              <MenuItem onClick={moveSceneToBeginning}>
+                <SkipPreviousRounded />
+                <Typography>Move to the beginning</Typography>
+              </MenuItem>
+              <MenuItem onClick={moveSceneLeft}>
+                <PlayArrowRounded sx={{ transform: "scale(-1,-1)" }} />
+                <Typography>Move left</Typography>
+              </MenuItem>
+            </>
           ) : null}
           {index + 1 < sceneIds.length ? (
-            <MenuItem onClick={moveSceneRight}>
-              <ArrowRightRounded />
-              <Typography>Move right</Typography>
-            </MenuItem>
+            <>
+              <MenuItem onClick={moveSceneRight}>
+                <PlayArrowRounded />
+                <Typography>Move right</Typography>
+              </MenuItem>
+              <MenuItem onClick={moveSceneToEnd}>
+                <SkipNextRounded />
+                <Typography>Move to the end</Typography>
+              </MenuItem>
+            </>
           ) : null}
           <Divider />
           <MenuItem onClick={removeScene}>
@@ -123,6 +145,8 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
             <Typography>Delete scene</Typography>
           </MenuItem>
         </Menu>
+
+        <Box sx={{ fontSize: "3rem" }}>{index + 1}</Box>
       </Box>
     </Box>
   )
