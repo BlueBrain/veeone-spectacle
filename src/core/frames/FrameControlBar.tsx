@@ -5,11 +5,19 @@ import useInteractable from "../interactable/useInteractable"
 import CloseIconButtonWithRef from "./frame-controls/CloseIconButton"
 import FullscreenIconButtonWithRef from "./frame-controls/FullscreenIconButton"
 import SendToBackIconButtonWithRef from "./frame-controls/SendToBackIconButton"
-import { useSelector } from "react-redux"
-import { getFrameStack } from "../redux/selectors"
 import { useDesk } from "../desk/DeskContext"
 
-const FrameControlBar: React.FC = () => {
+export interface FrameControlBarProps {
+  isFullscreenButtonVisible?: boolean
+  isSendToBackButtonVisible?: boolean
+  isCloseButtonVisible?: boolean
+}
+
+const FrameControlBar: React.FC<FrameControlBarProps> = ({
+  isFullscreenButtonVisible = true,
+  isSendToBackButtonVisible = true,
+  isCloseButtonVisible = true,
+}) => {
   const { scene } = useDesk()
 
   const {
@@ -69,9 +77,18 @@ const FrameControlBar: React.FC = () => {
         },
       ]}
     >
-      <SendToBackIconButtonWithRef isVisible={isTopFrame} ref={sendToBackRef} />
-      <FullscreenIconButtonWithRef isVisible={isTopFrame} ref={fullscreenRef} />
-      <CloseIconButtonWithRef isVisible={true} ref={closeRef} />
+      <SendToBackIconButtonWithRef
+        isVisible={Boolean(isTopFrame && isSendToBackButtonVisible)}
+        ref={sendToBackRef}
+      />
+      <FullscreenIconButtonWithRef
+        isVisible={Boolean(isTopFrame && isFullscreenButtonVisible)}
+        ref={fullscreenRef}
+      />
+      <CloseIconButtonWithRef
+        isVisible={Boolean(isCloseButtonVisible)}
+        ref={closeRef}
+      />
     </Box>
   )
 }
