@@ -69,7 +69,7 @@ const NavigationAndSearchBar: React.FC = () => {
           </Grid>
         </Grid>
       )}
-      <FloatingFrameControlBar />
+      <FloatingFrameControlBar isFullscreenButtonVisible={false} />
     </>
   )
 }
