@@ -98,7 +98,7 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
               menuItem.isOpen
                 ? theme.palette.primary.dark
                 : theme.palette.primary.main,
-            opacity: 0.8,
+            opacity: menuItem.isEnabled ? 0.8 : 0.3,
             transformOrigin: "center",
             transform: `
               translateY(-1px)
