@@ -40,15 +40,7 @@ const Desk: React.FC = () => {
   const { scene } = useDesk()
   const spectacleContext = useSpectacle()
   const meta = spectacleContext.presentationStore.meta
-  const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([
-    // {
-    //   menuId: generateRandomId(4),
-    //   position: {
-    //     left: 350,
-    //     top: 300,
-    //   },
-    // },
-  ])
+  const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])
 
   const openLauncherMenu = useCallback(
     ({ top, left }: Position) => {
