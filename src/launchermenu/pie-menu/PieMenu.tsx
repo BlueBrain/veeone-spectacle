@@ -14,6 +14,12 @@ const PieMenu: React.FC<PieMenuProps> = () => {
 
   const handleWedgeTap = (menuItem: MenuItem, index: number) => {
     const newMenuData = { ...menuData }
+
+    if (!menuItem.isEnabled) {
+      console.warn("This menu item is disabled")
+      return
+    }
+
     if (newMenuData.items[index]?.children?.length > 0) {
       newMenuData.items[index].isOpen = !newMenuData.items[index].isOpen
       console.debug("Tapped", newMenuData.items[index].isOpen, index, menuItem)

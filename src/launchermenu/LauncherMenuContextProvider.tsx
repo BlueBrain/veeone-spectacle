@@ -23,6 +23,7 @@ import { useDispatch } from "react-redux"
 import { Position, Size } from "../common/types"
 import { CloseLauncherMenuArgs } from "./LauncherMenu"
 import { MenuData } from "./types"
+import LauncherMenuItem from "./LauncherMenuItem"
 
 interface OpenNewFrameArgs {
   type: ContentBlockTypes
@@ -93,8 +94,8 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
 
   const switchToScenesView = useCallback(() => {
     console.debug("switchToScenesView to scene overview...")
-    close()
     spectacleContext.setViewMode(ViewMode.SceneOverview)
+    close()
   }, [close, spectacleContext])
 
   const newPresentation = useCallback(() => {
@@ -104,73 +105,73 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
 
   const [menuData, setMenuData] = useState<MenuData>({
     items: [
-      {
+      new LauncherMenuItem({
         label: "Open media",
         icon: ImageSearch,
         action: openMedia,
-      },
-      {
+      }),
+      new LauncherMenuItem({
         label: "Scenes",
         icon: GridView,
         action: switchToScenesView,
-      },
-      {
+      }),
+      new LauncherMenuItem({
         label: "Save / Open",
         icon: CloudSync,
         children: [
-          {
+          new LauncherMenuItem({
             label: "New",
             icon: CloudQueueRounded,
             action: newPresentation,
-          },
-          {
+          }),
+          new LauncherMenuItem({
             label: "Open",
             icon: CloudUpload,
             action: openPresentation,
-          },
-          {
+          }),
+          new LauncherMenuItem({
             label: "Save",
             icon: CloudDownload,
             action: savePresentation,
-          },
+          }),
         ],
-      },
-      {
+      }),
+      new LauncherMenuItem({
         label: "Login",
         isEnabled: false,
         icon: Person,
-      },
-      {
+      }),
+      new LauncherMenuItem({
         label: "Open web",
         isEnabled: false,
         icon: Language,
         children: [
-          {
+          new LauncherMenuItem({
             label: "EPFL",
             icon: Language,
-          },
-          {
+          }),
+          new LauncherMenuItem({
             label: "BBP",
             icon: Language,
-          },
-          {
+          }),
+          new LauncherMenuItem({
             label: "Browser",
             icon: Language,
-          },
+          }),
         ],
-      },
-      {
+      }),
+      new LauncherMenuItem({
         label: "Share your screen",
         isEnabled: false,
         icon: ScreenShare,
-      },
+      }),
     ],
   })
 
   const providerValue: LauncherMenuContextProps = useMemo(
     () => ({
-      menuData: menuData,
-      setMenuData: setMenuData,
+      menuData,
+      setMenuData,
     }),
     [menuData]
   )

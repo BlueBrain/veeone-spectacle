@@ -15,7 +15,7 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
   anglePerMainItem,
   menuItem,
 }) => {
-  const { label, icon, isOpen, children } = menuItem
+  const { label, icon, isOpen, children, isEnabled } = menuItem
   const mainRotationAngle = anglePerMainItem * index
   const IconComponent = useMemo<SvgIconComponent>(() => icon, [icon])
 
@@ -43,7 +43,7 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
               opacity: 0,
             },
             "100%": {
-              opacity: 1,
+              opacity: isEnabled ? 1 : 0.3,
               transform: `
               translate(-50%)
               rotate(${mainRotationAngle}deg)

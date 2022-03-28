@@ -116,28 +116,28 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
           onClose={closeMenu}
         >
           {index > 0 ? (
-            <>
-              <MenuItem onClick={moveSceneToBeginning}>
-                <SkipPreviousRounded />
-                <Typography>Move to the beginning</Typography>
-              </MenuItem>
-              <MenuItem onClick={moveSceneLeft}>
-                <PlayArrowRounded sx={{ transform: "scale(-1,-1)" }} />
-                <Typography>Move left</Typography>
-              </MenuItem>
-            </>
+            <MenuItem onClick={moveSceneToBeginning}>
+              <SkipPreviousRounded />
+              <Typography>Move to the beginning</Typography>
+            </MenuItem>
+          ) : null}
+          {index > 0 ? (
+            <MenuItem onClick={moveSceneLeft}>
+              <PlayArrowRounded sx={{ transform: "scale(-1,-1)" }} />
+              <Typography>Move left</Typography>
+            </MenuItem>
           ) : null}
           {index + 1 < sceneIds.length ? (
-            <>
-              <MenuItem onClick={moveSceneRight}>
-                <PlayArrowRounded />
-                <Typography>Move right</Typography>
-              </MenuItem>
-              <MenuItem onClick={moveSceneToEnd}>
-                <SkipNextRounded />
-                <Typography>Move to the end</Typography>
-              </MenuItem>
-            </>
+            <MenuItem onClick={moveSceneRight}>
+              <PlayArrowRounded />
+              <Typography>Move right</Typography>
+            </MenuItem>
+          ) : null}
+          {index + 1 < sceneIds.length ? (
+            <MenuItem onClick={moveSceneToEnd}>
+              <SkipNextRounded />
+              <Typography>Move to the end</Typography>
+            </MenuItem>
           ) : null}
           <Divider />
           <MenuItem onClick={removeScene}>
