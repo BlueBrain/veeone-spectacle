@@ -21,6 +21,7 @@ import SpectacleContext from "../core/spectacle/SpectacleContext"
 import { useDispatch } from "react-redux"
 import { loadPresentationStore } from "../core/redux/actions"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"
+import { adjustPresentationToViewport } from "../core/presentations/resizing"
 
 interface LoadPresentationModalProps {}
 
@@ -50,7 +51,10 @@ const OpenPresentationModal: React.FC<LoadPresentationModalProps> = () => {
     presentationId => {
       async function dispatchLoad(id) {
         const store = await spectacleContext.openPresentation.load(id)
-        dispatch(loadPresentationStore(store))
+        const sizeAdjustedPresentationStore = adjustPresentationToViewport(
+          store
+        )
+        dispatch(loadPresentationStore(sizeAdjustedPresentationStore))
       }
       void dispatchLoad(presentationId)
     },

@@ -26,6 +26,7 @@ export enum Actions {
   MoveSceneRight,
   MoveSceneToBeginning,
   MoveSceneToEnd,
+  ResizePresentation,
 }
 
 export interface AddFramePayload {
@@ -143,4 +144,9 @@ export const moveSceneRight = (sceneId: SceneId) => ({
 export const removeScene = (sceneId: SceneId) => ({
   type: Actions.RemoveScene,
   payload: { sceneId },
+})
+
+export const resizePresentation = (newSize: Size) => ({
+  type: Actions.ResizePresentation,
+  payload: newSize,
 })

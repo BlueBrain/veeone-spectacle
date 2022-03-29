@@ -16,6 +16,7 @@ import {
 } from "../types"
 import { ReduxAction } from "../../redux/actions"
 import { config } from "../../config"
+import { resizePresentationStore } from "../presentations/resizing"
 
 enum MoveSceneDirection {
   Left = -1,
@@ -255,5 +256,16 @@ export const frameStackReducer = (
     }
     default:
       return frameStack
+  }
+}
+
+export const presentationReducer = (state, action) => {
+  switch (action.type) {
+    case Actions.ResizePresentation: {
+      return resizePresentationStore(state, action.payload)
+    }
+    default: {
+      return state
+    }
   }
 }
