@@ -1,12 +1,8 @@
 import queryParamOverrides from "./query-param-overrides"
 import { ApplicationConfig } from "./types"
 
-declare const ENV_VARIABLES: any
-
-console.debug("ENV_VARIABLES", ENV_VARIABLES)
-
-const viewportWidth = window.visualViewport.width
-const viewportHeight = window.visualViewport.height
+const viewportWidth = window.visualViewport?.width
+const viewportHeight = window.visualViewport?.height
 const viewportLongSide = Math.max(viewportWidth, viewportHeight)
 const viewportShortSide = Math.min(viewportWidth, viewportHeight)
 
@@ -36,12 +32,6 @@ let config: ApplicationConfig = {
 
 config = {
   ...config,
-  VEEDRIVE_WS_PATH:
-    ENV_VARIABLES.SPECTACLE_VEEDRIVE_WS_PATH ?? config.VEEDRIVE_WS_PATH,
-}
-
-config = {
-  ...config,
   FILE_BROWSER_WIDTH: Math.max(config.VIEWPORT_WIDTH / 3, 800),
   FILE_BROWSER_HEIGHT: Math.max(config.VIEWPORT_HEIGHT / 2.5, 600),
 }
@@ -49,7 +39,5 @@ config = {
 const AppConfigWithOverrides: ApplicationConfig = queryParamOverrides.wrap(
   config
 )
-
-console.debug("AppConfigWithOverrides", AppConfigWithOverrides)
 
 export default AppConfigWithOverrides
