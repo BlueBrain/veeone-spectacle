@@ -3,8 +3,8 @@ import { ApplicationConfig } from "./types"
 
 const viewportWidth = window.visualViewport?.width
 const viewportHeight = window.visualViewport?.height
-const viewportLongSide = Math.max(viewportWidth, viewportHeight)
-const viewportShortSide = Math.min(viewportWidth, viewportHeight)
+const viewportLongSide = Math.max(viewportWidth, viewportHeight) || 3600
+const viewportShortSide = Math.min(viewportWidth, viewportHeight) || 1200
 
 let config: ApplicationConfig = {
   VIEWPORT_WIDTH: viewportWidth,

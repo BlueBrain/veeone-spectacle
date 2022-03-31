@@ -1,6 +1,7 @@
 import { SpectaclePresentation } from "../types"
 import { ContentBlockTypes } from "../../contentblocks/types"
 import { resizePresentationStore } from "./resizing"
+import { config } from "../../config"
 
 describe("resizing", () => {
   const oldPresentation: SpectaclePresentation = {
@@ -25,8 +26,19 @@ describe("resizing", () => {
               },
               data: {},
             },
+            frameAB: {
+              type: ContentBlockTypes.Dummy,
+              situation: {
+                left: 800,
+                top: 100,
+                width: 200,
+                height: 500,
+                angle: 0,
+              },
+              data: {},
+            },
           },
-          frameStack: ["frameAA"],
+          frameStack: ["frameAA", "frameAB"],
         },
         sceneB: {
           frames: {
@@ -122,5 +134,21 @@ describe("resizing", () => {
     expect(frameAA.situation.top).toEqual(290)
   })
 
-  it("scales down", () => {})
+  it("scales down", () => {
+    const newPresentation = resizePresentationStore(oldPresentation, {
+      width: 800, // 800:1000 = 0.8
+      height: 400, // 400:600 = 0.67
+    })
+    const frameAA = newPresentation.scenes.scenes.sceneA.frames.frameAA
+    expect(config.MINIMUM_FRAME_LONG_SIDE).toEqual(300)
+    expect(newPresentation.meta.viewport.width).toEqual(800)
+    expect(newPresentation.meta.viewport.height).toEqual(400)
+    // This normally would be 268 but the MINIMUM_FRAME_LONG_SIDE os 300
+    expect(frameAA.situation.width).toEqual(300)
+    // ...and this side is calculated based on the long side
+    expect(frameAA.situation.height).toEqual(225)
+    // todo ?
+    expect(frameAA.situation.left).toEqual(132)
+    expect(frameAA.situation.top).toEqual(66)
+  })
 })
