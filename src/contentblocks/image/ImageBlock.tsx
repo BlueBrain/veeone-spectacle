@@ -25,25 +25,24 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
   const { path: imagePath } = (props.contentData as unknown) as ImageBlockParams
   const { updateAspectRatio } = useContext(FrameContext)
   const { width, height } = imageSize
+  console.debug("ImageBlock render", imageSize)
+  const [aspectRatio, setAspectRatio] = useState(width / height)
 
-  const loadImageWithDimensions = useCallback(
-    url => {
-      // read image dimensions
-      const img = new Image()
-      img.onload = function (event) {
-        // @ts-ignore
-        console.log("Image loaded", url, this.width, this.height)
-        setImageUrl(url)
-        // @ts-ignore
-        setImageSize({ width: this.width, height: this.height })
-        // @ts-ignore
-        const aspectRatio = this.width / this.height
-        updateAspectRatio(aspectRatio)
-      }
-      img.src = url
-    },
-    [updateAspectRatio]
-  )
+  const loadImageWithDimensions = useCallback(url => {
+    // read image dimensions
+    const img = new Image()
+    img.onload = function (event) {
+      // @ts-ignore
+      console.log("Image loaded", url, this.width, this.height)
+      setImageUrl(url)
+      // @ts-ignore
+      setImageSize({ width: this.width, height: this.height })
+      // @ts-ignore
+      // const aspectRatio = this.width / this.height
+      setAspectRatio(this.width / this.height)
+    }
+    img.src = url
+  }, [])
 
   const loadThumbnail = useCallback(async () => {
     const response = await veeDriveService.requestFile({ path: imagePath })
@@ -53,11 +52,17 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
     } else {
       // todo handle invalid images/paths/responses
     }
-  }, [imagePath, loadImageWithDimensions])
+  }, [imagePath, loadImageWithDimensions, veeDriveService])
 
   useEffect(() => {
     void loadThumbnail()
   }, [loadThumbnail])
+
+  useEffect(() => {
+    if (!isNaN(aspectRatio)) {
+      updateAspectRatio(aspectRatio)
+    }
+  }, [aspectRatio, updateAspectRatio])
 
   return (
     <Grow in={true}>

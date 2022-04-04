@@ -66,15 +66,21 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
 
   const frameContentData = frame.data
 
+  const updateAspectRatio = useCallback(
+    (aspectRatio: number) => {
+      console.debug("updateAspectRatio", aspectRatio)
+      const newWidth = width
+      const newHeight = width / aspectRatio
+      manipulate({ width: newWidth, height: newHeight })
+    },
+    [manipulate, width]
+  )
+
   const frameContextProvider: FrameContextProps = useMemo(
     () => ({
       frameId,
       isFullscreen,
-      updateAspectRatio: (aspectRatio: number) => {
-        const newWidth = width
-        const newHeight = width / aspectRatio
-        manipulate({ width: newWidth, height: newHeight })
-      },
+      updateAspectRatio,
       preventResizing: () => {
         setResizingAllowed(false)
       },

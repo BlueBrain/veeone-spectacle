@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Frame } from "../frames"
 import { LauncherMenu } from "../../launchermenu"
 import interact from "interactjs"
@@ -65,7 +65,12 @@ const Desk: React.FC = () => {
         newLauncherMenu,
       ])
     },
-    [launcherMenus]
+    [
+      config.ALLOW_MAX_LAUNCHER_MENUS,
+      config.VIEWPORT_HEIGHT,
+      config.VIEWPORT_WIDTH,
+      launcherMenus,
+    ]
   )
 
   const closeLauncherMenu = ({ menuId }: CloseLauncherMenuArgs) => {
@@ -106,6 +111,23 @@ const Desk: React.FC = () => {
     [scene.frameStack]
   )
 
+  const frames = useMemo(() => {
+    return scene.frameStack.map(frameId => {
+      console.debug("render framestack", frameId)
+      const frame = scene.frames[frameId]
+      return typeof frame !== "undefined" ? (
+        <Frame
+          frame={frame}
+          key={frameId}
+          frameId={frameId}
+          stackIndex={getStackIndex(frameId)}
+        />
+      ) : (
+        ``
+      )
+    })
+  }, [getStackIndex, scene.frameStack, scene.frames])
+
   return (
     <Box
       ref={deskRef}
@@ -125,19 +147,7 @@ const Desk: React.FC = () => {
       ]}
     >
       <DeskBranding />
-      {Object.keys(scene.frames).map(frameId => {
-        const frame = scene.frames[frameId]
-        return typeof frame !== "undefined" ? (
-          <Frame
-            frame={frame}
-            key={frameId}
-            frameId={frameId}
-            stackIndex={getStackIndex(frameId)}
-          />
-        ) : (
-          ``
-        )
-      })}
+      {frames}
 
       {launcherMenus.map(launcherMenu => {
         return (
