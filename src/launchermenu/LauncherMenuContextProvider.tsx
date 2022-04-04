@@ -10,7 +10,6 @@ import {
   ScreenShare,
 } from "@mui/icons-material"
 import { ContentBlockTypes } from "../contentblocks/types"
-import { config } from "../config"
 import LauncherMenuContext, {
   LauncherMenuContextProps,
 } from "./LauncherMenuContext"
@@ -24,6 +23,7 @@ import { Position, Size } from "../common/types"
 import { CloseLauncherMenuArgs } from "./LauncherMenu"
 import { MenuData } from "./types"
 import LauncherMenuItem from "./LauncherMenuItem"
+import { useConfig } from "../config/AppConfigContext"
 
 interface OpenNewFrameArgs {
   type: ContentBlockTypes
@@ -42,6 +42,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   onClose,
   children,
 }) => {
+  const config = useConfig()
   const spectacleContext = useSpectacle()
 
   const dispatch = useDispatch()
@@ -53,7 +54,10 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   const openNewFrameFromLauncher = useCallback(
     ({ type, size }: OpenNewFrameArgs) => {
       close()
-      position = makeFramePositionSafe(position, size)
+      position = makeFramePositionSafe(position, size, {
+        width: config.VIEWPORT_WIDTH,
+        height: config.VIEWPORT_HEIGHT,
+      })
 
       dispatch(
         addFrame({
@@ -72,8 +76,8 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
     openNewFrameFromLauncher({
       type: ContentBlockTypes.FileBrowser,
       size: {
-        width: config.get("FILE_BROWSER_WIDTH"),
-        height: config.get("FILE_BROWSER_HEIGHT"),
+        width: config.FILE_BROWSER_WIDTH,
+        height: config.FILE_BROWSER_HEIGHT,
       },
     })
   }, [openNewFrameFromLauncher])

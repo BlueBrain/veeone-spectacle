@@ -1,4 +1,4 @@
-import { Position } from "../common/types"
+import { Position, Size } from "../common/types"
 import BaseOpener from "./openers/base-opener"
 import ImageOpener from "./openers/image-opener"
 import MovieOpener from "./openers/video-opener"
@@ -12,13 +12,18 @@ class FileOpenerService {
     this.openerRegistry = {}
   }
 
-  public async handleFile(filePath: string, referencePosition: Position) {
+  public async handleFile(
+    filePath: string,
+    referencePosition: Position,
+    defaultSize: Size,
+    dispatch
+  ) {
     const openerClass = this.handleFileByExtension(filePath)
     const opener = new openerClass({
       filePath,
       position: referencePosition,
     })
-    opener.makeFrame()
+    opener.makeFrame(dispatch, defaultSize)
   }
 
   private handleFileByExtension(filePath: string) {

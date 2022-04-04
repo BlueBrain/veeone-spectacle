@@ -7,9 +7,9 @@ import { fileOpenerService } from "../../file-opener"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 import { useFileBrowser } from "./FileBrowserContext"
-import { config } from "../../config"
 import { Position } from "../../common/types"
 import { useDesk } from "../../core/desk/DeskContext"
+import { useConfig } from "../../config/AppConfigContext"
 
 export interface FileBrowserNavigatorContextProps {
   navigateUp(): void
@@ -35,6 +35,7 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
   frameId,
   children,
 }) => {
+  const config = useConfig()
   const {
     activePath,
     pathLoaded,
@@ -136,9 +137,9 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       left:
         situation.left +
         situation.width +
-        config.get("DEFAULT_NEW_FRAME_WIDTH") / 2 +
-        config.get("FILE_BROWSER_OPEN_MEDIA_OFFSET"),
-      top: situation.top + config.get("DEFAULT_NEW_FRAME_HEIGHT") / 2,
+        config.DEFAULT_NEW_FRAME_WIDTH / 2 +
+        config.FILE_BROWSER_OPEN_MEDIA_OFFSET,
+      top: situation.top + config.DEFAULT_NEW_FRAME_HEIGHT / 2,
     }
   }, [situation])
 
@@ -147,10 +148,21 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       console.debug(`Requesting ${filePath} from frame=${frameId}`)
       await fileOpenerService.handleFile(
         filePath,
-        referencePosition ?? getNextAvailablePositionForFrame()
+        referencePosition ?? getNextAvailablePositionForFrame(),
+        {
+          width: config.DEFAULT_NEW_FRAME_WIDTH,
+          height: config.DEFAULT_NEW_FRAME_HEIGHT,
+        },
+        dispatch
       )
     },
-    [frameId, getNextAvailablePositionForFrame]
+    [
+      config.DEFAULT_NEW_FRAME_HEIGHT,
+      config.DEFAULT_NEW_FRAME_WIDTH,
+      dispatch,
+      frameId,
+      getNextAvailablePositionForFrame,
+    ]
   )
 
   const requestMultipleFiles = useCallback(
@@ -158,21 +170,21 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       const initialPosition: Position = getNextAvailablePositionForFrame()
       let position
       let frameCounter = 0
-      const offsetX = config.get("FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_X")
-      const offsetY = config.get("FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_Y")
+      const offsetX = config.FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_X
+      const offsetY = config.FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_Y
       for (const filePath of filePaths) {
         position = {
           left:
             initialPosition.left +
             (frameCounter %
-              config.get("FILE_BROWSER_OPEN_MEDIA_CASCADE_MAX_PER_ROW")) *
+              config.FILE_BROWSER_OPEN_MEDIA_CASCADE_MAX_PER_ROW) *
               offsetX,
           top: initialPosition.top + offsetY * frameCounter,
         }
         let timeout = (p, fc) =>
           setTimeout(async () => {
             await requestFile(filePath, p)
-          }, config.get("FILE_BROWSER_OPEN_MEDIA_CASCADE_DELAY_MS") * fc)
+          }, config.FILE_BROWSER_OPEN_MEDIA_CASCADE_DELAY_MS * fc)
         timeout(position, frameCounter)
         frameCounter++
       }

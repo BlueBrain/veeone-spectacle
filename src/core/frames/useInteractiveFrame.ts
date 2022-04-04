@@ -3,8 +3,8 @@ import { debounce } from "lodash"
 import { Situation } from "../../common/types"
 import interact from "interactjs"
 import { FrameSituation, FrameSituationUpdate } from "../types"
-import { config } from "../../config"
 import { GestureEvent } from "@interactjs/types"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface UseInteractJsProps {
   angle
@@ -22,14 +22,6 @@ interface UseInteractJsProps {
   toggleFullscreen
 }
 
-const isFrameTooSmall = (width, height) => {
-  return Math.max(width, height) < config.get("MINIMUM_FRAME_LONG_SIDE")
-}
-
-const isFrameTooBig = (width, height) => {
-  return Math.max(width, height) > config.get("MAXIMUM_FRAME_LONG_SIDE")
-}
-
 export const useInteractiveFrame = ({
   angle,
   width,
@@ -45,10 +37,25 @@ export const useInteractiveFrame = ({
   manipulate,
   toggleFullscreen,
 }: UseInteractJsProps) => {
+  const config = useConfig()
   const frameRef = useRef(null)
   const debouncedManipulate = useMemo(
     () => debounce((situation: Situation) => manipulate(situation), 200),
     [manipulate]
+  )
+
+  const isFrameTooSmall = useCallback(
+    (width, height) => {
+      return Math.max(width, height) < config.MINIMUM_FRAME_LONG_SIDE
+    },
+    [config.MINIMUM_FRAME_LONG_SIDE]
+  )
+
+  const isFrameTooBig = useCallback(
+    (width, height) => {
+      return Math.max(width, height) > config.MAXIMUM_FRAME_LONG_SIDE
+    },
+    [config.MAXIMUM_FRAME_LONG_SIDE]
   )
 
   const debouncedResetStyle = useMemo(
@@ -97,7 +104,7 @@ export const useInteractiveFrame = ({
         if (
           isResizingAllowed &&
           isResizingWithWheelAllowed &&
-          config.get("ALLOW_SCALE_WITH_MOUSEWHEEL")
+          config.ALLOW_SCALE_WITH_MOUSEWHEEL
         ) {
           interactiveNode.on("mousewheel", event => {
             event.preventDefault()
@@ -118,23 +125,21 @@ export const useInteractiveFrame = ({
 
               if (isFrameTooSmall(nodeWidth, nodeHeight)) {
                 if (aspectRatio >= 1) {
-                  diffHorizontal -=
-                    nodeWidth - config.get("MINIMUM_FRAME_LONG_SIDE")
-                  nodeWidth = config.get("MINIMUM_FRAME_LONG_SIDE")
+                  diffHorizontal -= nodeWidth - config.MINIMUM_FRAME_LONG_SIDE
+                  nodeWidth = config.MINIMUM_FRAME_LONG_SIDE
                   nodeHeight = nodeWidth / aspectRatio
                 } else {
-                  nodeHeight = config.get("MINIMUM_FRAME_LONG_SIDE")
+                  nodeHeight = config.MINIMUM_FRAME_LONG_SIDE
                   diffHorizontal -= nodeWidth - nodeHeight * aspectRatio
                   nodeWidth = nodeHeight * aspectRatio
                 }
               } else if (isFrameTooBig(nodeWidth, nodeHeight)) {
                 if (aspectRatio >= 1) {
-                  diffHorizontal -=
-                    nodeWidth - config.get("MAXIMUM_FRAME_LONG_SIDE")
-                  nodeWidth = config.get("MAXIMUM_FRAME_LONG_SIDE")
+                  diffHorizontal -= nodeWidth - config.MAXIMUM_FRAME_LONG_SIDE
+                  nodeWidth = config.MAXIMUM_FRAME_LONG_SIDE
                   nodeHeight = nodeWidth / aspectRatio
                 } else {
-                  nodeHeight = config.get("MAXIMUM_FRAME_LONG_SIDE")
+                  nodeHeight = config.MAXIMUM_FRAME_LONG_SIDE
                   diffHorizontal -= nodeWidth - nodeHeight * aspectRatio
                   nodeWidth = nodeHeight * aspectRatio
                 }
@@ -193,18 +198,18 @@ export const useInteractiveFrame = ({
 
             if (isFrameTooSmall(nodeWidth, nodeHeight)) {
               if (aspectRatio >= 1) {
-                nodeWidth = config.get("MINIMUM_FRAME_LONG_SIDE")
+                nodeWidth = config.MINIMUM_FRAME_LONG_SIDE
                 nodeHeight = nodeWidth / aspectRatio
               } else {
-                nodeHeight = config.get("MINIMUM_FRAME_LONG_SIDE")
+                nodeHeight = config.MINIMUM_FRAME_LONG_SIDE
                 nodeWidth = nodeHeight * aspectRatio
               }
             } else if (isFrameTooBig(nodeWidth, nodeHeight)) {
               if (aspectRatio >= 1) {
-                nodeWidth = config.get("MAXIMUM_FRAME_LONG_SIDE")
+                nodeWidth = config.MAXIMUM_FRAME_LONG_SIDE
                 nodeHeight = nodeWidth / aspectRatio
               } else {
-                nodeHeight = config.get("MAXIMUM_FRAME_LONG_SIDE")
+                nodeHeight = config.MAXIMUM_FRAME_LONG_SIDE
                 nodeWidth = nodeHeight * aspectRatio
               }
             }
@@ -216,8 +221,8 @@ export const useInteractiveFrame = ({
             let nodeLongSide = Math.max(nodeWidth, nodeHeight)
 
             if (
-              nodeLongSide <= config.get("MINIMUM_FRAME_LONG_SIDE") ||
-              nodeLongSide >= config.get("MAXIMUM_FRAME_LONG_SIDE")
+              nodeLongSide <= config.MINIMUM_FRAME_LONG_SIDE ||
+              nodeLongSide >= config.MAXIMUM_FRAME_LONG_SIDE
             ) {
               deltaTop = 0
               deltaLeft = 0
@@ -262,14 +267,14 @@ export const useInteractiveFrame = ({
 
             if (aspectRatio >= 1) {
               newWidth = Math.min(
-                Math.max(newWidth, config.get("MINIMUM_FRAME_LONG_SIDE")),
-                config.get("MAXIMUM_FRAME_LONG_SIDE")
+                Math.max(newWidth, config.MINIMUM_FRAME_LONG_SIDE),
+                config.MAXIMUM_FRAME_LONG_SIDE
               )
               newHeight = newWidth / aspectRatio
             } else {
               newHeight = Math.min(
-                Math.max(newHeight, config.get("MINIMUM_FRAME_LONG_SIDE")),
-                config.get("MAXIMUM_FRAME_LONG_SIDE")
+                Math.max(newHeight, config.MINIMUM_FRAME_LONG_SIDE),
+                config.MAXIMUM_FRAME_LONG_SIDE
               )
               newWidth = newHeight * aspectRatio
             }

@@ -3,15 +3,20 @@ import SpectacleContext, {
   SpectacleContextProps,
   ViewMode,
 } from "./SpectacleContext"
-import veeDriveService from "../../veedrive/service"
 import { SceneId, SpectaclePresentation } from "../types"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import SceneManager from "../scenes/SceneManager"
+import { useConfig } from "../../config/AppConfigContext"
+import VeeDriveService from "../../veedrive"
 
 interface SpectacleContextProviderProps {}
 const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
   children,
 }) => {
+  const config = useConfig()
+  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
+  const dispatch = useDispatch()
+
   const [isSaveModalVisible, setIsSaveModalVisible] = useState(false)
   const [isOpenModalVisible, setIsOpenModalVisible] = useState(false)
 
@@ -52,7 +57,7 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
     [activeSceneIndex, sceneIds]
   )
 
-  const sceneManager = useMemo(() => new SceneManager(), [])
+  const sceneManager = useMemo(() => new SceneManager(dispatch), [dispatch])
 
   const providerValue: SpectacleContextProps = useMemo<SpectacleContextProps>(
     () => ({
@@ -121,6 +126,7 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
       isOpenModalVisible,
       viewMode,
       presentationStore,
+      veeDriveService,
     ]
   )
   return (

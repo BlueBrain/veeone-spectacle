@@ -1,6 +1,5 @@
 import queryParamOverrides from "./query-param-overrides"
 import { ApplicationConfig } from "./types"
-import _ from "lodash"
 
 const viewportWidth = window.visualViewport?.width
 const viewportHeight = window.visualViewport?.height
@@ -37,22 +36,6 @@ defaultConfig = {
   FILE_BROWSER_HEIGHT: Math.max(defaultConfig.VIEWPORT_HEIGHT / 2.5, 600),
 }
 
-const defaultConfigWithQueryParamOverrides: ApplicationConfig = queryParamOverrides.wrap(
-  defaultConfig
-)
-
-class AppConfig {
-  private readonly store: ApplicationConfig
-
-  constructor(defaults: ApplicationConfig) {
-    this.store = { ...(defaults ?? {}) } as ApplicationConfig
-  }
-
-  public get(key: string, defaultValue = null) {
-    return _.get(this.store, key, defaultValue)
-  }
-}
-
-const config = new AppConfig(defaultConfigWithQueryParamOverrides)
+const config: ApplicationConfig = queryParamOverrides.wrap(defaultConfig)
 
 export default config

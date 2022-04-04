@@ -33,7 +33,7 @@ export interface AddFramePayload {
   type: ContentBlockTypes
   frameId: FrameId
   position: Position
-  size?: Size
+  size: Size
   contentData: FrameData
 }
 

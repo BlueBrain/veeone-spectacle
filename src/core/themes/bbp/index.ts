@@ -1,46 +1,46 @@
 import { createTheme } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
-import { config } from "../../../config"
+import { ApplicationConfig } from "../../../config/types"
 
-const HIDE_CURSOR_CSS = config.get("DISPLAY_MOUSE_CURSOR")
-  ? ``
-  : `* {
+export const getBlueBrainTheme = (config: ApplicationConfig) => {
+  const HIDE_CURSOR_CSS = config.DISPLAY_MOUSE_CURSOR
+    ? ``
+    : `* {
   cursor: none !important;
 }
 `
-
-export const blueBrainTheme = createTheme({
-  palette: {
-    mode: "light",
-    primary: {
-      main: `rgba(0, 125, 222, 1)`,
-      pale: `rgba(0, 125, 222, .2)`,
-      dark: `rgba(0, 100, 190, 1)`,
+  return createTheme({
+    palette: {
+      mode: "light",
+      primary: {
+        main: `rgba(0, 125, 222, 1)`,
+        pale: `rgba(0, 125, 222, .2)`,
+        dark: `rgba(0, 100, 190, 1)`,
+      },
+      secondary: {
+        main: `rgba(62, 197, 255, 1)`,
+        pale: `rgba(62, 197, 255, .2)`,
+      },
+      screen: {
+        main: `rgba(30, 30, 30, 1)`,
+        pale: `rgba(30, 30, 30, .2)`,
+      },
+      error: red,
+      success: green,
+      info: grey,
+      background: {
+        default: `rgba(5, 10, 86, 1)`,
+        light: `rgba(3, 86, 150, 1)`,
+      },
     },
-    secondary: {
-      main: `rgba(62, 197, 255, 1)`,
-      pale: `rgba(62, 197, 255, .2)`,
+    branding: { main: `rgba(62, 197, 255, 1)` },
+    typography: {
+      fontFamily: ['"Titillium Web"', "sans-serif"].join(","),
+      fontSize: 12,
     },
-    screen: {
-      main: `rgba(30, 30, 30, 1)`,
-      pale: `rgba(30, 30, 30, .2)`,
-    },
-    error: red,
-    success: green,
-    info: grey,
-    background: {
-      default: `rgba(5, 10, 86, 1)`,
-      light: `rgba(3, 86, 150, 1)`,
-    },
-  },
-  branding: { main: `rgba(62, 197, 255, 1)` },
-  typography: {
-    fontFamily: ['"Titillium Web"', "sans-serif"].join(","),
-    fontSize: 12,
-  },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: `
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: `
 // @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;300;400;600;700;900&display=swap');
 
 html {
@@ -77,20 +77,21 @@ body::-webkit-scrollbar {
 
 ${HIDE_CURSOR_CSS}
 `,
-    },
-    MuiButton: {
-      styleOverrides: {
-        text: {
-          textTransform: "none",
+      },
+      MuiButton: {
+        styleOverrides: {
+          text: {
+            textTransform: "none",
+          },
+        },
+      },
+      MuiSvgIcon: {
+        styleOverrides: {
+          fontSizeLarge: {
+            fontSize: "2rem",
+          },
         },
       },
     },
-    MuiSvgIcon: {
-      styleOverrides: {
-        fontSizeLarge: {
-          fontSize: "2rem",
-        },
-      },
-    },
-  },
-})
+  })
+}

@@ -1,22 +1,25 @@
 import React, {
-  CSSProperties,
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react"
 import { ContentBlockProps } from "../types"
-import fileService from "../../veedrive"
+import VeeDriveService from "../../veedrive"
 import { FrameContext } from "../../core/frames"
 import { Size } from "../../common/types"
 import { Box, CircularProgress, Grid, Grow } from "@mui/material"
 import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface ImageBlockParams {
   path: string
 }
 
 const ImageBlock: React.FC<ContentBlockProps> = props => {
+  const config = useConfig()
+  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
   const [imageUrl, setImageUrl] = useState<string>("")
   const [imageSize, setImageSize] = useState<Size>({ width: 0, height: 0 })
   const { path: imagePath } = (props.contentData as unknown) as ImageBlockParams
@@ -43,7 +46,7 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
   )
 
   const loadThumbnail = useCallback(async () => {
-    const response = await fileService.requestFile({ path: imagePath })
+    const response = await veeDriveService.requestFile({ path: imagePath })
     if (response !== undefined && !!response.thumbnail) {
       console.debug("Got image", response)
       loadImageWithDimensions(response.url)

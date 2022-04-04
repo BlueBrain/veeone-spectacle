@@ -15,8 +15,8 @@ import {
   SpectacleScene,
 } from "../types"
 import { ReduxAction } from "../../redux/actions"
-import { config } from "../../config"
 import { resizePresentationStore } from "../presentations/resizing"
+import { ApplicationConfig } from "../../config/types"
 
 enum MoveSceneDirection {
   Left = -1,
@@ -160,12 +160,7 @@ export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
   switch (action.type) {
     case Actions.AddFrame: {
       const payload = action.payload as AddFramePayload
-      const width = payload.size
-        ? payload.size.width
-        : config.get("DEFAULT_NEW_FRAME_WIDTH")
-      const height = payload.size
-        ? payload.size.height
-        : config.get("DEFAULT_NEW_FRAME_HEIGHT")
+      const { width, height } = payload.size
       const left = payload.position.left - width / 2
       const top = payload.position.top - height / 2
       return {
@@ -259,10 +254,23 @@ export const frameStackReducer = (
   }
 }
 
-export const presentationReducer = (state, action) => {
+export const presentationReducer = (
+  state,
+  action,
+  config: ApplicationConfig
+) => {
   switch (action.type) {
     case Actions.ResizePresentation: {
-      return resizePresentationStore(state, action.payload)
+      return resizePresentationStore(
+        state,
+        action.payload,
+        config.MINIMUM_FRAME_LONG_SIDE,
+        config.MAXIMUM_FRAME_LONG_SIDE,
+        {
+          width: config.FILE_BROWSER_WIDTH,
+          height: config.FILE_BROWSER_HEIGHT,
+        }
+      )
     }
     default: {
       return state

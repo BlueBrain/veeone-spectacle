@@ -16,33 +16,44 @@ import WebsocketAdapter from "./adapters"
 import NetworkFileBrowsingServiceBase from "./base-service"
 import VeeDriveConfig from "./config"
 import { SpectaclePresentation } from "../core/types"
+import { ApplicationConfig } from "../config/types"
 
 class VeeDriveService extends NetworkFileBrowsingServiceBase {
-  protected readonly communicationAdapter = new WebsocketAdapter(
-    VeeDriveConfig.hostname
-  )
+  private veeDriveConfig
+  protected readonly communicationAdapter
+
+  constructor(private config: ApplicationConfig) {
+    super()
+    this.veeDriveConfig = {
+      ...VeeDriveConfig,
+      hostname: config.VEEDRIVE_WS_PATH,
+    }
+    this.communicationAdapter = new WebsocketAdapter(
+      this.veeDriveConfig.hostname
+    )
+  }
 
   public readonly listDirectory = async (
     params: VeeDriveListDirectoryRequest
   ): Promise<VeeDriveListDirectoryResponse> =>
-    this.sendRequest(VeeDriveConfig.endpointNames.listDirectory, params)
+    this.sendRequest(this.veeDriveConfig.endpointNames.listDirectory, params)
 
   public readonly requestFile = async (
     params: VeeDriveFileRequest
   ): Promise<VeeDriveFileResponse> =>
-    this.sendRequest(VeeDriveConfig.endpointNames.requestFile, params)
+    this.sendRequest(this.veeDriveConfig.endpointNames.requestFile, params)
 
   public readonly requestImage = async (
     params: VeeDriveImageRequest
   ): Promise<VeeDriveImageResponse> =>
-    this.sendRequest(VeeDriveConfig.endpointNames.requestImage, params)
+    this.sendRequest(this.veeDriveConfig.endpointNames.requestImage, params)
 
   public async *searchFileSystem(
     params: VeeDriveSearchFileSystemRequest
   ): AsyncIterableIterator<SearchFileSystemResponse> {
     console.debug("Send search request", params)
     const searchResponse: VeeDriveSearchFileSystemResponse = await this.sendRequest(
-      VeeDriveConfig.endpointNames.searchFiles,
+      this.veeDriveConfig.endpointNames.searchFiles,
       params
     )
     const searchId = searchResponse.searchId
@@ -50,7 +61,7 @@ class VeeDriveService extends NetworkFileBrowsingServiceBase {
     while (true) {
       console.debug("Fetch results for", searchId)
       const currentResults: SearchFileSystemResponse = await this.sendRequest(
-        VeeDriveConfig.endpointNames.searchResults,
+        this.veeDriveConfig.endpointNames.searchResults,
         { searchId }
       )
       if (typeof currentResults === "undefined") {
@@ -64,15 +75,15 @@ class VeeDriveService extends NetworkFileBrowsingServiceBase {
   public readonly savePresentation = async (
     store: VeeDriveSavePresentationRequest
   ): Promise<VeeDriveSavePresentationResponse> =>
-    this.sendRequest(VeeDriveConfig.endpointNames.savePresentation, store)
+    this.sendRequest(this.veeDriveConfig.endpointNames.savePresentation, store)
 
   public readonly listPresentations = async (): Promise<VeeDriveListPresentationsResponse> =>
-    this.sendRequest(VeeDriveConfig.endpointNames.listPresentations)
+    this.sendRequest(this.veeDriveConfig.endpointNames.listPresentations)
 
   public readonly getPresentation = async (
     id: string
   ): Promise<SpectaclePresentation> =>
-    this.sendRequest(VeeDriveConfig.endpointNames.getPresentation, { id })
+    this.sendRequest(this.veeDriveConfig.endpointNames.getPresentation, { id })
 }
 
-export default new VeeDriveService()
+export default VeeDriveService

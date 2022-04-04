@@ -9,18 +9,21 @@ import React, {
   useState,
 } from "react"
 import { ContentBlockProps } from "../types"
-import fileService from "../../veedrive"
+import VeeDriveService from "../../veedrive"
 import { FrameContext } from "../../core/frames"
 import PlaybackControls from "./PlaybackControls"
 import VideoBlockContext, { VideoBlockContextProps } from "./VideoBlockContext"
 import { Box, CircularProgress, Grid, Grow } from "@mui/material"
 import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface VideoBlockParams {
   path: string
 }
 
 const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
+  const config = useConfig()
+  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
   const videoRef = useRef(null)
   const { updateAspectRatio } = useContext(FrameContext)
   const { path } = (contentData as unknown) as VideoBlockParams
@@ -38,7 +41,7 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
 
   useEffect(() => {
     async function loadFromVeeDrive() {
-      const response = await fileService.requestFile({ path: path })
+      const response = await veeDriveService.requestFile({ path: path })
       console.debug("VideoBlock path=", response.url)
       setVideoSource(response.url)
     }

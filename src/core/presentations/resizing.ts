@@ -1,18 +1,14 @@
 import { SpectaclePresentation } from "../types"
 import { Size } from "../../common/types"
-import { config } from "../../config"
 import { cloneDeep, round } from "lodash"
 import { ContentBlockTypes } from "../../contentblocks/types"
 
-export const adjustPresentationToViewport = (store: SpectaclePresentation) =>
-  resizePresentationStore(store, {
-    width: config.get("VIEWPORT_WIDTH"),
-    height: config.get("VIEWPORT_HEIGHT"),
-  })
-
 export const resizePresentationStore = (
   store: SpectaclePresentation,
-  targetSize: Size
+  targetSize: Size,
+  minFrameLongSide: number,
+  maxFrameLongSide: number,
+  fileBrowserSize: Size
 ): SpectaclePresentation => {
   const newStore = cloneDeep(store)
   newStore.meta.viewport = { ...targetSize }
@@ -37,32 +33,26 @@ export const resizePresentationStore = (
       let height = frame.situation.height * scaleRatio
 
       // Guard the minimum long side size
-      if (isHorizontal && width < config.get("MINIMUM_FRAME_LONG_SIDE")) {
-        width = config.get("MINIMUM_FRAME_LONG_SIDE")
+      if (isHorizontal && width < minFrameLongSide) {
+        width = minFrameLongSide
         height = width / aspectRatio
-      } else if (
-        !isHorizontal &&
-        height < config.get("MINIMUM_FRAME_LONG_SIDE")
-      ) {
-        height = config.get("MINIMUM_FRAME_LONG_SIDE")
+      } else if (!isHorizontal && height < minFrameLongSide) {
+        height = minFrameLongSide
         width = height * aspectRatio
       }
 
       // Guard the maximum long side size
-      if (isHorizontal && width > config.get("MAXIMUM_FRAME_LONG_SIDE")) {
-        width = config.get("MINIMUM_FRAME_LONG_SIDE")
+      if (isHorizontal && width > maxFrameLongSide) {
+        width = maxFrameLongSide
         height = width / aspectRatio
-      } else if (
-        !isHorizontal &&
-        height > config.get("MAXIMUM_FRAME_LONG_SIDE")
-      ) {
-        height = config.get("MAXIMUM_FRAME_LONG_SIDE")
+      } else if (!isHorizontal && height > maxFrameLongSide) {
+        height = maxFrameLongSide
         width = height * aspectRatio
       }
 
       if (frame.type === ContentBlockTypes.FileBrowser) {
-        width = config.get("FILE_BROWSER_WIDTH")
-        height = config.get("FILE_BROWSER_HEIGHT")
+        width = fileBrowserSize.width
+        height = fileBrowserSize.height
       }
 
       let left = round(

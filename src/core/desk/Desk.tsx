@@ -7,12 +7,12 @@ import { Target } from "@interactjs/types"
 import { Position } from "../../common/types"
 import { LauncherMenuData } from "./types"
 import { generateRandomId } from "../../common/random"
-import { config } from "../../config"
 import { CloseLauncherMenuArgs } from "../../launchermenu/LauncherMenu"
 import { DeskBranding } from "./DeskBranding"
 import { Box } from "@mui/material"
 import { useSpectacle } from "../spectacle/SpectacleContext"
 import { useDesk } from "./DeskContext"
+import { useConfig } from "../../config/AppConfigContext"
 
 interact.pointerMoveTolerance(4)
 
@@ -36,6 +36,7 @@ function isAnyLauncherNearby(
 }
 
 const Desk: React.FC = () => {
+  const config = useConfig()
   const deskRef = useRef()
   const { scene } = useDesk()
   const spectacleContext = useSpectacle()
@@ -48,8 +49,8 @@ const Desk: React.FC = () => {
       const baseFontSize = 16
       const minLeft = (launcherWidthRem / 2) * baseFontSize
       const minTop = 4 * baseFontSize
-      const maxTop = config.get("VIEWPORT_HEIGHT") - minTop
-      const maxLeft = config.get("VIEWPORT_WIDTH") - minLeft
+      const maxTop = config.VIEWPORT_HEIGHT - minTop
+      const maxLeft = config.VIEWPORT_WIDTH - minLeft
       const newLauncherMenu = {
         menuId: generateRandomId(4),
         position: {
@@ -59,7 +60,7 @@ const Desk: React.FC = () => {
       }
       setLauncherMenus([
         ...launcherMenus.slice(
-          launcherMenus.length - config.get("ALLOW_MAX_LAUNCHER_MENUS") + 1
+          launcherMenus.length - config.ALLOW_MAX_LAUNCHER_MENUS + 1
         ),
         newLauncherMenu,
       ])
