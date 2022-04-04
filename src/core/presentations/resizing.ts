@@ -1,7 +1,33 @@
 import { SpectaclePresentation } from "../types"
 import { Size } from "../../common/types"
-import { cloneDeep, round } from "lodash"
+import _, { cloneDeep, round } from "lodash"
 import { ContentBlockTypes } from "../../contentblocks/types"
+
+export const getMaximumContentArea = (store: SpectaclePresentation) => {
+  let x1, y1, x2, y2
+
+  Object.entries(store.scenes.scenes).forEach(([sceneId, scene]) => {
+    Object.entries(scene.frames).forEach(([frameId, frame]) => {
+      if (isNaN(x1)) {
+        x1 = frame.situation.left
+      }
+      if (isNaN(x2)) {
+        x2 = frame.situation.left + frame.situation.width
+      }
+      if (isNaN(y1)) {
+        y1 = frame.situation.top
+      }
+      if (isNaN(y2)) {
+        y2 = frame.situation.top + frame.situation.height
+      }
+      x1 = Math.min(x1, frame.situation.left)
+      x2 = Math.max(x2, frame.situation.left + frame.situation.width)
+      y1 = Math.min(y1, frame.situation.top)
+      y2 = Math.max(y1, frame.situation.top + frame.situation.height)
+    })
+  })
+  return { x1, y1, x2, y2 }
+}
 
 export const resizePresentationStore = (
   store: SpectaclePresentation,

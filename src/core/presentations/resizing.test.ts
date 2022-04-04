@@ -1,6 +1,6 @@
 import { SpectaclePresentation } from "../types"
 import { ContentBlockTypes } from "../../contentblocks/types"
-import { resizePresentationStore } from "./resizing"
+import { getMaximumContentArea, resizePresentationStore } from "./resizing"
 import { globalConfig } from "../../config"
 
 describe("resizing", () => {
@@ -181,5 +181,60 @@ describe("resizing", () => {
     // todo ?
     expect(frameAA.situation.left).toEqual(132)
     expect(frameAA.situation.top).toEqual(66)
+  })
+})
+
+describe("getMaximumContentArea function", () => {
+  it("should calculate maximum content area", () => {
+    const store: SpectaclePresentation = {
+      id: "",
+      meta: {
+        viewport: { width: 1000, height: 1000 },
+      },
+      name: "",
+      savedAt: null,
+      createdAt: null,
+      updatedAt: null,
+      scenes: {
+        sceneOrder: [],
+        activeScene: "",
+        scenes: {
+          a: {
+            frameStack: [],
+            frames: {
+              a: {
+                type: ContentBlockTypes.Dummy,
+                data: {},
+                situation: {
+                  left: 10,
+                  width: 100,
+                  top: 20,
+                  height: 300,
+                  angle: 0,
+                },
+              },
+              b: {
+                type: ContentBlockTypes.Dummy,
+                data: {},
+                situation: {
+                  left: 60,
+                  width: 300,
+                  top: 50,
+                  height: 200,
+                  angle: 0,
+                },
+              },
+            },
+          },
+        },
+      },
+    }
+
+    expect(getMaximumContentArea(store)).toEqual({
+      x1: 10,
+      y1: 20,
+      y2: 250,
+      x2: 360,
+    })
   })
 })
