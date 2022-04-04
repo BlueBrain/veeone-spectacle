@@ -14,8 +14,8 @@ const SpectacleScreen: React.FC = () => {
       className={"SpectacleScreen"}
       sx={{
         background: theme => theme.palette.screen.main,
-        width: `${config.VIEWPORT_WIDTH}px`,
-        height: `${config.VIEWPORT_HEIGHT}px`,
+        width: `${config.get("VIEWPORT_WIDTH")}px`,
+        height: `${config.get("VIEWPORT_HEIGHT")}px`,
         overflow: "hidden",
         contain: `content`,
       }}

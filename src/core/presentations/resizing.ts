@@ -6,8 +6,8 @@ import { ContentBlockTypes } from "../../contentblocks/types"
 
 export const adjustPresentationToViewport = (store: SpectaclePresentation) =>
   resizePresentationStore(store, {
-    width: config.VIEWPORT_WIDTH,
-    height: config.VIEWPORT_HEIGHT,
+    width: config.get("VIEWPORT_WIDTH"),
+    height: config.get("VIEWPORT_HEIGHT"),
   })
 
 export const resizePresentationStore = (
@@ -37,26 +37,32 @@ export const resizePresentationStore = (
       let height = frame.situation.height * scaleRatio
 
       // Guard the minimum long side size
-      if (isHorizontal && width < config.MINIMUM_FRAME_LONG_SIDE) {
-        width = config.MINIMUM_FRAME_LONG_SIDE
+      if (isHorizontal && width < config.get("MINIMUM_FRAME_LONG_SIDE")) {
+        width = config.get("MINIMUM_FRAME_LONG_SIDE")
         height = width / aspectRatio
-      } else if (!isHorizontal && height < config.MINIMUM_FRAME_LONG_SIDE) {
-        height = config.MINIMUM_FRAME_LONG_SIDE
+      } else if (
+        !isHorizontal &&
+        height < config.get("MINIMUM_FRAME_LONG_SIDE")
+      ) {
+        height = config.get("MINIMUM_FRAME_LONG_SIDE")
         width = height * aspectRatio
       }
 
       // Guard the maximum long side size
-      if (isHorizontal && width > config.MAXIMUM_FRAME_LONG_SIDE) {
-        width = config.MINIMUM_FRAME_LONG_SIDE
+      if (isHorizontal && width > config.get("MAXIMUM_FRAME_LONG_SIDE")) {
+        width = config.get("MINIMUM_FRAME_LONG_SIDE")
         height = width / aspectRatio
-      } else if (!isHorizontal && height > config.MAXIMUM_FRAME_LONG_SIDE) {
-        height = config.MAXIMUM_FRAME_LONG_SIDE
+      } else if (
+        !isHorizontal &&
+        height > config.get("MAXIMUM_FRAME_LONG_SIDE")
+      ) {
+        height = config.get("MAXIMUM_FRAME_LONG_SIDE")
         width = height * aspectRatio
       }
 
       if (frame.type === ContentBlockTypes.FileBrowser) {
-        width = config.FILE_BROWSER_WIDTH
-        height = config.FILE_BROWSER_HEIGHT
+        width = config.get("FILE_BROWSER_WIDTH")
+        height = config.get("FILE_BROWSER_HEIGHT")
       }
 
       let left = round(

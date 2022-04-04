@@ -48,8 +48,8 @@ const Desk: React.FC = () => {
       const baseFontSize = 16
       const minLeft = (launcherWidthRem / 2) * baseFontSize
       const minTop = 4 * baseFontSize
-      const maxTop = config.VIEWPORT_HEIGHT - minTop
-      const maxLeft = config.VIEWPORT_WIDTH - minLeft
+      const maxTop = config.get("VIEWPORT_HEIGHT") - minTop
+      const maxLeft = config.get("VIEWPORT_WIDTH") - minLeft
       const newLauncherMenu = {
         menuId: generateRandomId(4),
         position: {
@@ -59,7 +59,7 @@ const Desk: React.FC = () => {
       }
       setLauncherMenus([
         ...launcherMenus.slice(
-          launcherMenus.length - config.ALLOW_MAX_LAUNCHER_MENUS + 1
+          launcherMenus.length - config.get("ALLOW_MAX_LAUNCHER_MENUS") + 1
         ),
         newLauncherMenu,
       ])

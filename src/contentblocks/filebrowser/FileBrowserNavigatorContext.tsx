@@ -136,9 +136,9 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       left:
         situation.left +
         situation.width +
-        config.DEFAULT_NEW_FRAME_WIDTH / 2 +
-        config.FILE_BROWSER_OPEN_MEDIA_OFFSET,
-      top: situation.top + config.DEFAULT_NEW_FRAME_HEIGHT / 2,
+        config.get("DEFAULT_NEW_FRAME_WIDTH") / 2 +
+        config.get("FILE_BROWSER_OPEN_MEDIA_OFFSET"),
+      top: situation.top + config.get("DEFAULT_NEW_FRAME_HEIGHT") / 2,
     }
   }, [situation])
 
@@ -158,21 +158,21 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       const initialPosition: Position = getNextAvailablePositionForFrame()
       let position
       let frameCounter = 0
-      const offsetX = config.FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_X
-      const offsetY = config.FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_Y
+      const offsetX = config.get("FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_X")
+      const offsetY = config.get("FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_Y")
       for (const filePath of filePaths) {
         position = {
           left:
             initialPosition.left +
             (frameCounter %
-              config.FILE_BROWSER_OPEN_MEDIA_CASCADE_MAX_PER_ROW) *
+              config.get("FILE_BROWSER_OPEN_MEDIA_CASCADE_MAX_PER_ROW")) *
               offsetX,
           top: initialPosition.top + offsetY * frameCounter,
         }
         let timeout = (p, fc) =>
           setTimeout(async () => {
             await requestFile(filePath, p)
-          }, config.FILE_BROWSER_OPEN_MEDIA_CASCADE_DELAY_MS * fc)
+          }, config.get("FILE_BROWSER_OPEN_MEDIA_CASCADE_DELAY_MS") * fc)
         timeout(position, frameCounter)
         frameCounter++
       }

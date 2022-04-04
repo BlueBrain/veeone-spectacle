@@ -140,7 +140,7 @@ describe("resizing", () => {
       height: 400, // 400:600 = 0.67
     })
     const frameAA = newPresentation.scenes.scenes.sceneA.frames.frameAA
-    expect(config.MINIMUM_FRAME_LONG_SIDE).toEqual(300)
+    expect(config.get("MINIMUM_FRAME_LONG_SIDE")).toEqual(300)
     expect(newPresentation.meta.viewport.width).toEqual(800)
     expect(newPresentation.meta.viewport.height).toEqual(400)
     // This normally would be 268 but the MINIMUM_FRAME_LONG_SIDE os 300

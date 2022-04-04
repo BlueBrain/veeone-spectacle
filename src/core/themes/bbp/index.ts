@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
 import { config } from "../../../config"
 
-const HIDE_CURSOR_CSS = config.DISPLAY_MOUSE_CURSOR
+const HIDE_CURSOR_CSS = config.get("DISPLAY_MOUSE_CURSOR")
   ? ``
   : `* {
   cursor: none !important;

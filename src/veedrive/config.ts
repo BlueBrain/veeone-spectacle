@@ -1,7 +1,7 @@
 import { config } from "../config"
 
 const VeeDriveConfig = {
-  hostname: config.VEEDRIVE_WS_PATH,
+  hostname: config.get("VEEDRIVE_WS_PATH"),
   endpointNames: {
     listDirectory: "ListDirectory",
     requestFile: "RequestFile",

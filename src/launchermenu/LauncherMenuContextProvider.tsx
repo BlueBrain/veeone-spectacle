@@ -72,8 +72,8 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
     openNewFrameFromLauncher({
       type: ContentBlockTypes.FileBrowser,
       size: {
-        width: config.FILE_BROWSER_WIDTH,
-        height: config.FILE_BROWSER_HEIGHT,
+        width: config.get("FILE_BROWSER_WIDTH"),
+        height: config.get("FILE_BROWSER_HEIGHT"),
       },
     })
   }, [openNewFrameFromLauncher])

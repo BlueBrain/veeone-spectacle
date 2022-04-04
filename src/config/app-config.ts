@@ -1,12 +1,13 @@
 import queryParamOverrides from "./query-param-overrides"
 import { ApplicationConfig } from "./types"
+import _ from "lodash"
 
 const viewportWidth = window.visualViewport?.width
 const viewportHeight = window.visualViewport?.height
 const viewportLongSide = Math.max(viewportWidth, viewportHeight) || 3600
 const viewportShortSide = Math.min(viewportWidth, viewportHeight) || 1200
 
-let config: ApplicationConfig = {
+let defaultConfig: ApplicationConfig = {
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
   LAUNCHER_MENU_SIZE: "22.5rem",
@@ -30,14 +31,28 @@ let config: ApplicationConfig = {
   FILE_BROWSER_OPEN_MEDIA_CASCADE_DELAY_MS: 100,
 }
 
-config = {
-  ...config,
-  FILE_BROWSER_WIDTH: Math.max(config.VIEWPORT_WIDTH / 3, 800),
-  FILE_BROWSER_HEIGHT: Math.max(config.VIEWPORT_HEIGHT / 2.5, 600),
+defaultConfig = {
+  ...defaultConfig,
+  FILE_BROWSER_WIDTH: Math.max(defaultConfig.VIEWPORT_WIDTH / 3, 800),
+  FILE_BROWSER_HEIGHT: Math.max(defaultConfig.VIEWPORT_HEIGHT / 2.5, 600),
 }
 
-const AppConfigWithOverrides: ApplicationConfig = queryParamOverrides.wrap(
-  config
+const defaultConfigWithQueryParamOverrides: ApplicationConfig = queryParamOverrides.wrap(
+  defaultConfig
 )
 
-export default AppConfigWithOverrides
+class AppConfig {
+  private readonly store: ApplicationConfig
+
+  constructor(defaults: ApplicationConfig) {
+    this.store = { ...(defaults ?? {}) } as ApplicationConfig
+  }
+
+  public get(key: string, defaultValue = null) {
+    return _.get(this.store, key, defaultValue)
+  }
+}
+
+const config = new AppConfig(defaultConfigWithQueryParamOverrides)
+
+export default config

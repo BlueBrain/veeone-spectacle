@@ -162,10 +162,10 @@ export const framesReducer = (frames: FramesRegister, action: ReduxAction) => {
       const payload = action.payload as AddFramePayload
       const width = payload.size
         ? payload.size.width
-        : config.DEFAULT_NEW_FRAME_WIDTH
+        : config.get("DEFAULT_NEW_FRAME_WIDTH")
       const height = payload.size
         ? payload.size.height
-        : config.DEFAULT_NEW_FRAME_HEIGHT
+        : config.get("DEFAULT_NEW_FRAME_HEIGHT")
       const left = payload.position.left - width / 2
       const top = payload.position.top - height / 2
       return {

@@ -14,8 +14,8 @@ const initialSpectacleState: SpectaclePresentation = {
   savedAt: null,
   meta: {
     viewport: {
-      width: config.VIEWPORT_WIDTH,
-      height: config.VIEWPORT_HEIGHT,
+      width: config.get("VIEWPORT_WIDTH"),
+      height: config.get("VIEWPORT_HEIGHT"),
     },
   },
   scenes: {
