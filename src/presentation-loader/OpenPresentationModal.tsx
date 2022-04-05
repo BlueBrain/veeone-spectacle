@@ -21,10 +21,13 @@ import SpectacleContext from "../core/spectacle/SpectacleContext"
 import { useDispatch } from "react-redux"
 import { loadPresentationStore } from "../core/redux/actions"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"
+import { resizePresentationStore } from "../core/presentations/resizing"
+import { useConfig } from "../config/AppConfigContext"
 
 interface LoadPresentationModalProps {}
 
 const OpenPresentationModal: React.FC<LoadPresentationModalProps> = () => {
+  const config = useConfig()
   const spectacleContext = useContext(SpectacleContext)
   const { left, top } = spectacleContext.openPresentationModalPosition
   const [isLoading, setIsLoading] = useState(false)
@@ -50,7 +53,20 @@ const OpenPresentationModal: React.FC<LoadPresentationModalProps> = () => {
     presentationId => {
       async function dispatchLoad(id) {
         const store = await spectacleContext.openPresentation.load(id)
-        dispatch(loadPresentationStore(store))
+        const sizeAdjustedPresentationStore = resizePresentationStore(
+          store,
+          {
+            width: config.VIEWPORT_WIDTH,
+            height: config.VIEWPORT_HEIGHT,
+          },
+          config.MINIMUM_FRAME_LONG_SIDE,
+          config.MAXIMUM_FRAME_LONG_SIDE,
+          {
+            width: config.FILE_BROWSER_WIDTH,
+            height: config.FILE_BROWSER_HEIGHT,
+          }
+        )
+        dispatch(loadPresentationStore(sizeAdjustedPresentationStore))
       }
       void dispatchLoad(presentationId)
     },

@@ -15,7 +15,8 @@ import { delay } from "../../common/asynchronous"
 import _ from "lodash"
 import VeeDriveConfig from "../../veedrive/config"
 import { VeeDriveSearchFileSystemRequest } from "../../veedrive/types"
-import fileService from "../../veedrive/service"
+import { useConfig } from "../../config/AppConfigContext"
+import VeeDriveService from "../../veedrive/service"
 
 const SEARCH_QUERY_CHANGE_DEBOUNCE_MS = 500
 const SEARCH_RESULTS_FETCH_INTERVAL_MS = 1000
@@ -31,7 +32,8 @@ interface FileBrowserSearchContextProps {
 }
 
 async function* newFilesystemSearch(
-  query: string
+  query: string,
+  fileService: VeeDriveService
 ): AsyncIterableIterator<BrowserContents> {
   const payload: VeeDriveSearchFileSystemRequest = {
     name: query,
@@ -47,6 +49,8 @@ async function* newFilesystemSearch(
 }
 
 export const FileBrowserSearchContextProvider: React.FC = ({ children }) => {
+  const config = useConfig()
+  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
   const [searchMode, setSearchMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<BrowserContents>({
@@ -57,24 +61,30 @@ export const FileBrowserSearchContextProvider: React.FC = ({ children }) => {
     false
   )
 
-  const triggerSearchQueryChange = useCallback(async (newQuery, stopper) => {
-    setSearchResults({
-      files: [],
-      directories: [],
-    })
-    setIsSearchingInProgress(true)
-    console.debug(`Starting new search for "${newQuery}"`)
-    for await (const result of newFilesystemSearch(newQuery)) {
-      if (stopper.stopped) {
-        break
+  const triggerSearchQueryChange = useCallback(
+    async (newQuery, stopper) => {
+      setSearchResults({
+        files: [],
+        directories: [],
+      })
+      setIsSearchingInProgress(true)
+      console.debug(`Starting new search for "${newQuery}"`)
+      for await (const result of newFilesystemSearch(
+        newQuery,
+        veeDriveService
+      )) {
+        if (stopper.stopped) {
+          break
+        }
+        const { files, directories } = result
+        setSearchResults({ files, directories })
+        await delay(SEARCH_RESULTS_FETCH_INTERVAL_MS)
       }
-      const { files, directories } = result
-      setSearchResults({ files, directories })
-      await delay(SEARCH_RESULTS_FETCH_INTERVAL_MS)
-    }
-    setIsSearchingInProgress(false)
-    console.debug("Finished searching process")
-  }, [])
+      setIsSearchingInProgress(false)
+      console.debug("Finished searching process")
+    },
+    [veeDriveService]
+  )
 
   const debouncedSearchQueryChange = useMemo(
     () =>

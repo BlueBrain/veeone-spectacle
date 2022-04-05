@@ -3,8 +3,8 @@ import { debounce } from "lodash"
 import { Situation } from "../../common/types"
 import interact from "interactjs"
 import { FrameSituation, FrameSituationUpdate } from "../types"
-import { config } from "../../config"
 import { GestureEvent } from "@interactjs/types"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface UseInteractJsProps {
   angle
@@ -22,14 +22,6 @@ interface UseInteractJsProps {
   toggleFullscreen
 }
 
-const isFrameTooSmall = (width, height) => {
-  return Math.max(width, height) < config.MINIMUM_FRAME_LONG_SIDE
-}
-
-const isFrameTooBig = (width, height) => {
-  return Math.max(width, height) > config.MAXIMUM_FRAME_LONG_SIDE
-}
-
 export const useInteractiveFrame = ({
   angle,
   width,
@@ -45,10 +37,26 @@ export const useInteractiveFrame = ({
   manipulate,
   toggleFullscreen,
 }: UseInteractJsProps) => {
+  const config = useConfig()
   const frameRef = useRef(null)
+
   const debouncedManipulate = useMemo(
-    () => debounce((situation: Situation) => manipulate(situation), 200),
+    () => debounce((situation: Situation) => manipulate(situation), 50),
     [manipulate]
+  )
+
+  const isFrameTooSmall = useCallback(
+    (width, height) => {
+      return Math.max(width, height) < config.MINIMUM_FRAME_LONG_SIDE
+    },
+    [config.MINIMUM_FRAME_LONG_SIDE]
+  )
+
+  const isFrameTooBig = useCallback(
+    (width, height) => {
+      return Math.max(width, height) > config.MAXIMUM_FRAME_LONG_SIDE
+    },
+    [config.MAXIMUM_FRAME_LONG_SIDE]
   )
 
   const debouncedResetStyle = useMemo(
@@ -82,15 +90,16 @@ export const useInteractiveFrame = ({
         let fingerAngleOffset = 0
         let gesturableStart: FrameSituation
         let resizeByWidth = null
+        let isFullscreenEnabled = true
 
         const interactiveNode = interact(node)
 
-        if (isFullscreenAllowed) {
-          interactiveNode.on("doubletap", () => {
+        interactiveNode.on("doubletap", () => {
+          if (isFullscreenAllowed && isFullscreenEnabled) {
             console.debug("Double tap detected")
             toggleFullscreen()
-          })
-        }
+          }
+        })
 
         interactiveNode.on("tap", bringToFront)
 
@@ -306,6 +315,9 @@ export const useInteractiveFrame = ({
             }),
           ],
           onstart: event => {
+            bringToFront()
+            console.debug("prevent fullscreen")
+            isFullscreenEnabled = false
             node.style.zIndex = "9999"
             nodeLeft = left
             nodeTop = top
@@ -322,6 +334,8 @@ export const useInteractiveFrame = ({
             node.style.height = `${nodeHeight}px`
           },
           onend: () => {
+            console.debug("enable back fullscreen")
+            isFullscreenEnabled = true
             bringToFront()
             manipulate({ left: nodeLeft, top: nodeTop })
             node.style.transform = ``
@@ -340,13 +354,18 @@ export const useInteractiveFrame = ({
       width,
       height,
       angle,
-      isFullscreenAllowed,
       bringToFront,
       isResizingAllowed,
       isResizingWithWheelAllowed,
+      config.ALLOW_SCALE_WITH_MOUSEWHEEL,
+      config.MINIMUM_FRAME_LONG_SIDE,
+      config.MAXIMUM_FRAME_LONG_SIDE,
       isMovingAllowed,
+      isFullscreenAllowed,
       toggleFullscreen,
       isFullscreen,
+      isFrameTooSmall,
+      isFrameTooBig,
       debouncedManipulate,
       manipulate,
       debouncedResetStyle,

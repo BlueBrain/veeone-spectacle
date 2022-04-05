@@ -1,7 +1,5 @@
-import { config } from "../config"
-
 const VeeDriveConfig = {
-  hostname: config.VEEDRIVE_WS_PATH,
+  hostname: "__NO_HOSTNAME_PROVIDED__",
   endpointNames: {
     listDirectory: "ListDirectory",
     requestFile: "RequestFile",

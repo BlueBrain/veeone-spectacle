@@ -3,7 +3,7 @@ import { Position } from "../common/types"
 import { Box, Grow } from "@mui/material"
 import PieMenu from "./pie-menu/PieMenu"
 import LauncherMenuContextProvider from "./LauncherMenuContextProvider"
-import { config } from "../config"
+import { useConfig } from "../config/AppConfigContext"
 
 interface LauncherMenuProps {
   menuId: string
@@ -20,6 +20,7 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
   position,
   onClose,
 }) => {
+  const config = useConfig()
   return (
     <LauncherMenuContextProvider
       menuId={menuId}

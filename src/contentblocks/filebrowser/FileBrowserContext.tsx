@@ -13,11 +13,12 @@ import { FileBrowserFilterContextProvider } from "./FileBrowserFilterContext"
 import { useDispatch } from "react-redux"
 import { FileBrowserBlockPayload, FileBrowserViewTypes } from "./types"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
-import fileService from "../../veedrive/service"
 import _ from "lodash"
 import { updateFrameData } from "../../core/redux/actions"
 import { FileBrowserSelectionModeContextProvider } from "./selection-mode/FileBrowserSelectionModeContext"
 import { useDesk } from "../../core/desk/DeskContext"
+import { useConfig } from "../../config/AppConfigContext"
+import VeeDriveService from "../../veedrive"
 
 interface FileBrowserContextProviderProps {
   frameId: FrameId
@@ -37,8 +38,11 @@ interface FileBrowserContextProps {
   changeViewType(newViewType: FileBrowserViewTypes): void
 }
 
-const fetchDirectoryContents = async dirPath => {
-  const response = await fileService.listDirectory({ path: dirPath })
+const fetchDirectoryContents = async (
+  dirPath,
+  veeDriveService: VeeDriveService
+) => {
+  const response = await veeDriveService.listDirectory({ path: dirPath })
   const pathPrefix = dirPath !== "" ? `${dirPath}/` : ``
   let dirs: BrowserDirectory[]
   try {
@@ -61,6 +65,8 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
   frameId,
   children,
 }) => {
+  const config = useConfig()
+  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
   const dispatch = useDispatch()
   const { getFrame } = useDesk()
   const frameData = useMemo(() => getFrame(frameId), [frameId, getFrame])
@@ -85,13 +91,13 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
   const initializeTree = useCallback(async () => {
     console.debug("initializeTree", activePath)
     setPathLoaded(null)
-    const tree = await fetchDirectoryContents(activePath)
+    const tree = await fetchDirectoryContents(activePath, veeDriveService)
     setPathLoaded(activePath)
     let currentDirList = tree.dirs
     let files = tree.files
     setActivePathDirs(currentDirList)
     setActivePathFiles(files)
-  }, [activePath])
+  }, [activePath, veeDriveService])
 
   const changeViewType = useCallback(
     async (newType: FileBrowserViewTypes) => {

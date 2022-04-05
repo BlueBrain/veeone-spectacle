@@ -1,16 +1,12 @@
 import queryParamOverrides from "./query-param-overrides"
 import { ApplicationConfig } from "./types"
 
-declare const ENV_VARIABLES: any
+const viewportWidth = window.visualViewport?.width
+const viewportHeight = window.visualViewport?.height
+const viewportLongSide = Math.max(viewportWidth, viewportHeight) || 3600
+const viewportShortSide = Math.min(viewportWidth, viewportHeight) || 1200
 
-console.debug("ENV_VARIABLES", ENV_VARIABLES)
-
-const viewportWidth = window.visualViewport.width
-const viewportHeight = window.visualViewport.height
-const viewportLongSide = Math.max(viewportWidth, viewportHeight)
-const viewportShortSide = Math.min(viewportWidth, viewportHeight)
-
-let config: ApplicationConfig = {
+let defaultConfig: ApplicationConfig = {
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
   LAUNCHER_MENU_SIZE: "22.5rem",
@@ -34,22 +30,12 @@ let config: ApplicationConfig = {
   FILE_BROWSER_OPEN_MEDIA_CASCADE_DELAY_MS: 100,
 }
 
-config = {
-  ...config,
-  VEEDRIVE_WS_PATH:
-    ENV_VARIABLES.SPECTACLE_VEEDRIVE_WS_PATH ?? config.VEEDRIVE_WS_PATH,
+defaultConfig = {
+  ...defaultConfig,
+  FILE_BROWSER_WIDTH: Math.max(defaultConfig.VIEWPORT_WIDTH / 3, 800),
+  FILE_BROWSER_HEIGHT: Math.max(defaultConfig.VIEWPORT_HEIGHT / 2.5, 600),
 }
 
-config = {
-  ...config,
-  FILE_BROWSER_WIDTH: Math.max(config.VIEWPORT_WIDTH / 3, 800),
-  FILE_BROWSER_HEIGHT: Math.max(config.VIEWPORT_HEIGHT / 2.5, 600),
-}
+const config: ApplicationConfig = queryParamOverrides.wrap(defaultConfig)
 
-const AppConfigWithOverrides: ApplicationConfig = queryParamOverrides.wrap(
-  config
-)
-
-console.debug("AppConfigWithOverrides", AppConfigWithOverrides)
-
-export default AppConfigWithOverrides
+export default config

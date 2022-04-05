@@ -7,9 +7,9 @@ import { fileOpenerService } from "../../file-opener"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 import { useFileBrowser } from "./FileBrowserContext"
-import { config } from "../../config"
 import { Position } from "../../common/types"
 import { useDesk } from "../../core/desk/DeskContext"
+import { useConfig } from "../../config/AppConfigContext"
 
 export interface FileBrowserNavigatorContextProps {
   navigateUp(): void
@@ -35,6 +35,7 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
   frameId,
   children,
 }) => {
+  const config = useConfig()
   const {
     activePath,
     pathLoaded,
@@ -147,10 +148,21 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       console.debug(`Requesting ${filePath} from frame=${frameId}`)
       await fileOpenerService.handleFile(
         filePath,
-        referencePosition ?? getNextAvailablePositionForFrame()
+        referencePosition ?? getNextAvailablePositionForFrame(),
+        {
+          width: config.DEFAULT_NEW_FRAME_WIDTH,
+          height: config.DEFAULT_NEW_FRAME_HEIGHT,
+        },
+        dispatch
       )
     },
-    [frameId, getNextAvailablePositionForFrame]
+    [
+      config.DEFAULT_NEW_FRAME_HEIGHT,
+      config.DEFAULT_NEW_FRAME_WIDTH,
+      dispatch,
+      frameId,
+      getNextAvailablePositionForFrame,
+    ]
   )
 
   const requestMultipleFiles = useCallback(

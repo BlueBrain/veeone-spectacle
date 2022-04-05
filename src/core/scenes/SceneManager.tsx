@@ -1,4 +1,3 @@
-import { spectacleStore } from "../redux/store"
 import {
   addScene,
   AddScenePayload,
@@ -15,45 +14,50 @@ import { generateRandomId } from "../../common/random"
 import { SceneId } from "../types"
 
 class SceneManager {
-  public addNewScene() {
+  dispatch: (any) => void
+  constructor(dispatch) {
+    this.dispatch = dispatch
+  }
+
+  public readonly addNewScene = () => {
     const sceneId = generateRandomId()
     const payload: AddScenePayload = {
       sceneId,
     }
-    spectacleStore.dispatch(addScene(payload))
+    this.dispatch(addScene(payload))
   }
 
-  public switchToNextScene() {
+  public readonly switchToNextScene = () => {
     console.debug("changeToNextScene...")
-    spectacleStore.dispatch(switchToNextScene())
+    this.dispatch(switchToNextScene())
   }
 
-  public switchToPreviousScene() {
-    spectacleStore.dispatch(switchToPreviousScene())
+  public readonly switchToPreviousScene = () => {
+    this.dispatch(switchToPreviousScene())
   }
 
-  public setActiveScene(sceneId: SceneId) {
-    spectacleStore.dispatch(setActiveScene(sceneId))
+  public readonly setActiveScene = (sceneId: SceneId) => {
+    this.dispatch(setActiveScene(sceneId))
   }
 
-  public moveSceneRight(sceneId: SceneId) {
-    spectacleStore.dispatch(moveSceneRight(sceneId))
+  public readonly moveSceneRight = (sceneId: SceneId) => {
+    this.dispatch(moveSceneRight(sceneId))
   }
 
-  public moveSceneLeft(sceneId: SceneId) {
-    spectacleStore.dispatch(moveSceneLeft(sceneId))
+  public readonly moveSceneLeft = (sceneId: SceneId) => {
+    this.dispatch(moveSceneLeft(sceneId))
   }
 
-  public moveSceneToBeginning(sceneId: SceneId) {
-    spectacleStore.dispatch(moveSceneToBeginning(sceneId))
+  public readonly moveSceneToBeginning = (sceneId: SceneId) => {
+    this.dispatch(moveSceneToBeginning(sceneId))
   }
 
-  public moveSceneToEnd(sceneId: SceneId) {
-    spectacleStore.dispatch(moveSceneToEnd(sceneId))
+  public readonly moveSceneToEnd = (sceneId: SceneId) => {
+    this.dispatch(moveSceneToEnd(sceneId))
   }
 
-  public removeScene(sceneId: SceneId) {
-    spectacleStore.dispatch(removeScene(sceneId))
+  public readonly removeScene = (sceneId: SceneId) => {
+    this.dispatch(removeScene(sceneId))
   }
 }
 
