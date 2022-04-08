@@ -53,6 +53,7 @@ class FileOpenerService {
 const fileOpenerService = new FileOpenerService()
 fileOpenerService.registerOpener(ImageOpener, [
   "jpg",
+  "jpeg",
   "png",
   "bmp",
   "gif",
