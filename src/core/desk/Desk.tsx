@@ -5,7 +5,6 @@ import { LauncherMenu } from "../../launchermenu"
 import interact from "interactjs"
 import { Target } from "@interactjs/types"
 import { Position } from "../../common/types"
-import { LauncherMenuData } from "./types"
 import { generateRandomId } from "../../common/random"
 import { CloseLauncherMenuArgs } from "../../launchermenu/LauncherMenu"
 import { DeskBranding } from "./DeskBranding"
@@ -13,6 +12,8 @@ import { Box } from "@mui/material"
 import { useSpectacle } from "../spectacle/SpectacleContext"
 import { useDesk } from "./DeskContext"
 import { useConfig } from "../../config/AppConfigContext"
+import { LauncherMenuData, LauncherMenuId } from "../../launchermenu/types"
+import _ from "lodash"
 
 interact.pointerMoveTolerance(4)
 
@@ -51,12 +52,13 @@ const Desk: React.FC = () => {
       const minTop = 4 * baseFontSize
       const maxTop = config.VIEWPORT_HEIGHT - minTop
       const maxLeft = config.VIEWPORT_WIDTH - minLeft
-      const newLauncherMenu = {
+      const newLauncherMenu: LauncherMenuData = {
         menuId: generateRandomId(4),
         position: {
           left: Math.min(maxLeft, Math.max(left, minLeft)),
           top: Math.min(maxTop, Math.max(top, minTop)),
         },
+        isFullyOpen: false,
       }
       setLauncherMenus([
         ...launcherMenus.slice(
@@ -73,11 +75,35 @@ const Desk: React.FC = () => {
     ]
   )
 
-  const closeLauncherMenu = ({ menuId }: CloseLauncherMenuArgs) => {
-    setLauncherMenus(launcherMenus.filter(menu => menu.menuId !== menuId))
-  }
+  const closeLauncherMenu = useCallback(
+    ({ menuId }: CloseLauncherMenuArgs) => {
+      setLauncherMenus(launcherMenus.filter(menu => menu.menuId !== menuId))
+    },
+    [launcherMenus]
+  )
 
-  const handleHold = useCallback(
+  const handleLauncherMenuFullyOpen = useCallback(
+    (menuId: LauncherMenuId) => {
+      console.debug("handleLauncherMenuFullyOpen", menuId)
+      const newLauncherMenus = [...launcherMenus]
+      const targetMenu: LauncherMenuData = _.find(
+        newLauncherMenus,
+        menu => menu.menuId === menuId
+      )
+      targetMenu.isFullyOpen = true
+      setLauncherMenus(newLauncherMenus)
+    },
+    [launcherMenus]
+  )
+
+  const handleDeskTap = useCallback(
+    event => {
+      setLauncherMenus(launcherMenus.filter(menu => !menu.isFullyOpen))
+    },
+    [launcherMenus]
+  )
+
+  const handleDeskHold = useCallback(
     event => {
       const position = { left: event.x, top: event.y }
       if (event.target === deskRef.current) {
@@ -98,13 +124,14 @@ const Desk: React.FC = () => {
     interact((deskRef.current as unknown) as Target).unset()
     interact((deskRef.current as unknown) as Target)
       .pointerEvents({
-        holdDuration: 400,
+        holdDuration: 200,
       })
-      .on("hold", handleHold)
+      .on("hold", handleDeskHold)
+      .on("tap", handleDeskTap)
     return () => {
       interact(refElement ?? ((refElement as unknown) as Target)).unset()
     }
-  }, [handleHold])
+  }, [handleDeskHold, handleDeskTap])
 
   const getStackIndex = useCallback(
     frameId => scene.frameStack.indexOf(frameId),
@@ -164,6 +191,9 @@ const Desk: React.FC = () => {
               menuId={launcherMenu.menuId}
               position={launcherMenu.position}
               onClose={closeLauncherMenu}
+              onFullyOpen={() =>
+                handleLauncherMenuFullyOpen(launcherMenu.menuId)
+              }
             />
           </Box>
         )
