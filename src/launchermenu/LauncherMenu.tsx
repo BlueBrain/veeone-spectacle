@@ -5,12 +5,13 @@ import PieMenu from "./pie-menu/PieMenu"
 import LauncherMenuContextProvider from "./LauncherMenuContextProvider"
 import { useConfig } from "../config/AppConfigContext"
 import interact from "interactjs"
+import { LauncherMenuId } from "./types"
 
 interface LauncherMenuProps {
   menuId: string
   position: Position
   onClose: (args: CloseLauncherMenuArgs) => void
-  onFullyOpen: () => void
+  onFullyOpen: (menuId: LauncherMenuId) => void
 }
 
 export interface CloseLauncherMenuArgs {
@@ -34,13 +35,15 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
       event.stopPropagation()
     })
 
-    setTimeout(() => {
-      onFullyOpen()
-    }, 1000)
-
     return () => {
       launcherInteract.unset()
     }
+  }, [])
+
+  useEffect(() => {
+    setTimeout(() => {
+      onFullyOpen(menuId)
+    }, 500)
   }, [])
 
   return (

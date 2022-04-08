@@ -98,7 +98,10 @@ const Desk: React.FC = () => {
 
   const handleDeskTap = useCallback(
     event => {
-      setLauncherMenus(launcherMenus.filter(menu => !menu.isFullyOpen))
+      const newLauncherMenus = launcherMenus.filter(menu => !menu.isFullyOpen)
+      if (newLauncherMenus.length !== launcherMenus.length) {
+        setLauncherMenus(newLauncherMenus)
+      }
     },
     [launcherMenus]
   )
@@ -191,9 +194,7 @@ const Desk: React.FC = () => {
               menuId={launcherMenu.menuId}
               position={launcherMenu.position}
               onClose={closeLauncherMenu}
-              onFullyOpen={() =>
-                handleLauncherMenuFullyOpen(launcherMenu.menuId)
-              }
+              onFullyOpen={handleLauncherMenuFullyOpen}
             />
           </Box>
         )
