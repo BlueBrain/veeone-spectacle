@@ -44,7 +44,7 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
     return () => {
       isMounted = false
     }
-  }, [file.path])
+  }, [file.path, veeDriveService])
 
   const isSelected = useMemo<boolean>(() => {
     return isFileSelected(file.path)
