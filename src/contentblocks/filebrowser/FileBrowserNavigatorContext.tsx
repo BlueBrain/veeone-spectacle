@@ -133,15 +133,44 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
   }, [moveBrowsingHistoryIndex])
 
   const getNextAvailablePositionForFrame = useCallback(() => {
-    return {
-      left:
-        situation.left +
-        situation.width +
-        config.DEFAULT_NEW_FRAME_WIDTH / 2 +
-        config.FILE_BROWSER_OPEN_MEDIA_OFFSET,
-      top: situation.top + config.DEFAULT_NEW_FRAME_HEIGHT / 2,
+    const positionToTheRight =
+      situation.left +
+      situation.width +
+      config.DEFAULT_NEW_FRAME_WIDTH / 2 +
+      config.FILE_BROWSER_OPEN_MEDIA_OFFSET
+    const positionToTheLeft =
+      situation.left -
+      config.DEFAULT_NEW_FRAME_WIDTH / 2 -
+      config.FILE_BROWSER_OPEN_MEDIA_OFFSET
+    let left = positionToTheRight
+    let top = situation.top + config.DEFAULT_NEW_FRAME_HEIGHT / 2
+
+    if (left + config.DEFAULT_NEW_FRAME_WIDTH / 2 > config.VIEWPORT_WIDTH) {
+      // If there's no space on the right, place the frame on the left
+      left = positionToTheLeft
     }
-  }, [situation])
+
+    if (left < config.DEFAULT_NEW_FRAME_WIDTH / 2) {
+      // If there's no space on the left, place the frame in the middle of the desk
+      left = config.VIEWPORT_WIDTH / 2
+      if (
+        top - config.FILE_BROWSER_OPEN_MEDIA_OFFSET >
+        config.DEFAULT_NEW_FRAME_HEIGHT / 2
+      ) {
+        top -= config.FILE_BROWSER_OPEN_MEDIA_OFFSET
+      }
+    }
+
+    return { left, top }
+  }, [
+    config.DEFAULT_NEW_FRAME_HEIGHT,
+    config.DEFAULT_NEW_FRAME_WIDTH,
+    config.FILE_BROWSER_OPEN_MEDIA_OFFSET,
+    config.VIEWPORT_WIDTH,
+    situation.left,
+    situation.top,
+    situation.width,
+  ])
 
   const requestFile = useCallback(
     async (filePath: string, referencePosition?: Position) => {
@@ -189,7 +218,14 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
         frameCounter++
       }
     },
-    [getNextAvailablePositionForFrame, requestFile]
+    [
+      config.FILE_BROWSER_OPEN_MEDIA_CASCADE_DELAY_MS,
+      config.FILE_BROWSER_OPEN_MEDIA_CASCADE_MAX_PER_ROW,
+      config.FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_X,
+      config.FILE_BROWSER_OPEN_MEDIA_CASCADE_OFFSET_Y,
+      getNextAvailablePositionForFrame,
+      requestFile,
+    ]
   )
 
   const totalFilesCount = useMemo<number>(

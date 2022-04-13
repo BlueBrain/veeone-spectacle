@@ -90,11 +90,14 @@ export const scenesReducer = (
       const { sceneId } = action.payload as RemoveScenePayload
       console.error("remove scene...")
       const newScenes = { ...state.scenes.scenes }
+      const deletedSceneIndex = state.scenes.sceneOrder.indexOf(sceneId)
       delete newScenes[sceneId]
       const newSceneOrder = state.scenes.sceneOrder.filter(
         value => value !== sceneId
       )
-      const newActiveScene = newSceneOrder[0]
+      const newActiveSceneIndex =
+        deletedSceneIndex > 0 ? deletedSceneIndex - 1 : 0
+      const newActiveScene = newSceneOrder[newActiveSceneIndex]
       return {
         ...state.scenes,
         scenes: newScenes,
