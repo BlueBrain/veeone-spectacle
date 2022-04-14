@@ -1,6 +1,10 @@
 import { createTheme } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
 import { ApplicationConfig } from "../../../config/types"
+import {
+  SUISSE_INTL_FONT_FACES,
+  TITILLIUM_WEB_FONT_FACES,
+} from "./font-imports"
 
 export const getBlueBrainTheme = (config: ApplicationConfig) => {
   const HIDE_CURSOR_CSS = config.DISPLAY_MOUSE_CURSOR
@@ -41,7 +45,8 @@ export const getBlueBrainTheme = (config: ApplicationConfig) => {
     components: {
       MuiCssBaseline: {
         styleOverrides: `
-// @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;300;400;600;700;900&display=swap');
+${TITILLIUM_WEB_FONT_FACES}
+${SUISSE_INTL_FONT_FACES}
 
 html {
   -ms-text-size-adjust: 100%;
