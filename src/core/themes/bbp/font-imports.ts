@@ -124,56 +124,56 @@ export const SUISSE_INTL_FONT_FACES = `
   font-family: "Suisse Int'l";
   font-style: normal;
   font-weight: 500;
-  src: url('fonts/suisse-intl/SuisseIntl-Thin.otf');
-}
-
-@font-face {
-  font-family: "Suisse Int'l";
-  font-style: italic;
-  font-weight: 500;
-  src: url('fonts/suisse-intl/SuisseIntl-ThinItalic.otf');
-}
-
-@font-face {
-  font-family: "Suisse Int'l";
-  font-style: normal;
-  font-weight: 600;
   src: url('fonts/suisse-intl/SuisseIntl-Book.otf');
 }
 
 @font-face {
   font-family: "Suisse Int'l";
   font-style: italic;
-  font-weight: 600;
+  font-weight: 500;
   src: url('fonts/suisse-intl/SuisseIntl-BookItalic.otf');
 }
 
 @font-face {
   font-family: "Suisse Int'l";
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   src: url('fonts/suisse-intl/SuisseIntl-Medium.otf');
 }
 
 @font-face {
   font-family: "Suisse Int'l";
   font-style: italic;
-  font-weight: 700;
+  font-weight: 600;
   src: url('fonts/suisse-intl/SuisseIntl-MediumItalic.otf');
 }
 
 @font-face {
   font-family: "Suisse Int'l";
   font-style: normal;
-  font-weight: 800;
+  font-weight: 700;
   src: url('fonts/suisse-intl/SuisseIntl-SemiBold.otf');
 }
 
 @font-face {
   font-family: "Suisse Int'l";
   font-style: italic;
-  font-weight: 800;
+  font-weight: 700;
   src: url('fonts/suisse-intl/SuisseIntl-SemiBoldItalic.otf');
+}
+
+@font-face {
+  font-family: "Suisse Int'l";
+  font-style: normal;
+  font-weight: 800;
+  src: url('fonts/suisse-intl/SuisseIntl-Bold.otf');
+}
+
+@font-face {
+  font-family: "Suisse Int'l";
+  font-style: italic;
+  font-weight: 800;
+  src: url('fonts/suisse-intl/SuisseIntl-BoldItalic.otf');
 }
 
 @font-face {
