@@ -1,8 +1,8 @@
 import * as React from "react"
 // @ts-ignore
-import EPFLLogo from "../../assets/branding/EPFL_Logo_184X53.svg"
+import EPFLLogo from "../../assets/branding/epfl-logo.svg"
 // @ts-ignore
-import BBPLogo from "../../assets/branding/BlueBrainProject.svg"
+import BBPLogo from "../../assets/branding/blue-brain-project-logo.svg"
 import { Box } from "@mui/material"
 
 interface DeskBrandingProps {}
