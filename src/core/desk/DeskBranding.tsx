@@ -1,6 +1,8 @@
 import * as React from "react"
 // @ts-ignore
-import EPFLLogo from "../../assets/branding/EPFL_Logo_184X53.svg"
+import EPFLLogo from "../../assets/branding/epfl-logo.svg"
+// @ts-ignore
+import BBPLogo from "../../assets/branding/blue-brain-project-logo.svg"
 import { Box } from "@mui/material"
 
 interface DeskBrandingProps {}
@@ -22,18 +24,19 @@ export const DeskBranding: React.FC<DeskBrandingProps> = () => {
           src={EPFLLogo}
           sx={{
             height: "1rem",
-            margin: "2vh",
+            margin: "1.5rem",
           }}
         />
       </Box>
-      <Box
-        sx={{
-          fontSize: "1.2rem",
-          paddingBottom: "0.3rem",
-          color: theme => theme.branding.main,
-        }}
-      >
-        Blue Brain Project
+      <Box>
+        <Box
+          component={"img"}
+          src={BBPLogo}
+          sx={{
+            height: "1.3rem",
+            marginTop: "0.3rem",
+          }}
+        />
       </Box>
     </Box>
   )
