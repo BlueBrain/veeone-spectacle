@@ -2,6 +2,10 @@ include:
   - project: viz/ci/gitlabpipelines
     file: index.yml
 
+stages:
+  - precheck
+  - test-and-build
+  - publish
 
 # Common configurations
 .common-spectacle:
@@ -17,6 +21,7 @@ include:
     - .common-spectacle
 
 .build-spectacle:
+  stage: test-and-build
   extends:
     - .build-image-using-kaniko
     - .common-spectacle
