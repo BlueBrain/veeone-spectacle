@@ -14,6 +14,7 @@ COPY .eslintignore .eslintrc.yaml babel.config.js jest.config.js \
     tsconfig.json tsconfig.eslint.json webpack.config.js ./
 
 # Copy directories
+COPY .jest/ ./.jest/
 COPY webpack/ ./webpack/
 COPY src/ ./src/
 COPY public/ ./public/
