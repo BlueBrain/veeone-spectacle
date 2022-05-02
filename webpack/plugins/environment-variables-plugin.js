@@ -3,6 +3,13 @@ const _ = require("lodash")
 const FRONTEND_EXPOSED_VARIABLES = require("./exposed-variables")
 
 const getCurrentRevision = () => {
+  // Revision hash comes from an environment variable (CI)
+  const envRevision = process.env.CI_COMMIT_SHORT_SHA
+  if (envRevision) {
+    console.log(`Retrieving revision from CI_COMMIT_SHORT_SHA = ${envRevision}`)
+    return envRevision
+  }
+  // Get revision hash from Git commit
   return require("child_process")
     .execSync("git rev-parse HEAD")
     .toString()
