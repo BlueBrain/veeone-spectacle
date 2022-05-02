@@ -1,5 +1,5 @@
 import queryParamOverrides from "./query-param-overrides"
-import { ApplicationConfig } from "./types"
+import { ApplicationConfig, RunningEnvironment } from "./types"
 
 const viewportWidth = window.visualViewport?.width
 const viewportHeight = window.visualViewport?.height
@@ -9,8 +9,12 @@ const viewportShortSide = Math.min(viewportWidth, viewportHeight) || 1200
 declare const ENV_VARIABLES: any
 
 let defaultConfig: ApplicationConfig = {
-  VERSION: ENV_VARIABLES.VERSION,
-  REVISION: ENV_VARIABLES.REVISION,
+  RUNNING_ENVIRONMENT:
+    ENV_VARIABLES.SPECTACLE_RUNNING_ENVIRONMENT ?? RunningEnvironment.CLIENT,
+  VERSION: ENV_VARIABLES.SPECTACLE_VERSION,
+  REVISION: ENV_VARIABLES.SPECTACLE_REVISION,
+  SENTRY_DSN:
+    "https://a091d41e9df94ce787371864e96e7301@o224246.ingest.sentry.io/6367583",
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
   LAUNCHER_MENU_SIZE: "22.5rem",

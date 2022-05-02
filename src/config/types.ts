@@ -1,3 +1,12 @@
+export enum RunningEnvironment {
+  DEV = "DEV",
+  CLIENT = "CLIENT",
+  FIFTH_FLOOR_DISPLAY_WALL = "FIFTH_FLOOR_DISPLAY_WALL",
+  THIRD_FLOOR_LEFT_DISPLAY = "THIRD_FLOOR_LEFT_DISPLAY",
+  THIRD_FLOOR_RIGHT_DISPLAY = "THIRD_FLOOR_RIGHT_DISPLAY",
+  OPENDECK = "OPENDECK",
+}
+
 export interface ApplicationConfig {
   VERSION: string
   REVISION: string
@@ -19,4 +28,6 @@ export interface ApplicationConfig {
   DEFAULT_NEW_FRAME_WIDTH: number
   DEFAULT_NEW_FRAME_HEIGHT: number
   LAUNCHER_MENU_SIZE: string
+  SENTRY_DSN: string
+  RUNNING_ENVIRONMENT: RunningEnvironment
 }

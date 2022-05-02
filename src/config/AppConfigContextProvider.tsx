@@ -7,7 +7,8 @@ const AppConfigContextProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     console.info(`Spectacle ${config.VERSION} (revision: ${config.REVISION})`)
-  }, [config.REVISION, config.VERSION])
+    console.info(`Running Environment = ${config.RUNNING_ENVIRONMENT}`)
+  }, [config.REVISION, config.RUNNING_ENVIRONMENT, config.VERSION])
 
   return (
     <AppConfigContext.Provider value={config}>
