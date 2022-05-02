@@ -2,6 +2,16 @@ const webpack = require("webpack")
 const _ = require("lodash")
 const FRONTEND_EXPOSED_VARIABLES = require("./exposed-variables")
 
+const getCurrentRevision = () => {
+  return require("child_process")
+    .execSync("git rev-parse HEAD")
+    .toString()
+    .trim()
+    .slice(0, 8)
+}
+
+const getPackageVersion = () => process.env.npm_package_version
+
 const plugin = env => {
   const dotEnvFilePath = _.get(env, "DOTENV_PATH", ".env")
   const frontendEnvVariables = {}
@@ -17,11 +27,16 @@ const plugin = env => {
     }
   })
 
+  // Add additional variables
+  frontendEnvVariables.VERSION = getPackageVersion()
+  frontendEnvVariables.REVISION = getCurrentRevision()
+
   const envVariables = JSON.stringify(frontendEnvVariables)
-  console.log(`ENV_VARIABLES=${envVariables}`)
+  console.log(`ENV_VARIABLES = ${envVariables}`)
 
   return new webpack.DefinePlugin({
     ENV_VARIABLES: envVariables,
   })
 }
+
 module.exports = plugin
