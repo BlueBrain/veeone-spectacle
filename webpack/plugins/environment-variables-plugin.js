@@ -28,15 +28,15 @@ const plugin = env => {
   console.log(`Frontend Env Variables Plugin`)
   console.log(`.env path = "${dotEnvFilePath}"`)
 
+  // Add additional variables
+  frontendEnvVariables.SPECTACLE_VERSION = getPackageVersion()
+  frontendEnvVariables.SPECTACLE_REVISION = getCurrentRevision()
+
   Object.keys(process.env).forEach(key => {
     if (_.includes(FRONTEND_EXPOSED_VARIABLES, key)) {
       frontendEnvVariables[key] = process.env[key]
     }
   })
-
-  // Add additional variables
-  frontendEnvVariables.VERSION = getPackageVersion()
-  frontendEnvVariables.REVISION = getCurrentRevision()
 
   const envVariables = JSON.stringify(frontendEnvVariables)
   console.log(`ENV_VARIABLES = ${envVariables}`)
