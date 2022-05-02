@@ -1,11 +1,15 @@
 ARG SPECTACLE_NODE_IMAGE_VERSION=16.15
 ARG SPECTACLE_NGINX_IMAGE_VERSION=stable-alpine
 
-
 # Build app
 FROM node:${SPECTACLE_NODE_IMAGE_VERSION} AS builder
+
+ARG CI_COMMIT_SHORT_SHA
+ENV CI_COMMIT_SHORT_SHA=${CI_COMMIT_SHORT_SHA}
+
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 ENV MAIN_DIR=/usr/src/
+
 WORKDIR ${MAIN_DIR}
 
 # Copy source and configuration files to WORKDIR
@@ -14,6 +18,7 @@ COPY .eslintignore .eslintrc.yaml babel.config.js jest.config.js \
     tsconfig.json tsconfig.eslint.json webpack.config.js ./
 
 # Copy directories
+COPY .jest/ ./.jest/
 COPY webpack/ ./webpack/
 COPY src/ ./src/
 COPY public/ ./public/

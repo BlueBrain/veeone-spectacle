@@ -8,4 +8,5 @@ module.exports = {
   moduleFileExtensions: ["tsx", "ts", "js", "jsx", "wasm"],
   testMatch: ["**/*.(test|spec).(ts|tsx)"],
   extensionsToTreatAsEsm: [".ts", ".tsx"],
+  setupFiles: ["<rootDir>/.jest/setup-globals.js"],
 }

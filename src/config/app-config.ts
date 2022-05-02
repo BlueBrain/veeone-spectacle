@@ -6,7 +6,11 @@ const viewportHeight = window.visualViewport?.height
 const viewportLongSide = Math.max(viewportWidth, viewportHeight) || 3600
 const viewportShortSide = Math.min(viewportWidth, viewportHeight) || 1200
 
+declare const ENV_VARIABLES: any
+
 let defaultConfig: ApplicationConfig = {
+  VERSION: ENV_VARIABLES.VERSION,
+  REVISION: ENV_VARIABLES.REVISION,
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
   LAUNCHER_MENU_SIZE: "22.5rem",

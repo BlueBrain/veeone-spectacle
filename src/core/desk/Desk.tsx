@@ -14,6 +14,7 @@ import { useDesk } from "./DeskContext"
 import { useConfig } from "../../config/AppConfigContext"
 import { LauncherMenuData, LauncherMenuId } from "../../launchermenu/types"
 import _ from "lodash"
+import VersionLabel from "./VersionLabel"
 
 interact.pointerMoveTolerance(4)
 
@@ -177,6 +178,9 @@ const Desk: React.FC = () => {
       ]}
     >
       <DeskBranding />
+
+      <VersionLabel />
+
       {frames}
 
       {launcherMenus.map(launcherMenu => {
