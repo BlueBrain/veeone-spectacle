@@ -18,14 +18,14 @@ stages:
 
 .publish-spectacle:
   extends:
-    - .publish-image-using-kaniko
     - .common-spectacle
+    - .publish-image-using-kaniko
 
 .build-spectacle:
   stage: test-and-build
   extends:
-    - .build-image-using-kaniko
     - .common-spectacle
+    - .build-image-using-kaniko
 
 
 # This stage checks whether we don't accidentally try to merge
