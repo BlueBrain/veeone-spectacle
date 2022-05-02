@@ -8,15 +8,15 @@ ENV NODE_OPTIONS="--max-old-space-size=4096"
 ENV MAIN_DIR=/usr/src/
 WORKDIR ${MAIN_DIR}
 
-# Copy source and configuration files
+# Copy source and configuration files to WORKDIR
 COPY .eslintignore .eslintrc.yaml babel.config.js jest.config.js \
     package.json package-lock.json \
-    tsconfig.json tsconfig.eslint.json webpack.config.js ${MAIN_DIR}
+    tsconfig.json tsconfig.eslint.json webpack.config.js ./
 
 # Copy directories
-COPY webpack/ ${MAIN_DIR}webpack/
-COPY src/ ${MAIN_DIR}src/
-COPY public/ ${MAIN_DIR}public/
+COPY webpack/ ./webpack/
+COPY src/ ./src/
+COPY public/ ./public/
 
 RUN npm install  \
     && npm run test && \
@@ -41,7 +41,7 @@ COPY --from=builder ${SPECTACLE_BUILD_PATH} ${SPECTACLE_NGINX_HTML_ROOT}
 RUN test -e /var/run || ln -s /run /var/run
 
 # Set up Nginx cache and log directories
-COPY ./nginx/setup-nginx.sh /tmp
+COPY ./nginx/setup-nginx.sh /tmp/
 RUN chmod +x /tmp/setup-nginx.sh && /tmp/setup-nginx.sh
 
 # Add permissions for Nginx user
