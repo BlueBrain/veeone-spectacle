@@ -25,8 +25,8 @@ const plugin = env => {
 
   require("dotenv").config({ path: dotEnvFilePath })
 
-  console.log(`Frontend Env Variables Plugin"`)
-  console.log(`.env path="${dotEnvFilePath}`)
+  console.log(`Frontend Env Variables Plugin`)
+  console.log(`.env path = "${dotEnvFilePath}"`)
 
   Object.keys(process.env).forEach(key => {
     if (_.includes(FRONTEND_EXPOSED_VARIABLES, key)) {
