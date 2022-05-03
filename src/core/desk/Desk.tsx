@@ -15,6 +15,7 @@ import { useConfig } from "../../config/AppConfigContext"
 import { LauncherMenuData, LauncherMenuId } from "../../launchermenu/types"
 import _ from "lodash"
 import VersionLabel from "./VersionLabel"
+import { FullscreenLayer } from "./fullscreen"
 
 interact.pointerMoveTolerance(4)
 
@@ -203,6 +204,8 @@ const Desk: React.FC = () => {
           </Box>
         )
       })}
+
+      <FullscreenLayer />
     </Box>
   )
 }

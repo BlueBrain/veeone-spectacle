@@ -14,6 +14,7 @@ import { FrameContextProps } from "./types"
 import { FrameContext } from "./index"
 import { useInteractiveFrame } from "./useInteractiveFrame"
 import { Box } from "@mui/material"
+import { useDesk } from "../desk/DeskContext"
 
 interface FrameProps {
   frame: FrameEntry
@@ -23,7 +24,8 @@ interface FrameProps {
 
 const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   const dispatch = useDispatch()
-  const { width, height, left, top, angle, isFullscreen } = frame.situation
+  const { setFullscreenFrame } = useDesk()
+  const { width, height, left, top, angle } = frame.situation
   const [isMovingAllowed, setMovingAllowed] = useState(true)
   const [isResizingAllowed, setResizingAllowed] = useState(true)
   const [isResizingWithWheelAllowed, setResizingWithWheelAllowed] = useState(
@@ -44,9 +46,9 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   )
 
   const toggleFullscreen = useCallback(() => {
-    const data = { isFullscreen: !isFullscreen }
-    manipulate(data)
-  }, [manipulate, isFullscreen])
+    // Send frame contents to fullscreen layer
+    setFullscreenFrame(frame)
+  }, [manipulate])
 
   const [frameRefReceiver] = useInteractiveFrame({
     width,
@@ -55,7 +57,6 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     top,
     angle,
     isFullscreenAllowed,
-    isFullscreen,
     isMovingAllowed,
     isResizingAllowed,
     isResizingWithWheelAllowed,
@@ -79,7 +80,6 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   const frameContextProvider: FrameContextProps = useMemo(
     () => ({
       frameId,
-      isFullscreen,
       updateAspectRatio,
       preventResizing: () => {
         setResizingAllowed(false)
@@ -104,7 +104,7 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
         dispatch(sendFrameToBack(frameId))
       },
     }),
-    [frameId, isFullscreen, width, manipulate, toggleFullscreen, dispatch]
+    [frameId, width, manipulate, toggleFullscreen, dispatch]
   )
 
   const ContentBlockComponent = useMemo(
@@ -119,11 +119,9 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
         position: "absolute",
         willChange: "transform",
         zIndex: stackIndex,
-        width: isFullscreen ? `100% !important` : `${width}px`,
-        height: isFullscreen ? `100% !important` : `${height}px`,
-        transform: isFullscreen
-          ? `translateX(0) translateY(0) translateZ(0) !important`
-          : `translateZ(0) translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`,
+        width: `${width}px`,
+        height: `${height}px`,
+        transform: `translateZ(0) translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`,
       }}
     >
       <FrameContext.Provider value={frameContextProvider}>

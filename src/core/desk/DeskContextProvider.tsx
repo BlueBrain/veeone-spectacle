@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import DeskContext from "./DeskContext"
 import { SceneId, SpectaclePresentation, SpectacleScene } from "../types"
 import { useSelector } from "react-redux"
@@ -23,13 +23,17 @@ const DeskContextProvider: React.FC<DeskContextProviderProps> = ({
     [scene.frames]
   )
 
+  const [fullscreenFrame, setFullscreenFrame] = useState(null)
+
   const providerValue = useMemo(
     () => ({
       sceneId,
       scene,
       getFrame,
+      setFullscreenFrame,
+      fullscreenFrame,
     }),
-    [sceneId, scene, getFrame]
+    [sceneId, scene, getFrame, fullscreenFrame, setFullscreenFrame]
   )
 
   return (
