@@ -22,6 +22,7 @@ interface VideoBlockContentProps {
   contentData: { [key: string]: Json } | any
   onFullscreenToggle(): void
   onVideoLoaded?(args: OnVideoLoadedArgs): void
+  startAt?: number
 }
 
 interface VideoBlockParams {
@@ -32,6 +33,7 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = ({
   contentData,
   onFullscreenToggle,
   onVideoLoaded,
+  startAt,
 }) => {
   const config = useConfig()
   const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
@@ -74,6 +76,12 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = ({
   const handleActiveModeToggle = useCallback(handlerFunction => {
     setActiveModeToggleHandler(handlerFunction)
   }, [])
+
+  useEffect(() => {
+    if (videoRef.current && startAt) {
+      videoRef.current.currentTime = startAt
+    }
+  }, [videoRef.current, startAt])
 
   return (
     <>

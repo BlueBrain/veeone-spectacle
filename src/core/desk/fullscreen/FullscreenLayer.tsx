@@ -53,16 +53,20 @@ const FullscreenLayer: React.FC = () => {
     let content = <Box>No content</Box>
     if (isFullscreenMode) {
       switch (fullscreenFrame.type) {
+        // Open image component in fullscreen
         case ContentBlockTypes.Image: {
           content = <ImageBlockContent contentData={fullscreenFrame.data} />
           break
         }
 
+        // Play video in fullscreen
         case ContentBlockTypes.Video: {
           content = (
             <VideoBlockContent
               contentData={fullscreenFrame.data}
               onFullscreenToggle={exitFullscreen}
+              // todo Video timelines should be synchronized
+              startAt={0}
             />
           )
           break
