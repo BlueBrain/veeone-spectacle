@@ -19,6 +19,7 @@ extends:
 parser: "@typescript-eslint/parser"
 parserOptions:
   project: "./tsconfig.eslint.json"
+  ecmaVersion: 2020
 plugins:
   - "eslint-plugin-prefer-arrow"
   - "eslint-plugin-import"

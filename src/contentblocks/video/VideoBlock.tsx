@@ -1,126 +1,40 @@
-import React, {
-  CSSProperties,
-  SyntheticEvent,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react"
+import React, { useCallback, useContext } from "react"
 import { ContentBlockProps } from "../types"
-import VeeDriveService from "../../veedrive"
+import { Box, Grow } from "@mui/material"
+import VideoBlockContent from "./VideoBlockContent"
 import { FrameContext } from "../../core/frames"
-import PlaybackControls from "./PlaybackControls"
-import VideoBlockContext, { VideoBlockContextProps } from "./VideoBlockContext"
-import { Box, CircularProgress, Grid, Grow } from "@mui/material"
 import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
-import { useConfig } from "../../config/AppConfigContext"
-
-interface VideoBlockParams {
-  path: string
-}
 
 const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
-  const config = useConfig()
-  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
-  const videoRef = useRef(null)
-  const { updateAspectRatio } = useContext(FrameContext)
-  const { path } = (contentData as unknown) as VideoBlockParams
-  const [videoSource, setVideoSource] = useState("")
-  const [activeModeToggleHandler, setActiveModeToggleHandler] = useState(null)
-  const elementStyle: CSSProperties = {
-    boxSizing: "border-box",
-    position: "absolute",
-    left: "0",
-    top: "0",
-    width: "100%",
-    height: "100%",
-    pointerEvents: "none",
-  }
+  const { updateAspectRatio, toggleFullscreen } = useContext(FrameContext)
 
-  useEffect(() => {
-    async function loadFromVeeDrive() {
-      const response = await veeDriveService.requestFile({ path: path })
-      console.debug("VideoBlock path=", response.url)
-      setVideoSource(response.url)
-    }
-    void loadFromVeeDrive()
-  }, [path])
-
-  const handleMetadata = (event: SyntheticEvent<HTMLVideoElement, Event>) => {
-    const { videoWidth, videoHeight } = event.target as HTMLVideoElement
-    const aspectRatio = videoWidth / videoHeight
-    updateAspectRatio(aspectRatio)
-  }
-
-  const handleOverlayClick = useCallback(() => {
-    activeModeToggleHandler()
-  }, [activeModeToggleHandler])
-
-  const contextProvider: VideoBlockContextProps = useMemo(
-    () => ({
-      setActiveModeToggleHandler: handlerFunction => {
-        setActiveModeToggleHandler(handlerFunction)
-      },
-    }),
-    []
+  const handleVideoLoaded = useCallback(
+    ({ width, height }) => {
+      const aspectRatio = width / height
+      updateAspectRatio(aspectRatio)
+    },
+    [updateAspectRatio]
   )
 
   return (
-    <VideoBlockContext.Provider value={contextProvider}>
-      <Grow in={true}>
-        <Box
-          data-drag-handle={true}
-          sx={{
-            background: "#000",
-            width: "100%",
-            height: "100%",
-            boxShadow: 3,
-          }}
-        >
-          {videoSource ? (
-            <video
-              width={"100%"}
-              height={"100%"}
-              autoPlay={true}
-              style={elementStyle}
-              loop={true}
-              muted={true}
-              onLoadedMetadata={handleMetadata}
-              ref={videoRef}
-              disablePictureInPicture
-            >
-              <source src={videoSource} />
-            </video>
-          ) : (
-            <Grid
-              container
-              justifyContent={"center"}
-              alignItems={"center"}
-              sx={{ height: "100%" }}
-            >
-              <Grid item>
-                <CircularProgress />
-              </Grid>
-            </Grid>
-          )}
-          <Box
-            onClick={handleOverlayClick}
-            sx={{
-              position: "absolute",
-              left: 0,
-              top: 0,
-              width: "100%",
-              height: "100%",
-              opacity: 0,
-            }}
-          />
-          {videoSource ? <PlaybackControls videoRef={videoRef} /> : null}
-          <FloatingFrameControlBar />
-        </Box>
-      </Grow>
-    </VideoBlockContext.Provider>
+    <Grow in={true}>
+      <Box
+        data-drag-handle={true}
+        sx={{
+          background: "#000",
+          width: "100%",
+          height: "100%",
+          boxShadow: 3,
+        }}
+      >
+        <VideoBlockContent
+          contentData={contentData}
+          onFullscreenToggle={toggleFullscreen}
+          onVideoLoaded={handleVideoLoaded}
+        />
+        <FloatingFrameControlBar />
+      </Box>
+    </Grow>
   )
 }
 

@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useRef } from "react"
+import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { Box, Theme } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { useDesk } from "../DeskContext"
 import interact from "interactjs"
 import { ContentBlockTypes } from "../../../contentblocks/types"
 import ImageBlockContent from "../../../contentblocks/image/ImageBlockContent"
+import VideoBlockContent from "../../../contentblocks/video/VideoBlockContent"
 
 const FullscreenLayer: React.FC = () => {
   const ref = useRef(null)
@@ -28,6 +29,10 @@ const FullscreenLayer: React.FC = () => {
     zIndex: 99999,
   }
 
+  const exitFullscreen = useCallback(() => {
+    setFullscreenFrame(null)
+  }, [setFullscreenFrame])
+
   useEffect(() => {
     console.debug("useEffect in fullscreen layer")
     const currentRef = ref.current
@@ -35,14 +40,14 @@ const FullscreenLayer: React.FC = () => {
       console.debug("Append doubletap listener")
       interact(currentRef).on("doubletap", () => {
         console.debug("Exit fullscreen")
-        setFullscreenFrame(null)
+        exitFullscreen()
       })
     }
     return () => {
       interact(currentRef).unset()
       console.debug("Unset interact from fullscreen")
     }
-  }, [ref])
+  }, [ref, setFullscreenFrame])
 
   const fullscreenContentComponent = useMemo(() => {
     let content = <Box>No content</Box>
@@ -50,11 +55,22 @@ const FullscreenLayer: React.FC = () => {
       switch (fullscreenFrame.type) {
         case ContentBlockTypes.Image: {
           content = <ImageBlockContent contentData={fullscreenFrame.data} />
+          break
+        }
+
+        case ContentBlockTypes.Video: {
+          content = (
+            <VideoBlockContent
+              contentData={fullscreenFrame.data}
+              onFullscreenToggle={exitFullscreen}
+            />
+          )
+          break
         }
       }
     }
     return content
-  }, [isFullscreenMode])
+  }, [fullscreenFrame, isFullscreenMode])
 
   return (
     <Box sx={sx} ref={ref}>

@@ -25,20 +25,23 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   const { path: imagePath } = (contentData as unknown) as ImageBlockParams
   const { width, height } = imageSize
 
-  const loadImageWithDimensions = useCallback(url => {
-    // Read image dimensions
-    const img = new Image()
-    img.onload = function (event) {
-      // @ts-ignore
-      console.log("Image loaded", url, this.width, this.height)
-      setImageUrl(url)
-      // @ts-ignore
-      const newImageSize = { width: this.width, height: this.height }
-      setImageSize(newImageSize)
-      onImageLoad ? onImageLoad(newImageSize) : null
-    }
-    img.src = url
-  }, [])
+  const loadImageWithDimensions = useCallback(
+    url => {
+      // Read image dimensions
+      const img = new Image()
+      img.onload = function (event) {
+        // @ts-ignore
+        console.log("Image loaded", url, this.width, this.height)
+        setImageUrl(url)
+        // @ts-ignore
+        const newImageSize = { width: this.width, height: this.height }
+        setImageSize(newImageSize)
+        onImageLoad && onImageLoad(newImageSize)
+      }
+      img.src = url
+    },
+    [onImageLoad]
+  )
 
   const loadThumbnail = useCallback(async () => {
     const response = await veeDriveService.requestFile({ path: imagePath })

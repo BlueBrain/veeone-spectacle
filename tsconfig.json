@@ -12,7 +12,7 @@
     "extendedDiagnostics": false,
     "incremental": false,
     "jsx": "react",
-    "lib": ["dom", "dom.iterable", "es6", "es2018.asynciterable"],
+    "lib": ["dom", "dom.iterable", "es2018", "ES2021"],
     "module": "CommonJS",
     "moduleResolution": "node",
     "noImplicitAny": false,
@@ -24,9 +24,10 @@
     "removeComments": false,
     "resolveJsonModule": true,
     "sourceMap": true,
+
     "strict": false,
     "strictNullChecks": false,
-    "target": "es5"
+    "target": "es2018"
   },
   "output": ["./dist"],
   "files": ["src/index.tsx"],
