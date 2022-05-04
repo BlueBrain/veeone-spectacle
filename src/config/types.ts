@@ -27,6 +27,7 @@ export interface ApplicationConfig {
   DISPLAY_MOUSE_CURSOR: boolean
   DEFAULT_NEW_FRAME_WIDTH: number
   DEFAULT_NEW_FRAME_HEIGHT: number
+  FULLSCREEN_TRANSITION_MS: number
   LAUNCHER_MENU_SIZE: string
   SENTRY_DSN: string
   RUNNING_ENVIRONMENT: RunningEnvironment

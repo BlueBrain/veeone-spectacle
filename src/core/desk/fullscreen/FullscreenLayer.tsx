@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Box, Theme } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { useDesk } from "../DeskContext"
@@ -6,8 +6,10 @@ import interact from "interactjs"
 import { ContentBlockTypes } from "../../../contentblocks/types"
 import ImageBlockContent from "../../../contentblocks/image/ImageBlockContent"
 import VideoBlockContent from "../../../contentblocks/video/VideoBlockContent"
+import { useConfig } from "../../../config/AppConfigContext"
 
 const FullscreenLayer: React.FC = () => {
+  const config = useConfig()
   const ref = useRef(null)
   const videoRef = useRef(null)
 
@@ -16,6 +18,8 @@ const FullscreenLayer: React.FC = () => {
   const isFullscreenMode = useMemo(() => Boolean(fullscreenFrame), [
     fullscreenFrame,
   ])
+
+  const [fullscreenDisplay, setFullscreenDisplay] = useState("none")
 
   const sx: SxProps<Theme> = {
     width: "100%",
@@ -26,13 +30,27 @@ const FullscreenLayer: React.FC = () => {
     background: `rgba(0, 0, 0, 1)`,
     color: "white",
     fontSize: "5rem",
-    display: isFullscreenMode ? "block" : "none",
+    display: fullscreenDisplay,
     zIndex: 99999,
+    transition: `opacity ease ${config.FULLSCREEN_TRANSITION_MS}ms`,
+    opacity: 0,
   }
 
+  useEffect(() => {
+    if (isFullscreenMode) {
+      console.debug("Fullscreen ON")
+      setTimeout(() => (ref.current.style.opacity = 1), 0)
+      setFullscreenDisplay("block")
+    }
+  }, [isFullscreenMode])
+
   const exitFullscreen = useCallback(() => {
-    setFullscreenFrame(null)
-  }, [setFullscreenFrame])
+    ref.current.style.opacity = 0
+    setTimeout(() => {
+      setFullscreenDisplay("none")
+      setFullscreenFrame(null)
+    }, config.FULLSCREEN_TRANSITION_MS)
+  }, [config.FULLSCREEN_TRANSITION_MS, setFullscreenFrame])
 
   useEffect(() => {
     console.debug("useEffect in fullscreen layer")
@@ -48,7 +66,7 @@ const FullscreenLayer: React.FC = () => {
       interact(currentRef).unset()
       console.debug("Unset interact from fullscreen")
     }
-  }, [ref, setFullscreenFrame])
+  }, [exitFullscreen, ref, setFullscreenFrame])
 
   const fullscreenContentComponent = useMemo(() => {
     let content = <Box>No content</Box>
