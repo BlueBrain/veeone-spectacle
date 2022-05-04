@@ -9,6 +9,7 @@ import VideoBlockContent from "../../../contentblocks/video/VideoBlockContent"
 
 const FullscreenLayer: React.FC = () => {
   const ref = useRef(null)
+  const videoRef = useRef(null)
 
   const { fullscreenFrame, setFullscreenFrame } = useDesk()
 
@@ -52,10 +53,12 @@ const FullscreenLayer: React.FC = () => {
   const fullscreenContentComponent = useMemo(() => {
     let content = <Box>No content</Box>
     if (isFullscreenMode) {
-      switch (fullscreenFrame.type) {
+      switch (fullscreenFrame.frame.type) {
         // Open image component in fullscreen
         case ContentBlockTypes.Image: {
-          content = <ImageBlockContent contentData={fullscreenFrame.data} />
+          content = (
+            <ImageBlockContent contentData={fullscreenFrame.frame.data} />
+          )
           break
         }
 
@@ -63,10 +66,10 @@ const FullscreenLayer: React.FC = () => {
         case ContentBlockTypes.Video: {
           content = (
             <VideoBlockContent
-              contentData={fullscreenFrame.data}
+              ref={videoRef}
+              contentData={fullscreenFrame.frame.data}
               onFullscreenToggle={exitFullscreen}
-              // todo Video timelines should be synchronized
-              startAt={0}
+              startAt={fullscreenFrame.extraData.currentTime}
             />
           )
           break

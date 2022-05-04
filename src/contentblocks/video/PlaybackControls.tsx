@@ -149,17 +149,19 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 
   // Reset timer that otherwise hides the playback controls
   const restartHidingTimer = useCallback(() => {
-    clearTimeout(autoHideTimeoutId)
-    const timeoutId = setTimeout(
-      () => setActive(false),
-      CONTROLS_AUTO_HIDE_AFTER_MS
-    )
+    autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
+    const timeoutId = setTimeout(() => {
+      setActive(false)
+    }, CONTROLS_AUTO_HIDE_AFTER_MS)
     setAutoHideTimeoutId(timeoutId)
   }, [autoHideTimeoutId])
 
   useEffect(() => {
     if (active) {
       restartHidingTimer()
+    }
+    return () => {
+      autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
     }
   }, [])
 
@@ -171,6 +173,9 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
     onActiveModeToggle(() => toggleActive)
     if (active) {
       restartHidingTimer()
+    }
+    return () => {
+      autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
     }
   }, [active, onActiveModeToggle])
 
@@ -207,18 +212,20 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   }, [refreshVideoTime, videoRef])
 
   useEffect(() => {
-    if (controlsRef.current) {
-      interact(controlsRef.current).on("doubletap", event => {
+    const currentControlsRef = controlsRef.current
+    const currentSliderRef = sliderRef.current
+    if (currentControlsRef) {
+      interact(currentControlsRef).on("doubletap", event => {
         event.stopPropagation()
       })
     }
 
-    if (sliderRef.current) {
+    if (currentSliderRef) {
       // Prevent moving a frame when using the slider playback component
       const disabledEvent = event => {
         event.stopPropagation()
       }
-      interact(sliderRef.current)
+      interact(currentSliderRef)
         .draggable({
           onstart: disabledEvent,
         })
@@ -226,11 +233,17 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
           onstart: disabledEvent,
         })
     }
+
+    return () => {
+      interact(currentControlsRef).unset()
+      interact(currentSliderRef).unset()
+    }
   }, [])
 
   useEffect(() => {
     let timeout
     if (!active) {
+      timeout && clearTimeout(timeout)
       timeout = setTimeout(
         () => setActiveCssDisplay(false),
         CONTROLS_FADING_TIME_MS
@@ -239,7 +252,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
       setActiveCssDisplay(true)
     }
     return () => {
-      clearTimeout(timeout)
+      timeout && clearTimeout(timeout)
     }
   }, [active])
 

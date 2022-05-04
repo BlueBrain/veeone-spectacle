@@ -2,6 +2,7 @@ import { Box, CircularProgress, Grid } from "@mui/material"
 import PlaybackControls from "./PlaybackControls"
 import React, {
   CSSProperties,
+  forwardRef,
   SyntheticEvent,
   useCallback,
   useEffect,
@@ -29,15 +30,13 @@ interface VideoBlockParams {
   path: string
 }
 
-const VideoBlockContent: React.FC<VideoBlockContentProps> = ({
-  contentData,
-  onFullscreenToggle,
-  onVideoLoaded,
-  startAt,
-}) => {
+const VideoBlockContent: React.FC<VideoBlockContentProps> = (
+  { contentData, onFullscreenToggle, onVideoLoaded, startAt },
+  videoRef
+) => {
   const config = useConfig()
   const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
-  const videoRef = useRef(null)
+
   const { path } = (contentData as unknown) as VideoBlockParams
   const [videoSource, setVideoSource] = useState("")
   const [activeModeToggleHandler, setActiveModeToggleHandler] = useState(null)
@@ -133,4 +132,6 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = ({
   )
 }
 
-export default VideoBlockContent
+const VideoBlockContentWithRef = forwardRef(VideoBlockContent)
+
+export default VideoBlockContentWithRef

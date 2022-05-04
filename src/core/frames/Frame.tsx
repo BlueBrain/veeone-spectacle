@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import "@interactjs/modifiers"
 import { useDispatch } from "react-redux"
 import {
@@ -32,6 +32,10 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     true
   )
   const [isFullscreenAllowed, setFullscreenAllowed] = useState(true)
+  const [
+    fullscreenParamsProvider,
+    setFullscreenParamsProvider,
+  ] = useState<Function | null>(null)
 
   const bringToFront = useCallback(() => dispatch(bringFrameToFront(frameId)), [
     frameId,
@@ -45,10 +49,15 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     [dispatch, frameId]
   )
 
+  // Send frame contents to fullscreen layer
   const toggleFullscreen = useCallback(() => {
-    // Send frame contents to fullscreen layer
-    setFullscreenFrame(frame)
-  }, [manipulate])
+    const extraData = fullscreenParamsProvider && fullscreenParamsProvider()
+    const fullscreenFrame = {
+      frame,
+      extraData,
+    }
+    setFullscreenFrame(fullscreenFrame)
+  }, [frame, fullscreenParamsProvider, setFullscreenFrame])
 
   const [frameRefReceiver] = useInteractiveFrame({
     width,
@@ -103,8 +112,9 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
       sendToBack: async () => {
         dispatch(sendFrameToBack(frameId))
       },
+      setFullscreenParamsProvider,
     }),
-    [frameId, width, manipulate, toggleFullscreen, dispatch]
+    [frameId, updateAspectRatio, toggleFullscreen, dispatch]
   )
 
   const ContentBlockComponent = useMemo(

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react"
+import React, { useCallback, useContext, useEffect, useRef } from "react"
 import { ContentBlockProps } from "../types"
 import { Box, Grow } from "@mui/material"
 import VideoBlockContent from "./VideoBlockContent"
@@ -6,7 +6,13 @@ import { FrameContext } from "../../core/frames"
 import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
 
 const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
-  const { updateAspectRatio, toggleFullscreen } = useContext(FrameContext)
+  const videoRef = useRef(null)
+
+  const {
+    updateAspectRatio,
+    toggleFullscreen,
+    setFullscreenParamsProvider,
+  } = useContext(FrameContext)
 
   const handleVideoLoaded = useCallback(
     ({ width, height }) => {
@@ -15,6 +21,18 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
     },
     [updateAspectRatio]
   )
+
+  // Set what happens if this frame goes fullscreen (we need to pass the timeline to synchronize)
+  useEffect(() => {
+    const currentVideoRef = videoRef.current
+    if (currentVideoRef) {
+      setFullscreenParamsProvider(() => () => {
+        return {
+          currentTime: currentVideoRef.currentTime,
+        }
+      })
+    }
+  }, [setFullscreenParamsProvider, videoRef.current])
 
   return (
     <Grow in={true}>
@@ -28,6 +46,7 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
         }}
       >
         <VideoBlockContent
+          ref={videoRef}
           contentData={contentData}
           onFullscreenToggle={toggleFullscreen}
           onVideoLoaded={handleVideoLoaded}
