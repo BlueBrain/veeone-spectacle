@@ -37,10 +37,15 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     setFullscreenParamsProvider,
   ] = useState<Function | null>(null)
 
-  const bringToFront = useCallback(() => dispatch(bringFrameToFront(frameId)), [
-    frameId,
-    dispatch,
-  ])
+  const bringToFront = useCallback(
+    event => {
+      if (event?.double) {
+        return
+      }
+      dispatch(bringFrameToFront(frameId))
+    },
+    [frameId, dispatch]
+  )
 
   const manipulate = useCallback(
     (newSituation: FrameSituationUpdate) => {

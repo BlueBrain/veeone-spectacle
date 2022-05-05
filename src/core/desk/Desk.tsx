@@ -100,6 +100,9 @@ const Desk: React.FC = () => {
 
   const handleDeskTap = useCallback(
     event => {
+      if (event.double) {
+        return
+      }
       const newLauncherMenus = launcherMenus.filter(menu => !menu.isFullyOpen)
       if (newLauncherMenus.length !== launcherMenus.length) {
         setLauncherMenus(newLauncherMenus)
