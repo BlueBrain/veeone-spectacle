@@ -89,6 +89,7 @@ export default class WebsocketAdapter extends CommunicationAdapterBase {
     params?: Json,
     id?: string
   ): Promise<any> => {
+    // eslint-disable-next-line no-async-promise-executor
     const connectedPromise = new Promise(async (resolve, reject) => {
       await this.connect()
       // todo some timeout limits

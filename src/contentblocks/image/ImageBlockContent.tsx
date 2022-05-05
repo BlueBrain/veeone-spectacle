@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Box, CircularProgress, Grid } from "@mui/material"
-import { useConfig } from "../../config/AppConfigContext"
-import VeeDriveService from "../../veedrive"
 import { Json, Size } from "../../common/types"
+import { useSpectacle } from "../../core/spectacle/SpectacleContext"
 
 interface ImageBlockParams {
   path: string
@@ -18,9 +17,7 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   onImageLoad,
 }) => {
   const [imageUrl, setImageUrl] = useState<string>("")
-  const config = useConfig()
-  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
-
+  const { veeDriveService } = useSpectacle()
   const [imageSize, setImageSize] = useState<Size>({ width: 0, height: 0 })
   const { path: imagePath } = (contentData as unknown) as ImageBlockParams
   const { width, height } = imageSize

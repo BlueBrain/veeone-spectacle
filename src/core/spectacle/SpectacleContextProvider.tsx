@@ -17,6 +17,15 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
   const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    async function connectToVeeDrive() {
+      console.debug("Connecting to VeeDrive...")
+      await veeDriveService.connect()
+      console.info("VeeDrive connected.")
+    }
+    void connectToVeeDrive()
+  }, [veeDriveService])
+
   const [isSaveModalVisible, setIsSaveModalVisible] = useState(false)
   const [isOpenModalVisible, setIsOpenModalVisible] = useState(false)
 
@@ -61,6 +70,7 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
 
   const providerValue: SpectacleContextProps = useMemo<SpectacleContextProps>(
     () => ({
+      veeDriveService,
       sceneManager,
       previousSceneId,
       nextSceneId,

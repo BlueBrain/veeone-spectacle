@@ -6,12 +6,10 @@ import React, {
   SyntheticEvent,
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from "react"
-import { useConfig } from "../../config/AppConfigContext"
-import VeeDriveService from "../../veedrive"
 import { Json } from "../../common/types"
+import { useSpectacle } from "../../core/spectacle/SpectacleContext"
 
 interface OnVideoLoadedArgs {
   width: number
@@ -40,9 +38,7 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
   },
   videoRef
 ) => {
-  const config = useConfig()
-  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
-
+  const { veeDriveService } = useSpectacle()
   const { path } = (contentData as unknown) as VideoBlockParams
   const [videoSource, setVideoSource] = useState("")
   const [activeModeToggleHandler, setActiveModeToggleHandler] = useState(null)

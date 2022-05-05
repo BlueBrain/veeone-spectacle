@@ -17,8 +17,8 @@ import _ from "lodash"
 import { updateFrameData } from "../../core/redux/actions"
 import { FileBrowserSelectionModeContextProvider } from "./selection-mode/FileBrowserSelectionModeContext"
 import { useDesk } from "../../core/desk/DeskContext"
-import { useConfig } from "../../config/AppConfigContext"
 import VeeDriveService from "../../veedrive"
+import { useSpectacle } from "../../core/spectacle/SpectacleContext"
 
 interface FileBrowserContextProviderProps {
   frameId: FrameId
@@ -65,8 +65,7 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
   frameId,
   children,
 }) => {
-  const config = useConfig()
-  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
+  const { veeDriveService } = useSpectacle()
   const dispatch = useDispatch()
   const { getFrame } = useDesk()
   const frameData = useMemo(() => getFrame(frameId), [frameId, getFrame])

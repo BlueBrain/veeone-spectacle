@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import VeeDriveService from "../../veedrive"
 import { BrowserFile } from "../../veedrive/common/models"
 import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { InsertDriveFile } from "@mui/icons-material"
@@ -8,16 +7,15 @@ import interact from "interactjs"
 import FileThumbnailSelected from "./selection-mode/FileThumbnailSelected"
 import { Box } from "@mui/material"
 import makeEllipsis, { EllipsisPosition } from "../../common/text/makeEllipsis"
-import { useConfig } from "../../config/AppConfigContext"
+import { useSpectacle } from "../../core/spectacle/SpectacleContext"
 
 interface FileElementProps {
   file: BrowserFile
 }
 
 const FileElement: React.FC<FileElementProps> = ({ file }) => {
+  const { veeDriveService } = useSpectacle()
   const ref = useRef()
-  const config = useConfig()
-  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
   const [thumbnailUrl, setThumbnailUrl] = useState("")
   const { requestFile } = useFileBrowserNavigator()
   const {

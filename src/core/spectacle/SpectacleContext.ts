@@ -3,6 +3,7 @@ import { SceneId, SpectaclePresentation } from "../types"
 import { VeeDriveListPresentationsResponse } from "../../veedrive/types"
 import { Position } from "../../common/types"
 import SceneManager from "../scenes/SceneManager"
+import VeeDriveService from "../../veedrive"
 
 interface SavePresentationOpenModalProps {
   position: Position
@@ -46,6 +47,7 @@ export interface SpectacleContextProps {
   activeSceneIndex: number
   sceneIds: SceneId[]
   presentationStore: SpectaclePresentation
+  veeDriveService: VeeDriveService
 }
 
 const SpectacleContext = React.createContext<SpectacleContextProps>(null)
