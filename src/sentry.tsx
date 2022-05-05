@@ -10,6 +10,7 @@ const startSentry = () => {
     integrations: [new BrowserTracing()],
     tracesSampleRate: 1.0,
     environment: config.RUNNING_ENVIRONMENT,
+    release: config.VERSION,
   })
 }
 
