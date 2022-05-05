@@ -124,7 +124,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   const { viewMode, activeSceneId } = useSpectacle()
   const { sceneId, fullscreenFrame } = useDesk()
 
-  const isPlayingAllowed = useMemo(
+  const isPlaybackAllowed = useMemo(
     () =>
       viewMode === ViewMode.Desk &&
       sceneId === activeSceneId &&
@@ -153,9 +153,12 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   }
 
   const handleSliderChange = (value: number) => {
-    videoRef.current.currentTime = Math.floor((totalTime * value) / 100)
-    setCurrentTime(videoRef.current.currentTime)
-    restartHidingTimer()
+    const newTime = Math.floor((totalTime * value) / 100)
+    if (Number.isFinite(newTime)) {
+      videoRef.current.currentTime = newTime
+      setCurrentTime(videoRef.current.currentTime)
+      restartHidingTimer()
+    }
   }
 
   // Reset timer that otherwise hides the playback controls
@@ -197,7 +200,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
     }
 
     async function handlePlaybackState() {
-      if (isPlaying && isPlayingAllowed) {
+      if (isPlaying && isPlaybackAllowed) {
         await videoRef.current.play()
       } else {
         await videoRef.current.pause()
@@ -205,7 +208,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
     }
 
     void handlePlaybackState()
-  }, [videoRef, isPlaying, isPlayingAllowed])
+  }, [videoRef, isPlaying, isPlaybackAllowed])
 
   // Indicate current time
   const refreshVideoTime = useCallback(() => {

@@ -1,7 +1,8 @@
 import { createContext, useContext } from "react"
 import { FrameEntry, FrameId, SceneId, SpectacleScene } from "../types"
 
-interface FullscreenFrame {
+export interface FullscreenFrame {
+  frameId: FrameId
   frame: FrameEntry | null
   extraData: any
 }

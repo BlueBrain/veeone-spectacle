@@ -8,6 +8,10 @@ import ImageBlockContent from "../../../contentblocks/image/ImageBlockContent"
 import VideoBlockContent from "../../../contentblocks/video/VideoBlockContent"
 import { useConfig } from "../../../config/AppConfigContext"
 
+interface FullscreenVideoExtraData {
+  videoRef: HTMLVideoElement
+}
+
 const FullscreenLayer: React.FC = () => {
   const config = useConfig()
   const ref = useRef(null)
@@ -44,13 +48,25 @@ const FullscreenLayer: React.FC = () => {
     }
   }, [isFullscreenMode])
 
+  const synchronizePlayback = useCallback(() => {
+    const extraData = fullscreenFrame.extraData as FullscreenVideoExtraData
+    console.debug(`Set playback to ${videoRef.current.currentTime}`)
+    extraData.videoRef.currentTime = videoRef.current.currentTime
+  }, [fullscreenFrame])
+
   const exitFullscreen = useCallback(() => {
+    console.debug("exit fullscreen with", fullscreenFrame)
+
+    if (fullscreenFrame.frame.type === ContentBlockTypes.Video) {
+      synchronizePlayback()
+    }
+
     ref.current.style.opacity = 0
     setTimeout(() => {
       setFullscreenDisplay("none")
       setFullscreenFrame(null)
     }, config.FULLSCREEN_TRANSITION_MS)
-  }, [config.FULLSCREEN_TRANSITION_MS, setFullscreenFrame])
+  }, [config.FULLSCREEN_TRANSITION_MS, fullscreenFrame, setFullscreenFrame])
 
   useEffect(() => {
     console.debug("useEffect in fullscreen layer")
@@ -82,12 +98,13 @@ const FullscreenLayer: React.FC = () => {
 
         // Play video in fullscreen
         case ContentBlockTypes.Video: {
+          const extraData = fullscreenFrame.extraData as FullscreenVideoExtraData
           content = (
             <VideoBlockContent
               ref={videoRef}
               contentData={fullscreenFrame.frame.data}
               onFullscreenToggle={exitFullscreen}
-              startAt={fullscreenFrame.extraData.currentTime}
+              startAt={extraData.videoRef.currentTime}
               allowPlayingInFullscreenMode={true}
             />
           )
