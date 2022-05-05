@@ -13,7 +13,7 @@ export interface FrameData {
 
 export interface FrameEntry {
   type: ContentBlockTypes
-  // todo size, position, angle and fullscreen should be considered separately
+  // todo size, position, angle should be considered separately
   // todo deprecate the "situation" attribute
   situation: FrameSituation
   data: FrameData
@@ -29,7 +29,6 @@ export type FrameSituation = {
   width: number
   height: number
   angle: number
-  isFullscreen?: boolean
 }
 
 export type FrameSituationUpdate = {
@@ -38,7 +37,6 @@ export type FrameSituationUpdate = {
   width?: number
   height?: number
   angle?: number
-  isFullscreen?: boolean
 }
 
 export interface SpectacleScene {

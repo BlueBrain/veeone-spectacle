@@ -16,7 +16,6 @@ interface UseInteractJsProps {
   isResizingAllowed
   isResizingWithWheelAllowed
   isFullscreenAllowed
-  isFullscreen
   bringToFront
   manipulate: (newSituation: FrameSituationUpdate) => void
   toggleFullscreen
@@ -32,7 +31,6 @@ export const useInteractiveFrame = ({
   isResizingAllowed,
   isResizingWithWheelAllowed,
   isFullscreenAllowed,
-  isFullscreen,
   bringToFront,
   manipulate,
   toggleFullscreen,
@@ -94,6 +92,7 @@ export const useInteractiveFrame = ({
 
         const interactiveNode = interact(node)
 
+        // This triggers fullscreen mode for the selected frame when double tap is performed.
         interactiveNode.on("doubletap", () => {
           if (isFullscreenAllowed && isFullscreenEnabled) {
             console.debug("Double tap detected")
@@ -111,7 +110,7 @@ export const useInteractiveFrame = ({
           interactiveNode.on("mousewheel", event => {
             event.preventDefault()
             event.stopPropagation()
-            if (isFullscreen || !isResizingAllowed) {
+            if (!isResizingAllowed) {
               return
             }
             if (node !== null) {
@@ -363,7 +362,6 @@ export const useInteractiveFrame = ({
       isMovingAllowed,
       isFullscreenAllowed,
       toggleFullscreen,
-      isFullscreen,
       isFrameTooSmall,
       isFrameTooBig,
       debouncedManipulate,

@@ -1,7 +1,6 @@
 import React, {
   RefObject,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -19,8 +18,6 @@ import { IconButton, Slider } from "@mui/material"
 import withStyles from "@mui/styles/withStyles"
 import interact from "interactjs"
 import { friendlyFormatTime } from "./display"
-import { FrameContext } from "../../core/frames"
-import VideoBlockContext from "./VideoBlockContext"
 import { useSpectacle, ViewMode } from "../../core/spectacle/SpectacleContext"
 import { useDesk } from "../../core/desk/DeskContext"
 
@@ -28,6 +25,8 @@ const CONTROLS_FADING_TIME_MS = 500
 const CONTROLS_AUTO_HIDE_AFTER_MS = 5000
 
 interface PlaybackControlsProps {
+  onActiveModeToggle(handlerFunction: Function): void
+  onFullscreenToggle(): void
   videoRef: RefObject<HTMLVideoElement>
 }
 
@@ -107,14 +106,16 @@ const TimelineSlider = withStyles({
   },
 })(Slider)
 
-const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
-  const videoContext = useContext(VideoBlockContext)
+const PlaybackControls: React.FC<PlaybackControlsProps> = ({
+  videoRef,
+  onFullscreenToggle,
+  onActiveModeToggle,
+}) => {
   const controlsRef = useRef(null)
   const sliderRef = useRef(null)
   const [currentTime, setCurrentTime] = useState<number>(null)
   const [totalTime, setTotalTime] = useState<number>(null)
   const [isPlaying, setIsPlaying] = useState(true)
-  const { toggleFullscreen } = useContext(FrameContext)
   const [active, setActive] = useState(true)
   const [activeCssDisplay, setActiveCssDisplay] = useState(active)
   const [autoHideTimeoutId, setAutoHideTimeoutId] = useState(null)
@@ -148,17 +149,19 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
 
   // Reset timer that otherwise hides the playback controls
   const restartHidingTimer = useCallback(() => {
-    clearTimeout(autoHideTimeoutId)
-    const timeoutId = setTimeout(
-      () => setActive(false),
-      CONTROLS_AUTO_HIDE_AFTER_MS
-    )
+    autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
+    const timeoutId = setTimeout(() => {
+      setActive(false)
+    }, CONTROLS_AUTO_HIDE_AFTER_MS)
     setAutoHideTimeoutId(timeoutId)
   }, [autoHideTimeoutId])
 
   useEffect(() => {
     if (active) {
       restartHidingTimer()
+    }
+    return () => {
+      autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
     }
   }, [])
 
@@ -167,11 +170,14 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
     const toggleActive = () => {
       setActive(!active)
     }
-    videoContext.setActiveModeToggleHandler(() => toggleActive)
+    onActiveModeToggle(() => toggleActive)
     if (active) {
       restartHidingTimer()
     }
-  }, [active, videoContext])
+    return () => {
+      autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
+    }
+  }, [active, onActiveModeToggle])
 
   // Play/Pause handling
   useEffect(() => {
@@ -206,18 +212,20 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
   }, [refreshVideoTime, videoRef])
 
   useEffect(() => {
-    if (controlsRef.current) {
-      interact(controlsRef.current).on("doubletap", event => {
+    const currentControlsRef = controlsRef.current
+    const currentSliderRef = sliderRef.current
+    if (currentControlsRef) {
+      interact(currentControlsRef).on("doubletap", event => {
         event.stopPropagation()
       })
     }
 
-    if (sliderRef.current) {
+    if (currentSliderRef) {
       // Prevent moving a frame when using the slider playback component
       const disabledEvent = event => {
         event.stopPropagation()
       }
-      interact(sliderRef.current)
+      interact(currentSliderRef)
         .draggable({
           onstart: disabledEvent,
         })
@@ -225,11 +233,17 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
           onstart: disabledEvent,
         })
     }
+
+    return () => {
+      interact(currentControlsRef).unset()
+      interact(currentSliderRef).unset()
+    }
   }, [])
 
   useEffect(() => {
     let timeout
     if (!active) {
+      timeout && clearTimeout(timeout)
       timeout = setTimeout(
         () => setActiveCssDisplay(false),
         CONTROLS_FADING_TIME_MS
@@ -238,7 +252,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
       setActiveCssDisplay(true)
     }
     return () => {
-      clearTimeout(timeout)
+      timeout && clearTimeout(timeout)
     }
   }, [active])
 
@@ -281,7 +295,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({ videoRef }) => {
               handleSliderChange(newValue as number)
             }
           />
-          <IconButton onClick={toggleFullscreen} size="large">
+          <IconButton onClick={onFullscreenToggle} size="large">
             <Fullscreen />
           </IconButton>
         </StyledScrubBar>

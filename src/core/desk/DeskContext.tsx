@@ -1,10 +1,17 @@
 import { createContext, useContext } from "react"
 import { FrameEntry, FrameId, SceneId, SpectacleScene } from "../types"
 
+interface FullscreenFrame {
+  frame: FrameEntry | null
+  extraData: any
+}
+
 interface DeskContextProps {
   sceneId: SceneId
   scene: SpectacleScene
   getFrame(frameId: FrameId): FrameEntry
+  setFullscreenFrame(fullscreenFrame: FullscreenFrame): void
+  fullscreenFrame: FullscreenFrame
 }
 
 const DeskContext = createContext<DeskContextProps>(null)

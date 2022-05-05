@@ -20,13 +20,9 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
 }) => {
   const { scene } = useDesk()
 
-  const {
-    toggleFullscreen,
-    close,
-    sendToBack,
-    frameId,
-    isFullscreen,
-  } = useContext(FrameContext)
+  const { toggleFullscreen, close, sendToBack, frameId } = useContext(
+    FrameContext
+  )
 
   const closeRef = useRef()
   const sendToBackRef = useRef()
@@ -53,12 +49,10 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
           padding: ".5rem .3rem",
           transition: `opacity ease 500ms`,
         },
-        isTopFrame && !isFullscreen
+        isTopFrame
           ? {
               opacity: 1,
             }
-          : isFullscreen
-          ? { opacity: 0 }
           : {
               opacity: 0.6,
             },
