@@ -88,6 +88,7 @@ const FullscreenLayer: React.FC = () => {
               contentData={fullscreenFrame.frame.data}
               onFullscreenToggle={exitFullscreen}
               startAt={fullscreenFrame.extraData.currentTime}
+              allowPlayingInFullscreenMode={true}
             />
           )
           break
@@ -95,7 +96,7 @@ const FullscreenLayer: React.FC = () => {
       }
     }
     return content
-  }, [fullscreenFrame, isFullscreenMode])
+  }, [exitFullscreen, fullscreenFrame, isFullscreenMode])
 
   return (
     <Box sx={sx} ref={ref}>

@@ -7,7 +7,6 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react"
 import { useConfig } from "../../config/AppConfigContext"
@@ -24,6 +23,7 @@ interface VideoBlockContentProps {
   onFullscreenToggle(): void
   onVideoLoaded?(args: OnVideoLoadedArgs): void
   startAt?: number
+  allowPlayingInFullscreenMode?: boolean
 }
 
 interface VideoBlockParams {
@@ -31,7 +31,13 @@ interface VideoBlockParams {
 }
 
 const VideoBlockContent: React.FC<VideoBlockContentProps> = (
-  { contentData, onFullscreenToggle, onVideoLoaded, startAt },
+  {
+    contentData,
+    onFullscreenToggle,
+    onVideoLoaded,
+    startAt,
+    allowPlayingInFullscreenMode,
+  },
   videoRef
 ) => {
   const config = useConfig()
@@ -76,11 +82,16 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
     setActiveModeToggleHandler(handlerFunction)
   }, [])
 
-  useEffect(() => {
-    if (videoRef.current && startAt) {
-      videoRef.current.currentTime = startAt
-    }
-  }, [videoRef.current, startAt])
+  useEffect(
+    () => {
+      if (videoRef.current && startAt) {
+        videoRef.current.currentTime = startAt
+      }
+    },
+    // `videoRef.current` is used instead of `videoRef` because otherwise
+    // the current time is not passed correctly
+    [videoRef.current, startAt]
+  )
 
   return (
     <>
@@ -124,6 +135,7 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
       {videoSource ? (
         <PlaybackControls
           videoRef={videoRef}
+          allowPlayingInFullscreenMode={allowPlayingInFullscreenMode}
           onActiveModeToggle={handleActiveModeToggle}
           onFullscreenToggle={handleFullscreenToggle}
         />

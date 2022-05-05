@@ -28,6 +28,7 @@ interface PlaybackControlsProps {
   onActiveModeToggle(handlerFunction: Function): void
   onFullscreenToggle(): void
   videoRef: RefObject<HTMLVideoElement>
+  allowPlayingInFullscreenMode?: boolean
 }
 
 interface StyledPlaybackControlsProps {
@@ -110,6 +111,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   videoRef,
   onFullscreenToggle,
   onActiveModeToggle,
+  allowPlayingInFullscreenMode,
 }) => {
   const controlsRef = useRef(null)
   const sliderRef = useRef(null)
@@ -120,11 +122,20 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   const [activeCssDisplay, setActiveCssDisplay] = useState(active)
   const [autoHideTimeoutId, setAutoHideTimeoutId] = useState(null)
   const { viewMode, activeSceneId } = useSpectacle()
-  const { sceneId } = useDesk()
+  const { sceneId, fullscreenFrame } = useDesk()
 
   const isPlayingAllowed = useMemo(
-    () => viewMode === ViewMode.Desk && sceneId === activeSceneId,
-    [activeSceneId, sceneId, viewMode]
+    () =>
+      viewMode === ViewMode.Desk &&
+      sceneId === activeSceneId &&
+      (!fullscreenFrame || allowPlayingInFullscreenMode),
+    [
+      activeSceneId,
+      allowPlayingInFullscreenMode,
+      fullscreenFrame,
+      sceneId,
+      viewMode,
+    ]
   )
 
   const handlePlayButton = () => {
