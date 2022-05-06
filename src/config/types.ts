@@ -1,6 +1,10 @@
 export enum RunningEnvironment {
+  // Use "DEV" for local development.
+  // Place SPECTACLE_RUNNING_ENVIRONMENT=DEV entry in your .env file
   DEV = "DEV",
+  // Client is used for users' browsers when they open Spectacle "web client"
   CLIENT = "CLIENT",
+  // These are "real-world" installations where Spectacle is deployed with full touch experience
   FIFTH_FLOOR_DISPLAY_WALL = "FIFTH_FLOOR_DISPLAY_WALL",
   THIRD_FLOOR_LEFT_DISPLAY = "THIRD_FLOOR_LEFT_DISPLAY",
   THIRD_FLOOR_RIGHT_DISPLAY = "THIRD_FLOOR_RIGHT_DISPLAY",
@@ -30,5 +34,6 @@ export interface ApplicationConfig {
   FULLSCREEN_TRANSITION_MS: number
   LAUNCHER_MENU_SIZE: string
   SENTRY_DSN: string
+  SENTRY_EXCLUDE_ENVIRONMENTS: RunningEnvironment[]
   RUNNING_ENVIRONMENT: RunningEnvironment
 }

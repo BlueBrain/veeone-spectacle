@@ -15,6 +15,7 @@ let defaultConfig: ApplicationConfig = {
   REVISION: ENV_VARIABLES.SPECTACLE_REVISION,
   SENTRY_DSN:
     "https://a091d41e9df94ce787371864e96e7301@o224246.ingest.sentry.io/6367583",
+  SENTRY_EXCLUDE_ENVIRONMENTS: [RunningEnvironment.DEV],
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
   LAUNCHER_MENU_SIZE: "22.5rem",
