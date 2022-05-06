@@ -18,7 +18,7 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
     }
   }, [aspectRatio, updateAspectRatio])
 
-  const onImageLoad = ({ width, height }) => {
+  const onImageLoad = ({ width, height }: HTMLImageElement) => {
     setAspectRatio(width / height)
   }
 

@@ -150,15 +150,15 @@ const Desk: React.FC = () => {
     return scene.frameStack.map(frameId => {
       console.debug("render framestack", frameId)
       const frame = scene.frames[frameId]
-      return typeof frame !== "undefined" ? (
-        <Frame
-          frame={frame}
-          key={frameId}
-          frameId={frameId}
-          stackIndex={getStackIndex(frameId)}
-        />
-      ) : (
-        ``
+      return (
+        frame && (
+          <Frame
+            frame={frame}
+            key={frameId}
+            frameId={frameId}
+            stackIndex={getStackIndex(frameId)}
+          />
+        )
       )
     })
   }, [getStackIndex, scene.frameStack, scene.frames])
