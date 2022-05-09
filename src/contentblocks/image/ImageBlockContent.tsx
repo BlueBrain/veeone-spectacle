@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Box, CircularProgress, Grid } from "@mui/material"
 import { Json } from "../../common/types"
-import { useSpectacle } from "../../core/spectacle/SpectacleContext"
-import { VeeDriveFileResponse } from "../../veedrive/types"
+import { useImageKeeper } from "../../image-keeper/ImageKeeperContext"
+import { ImageKeeperResponse, KeeperImage } from "../../image-keeper/types"
 
 interface ImageBlockParams {
   path: string
@@ -10,52 +10,49 @@ interface ImageBlockParams {
 
 interface ImageBlockContentProps {
   contentData: { [key: string]: Json } | any
-  onImageLoad?(image: HTMLImageElement): void
+  onImageLoad?(imageSrc: string): void
 }
 
 const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   contentData,
   onImageLoad,
 }) => {
-  const { veeDriveService } = useSpectacle()
+  const { requestImage } = useImageKeeper()
   const { path: imagePath } = (contentData as unknown) as ImageBlockParams
-  const [veeDriveImage, setVeeDriveImage] = useState<VeeDriveFileResponse>()
-  const [imageObject, setImageObject] = useState<HTMLImageElement>()
+  const [src, setSrc] = useState<string>(null)
+
+  const imageKeeperResponse = useMemo<Promise<ImageKeeperResponse>>(
+    async () => await requestImage(imagePath),
+    [imagePath, requestImage]
+  )
 
   useEffect(() => {
-    async function requestFile() {
-      console.debug(`Request '${imagePath}' from VeeDrive`)
-      const response = await veeDriveService.requestFile({ path: imagePath })
-      setVeeDriveImage(response)
+    async function wait() {
+      const keeperImage = (await imageKeeperResponse).keeperImage
+      setSrc(keeperImage.objectUrl)
     }
-    void requestFile()
-  }, [imagePath, veeDriveService])
+    void wait()
+  }, [imageKeeperResponse, onImageLoad])
 
   useEffect(() => {
-    if (!veeDriveImage?.url) {
-      return
+    async function wait() {
+      const keeperImage = (await imageKeeperResponse).keeperImage
+      if (keeperImage) {
+        onImageLoad && onImageLoad(keeperImage.objectUrl)
+      }
     }
-    const img = new Image()
-    img.onload = function (event) {
-      console.debug(
-        "Image loaded",
-        veeDriveImage.url,
-        (this as HTMLImageElement).width,
-        (this as HTMLImageElement).height
-      )
-      setImageObject(img)
-      onImageLoad && onImageLoad(img)
-    }
-    img.src = veeDriveImage.url
-  }, [onImageLoad, veeDriveImage?.url])
+    void wait()
+  }, [imageKeeperResponse, onImageLoad])
 
-  return imageObject ? (
+  return src ? (
+    // @ts-ignore
     <Box
       component={"img"}
-      src={imageObject.src}
-      width={imageObject.width}
-      height={imageObject.height}
+      src={src}
+      // width={keeperImage.width}
+      // height={keeperImage.height}
       sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+      async={true}
     />
   ) : (
     <Grid

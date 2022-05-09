@@ -22,15 +22,13 @@ class VeeDriveService extends NetworkFileBrowsingServiceBase {
   private veeDriveConfig
   protected readonly communicationAdapter
 
-  constructor(private config: ApplicationConfig) {
+  constructor(private wsPath: string) {
     super()
     this.veeDriveConfig = {
       ...VeeDriveConfig,
-      hostname: config.VEEDRIVE_WS_PATH,
+      wsPath,
     }
-    this.communicationAdapter = new WebsocketAdapter(
-      this.veeDriveConfig.hostname
-    )
+    this.communicationAdapter = new WebsocketAdapter(this.veeDriveConfig.wsPath)
   }
 
   public readonly listDirectory = async (

@@ -6,6 +6,7 @@ import SpectacleContextProvider from "./SpectacleContextProvider"
 import SpectacleScreen from "./SpectacleScreen"
 import { useConfig } from "../../config/AppConfigContext"
 import { getBlueBrainTheme } from "../themes/bbp"
+import ImageKeeperContextProvider from "../../image-keeper/ImageKeeperContextProvider"
 
 export const Spectacle = () => {
   const config = useConfig()
@@ -16,7 +17,9 @@ export const Spectacle = () => {
       <CssBaseline />
       <ThemeGradients />
       <SpectacleContextProvider>
-        <SpectacleScreen />
+        <ImageKeeperContextProvider>
+          <SpectacleScreen />
+        </ImageKeeperContextProvider>
       </SpectacleContextProvider>
     </ThemeProvider>
   )

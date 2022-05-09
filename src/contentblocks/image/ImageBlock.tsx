@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useMemo, useState } from "react"
 import { ContentBlockProps } from "../types"
 import { Box, Grow } from "@mui/material"
 import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
@@ -7,9 +7,7 @@ import { Size } from "../../common/types"
 import { FrameContext } from "../../core/frames"
 
 const ImageBlock: React.FC<ContentBlockProps> = props => {
-  const [imageSize, setImageSize] = useState<Size>({ width: 0, height: 0 })
-  const { width, height } = imageSize
-  const [aspectRatio, setAspectRatio] = useState(width / height)
+  const [aspectRatio, setAspectRatio] = useState(1)
   const { updateAspectRatio } = useContext(FrameContext)
 
   useEffect(() => {
@@ -18,9 +16,12 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
     }
   }, [aspectRatio, updateAspectRatio])
 
-  const onImageLoad = ({ width, height }: HTMLImageElement) => {
-    setAspectRatio(width / height)
-  }
+  const onImageLoad = useMemo(
+    () => ({ width, height }: HTMLImageElement) => {
+      setAspectRatio(width / height)
+    },
+    []
+  )
 
   return (
     <Grow in={true}>

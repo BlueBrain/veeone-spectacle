@@ -14,7 +14,10 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
   children,
 }) => {
   const config = useConfig()
-  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
+  const veeDriveService = useMemo(
+    () => new VeeDriveService(config.VEEDRIVE_WS_PATH),
+    [config]
+  )
   const dispatch = useDispatch()
 
   useEffect(() => {

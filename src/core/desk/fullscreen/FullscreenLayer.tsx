@@ -66,7 +66,12 @@ const FullscreenLayer: React.FC = () => {
       setFullscreenDisplay("none")
       setFullscreenFrame(null)
     }, config.FULLSCREEN_TRANSITION_MS)
-  }, [config.FULLSCREEN_TRANSITION_MS, fullscreenFrame, setFullscreenFrame])
+  }, [
+    config.FULLSCREEN_TRANSITION_MS,
+    fullscreenFrame,
+    setFullscreenFrame,
+    synchronizePlayback,
+  ])
 
   useEffect(() => {
     console.debug("useEffect in fullscreen layer")
