@@ -132,14 +132,14 @@ const Desk: React.FC = () => {
     interact((deskRef.current as unknown) as Target).unset()
     interact((deskRef.current as unknown) as Target)
       .pointerEvents({
-        holdDuration: 200,
+        holdDuration: config.TOUCH_HOLD_DURATION_MS,
       })
       .on("hold", handleDeskHold)
       .on("tap", handleDeskTap)
     return () => {
       interact(refElement ?? ((refElement as unknown) as Target)).unset()
     }
-  }, [handleDeskHold, handleDeskTap])
+  }, [config.TOUCH_HOLD_DURATION_MS, handleDeskHold, handleDeskTap])
 
   const getStackIndex = useCallback(
     frameId => scene.frameStack.indexOf(frameId),
