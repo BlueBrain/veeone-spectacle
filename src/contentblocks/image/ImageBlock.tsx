@@ -3,8 +3,8 @@ import { ContentBlockProps } from "../types"
 import { Box, Grow } from "@mui/material"
 import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
 import ImageBlockContent from "./ImageBlockContent"
-import { Size } from "../../common/types"
 import { FrameContext } from "../../core/frames"
+import { KeeperImage } from "../../image-keeper/types"
 
 const ImageBlock: React.FC<ContentBlockProps> = props => {
   const [aspectRatio, setAspectRatio] = useState(1)
@@ -17,7 +17,8 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
   }, [aspectRatio, updateAspectRatio])
 
   const onImageLoad = useMemo(
-    () => ({ width, height }: HTMLImageElement) => {
+    () => ({ size }: KeeperImage) => {
+      const { width, height } = size
       setAspectRatio(width / height)
     },
     []

@@ -10,7 +10,7 @@ interface ImageBlockParams {
 
 interface ImageBlockContentProps {
   contentData: { [key: string]: Json } | any
-  onImageLoad?(imageSrc: string): void
+  onImageLoad?(keeperImage: KeeperImage): void
 }
 
 const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
@@ -19,7 +19,7 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
 }) => {
   const { requestImage } = useImageKeeper()
   const { path: imagePath } = (contentData as unknown) as ImageBlockParams
-  const [src, setSrc] = useState<string>(null)
+  const [keeperImage, setKeeperImage] = useState<KeeperImage>(null)
 
   const imageKeeperResponse = useMemo<Promise<ImageKeeperResponse>>(
     async () => await requestImage(imagePath),
@@ -29,28 +29,27 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   useEffect(() => {
     async function wait() {
       const keeperImage = (await imageKeeperResponse).keeperImage
-      setSrc(keeperImage.objectUrl)
+      setKeeperImage(keeperImage)
     }
     void wait()
   }, [imageKeeperResponse, onImageLoad])
 
   useEffect(() => {
     async function wait() {
-      const keeperImage = (await imageKeeperResponse).keeperImage
       if (keeperImage) {
-        onImageLoad && onImageLoad(keeperImage.objectUrl)
+        onImageLoad && onImageLoad(keeperImage)
       }
     }
     void wait()
-  }, [imageKeeperResponse, onImageLoad])
+  }, [keeperImage, onImageLoad])
 
-  return src ? (
+  return keeperImage ? (
     // @ts-ignore
     <Box
       component={"img"}
-      src={src}
-      // width={keeperImage.width}
-      // height={keeperImage.height}
+      src={keeperImage.objectUrl}
+      width={keeperImage.size.width}
+      height={keeperImage.size.height}
       sx={{ width: "100%", height: "100%", objectFit: "contain" }}
       async={true}
     />

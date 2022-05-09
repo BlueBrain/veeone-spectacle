@@ -1,5 +1,6 @@
 import VeeDriveService from "../../veedrive"
 import { KeeperImage } from "../types"
+import { Size } from "../../common/types"
 
 let veeDriveService: VeeDriveService
 
@@ -12,8 +13,8 @@ class ImageKeeperWorker {
     this.imageCache = new Map()
   }
 
-  saveImageInCache = (path: string, objectUrl: string) => {
-    this.imageCache[path] = { objectUrl }
+  saveImageInCache = (path: string, objectUrl: string, size: Size) => {
+    this.imageCache[path] = { objectUrl, size } as KeeperImage
     return this.imageCache[path]
   }
 
@@ -48,19 +49,22 @@ class ImageKeeperWorker {
     return await fileResponse.blob()
   }
 
-  getImageObjectUrl = async ({ path }): Promise<KeeperImage> => {
-    let image = this.getImageFromCache(path)
-    if (image) {
-      return image
-    } else {
+  getKeeperImage = async ({ path }): Promise<KeeperImage> => {
+    let keeperImage = this.getImageFromCache(path)
+    if (!keeperImage) {
       const blob = await this.fetchNewBlob(path)
-      image = this.saveImageInCache(path, URL.createObjectURL(blob))
+      const keeperImageSrc = URL.createObjectURL(blob)
+      const bitmap = await createImageBitmap(blob)
+      keeperImage = this.saveImageInCache(path, keeperImageSrc, {
+        width: bitmap.width,
+        height: bitmap.height,
+      })
     }
-    return image
+    return keeperImage
   }
 
   handleRequestImage = async ({ path, imageId }) => {
-    const keeperImage = await this.getImageObjectUrl({ path })
+    const keeperImage = await this.getKeeperImage({ path })
     postMessage({
       name: "imageReady",
       imageId,

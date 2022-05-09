@@ -1,5 +1,8 @@
+import { Size } from "../common/types"
+
 export interface KeeperImage {
   objectUrl: string
+  size: Size
 }
 
 export interface ImageKeeperResponse {
