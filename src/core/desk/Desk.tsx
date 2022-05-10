@@ -99,13 +99,18 @@ const Desk: React.FC = () => {
     [launcherMenus]
   )
 
-  const handleDeskClick = useCallback(() => {
-    console.debug("handleDeskClick triggered")
-    const newLauncherMenus = launcherMenus.filter(menu => !menu.isFullyOpen)
-    if (newLauncherMenus.length !== launcherMenus.length) {
-      setLauncherMenus(newLauncherMenus)
-    }
-  }, [launcherMenus])
+  const handleDeskClick = useCallback(
+    event => {
+      console.debug("handleDeskClick triggered")
+      if (event.target === deskRef.current) {
+        const newLauncherMenus = launcherMenus.filter(menu => !menu.isFullyOpen)
+        if (newLauncherMenus.length !== launcherMenus.length) {
+          setLauncherMenus(newLauncherMenus)
+        }
+      }
+    },
+    [launcherMenus]
+  )
 
   const handleDeskHold = useCallback(
     event => {
