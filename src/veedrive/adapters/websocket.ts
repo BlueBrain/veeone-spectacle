@@ -11,13 +11,11 @@ export class PendingRequest {
   ) {}
 }
 
-export default class WebsocketAdapter extends CommunicationAdapterBase {
+export default class WebsocketAdapter implements CommunicationAdapterBase {
   private connection: WebSocket
   private readonly requestQueue = new Map<string, PendingRequest>()
 
-  constructor(public readonly hostname: string) {
-    super()
-  }
+  constructor(public readonly hostname: string) {}
 
   private readonly addToQueue = (pendingRequest: PendingRequest) =>
     this.requestQueue.set(pendingRequest.request.id, pendingRequest)
@@ -89,6 +87,7 @@ export default class WebsocketAdapter extends CommunicationAdapterBase {
     params?: Json,
     id?: string
   ): Promise<any> => {
+    // eslint-disable-next-line no-async-promise-executor
     const connectedPromise = new Promise(async (resolve, reject) => {
       await this.connect()
       // todo some timeout limits

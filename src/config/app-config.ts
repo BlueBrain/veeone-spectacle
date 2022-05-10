@@ -15,6 +15,7 @@ let defaultConfig: ApplicationConfig = {
   REVISION: ENV_VARIABLES.SPECTACLE_REVISION,
   SENTRY_DSN:
     "https://a091d41e9df94ce787371864e96e7301@o224246.ingest.sentry.io/6367583",
+  SENTRY_EXCLUDE_ENVIRONMENTS: [RunningEnvironment.DEV],
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
   LAUNCHER_MENU_SIZE: "22.5rem",
@@ -37,6 +38,7 @@ let defaultConfig: ApplicationConfig = {
   FILE_BROWSER_OPEN_MEDIA_CASCADE_MAX_PER_ROW: 10,
   FILE_BROWSER_OPEN_MEDIA_CASCADE_DELAY_MS: 100,
   FULLSCREEN_TRANSITION_MS: 500,
+  TOUCH_HOLD_DURATION_MS: 200,
 }
 
 defaultConfig = {

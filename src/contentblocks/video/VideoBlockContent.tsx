@@ -6,13 +6,10 @@ import React, {
   SyntheticEvent,
   useCallback,
   useEffect,
-  useMemo,
-  useRef,
   useState,
 } from "react"
-import { useConfig } from "../../config/AppConfigContext"
-import VeeDriveService from "../../veedrive"
 import { Json } from "../../common/types"
+import { useSpectacle } from "../../core/spectacle/SpectacleContext"
 
 interface OnVideoLoadedArgs {
   width: number
@@ -24,6 +21,7 @@ interface VideoBlockContentProps {
   onFullscreenToggle(): void
   onVideoLoaded?(args: OnVideoLoadedArgs): void
   startAt?: number
+  allowPlayingInFullscreenMode?: boolean
 }
 
 interface VideoBlockParams {
@@ -31,12 +29,16 @@ interface VideoBlockParams {
 }
 
 const VideoBlockContent: React.FC<VideoBlockContentProps> = (
-  { contentData, onFullscreenToggle, onVideoLoaded, startAt },
+  {
+    contentData,
+    onFullscreenToggle,
+    onVideoLoaded,
+    startAt,
+    allowPlayingInFullscreenMode,
+  },
   videoRef
 ) => {
-  const config = useConfig()
-  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
-
+  const { veeDriveService } = useSpectacle()
   const { path } = (contentData as unknown) as VideoBlockParams
   const [videoSource, setVideoSource] = useState("")
   const [activeModeToggleHandler, setActiveModeToggleHandler] = useState(null)
@@ -76,11 +78,16 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
     setActiveModeToggleHandler(handlerFunction)
   }, [])
 
-  useEffect(() => {
-    if (videoRef.current && startAt) {
-      videoRef.current.currentTime = startAt
-    }
-  }, [videoRef.current, startAt])
+  useEffect(
+    () => {
+      if (videoRef.current && startAt) {
+        videoRef.current.currentTime = startAt
+      }
+    },
+    // `videoRef.current` is used instead of `videoRef` because otherwise
+    // the current time is not passed correctly
+    [videoRef.current, startAt]
+  )
 
   return (
     <>
@@ -124,6 +131,7 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
       {videoSource ? (
         <PlaybackControls
           videoRef={videoRef}
+          allowPlayingInFullscreenMode={allowPlayingInFullscreenMode}
           onActiveModeToggle={handleActiveModeToggle}
           onFullscreenToggle={handleFullscreenToggle}
         />

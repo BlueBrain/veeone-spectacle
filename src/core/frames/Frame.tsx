@@ -14,7 +14,7 @@ import { FrameContextProps } from "./types"
 import { FrameContext } from "./index"
 import { useInteractiveFrame } from "./useInteractiveFrame"
 import { Box } from "@mui/material"
-import { useDesk } from "../desk/DeskContext"
+import { FullscreenFrame, useDesk } from "../desk/DeskContext"
 
 interface FrameProps {
   frame: FrameEntry
@@ -37,10 +37,15 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     setFullscreenParamsProvider,
   ] = useState<Function | null>(null)
 
-  const bringToFront = useCallback(() => dispatch(bringFrameToFront(frameId)), [
-    frameId,
-    dispatch,
-  ])
+  const bringToFront = useCallback(
+    event => {
+      if (event?.double) {
+        return
+      }
+      dispatch(bringFrameToFront(frameId))
+    },
+    [frameId, dispatch]
+  )
 
   const manipulate = useCallback(
     (newSituation: FrameSituationUpdate) => {
@@ -52,12 +57,12 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   // Send frame contents to fullscreen layer
   const toggleFullscreen = useCallback(() => {
     const extraData = fullscreenParamsProvider && fullscreenParamsProvider()
-    const fullscreenFrame = {
+    setFullscreenFrame({
+      frameId,
       frame,
       extraData,
-    }
-    setFullscreenFrame(fullscreenFrame)
-  }, [frame, fullscreenParamsProvider, setFullscreenFrame])
+    })
+  }, [frame, frameId, fullscreenParamsProvider, setFullscreenFrame])
 
   const [frameRefReceiver] = useInteractiveFrame({
     width,

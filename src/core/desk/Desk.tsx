@@ -100,6 +100,9 @@ const Desk: React.FC = () => {
 
   const handleDeskTap = useCallback(
     event => {
+      if (event.double) {
+        return
+      }
       const newLauncherMenus = launcherMenus.filter(menu => !menu.isFullyOpen)
       if (newLauncherMenus.length !== launcherMenus.length) {
         setLauncherMenus(newLauncherMenus)
@@ -129,14 +132,14 @@ const Desk: React.FC = () => {
     interact((deskRef.current as unknown) as Target).unset()
     interact((deskRef.current as unknown) as Target)
       .pointerEvents({
-        holdDuration: 200,
+        holdDuration: config.TOUCH_HOLD_DURATION_MS,
       })
       .on("hold", handleDeskHold)
       .on("tap", handleDeskTap)
     return () => {
       interact(refElement ?? ((refElement as unknown) as Target)).unset()
     }
-  }, [handleDeskHold, handleDeskTap])
+  }, [config.TOUCH_HOLD_DURATION_MS, handleDeskHold, handleDeskTap])
 
   const getStackIndex = useCallback(
     frameId => scene.frameStack.indexOf(frameId),
@@ -147,15 +150,15 @@ const Desk: React.FC = () => {
     return scene.frameStack.map(frameId => {
       console.debug("render framestack", frameId)
       const frame = scene.frames[frameId]
-      return typeof frame !== "undefined" ? (
-        <Frame
-          frame={frame}
-          key={frameId}
-          frameId={frameId}
-          stackIndex={getStackIndex(frameId)}
-        />
-      ) : (
-        ``
+      return (
+        frame && (
+          <Frame
+            frame={frame}
+            key={frameId}
+            frameId={frameId}
+            stackIndex={getStackIndex(frameId)}
+          />
+        )
       )
     })
   }, [getStackIndex, scene.frameStack, scene.frames])

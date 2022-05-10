@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Box, CircularProgress, Grid } from "@mui/material"
-import { useConfig } from "../../config/AppConfigContext"
-import VeeDriveService from "../../veedrive"
-import { Json, Size } from "../../common/types"
+import { Json } from "../../common/types"
+import { useImageKeeper } from "../../image-keeper/ImageKeeperContext"
+import { ImageKeeperResponse, KeeperImage } from "../../image-keeper/types"
 
 interface ImageBlockParams {
   path: string
@@ -10,60 +10,48 @@ interface ImageBlockParams {
 
 interface ImageBlockContentProps {
   contentData: { [key: string]: Json } | any
-  onImageLoad?(size: Size): void
+  onImageLoad?(keeperImage: KeeperImage): void
 }
 
 const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   contentData,
   onImageLoad,
 }) => {
-  const [imageUrl, setImageUrl] = useState<string>("")
-  const config = useConfig()
-  const veeDriveService = useMemo(() => new VeeDriveService(config), [config])
-
-  const [imageSize, setImageSize] = useState<Size>({ width: 0, height: 0 })
+  const { requestImage } = useImageKeeper()
   const { path: imagePath } = (contentData as unknown) as ImageBlockParams
-  const { width, height } = imageSize
+  const [keeperImage, setKeeperImage] = useState<KeeperImage>(null)
 
-  const loadImageWithDimensions = useCallback(
-    url => {
-      // Read image dimensions
-      const img = new Image()
-      img.onload = function (event) {
-        // @ts-ignore
-        console.log("Image loaded", url, this.width, this.height)
-        setImageUrl(url)
-        // @ts-ignore
-        const newImageSize = { width: this.width, height: this.height }
-        setImageSize(newImageSize)
-        onImageLoad && onImageLoad(newImageSize)
-      }
-      img.src = url
-    },
-    [onImageLoad]
+  const imageKeeperResponse = useMemo<Promise<ImageKeeperResponse>>(
+    async () => await requestImage(imagePath),
+    [imagePath, requestImage]
   )
 
-  const loadThumbnail = useCallback(async () => {
-    const response = await veeDriveService.requestFile({ path: imagePath })
-    if (response !== undefined && !!response.thumbnail) {
-      console.debug("Got image", response)
-      loadImageWithDimensions(response.url)
-    } else {
-      // todo handle invalid images/paths/responses
+  useEffect(() => {
+    async function wait() {
+      const keeperImage = (await imageKeeperResponse).keeperImage
+      setKeeperImage(keeperImage)
     }
-  }, [imagePath, loadImageWithDimensions, veeDriveService])
+    void wait()
+  }, [imageKeeperResponse, onImageLoad])
 
   useEffect(() => {
-    void loadThumbnail()
-  }, [loadThumbnail])
+    async function wait() {
+      if (keeperImage) {
+        onImageLoad && onImageLoad(keeperImage)
+      }
+    }
+    void wait()
+  }, [keeperImage, onImageLoad])
 
-  return imageUrl ? (
+  return keeperImage ? (
+    // @ts-ignore
     <Box
       component={"img"}
-      src={imageUrl}
-      width={width}
-      height={height}
+      src={keeperImage.objectUrl}
+      width={keeperImage.size.width}
+      height={keeperImage.size.height}
       sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+      async={true}
     />
   ) : (
     <Grid

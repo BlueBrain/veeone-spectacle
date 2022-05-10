@@ -1,5 +1,5 @@
 const VeeDriveConfig = {
-  hostname: "__NO_HOSTNAME_PROVIDED__",
+  wsPath: "__NO_HOSTNAME_PROVIDED__",
   endpointNames: {
     listDirectory: "ListDirectory",
     requestFile: "RequestFile",

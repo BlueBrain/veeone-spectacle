@@ -6,7 +6,7 @@ import { FrameContext } from "../../core/frames"
 import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
 
 const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
-  const videoRef = useRef(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   const {
     updateAspectRatio,
@@ -28,7 +28,7 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
     if (currentVideoRef) {
       setFullscreenParamsProvider(() => () => {
         return {
-          currentTime: currentVideoRef.currentTime,
+          videoRef: currentVideoRef,
         }
       })
     }

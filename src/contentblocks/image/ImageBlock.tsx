@@ -1,15 +1,13 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useMemo, useState } from "react"
 import { ContentBlockProps } from "../types"
 import { Box, Grow } from "@mui/material"
 import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
 import ImageBlockContent from "./ImageBlockContent"
-import { Size } from "../../common/types"
 import { FrameContext } from "../../core/frames"
+import { KeeperImage } from "../../image-keeper/types"
 
 const ImageBlock: React.FC<ContentBlockProps> = props => {
-  const [imageSize, setImageSize] = useState<Size>({ width: 0, height: 0 })
-  const { width, height } = imageSize
-  const [aspectRatio, setAspectRatio] = useState(width / height)
+  const [aspectRatio, setAspectRatio] = useState(1)
   const { updateAspectRatio } = useContext(FrameContext)
 
   useEffect(() => {
@@ -18,9 +16,13 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
     }
   }, [aspectRatio, updateAspectRatio])
 
-  const onImageLoad = ({ width, height }) => {
-    setAspectRatio(width / height)
-  }
+  const onImageLoad = useMemo(
+    () => ({ size }: KeeperImage) => {
+      const { width, height } = size
+      setAspectRatio(width / height)
+    },
+    []
+  )
 
   return (
     <Grow in={true}>
