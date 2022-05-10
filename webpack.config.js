@@ -92,11 +92,8 @@ module.exports = (env, argv) => {
           },
         },
         {
-          test: /\.(woff|woff2|eot|ttf|otf)$/,
-          loader: "file-loader",
-          options: {
-            name: "fnt/[contenthash].[ext]",
-          },
+          test: /\.(otf|ttf)$/,
+          use: "url-loader",
         },
         {
           test: /\.(frag|vert)$/,

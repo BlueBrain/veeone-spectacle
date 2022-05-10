@@ -1,6 +1,7 @@
 import { createTheme } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
 import { ApplicationConfig } from "../../../config/types"
+import "./css/colors.css"
 import {
   SUISSE_INTL_FONT_FACES,
   TITILLIUM_WEB_FONT_FACES,
@@ -33,8 +34,8 @@ export const getBlueBrainTheme = (config: ApplicationConfig) => {
       success: green,
       info: grey,
       background: {
-        default: `rgba(5, 10, 86, 1)`,
-        light: `rgba(3, 86, 150, 1)`,
+        default: `var(--blue-brain-dark-blue)`,
+        light: `var(--blue-brain-light-blue)`,
       },
     },
     branding: { main: `rgba(62, 197, 255, 1)` },

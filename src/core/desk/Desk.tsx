@@ -170,10 +170,10 @@ const Desk: React.FC = () => {
       className={"Desk"}
       sx={[
         theme => ({
-          background: `radial-gradient(
-          circle,
-          ${theme.palette.background.light} 0%,
-          ${theme.palette.background.default} 80%)`,
+          background: `linear-gradient(
+          23.4deg,
+          var(--medium-electric-blue) 0%,
+          var(--blue-brain-dark-blue) 100%)`,
           width: `${meta.viewport.width}px`,
           height: `${meta.viewport.height}px`,
           contain: `content`,
