@@ -63,22 +63,22 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
 
       <Box
         component={"g"}
-        mask={"url(#circleMask)"}
         sx={{
           "> path": {
             transition: `fill ease 500ms`,
           },
           transformOrigin: `center`,
           transition: `all ease 300ms`,
+          willChange: `transform, opacity`,
           animation: `openPieEffect${animationId} 1s ease forwards`,
           ["@keyframes openPieEffect" + animationId]: {
             "0%": {
               opacity: 0.0,
-              transform: `scale(0.1)`,
+              transform: `scale(0.3)`,
             },
             "20%": {
               opacity: 0.2,
-              transform: `scale(.95) `,
+              transform: `scale(1) `,
             },
             "100%": {
               opacity: 1,

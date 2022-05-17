@@ -8,12 +8,14 @@ import FileThumbnailSelected from "./selection-mode/FileThumbnailSelected"
 import { Box } from "@mui/material"
 import makeEllipsis, { EllipsisPosition } from "../../common/text/makeEllipsis"
 import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface FileElementProps {
   file: BrowserFile
 }
 
 const FileElement: React.FC<FileElementProps> = ({ file }) => {
+  const config = useConfig()
   const { veeDriveService } = useSpectacle()
   const ref = useRef()
   const [thumbnailUrl, setThumbnailUrl] = useState("")
@@ -75,7 +77,7 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
     if (currentRef) {
       interact(currentRef)
         .pointerEvents({
-          holdDuration: 400,
+          holdDuration: config.TOUCH_HOLD_DURATION_MS,
         })
         .on("tap", handleTap)
         .on("hold", handleHold)

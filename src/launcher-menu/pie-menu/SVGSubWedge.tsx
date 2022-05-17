@@ -33,6 +33,7 @@ const SVGSubWedge: React.FC<SVGSubWedgeProps> = ({
       sx={{
         fill: theme => theme.palette.primary.main,
         transformOrigin: `center`,
+        willChange: `transform, opacity`,
         animation: `openSubPieEffect${animationId} 500ms ease forwards`,
         ["@keyframes openSubPieEffect" + animationId]: {
           "0%": {

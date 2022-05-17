@@ -42,23 +42,26 @@ const PieMenu: React.FC<PieMenuProps> = () => {
       >
         <defs>
           <mask id={"circleMask"}>
-            <rect x={-50} y={-50} width={400} height={400} fill={"white"} />
+            <rect x={-50} y={-50} width={200} height={200} fill={"white"} />
             <circle r={15} cx={50} cy={50} fill={"black"} />
           </mask>
           <mask id={"largeCircleMask"}>
-            <rect x={-50} y={-50} width={400} height={400} fill={"white"} />
+            <rect x={-50} y={-50} width={200} height={200} fill={"white"} />
             <circle r={49.5} cx={50} cy={50} fill={"black"} />
           </mask>
         </defs>
-        {menuData.items.map((menuItem, index) => (
-          <SVGWedge
-            menuItem={menuItem}
-            key={index}
-            index={index}
-            anglePerMainItem={anglePerMainItem}
-            onTap={() => handleWedgeTap(menuItem, index)}
-          />
-        ))}
+        <Box component={"g"} mask="url('#circleMask')">
+          <rect width={100} height={100} fillOpacity={0} />
+          {menuData.items.map((menuItem, index) => (
+            <SVGWedge
+              menuItem={menuItem}
+              key={index}
+              index={index}
+              anglePerMainItem={anglePerMainItem}
+              onTap={() => handleWedgeTap(menuItem, index)}
+            />
+          ))}
+        </Box>
       </Box>
       <Box
         sx={{
