@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import SpectacleContext, {
   SpectacleContextProps,
+  ThumbnailRegistryItem,
   ViewMode,
 } from "./SpectacleContext"
 import { SceneId, SpectaclePresentation } from "../types"
@@ -19,6 +20,10 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
     [config]
   )
   const dispatch = useDispatch()
+
+  const [thumbnailRegistry, setThumbnailRegistry] = useState<{
+    [key: string]: ThumbnailRegistryItem
+  }>({})
 
   useEffect(() => {
     async function connectToVeeDrive() {
@@ -70,6 +75,17 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
   )
 
   const sceneManager = useMemo(() => new SceneManager(dispatch), [dispatch])
+
+  const addThumbnailToRegistry = useCallback(
+    (path: string, thumbnail: ThumbnailRegistryItem) => {
+      console.debug("addThumbnailToRegistry called", path, thumbnail)
+      setThumbnailRegistry(oldState => ({
+        [path]: thumbnail,
+        ...oldState,
+      }))
+    },
+    []
+  )
 
   const providerValue: SpectacleContextProps = useMemo<SpectacleContextProps>(
     () => ({
@@ -125,6 +141,8 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
       viewMode,
       setViewMode,
       presentationStore,
+      thumbnailRegistry,
+      addThumbnailToRegistry,
     }),
     [
       sceneManager,
@@ -140,6 +158,8 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
       viewMode,
       presentationStore,
       veeDriveService,
+      thumbnailRegistry,
+      addThumbnailToRegistry,
     ]
   )
   return (

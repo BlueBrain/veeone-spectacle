@@ -10,6 +10,11 @@ import { useFileBrowser } from "./FileBrowserContext"
 import { Position } from "../../common/types"
 import { useDesk } from "../../core/desk/DeskContext"
 import { useConfig } from "../../config/AppConfigContext"
+import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+
+interface FileBrowserNavigatorContextProviderProps {
+  frameId: FrameId
+}
 
 export interface FileBrowserNavigatorContextProps {
   navigateUp(): void
@@ -25,10 +30,6 @@ export interface FileBrowserNavigatorContextProps {
   setScrollableAreaRef(HTMLElement): void
   openDirectoryByPathPartIndex(pathPartIndex: number): void
   isLoading: boolean
-}
-
-interface FileBrowserNavigatorContextProviderProps {
-  frameId: FrameId
 }
 
 export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorContextProviderProps> = ({
@@ -50,13 +51,12 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
     searchResults,
   } = useFileBrowserSearch()
 
+  const { thumbnailRegistry } = useSpectacle()
+
   const { filteredFiles } = useFileBrowserFilter()
-
   const dispatch = useDispatch()
-
   const { getFrame } = useDesk()
   const frameData = useMemo(() => getFrame(frameId), [frameId, getFrame])
-
   const situation = frameData.situation
 
   const navigateDirectory = useCallback(
@@ -174,14 +174,22 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
 
   const requestFile = useCallback(
     async (filePath: string, referencePosition?: Position) => {
+      function getInitialFrameSize(path) {
+        const size =
+          path in thumbnailRegistry
+            ? thumbnailRegistry[path].size
+            : {
+                width: config.DEFAULT_NEW_FRAME_WIDTH,
+                height: config.DEFAULT_NEW_FRAME_HEIGHT,
+              }
+        console.debug("Initial frame size is", size)
+        return size
+      }
       console.debug(`Requesting ${filePath} from frame=${frameId}`)
       await fileOpenerService.handleFile(
         filePath,
         referencePosition ?? getNextAvailablePositionForFrame(),
-        {
-          width: config.DEFAULT_NEW_FRAME_WIDTH,
-          height: config.DEFAULT_NEW_FRAME_HEIGHT,
-        },
+        getInitialFrameSize(filePath),
         dispatch
       )
     },
@@ -191,6 +199,7 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       dispatch,
       frameId,
       getNextAvailablePositionForFrame,
+      thumbnailRegistry,
     ]
   )
 

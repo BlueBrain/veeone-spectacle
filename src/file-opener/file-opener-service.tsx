@@ -14,14 +14,14 @@ class FileOpenerService {
 
   public async handleFile(
     filePath: string,
-    referencePosition: Position,
+    position: Position,
     defaultSize: Size,
     dispatch
   ) {
     const openerClass = this.handleFileByExtension(filePath)
     const opener = new openerClass({
       filePath,
-      position: referencePosition,
+      position,
     })
     opener.makeFrame(dispatch, defaultSize)
   }
