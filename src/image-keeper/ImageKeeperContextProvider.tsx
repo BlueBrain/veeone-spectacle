@@ -17,11 +17,11 @@ const ImageKeeperContextProvider: React.FC = ({ children }) => {
 
   const getImageWorker = useCallback(
     () =>
-      config.IMAGE_KEEPER_SINGLE_WORKER
+      config.IMAGE_KEEPER_AS_SINGLE_WORKER
         ? globalImageWorker
         : // @ts-ignore
           new Worker(new URL("./worker", import.meta.url)),
-    [config.IMAGE_KEEPER_SINGLE_WORKER, globalImageWorker]
+    [config.IMAGE_KEEPER_AS_SINGLE_WORKER, globalImageWorker]
   )
 
   const requestImage = useCallback(
