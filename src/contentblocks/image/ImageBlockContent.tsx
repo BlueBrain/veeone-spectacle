@@ -5,6 +5,7 @@ import { useImageKeeper } from "../../image-keeper/ImageKeeperContext"
 import { ImageKeeperResponse, KeeperImage } from "../../image-keeper/types"
 import { useConfig } from "../../config/AppConfigContext"
 import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import BlurredImageBackground from "./BlurredImageBackground"
 
 interface ImageBlockParams {
   path: string
@@ -58,6 +59,9 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
             backgroundSize: `contain`,
             width: `100%`,
             height: `100%`,
+            position: `absolute`,
+            left: 0,
+            top: 0,
           }}
         />
       ) : (
@@ -73,31 +77,26 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
     [LOAD_IMAGES_AS_CSS_BACKGROUND, keeperImage]
   )
 
-  return keeperImage ? (
-    imageComponent
-  ) : (
-    <Grid
-      container
-      justifyContent="center"
-      alignItems="center"
-      sx={{ height: "100%" }}
-    >
-      <Grid item>
-        <Box
-          sx={{
-            background: `url("${thumbnailRegistry[imagePath]}") center`,
-            backgroundRepeat: `no-repeat`,
-            backgroundSize: `cover`,
-            position: `absolute`,
-            left: 0,
-            top: 0,
-            width: `100%`,
-            height: `100%`,
-          }}
-        />
-        <CircularProgress />
-      </Grid>
-    </Grid>
+  return (
+    <>
+      <BlurredImageBackground
+        imageUrl={thumbnailRegistry[imagePath]?.objectUrl}
+      />
+      {keeperImage ? (
+        imageComponent
+      ) : (
+        <Grid
+          container
+          justifyContent="center"
+          alignItems="center"
+          sx={{ height: "100%" }}
+        >
+          <Grid item>
+            <CircularProgress />
+          </Grid>
+        </Grid>
+      )}
+    </>
   )
 }
 
