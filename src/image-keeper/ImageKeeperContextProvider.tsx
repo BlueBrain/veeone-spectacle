@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 import ImageKeeperContext, {
   ImageKeeperContextProps,
 } from "./ImageKeeperContext"
@@ -9,18 +9,26 @@ import { ImageKeeperResponse } from "./types"
 const ImageKeeperContextProvider: React.FC = ({ children }) => {
   const config = useConfig()
 
-  const imageWorker = useMemo(
-    () =>
-      // @ts-ignore
-      new Worker(new URL("./worker", import.meta.url)),
+  const globalImageWorker = useMemo(
+    // @ts-ignore
+    () => new Worker(new URL("./worker", import.meta.url)),
     []
+  )
+
+  const getImageWorker = useCallback(
+    () =>
+      config.IMAGE_KEEPER_SINGLE_WORKER
+        ? globalImageWorker
+        : // @ts-ignore
+          new Worker(new URL("./worker", import.meta.url)),
+    [config.IMAGE_KEEPER_SINGLE_WORKER, globalImageWorker]
   )
 
   const requestImage = useCallback(
     (path: string): Promise<ImageKeeperResponse> => {
       return new Promise(resolve => {
+        const imageWorker = getImageWorker()
         const imageId = generateRandomId()
-
         const handleImageRequest = message => {
           console.debug("Received message in ContextProvider", message)
           if (message.data.imageId === imageId) {
@@ -29,6 +37,11 @@ const ImageKeeperContextProvider: React.FC = ({ children }) => {
             resolve(message.data as ImageKeeperResponse)
           }
         }
+
+        imageWorker.postMessage({
+          action: "init",
+          params: { wsPath: config.VEEDRIVE_WS_PATH },
+        })
 
         imageWorker.addEventListener("message", handleImageRequest)
 
@@ -41,15 +54,8 @@ const ImageKeeperContextProvider: React.FC = ({ children }) => {
         })
       })
     },
-    [imageWorker]
+    [config.VEEDRIVE_WS_PATH, getImageWorker]
   )
-
-  useEffect(() => {
-    imageWorker.postMessage({
-      action: "init",
-      params: { wsPath: config.VEEDRIVE_WS_PATH },
-    })
-  }, [config, imageWorker])
 
   const providerValue = useMemo<ImageKeeperContextProps>(
     () => ({

@@ -3,6 +3,7 @@ import { Box, CircularProgress, Grid } from "@mui/material"
 import { Json } from "../../common/types"
 import { useImageKeeper } from "../../image-keeper/ImageKeeperContext"
 import { ImageKeeperResponse, KeeperImage } from "../../image-keeper/types"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface ImageBlockParams {
   path: string
@@ -20,6 +21,7 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   const { requestImage } = useImageKeeper()
   const { path: imagePath } = (contentData as unknown) as ImageBlockParams
   const [keeperImage, setKeeperImage] = useState<KeeperImage>(null)
+  const { LOAD_IMAGES_AS_CSS_BACKGROUND } = useConfig()
 
   const imageKeeperResponse = useMemo<Promise<ImageKeeperResponse>>(
     async () => await requestImage(imagePath),
@@ -43,16 +45,33 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
     void wait()
   }, [keeperImage, onImageLoad])
 
+  const imageComponent = useMemo(
+    () =>
+      !keeperImage ? null : LOAD_IMAGES_AS_CSS_BACKGROUND ? (
+        <Box
+          sx={{
+            background: `url("${keeperImage.objectUrl}") center`,
+            backgroundRepeat: `no-repeat`,
+            backgroundSize: `contain`,
+            width: `100%`,
+            height: `100%`,
+          }}
+        />
+      ) : (
+        <Box
+          component={"img"}
+          src={keeperImage.objectUrl}
+          width={keeperImage.size.width}
+          height={keeperImage.size.height}
+          sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+          loading="lazy"
+        />
+      ),
+    [LOAD_IMAGES_AS_CSS_BACKGROUND, keeperImage]
+  )
+
   return keeperImage ? (
-    // @ts-ignore
-    <Box
-      component={"img"}
-      src={keeperImage.objectUrl}
-      width={keeperImage.size.width}
-      height={keeperImage.size.height}
-      sx={{ width: "100%", height: "100%", objectFit: "contain" }}
-      async={true}
-    />
+    imageComponent
   ) : (
     <Grid
       container
