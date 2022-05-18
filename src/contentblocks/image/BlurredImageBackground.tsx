@@ -1,5 +1,6 @@
 import { Box } from "@mui/material"
 import React from "react"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface BlurredImageBackgroundProps {
   imageUrl: string
@@ -8,6 +9,8 @@ interface BlurredImageBackgroundProps {
 const BlurredImageBackground: React.FC<BlurredImageBackgroundProps> = ({
   imageUrl,
 }) => {
+  const { IMAGE_BLUR_BACKGROUND_OPACITY } = useConfig()
+
   return (
     <Box
       sx={{
@@ -23,7 +26,7 @@ const BlurredImageBackground: React.FC<BlurredImageBackgroundProps> = ({
         sx={{
           background: `url("${imageUrl}") center`,
           filter: `blur(10px)`,
-          opacity: "0.8",
+          opacity: `${IMAGE_BLUR_BACKGROUND_OPACITY}`,
           backgroundRepeat: `no-repeat`,
           backgroundSize: `cover`,
           width: `100%`,

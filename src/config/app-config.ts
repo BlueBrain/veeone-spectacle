@@ -41,6 +41,7 @@ let defaultConfig: ApplicationConfig = {
   TOUCH_HOLD_DURATION_MS: 200,
   IMAGE_KEEPER_AS_SINGLE_WORKER: true,
   LOAD_IMAGES_AS_CSS_BACKGROUND: true,
+  IMAGE_BLUR_BACKGROUND_OPACITY: 0.8,
 }
 
 defaultConfig = {

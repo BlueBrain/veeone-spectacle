@@ -39,4 +39,5 @@ export interface ApplicationConfig {
   RUNNING_ENVIRONMENT: RunningEnvironment
   IMAGE_KEEPER_AS_SINGLE_WORKER: boolean
   LOAD_IMAGES_AS_CSS_BACKGROUND: boolean
+  IMAGE_BLUR_BACKGROUND_OPACITY: number | string
 }
