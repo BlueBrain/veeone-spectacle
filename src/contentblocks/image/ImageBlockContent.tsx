@@ -4,6 +4,7 @@ import { Json } from "../../common/types"
 import { useImageKeeper } from "../../image-keeper/ImageKeeperContext"
 import { ImageKeeperResponse, KeeperImage } from "../../image-keeper/types"
 import { useConfig } from "../../config/AppConfigContext"
+import { useSpectacle } from "../../core/spectacle/SpectacleContext"
 
 interface ImageBlockParams {
   path: string
@@ -18,6 +19,7 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   contentData,
   onImageLoad,
 }) => {
+  const { thumbnailRegistry } = useSpectacle()
   const { requestImage } = useImageKeeper()
   const { path: imagePath } = (contentData as unknown) as ImageBlockParams
   const [keeperImage, setKeeperImage] = useState<KeeperImage>(null)
@@ -31,6 +33,7 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   useEffect(() => {
     async function wait() {
       const keeperImage = (await imageKeeperResponse).keeperImage
+      // Actually load the image
       setKeeperImage(keeperImage)
     }
     void wait()
@@ -75,11 +78,23 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   ) : (
     <Grid
       container
-      justifyContent={"center"}
-      alignItems={"center"}
+      justifyContent="center"
+      alignItems="center"
       sx={{ height: "100%" }}
     >
       <Grid item>
+        <Box
+          sx={{
+            background: `url("${thumbnailRegistry[imagePath]}") center`,
+            backgroundRepeat: `no-repeat`,
+            backgroundSize: `cover`,
+            position: `absolute`,
+            left: 0,
+            top: 0,
+            width: `100%`,
+            height: `100%`,
+          }}
+        />
         <CircularProgress />
       </Grid>
     </Grid>
