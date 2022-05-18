@@ -7,7 +7,7 @@ import { fileOpenerService } from "../../file-opener"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 import { useFileBrowser } from "./FileBrowserContext"
-import { Position } from "../../common/types"
+import { Position, Size } from "../../common/types"
 import { useDesk } from "../../core/desk/DeskContext"
 import { useConfig } from "../../config/AppConfigContext"
 import { useSpectacle } from "../../core/spectacle/SpectacleContext"
@@ -174,10 +174,29 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
 
   const requestFile = useCallback(
     async (filePath: string, referencePosition?: Position) => {
+      function adjustThumbnailToFrameSize(thumbnailSize: Size) {
+        const aspectRatio = thumbnailSize.width / thumbnailSize.height
+        let newSize = { ...thumbnailSize }
+        if (
+          newSize.width > newSize.height &&
+          newSize.width < config.DEFAULT_NEW_FRAME_WIDTH
+        ) {
+          newSize.width = config.DEFAULT_NEW_FRAME_WIDTH
+          newSize.height = newSize.width / aspectRatio
+        } else if (
+          newSize.height > newSize.width &&
+          newSize.height < config.DEFAULT_NEW_FRAME_HEIGHT
+        ) {
+          newSize.height = config.DEFAULT_NEW_FRAME_HEIGHT
+          newSize.width = newSize.height * aspectRatio
+        }
+        return newSize
+      }
+
       function getInitialFrameSize(path) {
         const size =
           path in thumbnailRegistry
-            ? thumbnailRegistry[path].size
+            ? adjustThumbnailToFrameSize(thumbnailRegistry[path].size)
             : {
                 width: config.DEFAULT_NEW_FRAME_WIDTH,
                 height: config.DEFAULT_NEW_FRAME_HEIGHT,
