@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import { SceneId, SpectaclePresentation } from "../types"
 import { VeeDriveListPresentationsResponse } from "../../veedrive/types"
-import { Position } from "../../common/types"
+import { Position, Size } from "../../common/types"
 import SceneManager from "../scenes/SceneManager"
 import VeeDriveService from "../../veedrive"
 
@@ -33,6 +33,11 @@ export enum ViewMode {
   SceneOverview,
 }
 
+export interface ThumbnailRegistryItem {
+  size: Size
+  objectUrl: string
+}
+
 export interface SpectacleContextProps {
   savePresentation: SavePresentationContextProps
   openPresentation: OpenPresentationContextProps
@@ -48,6 +53,8 @@ export interface SpectacleContextProps {
   sceneIds: SceneId[]
   presentationStore: SpectaclePresentation
   veeDriveService: VeeDriveService
+  thumbnailRegistry: { [key: string]: ThumbnailRegistryItem }
+  addThumbnailToRegistry(path: string, thumbnail: ThumbnailRegistryItem): void
 }
 
 const SpectacleContext = React.createContext<SpectacleContextProps>(null)

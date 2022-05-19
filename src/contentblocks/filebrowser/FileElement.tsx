@@ -8,13 +8,15 @@ import FileThumbnailSelected from "./selection-mode/FileThumbnailSelected"
 import { Box } from "@mui/material"
 import makeEllipsis, { EllipsisPosition } from "../../common/text/makeEllipsis"
 import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface FileElementProps {
   file: BrowserFile
 }
 
 const FileElement: React.FC<FileElementProps> = ({ file }) => {
-  const { veeDriveService } = useSpectacle()
+  const config = useConfig()
+  const { veeDriveService, addThumbnailToRegistry } = useSpectacle()
   const ref = useRef()
   const [thumbnailUrl, setThumbnailUrl] = useState("")
   const { requestFile } = useFileBrowserNavigator()
@@ -26,23 +28,38 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
     selectFile,
   } = useFileBrowserSelectionMode()
 
+  // Load thumbnail image
   useEffect(() => {
+    function handleImageLoaded() {
+      console.debug("Loaded thumbnail", file.path)
+      setThumbnailUrl(this.src)
+      // Register this thumbnail in the global registry so that
+      // we can refer to it when opening an image frame
+      addThumbnailToRegistry(file.path, {
+        objectUrl: this.src,
+        size: { width: this.width, height: this.height },
+      })
+    }
+
     let isMounted = true
+
     const loadThumbnail = async () => {
       const response = await veeDriveService.requestFile({
         path: file.path,
       })
-      if (response !== undefined && !!response.thumbnail) {
-        if (isMounted) {
-          setThumbnailUrl(response.thumbnail)
-        }
+      if (response !== undefined && !!response.thumbnail && isMounted) {
+        const image = new Image()
+        image.src = response.thumbnail
+        image.onload = handleImageLoaded
       }
     }
+
     void loadThumbnail()
+
     return () => {
       isMounted = false
     }
-  }, [file.path, veeDriveService])
+  }, [addThumbnailToRegistry, file.path, veeDriveService])
 
   const isSelected = useMemo<boolean>(() => {
     return isFileSelected(file.path)
@@ -75,7 +92,7 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
     if (currentRef) {
       interact(currentRef)
         .pointerEvents({
-          holdDuration: 400,
+          holdDuration: config.TOUCH_HOLD_DURATION_MS,
         })
         .on("tap", handleTap)
         .on("hold", handleHold)
@@ -83,7 +100,7 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
     return () => {
       interact(currentRef).unset()
     }
-  }, [handleHold, handleTap])
+  }, [config.TOUCH_HOLD_DURATION_MS, handleHold, handleTap])
 
   const fileNameEllipsis = useMemo(
     () =>

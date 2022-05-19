@@ -14,7 +14,7 @@ import { FrameContextProps } from "./types"
 import { FrameContext } from "./index"
 import { useInteractiveFrame } from "./useInteractiveFrame"
 import { Box } from "@mui/material"
-import { FullscreenFrame, useDesk } from "../desk/DeskContext"
+import { useDesk } from "../desk/DeskContext"
 
 interface FrameProps {
   frame: FrameEntry
@@ -126,6 +126,11 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     () => contentBlockRegister[frame.type],
     [frame.type]
   )
+
+  useEffect(() => {
+    console.debug("Frame size is", width, height)
+    updateAspectRatio(width / height)
+  }, [height, updateAspectRatio, width])
 
   return (
     <Box

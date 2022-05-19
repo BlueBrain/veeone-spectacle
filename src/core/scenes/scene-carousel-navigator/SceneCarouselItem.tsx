@@ -29,6 +29,9 @@ const SceneCarouselItem: React.FC<SceneCarouselItemProps> = ({
   ])
 
   const activateScene = useCallback(() => {
+    if (viewMode === ViewMode.Desk) {
+      return
+    }
     console.debug("setActive", sceneId)
     if (!isActive) {
       sceneManager.setActiveScene(sceneId)

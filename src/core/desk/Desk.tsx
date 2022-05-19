@@ -1,18 +1,18 @@
 import * as React from "react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Frame } from "../frames"
-import { LauncherMenu } from "../../launchermenu"
+import { LauncherMenu } from "../../launcher-menu"
 import interact from "interactjs"
 import { Target } from "@interactjs/types"
 import { Position } from "../../common/types"
 import { generateRandomId } from "../../common/random"
-import { CloseLauncherMenuArgs } from "../../launchermenu/LauncherMenu"
+import { CloseLauncherMenuArgs } from "../../launcher-menu/LauncherMenu"
 import { DeskBranding } from "./DeskBranding"
 import { Box } from "@mui/material"
 import { useSpectacle } from "../spectacle/SpectacleContext"
 import { useDesk } from "./DeskContext"
 import { useConfig } from "../../config/AppConfigContext"
-import { LauncherMenuData, LauncherMenuId } from "../../launchermenu/types"
+import { LauncherMenuData, LauncherMenuId } from "../../launcher-menu/types"
 import _ from "lodash"
 import VersionLabel from "./VersionLabel"
 import { FullscreenLayer } from "./fullscreen"
@@ -79,6 +79,7 @@ const Desk: React.FC = () => {
 
   const closeLauncherMenu = useCallback(
     ({ menuId }: CloseLauncherMenuArgs) => {
+      console.debug("Closing launcher")
       setLauncherMenus(launcherMenus.filter(menu => menu.menuId !== menuId))
     },
     [launcherMenus]
@@ -98,14 +99,14 @@ const Desk: React.FC = () => {
     [launcherMenus]
   )
 
-  const handleDeskTap = useCallback(
+  const handleDeskClick = useCallback(
     event => {
-      if (event.double) {
-        return
-      }
-      const newLauncherMenus = launcherMenus.filter(menu => !menu.isFullyOpen)
-      if (newLauncherMenus.length !== launcherMenus.length) {
-        setLauncherMenus(newLauncherMenus)
+      console.debug("handleDeskClick triggered")
+      if (event.target === deskRef.current) {
+        const newLauncherMenus = launcherMenus.filter(menu => !menu.isFullyOpen)
+        if (newLauncherMenus.length !== launcherMenus.length) {
+          setLauncherMenus(newLauncherMenus)
+        }
       }
     },
     [launcherMenus]
@@ -135,11 +136,10 @@ const Desk: React.FC = () => {
         holdDuration: config.TOUCH_HOLD_DURATION_MS,
       })
       .on("hold", handleDeskHold)
-      .on("tap", handleDeskTap)
     return () => {
       interact(refElement ?? ((refElement as unknown) as Target)).unset()
     }
-  }, [config.TOUCH_HOLD_DURATION_MS, handleDeskHold, handleDeskTap])
+  }, [config.TOUCH_HOLD_DURATION_MS, handleDeskHold, handleDeskClick])
 
   const getStackIndex = useCallback(
     frameId => scene.frameStack.indexOf(frameId),
@@ -166,13 +166,14 @@ const Desk: React.FC = () => {
   return (
     <Box
       ref={deskRef}
+      onClick={handleDeskClick}
       className={"Desk"}
       sx={[
         theme => ({
-          background: `radial-gradient(
-          circle,
-          ${theme.palette.background.light} 0%,
-          ${theme.palette.background.default} 80%)`,
+          background: `linear-gradient(
+          23.4deg,
+          var(--medium-electric-blue) 0%,
+          var(--blue-brain-dark-blue) 100%)`,
           width: `${meta.viewport.width}px`,
           height: `${meta.viewport.height}px`,
           contain: `content`,

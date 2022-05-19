@@ -31,6 +31,7 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
           width: "50%",
           animation: `openPieItemsEffect${index} 1000ms ease forwards`,
           opacity: 0,
+          willChange: `transform`,
           ["@keyframes openPieItemsEffect" + index]: {
             "0%": {
               opacity: 0.0,
