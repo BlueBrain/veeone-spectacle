@@ -31,6 +31,7 @@ class SynecCheckInWorker {
     this.ws.onopen = () => {
       console.info("Connection established")
       this.ready = true
+      postMessage({ method: "ready" })
     }
   }
 
