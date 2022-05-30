@@ -1,3 +1,5 @@
+import { generateRandomId } from "../../../common/random"
+
 interface SynecCheckInWorkerArgs {
   checkInWebSocketPath: string
 }
@@ -57,7 +59,13 @@ class SynecCheckInWorker {
       return
     }
     console.debug("Send status update...", Date.now(), "payload=", payload)
-    this.ws.send(JSON.stringify(payload))
+    this.ws.send(
+      JSON.stringify({
+        id: generateRandomId(),
+        method: "UpdateStatus",
+        params: { payload },
+      })
+    )
   }
 }
 
