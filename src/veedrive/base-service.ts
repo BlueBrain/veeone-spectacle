@@ -7,4 +7,6 @@ export default class BaseService {
     this.communicationAdapter.sendRequest(method, params)
 
   public readonly connect = async () => this.communicationAdapter.connect()
+
+  public readonly isConnected = () => this.communicationAdapter.isConnected()
 }
