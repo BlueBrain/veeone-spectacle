@@ -9,28 +9,28 @@ interface CheckInWorkerMessage {
 
 class SynecCheckInWorker {
   public ready = false
+  public initialized = false
   private checkInWebSocketPath: string
-  private intervalHandle: number
   private ws: WebSocket
 
   initialize(args: SynecCheckInWorkerArgs) {
     console.debug("SynecCheckInWorker started")
+    this.initialized = true
     this.checkInWebSocketPath = args.checkInWebSocketPath
     this.connect()
   }
 
   connect() {
+    console.debug("Connect to Synec")
     this.ws = new WebSocket(this.checkInWebSocketPath)
-    this.checkWebSocketReadyState()
-  }
-
-  checkWebSocketReadyState = () => {
-    if (this.ws.readyState === 1) {
+    this.ws.onclose = () => {
+      this.ready = false
+      console.error("Connection WS closed - attempting to reconnect...")
+      setTimeout(() => this.connect(), 3000)
+    }
+    this.ws.onopen = () => {
+      console.info("Connection established")
       this.ready = true
-      postMessage({ method: "ready" })
-    } else {
-      console.debug("Waiting for ws connection...")
-      setTimeout(this.checkWebSocketReadyState, 1000)
     }
   }
 
@@ -52,7 +52,8 @@ class SynecCheckInWorker {
 
   private sendStatusUpdate(payload) {
     if (!this.ready) {
-      throw new Error("Not ready yet")
+      console.error("Conneciton not ready")
+      return
     }
     console.debug("Send status update...", Date.now(), "payload=", payload)
     this.ws.send(JSON.stringify(payload))

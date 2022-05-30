@@ -12,6 +12,8 @@ export interface VeeDriveStats {
 }
 
 export interface SpectacleStatusInformation {
+  clientId: string
+  environment: string
   pageUrl: string
   startedAt: number
   uptime: number

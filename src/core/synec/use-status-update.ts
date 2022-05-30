@@ -16,34 +16,39 @@ const useStatusUpdate = (
   config: ApplicationConfig,
   veeDriveService: VeeDriveService
 ) => {
-  const startedAt = useMemo(() => Date.now(), [])
-
-  const gatherStatusInformation = useCallback(async () => {
-    const uptime = Date.now() - startedAt
-    const memory = getMemoryStats()
-    const dirList = await veeDriveService.listDirectory({ path: "" })
-    const homeDirCount = dirList.directories.length
-    const data: SpectacleStatusInformation = {
-      pageUrl: window.location.href,
-      userAgent: window.navigator.userAgent,
-      maxTouchPoints: window.navigator.maxTouchPoints,
-      memory,
-      startedAt,
-      uptime,
-      config,
-      veeDrive: {
-        isConnected: veeDriveService.isConnected(),
-        homeDirCount,
-      },
-    }
-    return data
-  }, [config, startedAt, veeDriveService])
-
   useEffect(() => {
+    console.info("New worker for Synec check-in...")
+    const startedAt = Date.now()
+
     const worker = new Worker(
       // @ts-ignore
       new URL("../synec/workers/synec-check-in", import.meta.url)
     )
+
+    const gatherStatusInformation = async () => {
+      const uptime = Date.now() - startedAt
+      const memory = getMemoryStats()
+      const dirList = await veeDriveService.listDirectory({ path: "" })
+      const homeDirCount = dirList.directories.length
+      const clientId = config.CLIENT_ID
+      const environment = config.RUNNING_ENVIRONMENT
+      const data: SpectacleStatusInformation = {
+        clientId,
+        environment,
+        pageUrl: window.location.href,
+        userAgent: window.navigator.userAgent,
+        maxTouchPoints: window.navigator.maxTouchPoints,
+        memory,
+        startedAt,
+        uptime,
+        config,
+        veeDrive: {
+          isConnected: veeDriveService.isConnected(),
+          homeDirCount,
+        },
+      }
+      return data
+    }
 
     const postMessageToSynecWorker = async () => {
       const payload = await gatherStatusInformation()
@@ -57,27 +62,28 @@ const useStatusUpdate = (
       },
     })
 
-    worker.addEventListener("message", (message: MessageEvent) => {
-      console.debug("Received a message from the worker", message.data)
-      if (message.data.method === "ready") {
-        void postMessageToSynecWorker()
-      }
-    })
+    worker.addEventListener(
+      "message",
+      (message: MessageEvent) => {
+        console.debug("Received a message from the worker", message.data)
+        if (message.data.method === "ready") {
+          void postMessageToSynecWorker()
+        }
+      },
+      { once: true }
+    )
 
     const interval = setInterval(
-      postMessageToSynecWorker,
+      () => void postMessageToSynecWorker(),
       config.SYNEC_STATUS_UPDATE_INTERVAL_MS
     )
 
     return () => {
+      console.debug("Cleaning up useStatusUpdate...")
       clearInterval(interval)
       worker.terminate()
     }
-  }, [
-    config.SYNEC_CHECKIN_WS_PATH,
-    config.SYNEC_STATUS_UPDATE_INTERVAL_MS,
-    gatherStatusInformation,
-  ])
+  }, [config, veeDriveService])
 }
 
 export default useStatusUpdate
