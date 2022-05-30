@@ -9,6 +9,7 @@ const viewportShortSide = Math.min(viewportWidth, viewportHeight) || 1200
 declare const ENV_VARIABLES: any
 
 let defaultConfig: ApplicationConfig = {
+  CLIENT_ID: crypto.randomUUID(),
   RUNNING_ENVIRONMENT:
     ENV_VARIABLES.SPECTACLE_RUNNING_ENVIRONMENT ?? RunningEnvironment.CLIENT,
   VERSION: ENV_VARIABLES.SPECTACLE_VERSION,

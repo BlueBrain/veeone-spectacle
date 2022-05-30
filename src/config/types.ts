@@ -12,6 +12,7 @@ export enum RunningEnvironment {
 }
 
 export interface ApplicationConfig {
+  CLIENT_ID: string
   VERSION: string
   REVISION: string
   VEEDRIVE_WS_PATH: string
