@@ -26,7 +26,8 @@ const useStatusUpdate = (
     )
 
     const gatherStatusInformation = async () => {
-      const uptime = Date.now() - startedAt
+      const reportedAt = Date.now()
+      const uptime = reportedAt - startedAt
       const memory = getMemoryStats()
       const dirList = await veeDriveService.listDirectory({ path: "" })
       const homeDirCount = dirList.directories.length
@@ -40,6 +41,7 @@ const useStatusUpdate = (
         maxTouchPoints: window.navigator.maxTouchPoints,
         memory,
         startedAt,
+        reportedAt,
         uptime,
         config,
         veeDrive: {

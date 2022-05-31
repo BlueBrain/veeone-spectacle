@@ -16,6 +16,7 @@ export interface SpectacleStatusInformation {
   environment: string
   pageUrl: string
   startedAt: number
+  reportedAt: number
   uptime: number
   config: ApplicationConfig
   memory: SpectacleMemoryStats
