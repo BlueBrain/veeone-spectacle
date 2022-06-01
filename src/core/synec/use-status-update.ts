@@ -40,6 +40,7 @@ const useStatusUpdate = (
         userAgent: window.navigator.userAgent,
         maxTouchPoints: window.navigator.maxTouchPoints,
         visibilityState: window.document.visibilityState,
+        hasFocus: window.document.hasFocus(),
         memory,
         startedAt,
         reportedAt,

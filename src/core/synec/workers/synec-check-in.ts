@@ -23,7 +23,6 @@ class SynecCheckInWorker {
   }
 
   connect() {
-    console.debug("Connect to Synec")
     this.ws = new WebSocket(this.checkInWebSocketPath)
     this.ws.onclose = () => {
       this.ready = false
@@ -31,7 +30,7 @@ class SynecCheckInWorker {
       setTimeout(() => this.connect(), 3000)
     }
     this.ws.onopen = () => {
-      console.info("Connection established")
+      console.info("Connected to Synec on", this.checkInWebSocketPath)
       this.ready = true
       postMessage({ method: "ready" })
     }

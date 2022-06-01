@@ -24,4 +24,5 @@ export interface SpectacleStatusInformation {
   maxTouchPoints: number
   veeDrive: VeeDriveStats
   visibilityState: VisibilityState
+  hasFocus: boolean
 }
