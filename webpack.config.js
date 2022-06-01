@@ -57,17 +57,17 @@ module.exports = (env, argv) => {
       }),
     ],
     optimization: {
-      minimize: true,
-      runtimeChunk: "single",
-      splitChunks: {
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: "libs",
-            chunks: "all",
-          },
-        },
-      },
+      // minimize: true,
+      // runtimeChunk: "single",
+      // splitChunks: {
+      //   cacheGroups: {
+      //     vendor: {
+      //       test: /[\\/]node_modules[\\/]/,
+      //       name: "libs",
+      //       chunks: "all",
+      //     },
+      //   },
+      // },
       // Prevent "libs.[contenthash].js" from changing its hash if not needed.
       moduleIds: "deterministic",
     },

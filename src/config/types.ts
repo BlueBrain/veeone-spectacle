@@ -12,6 +12,7 @@ export enum RunningEnvironment {
 }
 
 export interface ApplicationConfig {
+  CLIENT_ID: string
   VERSION: string
   REVISION: string
   VEEDRIVE_WS_PATH: string
@@ -23,6 +24,7 @@ export interface ApplicationConfig {
   FILE_BROWSER_OPEN_MEDIA_CASCADE_MAX_PER_ROW: number
   FILE_BROWSER_OPEN_MEDIA_CASCADE_DELAY_MS: number
   TOUCH_HOLD_DURATION_MS: number
+  BASE_FONT_SIZE: string
   VIEWPORT_WIDTH: number
   VIEWPORT_HEIGHT: number
   MINIMUM_FRAME_LONG_SIDE: number
@@ -40,4 +42,7 @@ export interface ApplicationConfig {
   IMAGE_KEEPER_AS_SINGLE_WORKER: boolean
   LOAD_IMAGES_AS_CSS_BACKGROUND: boolean
   IMAGE_BLUR_BACKGROUND_OPACITY: number | string
+  SYNEC_CHECKIN_WS_PATH: string
+  SYNEC_CONTROLLER_WS_PATH: string
+  SYNEC_STATUS_UPDATE_INTERVAL_MS: number
 }

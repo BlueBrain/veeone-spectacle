@@ -8,7 +8,16 @@ const viewportShortSide = Math.min(viewportWidth, viewportHeight) || 1200
 
 declare const ENV_VARIABLES: any
 
+let clientId = `CLIENTID_${Math.round(Math.random() * 10000)}`
+
+try {
+  clientId = crypto.randomUUID()
+} catch (e) {
+  console.warn("crypto library is not available")
+}
+
 let defaultConfig: ApplicationConfig = {
+  CLIENT_ID: clientId,
   RUNNING_ENVIRONMENT:
     ENV_VARIABLES.SPECTACLE_RUNNING_ENVIRONMENT ?? RunningEnvironment.CLIENT,
   VERSION: ENV_VARIABLES.SPECTACLE_VERSION,
@@ -20,6 +29,7 @@ let defaultConfig: ApplicationConfig = {
   VIEWPORT_HEIGHT: viewportHeight,
   LAUNCHER_MENU_SIZE: "22.5rem",
   VEEDRIVE_WS_PATH: "wss://bbpcd013.bbp.epfl.ch:8080/ws",
+  BASE_FONT_SIZE: "16px",
   FILE_BROWSER_WIDTH: 500,
   FILE_BROWSER_HEIGHT: 400,
   MINIMUM_FRAME_LONG_SIDE: Math.max(viewportLongSide / 12, 200),
@@ -42,6 +52,14 @@ let defaultConfig: ApplicationConfig = {
   IMAGE_KEEPER_AS_SINGLE_WORKER: true,
   LOAD_IMAGES_AS_CSS_BACKGROUND: true,
   IMAGE_BLUR_BACKGROUND_OPACITY: 0.8,
+  SYNEC_CHECKIN_WS_PATH:
+    ENV_VARIABLES.SPECTACLE_SYNEC_CHECKIN_WS_PATH ??
+    "wss://synec.veeone.kcp.bbp.epfl.ch/ws/check-in",
+  SYNEC_CONTROLLER_WS_PATH:
+    ENV_VARIABLES.SPECTACLE_SYNEC_CONTROLLER_WS_PATH ??
+    "wss://synec.veeone.kcp.bbp.epfl.ch/ws/controller",
+  SYNEC_STATUS_UPDATE_INTERVAL_MS:
+    ENV_VARIABLES.SPECTACLE_SYNEC_STATUS_UPDATE_INTERVAL_MS ?? 30 * 1000,
 }
 
 defaultConfig = {
