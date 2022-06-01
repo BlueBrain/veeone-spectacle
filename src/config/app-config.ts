@@ -8,8 +8,16 @@ const viewportShortSide = Math.min(viewportWidth, viewportHeight) || 1200
 
 declare const ENV_VARIABLES: any
 
+let clientId = `CLIENTID_${Math.round(Math.random() * 10000)}`
+
+try {
+  clientId = crypto.randomUUID()
+} catch (e) {
+  console.warn("crypto library is not available")
+}
+
 let defaultConfig: ApplicationConfig = {
-  CLIENT_ID: crypto.randomUUID(),
+  CLIENT_ID: clientId,
   RUNNING_ENVIRONMENT:
     ENV_VARIABLES.SPECTACLE_RUNNING_ENVIRONMENT ?? RunningEnvironment.CLIENT,
   VERSION: ENV_VARIABLES.SPECTACLE_VERSION,
