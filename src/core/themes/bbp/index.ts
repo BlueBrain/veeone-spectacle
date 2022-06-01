@@ -57,6 +57,7 @@ html {
   height: 100%;
   overflow: hidden;
   -ms-overflow-style: none;  /* IE and Edge */
+  font-size: ${config.BASE_FONT_SIZE};
 }
 
 body {
