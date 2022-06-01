@@ -39,6 +39,7 @@ const useStatusUpdate = (
         pageUrl: window.location.href,
         userAgent: window.navigator.userAgent,
         maxTouchPoints: window.navigator.maxTouchPoints,
+        visibilityState: window.document.visibilityState,
         memory,
         startedAt,
         reportedAt,

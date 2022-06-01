@@ -23,4 +23,5 @@ export interface SpectacleStatusInformation {
   userAgent: string
   maxTouchPoints: number
   veeDrive: VeeDriveStats
+  visibilityState: VisibilityState
 }
