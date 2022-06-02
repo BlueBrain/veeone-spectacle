@@ -101,7 +101,6 @@ const Desk: React.FC = () => {
 
   const handleDeskClick = useCallback(
     event => {
-      console.debug("handleDeskClick triggered")
       if (event.target === deskRef.current) {
         const newLauncherMenus = launcherMenus.filter(menu => !menu.isFullyOpen)
         if (newLauncherMenus.length !== launcherMenus.length) {
