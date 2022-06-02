@@ -5,6 +5,7 @@ export enum RunningEnvironment {
   // Client is used for users' browsers when they open Spectacle "web client"
   CLIENT = "CLIENT",
   // These are "real-world" installations where Spectacle is deployed with full touch experience
+  SIXTH_FLOOR_DISPLAY_WALL = "SIXTH_FLOOR_DISPLAY_WALL",
   FIFTH_FLOOR_DISPLAY_WALL = "FIFTH_FLOOR_DISPLAY_WALL",
   THIRD_FLOOR_LEFT_DISPLAY = "THIRD_FLOOR_LEFT_DISPLAY",
   THIRD_FLOOR_RIGHT_DISPLAY = "THIRD_FLOOR_RIGHT_DISPLAY",
