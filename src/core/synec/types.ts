@@ -25,4 +25,5 @@ export interface SpectacleStatusInformation {
   veeDrive: VeeDriveStats
   visibilityState: VisibilityState
   hasFocus: boolean
+  lastUserActivityAt: number | null
 }

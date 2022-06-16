@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux"
 import SceneManager from "../scenes/SceneManager"
 import { useConfig } from "../../config/AppConfigContext"
 import VeeDriveService from "../../veedrive"
-import { SpectacleStatusInformation } from "../synec/types"
 import useStatusUpdate from "../synec/use-status-update"
 
 interface SpectacleContextProviderProps {}
