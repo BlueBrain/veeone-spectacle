@@ -22,7 +22,7 @@ const SVGSubWedge: React.FC<SVGSubWedgeProps> = ({
   const offsetAngle = -(LAUNCHER_SUBWEDGE_ANGLE * totalSubwedges) / 2
   const fromAngle = -LAUNCHER_SUBWEDGE_ANGLE / 2
   const toAngle = fromAngle + LAUNCHER_SUBWEDGE_ANGLE
-  const svgPath = describeArc(50, 50, 70, fromAngle, toAngle)
+  const svgPath = describeArc(50, 50, 68, fromAngle, toAngle)
   const animationId = useMemo(() => generateRandomId(), [])
 
   const wedgeInitialRotation = 0
