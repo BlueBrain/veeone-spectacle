@@ -1,5 +1,4 @@
 import {
-  CloudDownload,
   CloudQueueRounded,
   CloudSync,
   CloudUpload,
@@ -15,10 +14,10 @@ import { ContentBlockTypes } from "../contentblocks/types"
 import LauncherMenuContext, {
   LauncherMenuContextProps,
 } from "./LauncherMenuContext"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { useSpectacle, ViewMode } from "../core/spectacle/SpectacleContext"
 import { makeFramePositionSafe } from "../core/frames/makeFramePositionSafe"
-import { addFrame } from "../core/redux/actions"
+import { addFrame, loadPresentationStore } from "../core/redux/actions"
 import { generateFrameId } from "../core/frames/utils"
 import { useDispatch } from "react-redux"
 import { Position, Size } from "../common/types"
@@ -26,6 +25,7 @@ import { CloseLauncherMenuArgs } from "./LauncherMenu"
 import { MenuData } from "./types"
 import LauncherMenuItem from "./LauncherMenuItem"
 import { useConfig } from "../config/AppConfigContext"
+import { getFreshPresentation } from "../core/presentations/fresh-presentation"
 
 interface OpenNewFrameArgs {
   type: ContentBlockTypes
@@ -82,7 +82,11 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
         height: config.FILE_BROWSER_HEIGHT,
       },
     })
-  }, [openNewFrameFromLauncher])
+  }, [
+    config.FILE_BROWSER_HEIGHT,
+    config.FILE_BROWSER_WIDTH,
+    openNewFrameFromLauncher,
+  ])
 
   const openPresentation = useCallback(() => {
     spectacleContext.openPresentation.openModal({
@@ -105,9 +109,9 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   }, [close, spectacleContext])
 
   const newPresentation = useCallback(() => {
-    // todo make new presentation
+    dispatch(loadPresentationStore(getFreshPresentation({ config })))
     close()
-  }, [close])
+  }, [close, config, dispatch])
 
   const [menuData, setMenuData] = useState<MenuData>({
     items: [
