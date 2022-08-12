@@ -8,7 +8,7 @@ export const rootReducer = (
   state: SpectaclePresentation,
   action: ReduxAction,
   config: ApplicationConfig
-) => {
+): SpectaclePresentation => {
   if (action.type === Actions.OpenPresentation) {
     return { ...action.payload }
   }
@@ -17,8 +17,11 @@ export const rootReducer = (
     return presentationReducer(state, action, config)
   }
 
+  const newUpdatedAt = action.mutative ? Date.now() : state.updatedAt
+
   return {
     ...state,
     scenes: scenesReducer(state, action),
+    updatedAt: newUpdatedAt,
   }
 }

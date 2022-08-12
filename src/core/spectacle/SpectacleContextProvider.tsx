@@ -88,8 +88,26 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
     []
   )
 
+  const isPresentationClean = useMemo(
+    () =>
+      // Ignore empty presentation as if they were not modified
+      (presentationStore.savedAt === null &&
+        presentationStore.scenes.sceneOrder.length === 1 &&
+        presentationStore.scenes.scenes[presentationStore.scenes.activeScene]
+          .frameStack.length === 0) ||
+      presentationStore.savedAt === presentationStore.updatedAt,
+    [
+      presentationStore.savedAt,
+      presentationStore.scenes.activeScene,
+      presentationStore.scenes.sceneOrder.length,
+      presentationStore.scenes.scenes,
+      presentationStore.updatedAt,
+    ]
+  )
+
   const providerValue: SpectacleContextProps = useMemo<SpectacleContextProps>(
     () => ({
+      isPresentationClean,
       veeDriveService,
       sceneManager,
       previousSceneId,

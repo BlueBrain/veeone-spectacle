@@ -39,6 +39,7 @@ export interface ThumbnailRegistryItem {
 }
 
 export interface SpectacleContextProps {
+  isPresentationClean: boolean
   savePresentation: SavePresentationContextProps
   openPresentation: OpenPresentationContextProps
   openPresentationModalPosition: Position

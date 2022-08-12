@@ -7,16 +7,8 @@ import {
   Grid,
   TextField,
 } from "@mui/material"
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react"
-import SpectacleContext, {
-  useSpectacle,
-} from "../core/spectacle/SpectacleContext"
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { useSpectacle } from "../core/spectacle/SpectacleContext"
 import { visualKeyboardService } from "../visualkeyboard"
 import { SpectaclePresentation } from "../core/types"
 import { generateRandomPresentationId } from "../core/presentations/utils"
@@ -52,9 +44,11 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
 
   const savePresentation = useCallback(
     (extraData: Partial<SpectaclePresentation> = {}) => {
+      const now = Date.now()
       spectacleContext.savePresentation.save({
         name: presentationTitle,
-        savedAt: Date.now(),
+        savedAt: now,
+        updatedAt: now,
         ...extraData,
       })
     },

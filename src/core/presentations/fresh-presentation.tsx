@@ -11,6 +11,11 @@ interface GetFreshPresentationArgs {
 }
 
 export const getFreshPresentation: GetFreshPresentationArgs = ({ config }) => {
+  /**
+   * This functions provides a base structure for a freshly created presentation.
+   * It's used when starting up the application or selecting "New" option from
+   * the launcher menu.
+   */
   const now = Date.now()
   const newStore: SpectaclePresentation = {
     id: generateRandomPresentationId(),

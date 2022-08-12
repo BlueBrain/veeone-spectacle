@@ -4,39 +4,15 @@ import { useConfig } from "../../config/AppConfigContext"
 import { createStore } from "redux"
 import { rootReducer } from "../../redux/root"
 import { SpectaclePresentation } from "../types"
-import { generateRandomPresentationId } from "../presentations/utils"
 import { ReduxAction } from "../../redux/actions"
+import { getFreshPresentation } from "../presentations/fresh-presentation"
 
 const SpectacleStoreProvider: React.FC = ({ children }) => {
   const config = useConfig()
 
-  const now = useMemo(() => Date.now(), [])
-
   const initialSpectacleState: SpectaclePresentation = useMemo(
-    () => ({
-      id: generateRandomPresentationId(),
-      name: "Untitled",
-      createdAt: now,
-      updatedAt: now,
-      savedAt: null,
-      meta: {
-        viewport: {
-          width: config.VIEWPORT_WIDTH,
-          height: config.VIEWPORT_HEIGHT,
-        },
-      },
-      scenes: {
-        activeScene: "main",
-        sceneOrder: ["main"],
-        scenes: {
-          main: {
-            frames: {},
-            frameStack: [],
-          },
-        },
-      },
-    }),
-    [config.VIEWPORT_HEIGHT, config.VIEWPORT_WIDTH, now]
+    () => getFreshPresentation({ config }),
+    [config]
   )
 
   const spectacleStore = useMemo(() => {

@@ -70,7 +70,16 @@ const OpenPresentationModal: React.FC<LoadPresentationModalProps> = () => {
       }
       void dispatchLoad(presentationId)
     },
-    [dispatch, spectacleContext.openPresentation]
+    [
+      config.FILE_BROWSER_HEIGHT,
+      config.FILE_BROWSER_WIDTH,
+      config.MAXIMUM_FRAME_LONG_SIDE,
+      config.MINIMUM_FRAME_LONG_SIDE,
+      config.VIEWPORT_HEIGHT,
+      config.VIEWPORT_WIDTH,
+      dispatch,
+      spectacleContext.openPresentation,
+    ]
   )
 
   const closeModal = useCallback(

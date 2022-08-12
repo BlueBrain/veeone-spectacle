@@ -2,9 +2,13 @@ import React, { useMemo } from "react"
 import { Box, Theme } from "@mui/material"
 import { useConfig } from "../../config/AppConfigContext"
 import { SxProps } from "@mui/system"
+import { useSpectacle } from "../spectacle/SpectacleContext"
 
 const VersionLabel: React.FC = () => {
   const config = useConfig()
+
+  const { presentationStore, isPresentationClean } = useSpectacle()
+
   const sx = useMemo<SxProps<Theme>>(
     () => ({
       position: `absolute`,
@@ -17,9 +21,20 @@ const VersionLabel: React.FC = () => {
     }),
     []
   )
+
+  const presentationModifiedMarker = isPresentationClean ? "" : "*"
+
+  console.debug(
+    "saved at",
+    presentationStore.savedAt,
+    "updated at",
+    presentationStore.updatedAt
+  )
+
   return (
     <Box sx={sx}>
-      {config.VERSION} ({config.REVISION})
+      {config.VERSION} ({config.REVISION}) {presentationStore.name}
+      {presentationModifiedMarker}
     </Box>
   )
 }

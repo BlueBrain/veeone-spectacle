@@ -1,5 +1,5 @@
 import {
-  CloudQueueRounded,
+  AddBoxOutlined,
   CloudSync,
   CloudUpload,
   GridView,
@@ -131,7 +131,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
         children: [
           new LauncherMenuItem({
             label: "New",
-            icon: CloudQueueRounded,
+            icon: AddBoxOutlined,
             action: newPresentation,
           }),
           new LauncherMenuItem({

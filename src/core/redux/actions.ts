@@ -56,6 +56,7 @@ export interface MoveScenePayload {
 export const addFrame = (payload: AddFramePayload) => ({
   type: Actions.AddFrame,
   payload,
+  mutative: true,
 })
 
 export const manipulateFrame = (
@@ -77,16 +78,19 @@ export interface UpdateFrameDataPayload {
 export const updateFrameData = (frameId: FrameId, data: FrameData) => ({
   type: Actions.UpdateFrameData,
   payload: { frameId, data } as UpdateFrameDataPayload,
+  mutative: true,
 })
 
 export const bringFrameToFront = frameId => ({
   type: Actions.BringFrameToFront,
   payload: { frameId },
+  mutative: true,
 })
 
 export const sendFrameToBack = frameId => ({
   type: Actions.SendFrameToBack,
   payload: { frameId },
+  mutative: true,
 })
 
 export const closeFrame = (frameId: FrameId) => ({
@@ -94,11 +98,13 @@ export const closeFrame = (frameId: FrameId) => ({
   payload: {
     frameId,
   },
+  mutative: true,
 })
 
 export const addScene = (payload: AddScenePayload) => ({
   type: Actions.AddScene,
   payload,
+  mutative: true,
 })
 
 export const switchToNextScene = () => ({
@@ -124,26 +130,31 @@ export const loadPresentationStore = (newStore: SpectaclePresentation) => ({
 export const moveSceneLeft = (sceneId: SceneId) => ({
   type: Actions.MoveSceneLeft,
   payload: { sceneId },
+  mutative: true,
 })
 
 export const moveSceneToBeginning = (sceneId: SceneId) => ({
   type: Actions.MoveSceneToBeginning,
   payload: { sceneId },
+  mutative: true,
 })
 
 export const moveSceneToEnd = (sceneId: SceneId) => ({
   type: Actions.MoveSceneToEnd,
   payload: { sceneId },
+  mutative: true,
 })
 
 export const moveSceneRight = (sceneId: SceneId) => ({
   type: Actions.MoveSceneRight,
   payload: { sceneId },
+  mutative: true,
 })
 
 export const removeScene = (sceneId: SceneId) => ({
   type: Actions.RemoveScene,
   payload: { sceneId },
+  mutative: true,
 })
 
 export const resizePresentation = (newSize: Size) => ({
