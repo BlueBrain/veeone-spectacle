@@ -77,7 +77,6 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
               menuItem={menuItem}
               totalSubitemCount={total.length}
               mainRotationAngle={mainRotationAngle}
-              anglePerMainItem={anglePerMainItem}
             />
           ))}
         </>

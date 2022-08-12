@@ -60,6 +60,7 @@ let defaultConfig: ApplicationConfig = {
     "wss://synec.veeone.kcp.bbp.epfl.ch/ws/controller",
   SYNEC_STATUS_UPDATE_INTERVAL_MS:
     ENV_VARIABLES.SPECTACLE_SYNEC_STATUS_UPDATE_INTERVAL_MS ?? 30 * 1000,
+  LAUNCHER_SUBWEDGE_ANGLE: 25,
 }
 
 defaultConfig = {

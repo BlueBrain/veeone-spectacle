@@ -3,23 +3,39 @@ import React, { useMemo, useRef } from "react"
 import { describeArc } from "./utils"
 import useInteractable from "../../core/interactable/useInteractable"
 import { generateRandomId } from "../../common/random"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface SVGSubWedgeProps {
-  anglePerSubwedge: number
   index: number
+  totalSubwedges: number
+
   onTap(): void
 }
 
 const SVGSubWedge: React.FC<SVGSubWedgeProps> = ({
-  anglePerSubwedge,
   index,
+  totalSubwedges,
   onTap,
 }) => {
+  const { LAUNCHER_SUBWEDGE_ANGLE } = useConfig()
   const ref = useRef()
-  const fromAngle = -anglePerSubwedge / 2
-  const toAngle = -fromAngle
+  const offsetAngle = -(LAUNCHER_SUBWEDGE_ANGLE * totalSubwedges) / 2
+  const fromAngle = -LAUNCHER_SUBWEDGE_ANGLE / 2
+  const toAngle = fromAngle + LAUNCHER_SUBWEDGE_ANGLE
   const svgPath = describeArc(50, 50, 70, fromAngle, toAngle)
   const animationId = useMemo(() => generateRandomId(), [])
+
+  const wedgeInitialRotation = 0
+  const wedgeEndRotation =
+    LAUNCHER_SUBWEDGE_ANGLE * index + offsetAngle + LAUNCHER_SUBWEDGE_ANGLE / 2
+  const subPieEffectAnimationDuration = LAUNCHER_SUBWEDGE_ANGLE * 20
+  const wedgeInitialScale = 0.7
+  const wedgeEndScale = 1
+
+  // at 30 degrees translateY -2 px
+  // at 45 translateY -1.5px
+  // at 90 -0.67
+  const wedgeTranslateY = -60 / LAUNCHER_SUBWEDGE_ANGLE
 
   useInteractable(ref, {
     onTap,
@@ -34,22 +50,30 @@ const SVGSubWedge: React.FC<SVGSubWedgeProps> = ({
         fill: theme => theme.palette.primary.main,
         transformOrigin: `center`,
         willChange: `transform, opacity`,
-        animation: `openSubPieEffect${animationId} 500ms ease forwards`,
+        animation: `openSubPieEffect${animationId} ${subPieEffectAnimationDuration}ms ease forwards`,
         ["@keyframes openSubPieEffect" + animationId]: {
           "0%": {
             opacity: 0,
             transform: `
-              rotate(${anglePerSubwedge * index}deg)
-              translateY(-2px)
-              scale(0.7)
+              rotate(${wedgeInitialRotation}deg)
+              scale(${wedgeInitialScale})
+              translateY(${wedgeTranslateY}px)
+            `,
+          },
+          "30%": {
+            opacity: 0.2,
+            transform: `
+              rotate(${wedgeInitialRotation}deg)
+              scale(${wedgeEndScale})
+              translateY(${wedgeTranslateY}px)
             `,
           },
           "100%": {
             opacity: 0.7,
             transform: `
-              rotate(${anglePerSubwedge * index}deg)
-              translateY(-2px)
-              scale(0.97)
+            rotate(${wedgeEndRotation}deg)
+            scale(${wedgeEndScale})
+            translateY(${wedgeTranslateY}px)
             `,
           },
         },

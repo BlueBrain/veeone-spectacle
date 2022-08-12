@@ -48,8 +48,6 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
           sx={{
             transformOrigin: "center",
             transform: `
-              rotate(${anglePerMainItem / menuItem.children.length / 2}deg)
-              rotate(${-anglePerMainItem / 2}deg)
               rotate(${anglePerMainItem * index}deg)
             `,
           }}
@@ -77,7 +75,7 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
               transform: `scale(0.3)`,
             },
             "20%": {
-              opacity: 0.2,
+              opacity: 0.1,
               transform: `scale(1) `,
             },
             "100%": {

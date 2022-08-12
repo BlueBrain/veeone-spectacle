@@ -10,11 +10,11 @@ interface SVGSubWedgesProps {
 const SVGSubWedges: React.FC<SVGSubWedgesProps> = ({ items, anglePerItem }) => {
   return (
     <>
-      {items.map((item, i) => (
+      {items.map((item, i, list) => (
         <SVGSubWedge
           key={i}
           index={i}
-          anglePerSubwedge={anglePerItem / items.length}
+          totalSubwedges={list.length}
           onTap={() => item.action()}
         />
       ))}

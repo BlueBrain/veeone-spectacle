@@ -46,4 +46,5 @@ export interface ApplicationConfig {
   SYNEC_CHECKIN_WS_PATH: string
   SYNEC_CONTROLLER_WS_PATH: string
   SYNEC_STATUS_UPDATE_INTERVAL_MS: number
+  LAUNCHER_SUBWEDGE_ANGLE: number
 }

@@ -7,6 +7,8 @@ import {
   ImageSearch,
   Language,
   Person,
+  Save,
+  SaveAs,
   ScreenShare,
 } from "@mui/icons-material"
 import { ContentBlockTypes } from "../contentblocks/types"
@@ -135,7 +137,12 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
           }),
           new LauncherMenuItem({
             label: "Save",
-            icon: CloudDownload,
+            icon: Save,
+            action: savePresentation,
+          }),
+          new LauncherMenuItem({
+            label: "Save as",
+            icon: SaveAs,
             action: savePresentation,
           }),
         ],

@@ -3,22 +3,23 @@ import { Box } from "@mui/material"
 import { MenuItem } from "../types"
 import { SvgIconComponent } from "@mui/icons-material"
 import { generateRandomId } from "../../common/random"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface SubWedgeLabelItemProps {
   menuItem: MenuItem
   index: number
   mainRotationAngle: number
   totalSubitemCount: number
-  anglePerMainItem: number
 }
 const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
   index,
   menuItem,
   mainRotationAngle,
   totalSubitemCount,
-  anglePerMainItem,
 }) => {
+  const { LAUNCHER_SUBWEDGE_ANGLE } = useConfig()
   const { label, icon } = menuItem
+  const anglePerMainItem = LAUNCHER_SUBWEDGE_ANGLE * totalSubitemCount
   const animationId = useMemo(() => generateRandomId(), [])
   const anglePerSubWedge = useMemo(() => anglePerMainItem / totalSubitemCount, [
     anglePerMainItem,
@@ -44,7 +45,9 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
         top: "50%",
         width: "30%",
         textAlign: "center",
+        opacity: 0,
         animation: `openPieSubItems${animationId} 500ms ease forwards`,
+        animationDelay: `300ms`,
         [`@keyframes openPieSubItems${animationId}`]: {
           "0%": {
             opacity: 0,
@@ -54,7 +57,7 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
               translateX(8rem)
               rotate(${-rotateAngle}deg)`,
           },
-          "30%": {
+          "40%": {
             opacity: 0,
           },
           "100%": {
