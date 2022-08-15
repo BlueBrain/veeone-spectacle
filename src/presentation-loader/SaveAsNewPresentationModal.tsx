@@ -1,6 +1,5 @@
 import {
   Button,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -10,17 +9,19 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useSpectacle } from "../core/spectacle/SpectacleContext"
 import { visualKeyboardService } from "../visualkeyboard"
-import { SpectaclePresentation } from "../core/types"
+import { BaseDialog } from "../dialogs/DialogsContext"
 import { generateRandomPresentationId } from "../core/presentations/utils"
-
-interface SavePresentationModalProps {}
 
 const keyboardId = "savePresentationName"
 
-const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
+const SaveAsNewPresentationModal: React.FC<BaseDialog> = ({
+  position,
+  resolveDialog,
+  cancelDialog,
+}) => {
   const presentationNameFieldRef = useRef()
   const spectacleContext = useSpectacle()
-  const { left, top } = spectacleContext.savePresentationModalPosition
+  const { left, top } = position
   const [presentationTitle, setPresentationTitle] = useState(
     spectacleContext.presentationStore.name !== "Untitled"
       ? spectacleContext.presentationStore.name
@@ -44,21 +45,11 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
     }
   }, [])
 
-  const savePresentation = useCallback(
-    (extraData: Partial<SpectaclePresentation> = {}) => {
-      const savedStore = spectacleContext.savePresentation.save({
-        name: presentationTitle,
-        ...extraData,
-      })
-    },
-    [presentationTitle, spectacleContext.savePresentation]
-  )
-
-  const handleSaveClick = event => {
-    savePresentation({
-      id: generateRandomPresentationId(),
+  const handleSaveClick = async event => {
+    resolveDialog({
+      presentationId: generateRandomPresentationId(),
+      presentationName: presentationTitle,
     })
-    spectacleContext.savePresentation.closeModal(event, "saved")
   }
 
   const handleTextInputChange = event => {
@@ -68,19 +59,7 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
   }
 
   return (
-    <Dialog
-      open={spectacleContext.savePresentation.isModalOpen}
-      onClose={spectacleContext.savePresentation.closeModal}
-      fullWidth={true}
-      PaperProps={{
-        sx: {
-          position: "absolute",
-          transform: "translate(-50%, -50%)",
-          left,
-          top,
-        },
-      }}
-    >
+    <>
       <DialogTitle>Save presentation as&hellip;</DialogTitle>
       <DialogContent>
         <Grid container alignItems={"center"} sx={{ py: 3 }}>
@@ -102,19 +81,13 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button
-          onClick={event =>
-            spectacleContext.savePresentation.closeModal(event, "cancel")
-          }
-        >
-          Cancel
-        </Button>
+        <Button onClick={cancelDialog}>Cancel</Button>
         <Button onClick={handleSaveClick} variant={"contained"}>
           Save
         </Button>
       </DialogActions>
-    </Dialog>
+    </>
   )
 }
 
-export default SavePresentationModal
+export default SaveAsNewPresentationModal

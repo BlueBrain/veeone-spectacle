@@ -10,9 +10,9 @@ import SceneManager from "../scenes/SceneManager"
 import { useConfig } from "../../config/AppConfigContext"
 import VeeDriveService from "../../veedrive"
 import useStatusUpdate from "../synec/use-status-update"
-import { savePresentationStore } from "../redux/actions"
 
 interface SpectacleContextProviderProps {}
+
 const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
   children,
 }) => {
@@ -116,59 +116,6 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
       activeSceneId,
       activeSceneIndex,
       sceneIds,
-      savePresentationModal: {
-        visible: isSaveModalVisible,
-      },
-      savePresentation: {
-        isModalOpen: isSaveModalVisible,
-        openSaveAsModal: ({ position }) => {
-          setSavePresentationModalPosition(position)
-          setIsSaveModalVisible(true)
-        },
-        closeModal: (event, reason) => {
-          if (reason === "backdropClick") {
-            return
-          }
-          setIsSaveModalVisible(false)
-        },
-        save: async (data = {}) => {
-          const now = Date.now()
-          const storeData = {
-            savedAt: now,
-            updatedAt: now,
-            ...data,
-          }
-          const storeToSave: SpectaclePresentation = {
-            ...presentationStore,
-            ...storeData,
-          }
-          console.debug("Saving presentation...", JSON.stringify(storeToSave))
-          await veeDriveService.savePresentation(storeToSave)
-          dispatch(savePresentationStore(storeToSave))
-          return storeToSave
-        },
-      },
-      openPresentationModalPosition: openPresentationModalPosition,
-      savePresentationModalPosition,
-      openPresentation: {
-        isModalOpen: isOpenModalVisible,
-        openModal: ({ position }) => {
-          setOpenPresentationModalPosition(position)
-          setIsOpenModalVisible(true)
-        },
-        closeModal: (event, reason) => {
-          if (reason === "backdropClick") {
-            return
-          }
-          setIsOpenModalVisible(false)
-        },
-        listPresentations: async () =>
-          await veeDriveService.listPresentations(),
-        load: async (presentationId: string) => {
-          console.debug("Loading presentation...")
-          return await veeDriveService.getPresentation(presentationId)
-        },
-      },
       viewMode,
       setViewMode,
       presentationStore,
@@ -176,19 +123,16 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
       addThumbnailToRegistry,
     }),
     [
+      isPresentationClean,
+      veeDriveService,
       sceneManager,
       previousSceneId,
       nextSceneId,
       activeSceneId,
       activeSceneIndex,
       sceneIds,
-      isSaveModalVisible,
-      openPresentationModalPosition,
-      savePresentationModalPosition,
-      isOpenModalVisible,
       viewMode,
       presentationStore,
-      veeDriveService,
       thumbnailRegistry,
       addThumbnailToRegistry,
     ]

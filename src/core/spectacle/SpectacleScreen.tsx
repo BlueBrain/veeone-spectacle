@@ -2,9 +2,6 @@ import React, { useEffect, useRef } from "react"
 import { Box } from "@mui/material"
 import SceneCarouselNavigator from "../scenes/scene-carousel-navigator"
 import SceneDeskNavigation from "../scenes/SceneDeskNavigation"
-import SavePresentationModal from "../../presentation-loader/SavePresentationModal"
-import OpenPresentationModal from "../../presentation-loader/OpenPresentationModal"
-import { useSpectacle } from "./SpectacleContext"
 import { useConfig } from "../../config/AppConfigContext"
 
 export const systemStats = {
@@ -14,7 +11,6 @@ export const systemStats = {
 const SpectacleScreen: React.FC = () => {
   const config = useConfig()
   const ref = useRef()
-  const { openPresentation, savePresentation } = useSpectacle()
 
   useEffect(() => {
     const currentRef = ref.current as HTMLElement
@@ -48,10 +44,6 @@ const SpectacleScreen: React.FC = () => {
       <Box sx={{ position: "absolute", right: ".2rem", top: "40%" }}>
         <SceneDeskNavigation />
       </Box>
-
-      {savePresentation.isModalOpen ? <SavePresentationModal /> : null}
-
-      {openPresentation.isModalOpen ? <OpenPresentationModal /> : null}
     </Box>
   )
 }

@@ -20,7 +20,7 @@ interface PresentationLoaderDetailsProps {
 export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
   presentationId,
 }) => {
-  const spectacleContext = useContext(SpectacleContext)
+  const { veeDriveService } = useContext(SpectacleContext)
   const [
     presentationData,
     setPresentationData,
@@ -28,12 +28,12 @@ export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
 
   useEffect(() => {
     async function loadPresentationData() {
-      const data = await spectacleContext.openPresentation.load(presentationId)
+      const data = await veeDriveService.getPresentation(presentationId)
       console.debug("Load presentation data", data)
       setPresentationData(data)
     }
     void loadPresentationData()
-  }, [presentationId, spectacleContext.openPresentation])
+  }, [presentationId, veeDriveService])
 
   const isLoading = presentationData === null
 

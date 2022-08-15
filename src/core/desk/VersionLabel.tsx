@@ -33,7 +33,8 @@ const VersionLabel: React.FC = () => {
 
   return (
     <Box sx={sx}>
-      {config.VERSION} ({config.REVISION}) {presentationStore.name}
+      {config.VERSION} ({config.REVISION}){" "}
+      {presentationStore.name || "Untitled"}
       {presentationModifiedMarker}
     </Box>
   )

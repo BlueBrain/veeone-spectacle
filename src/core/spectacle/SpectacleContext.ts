@@ -5,29 +5,22 @@ import { Position, Size } from "../../common/types"
 import SceneManager from "../scenes/SceneManager"
 import VeeDriveService from "../../veedrive"
 
-interface SavePresentationOpenModalProps {
+export interface SavePresentationOpenModalProps {
   position: Position
 }
 
-interface SavePresentationContextProps {
-  isModalOpen: boolean
-  openSaveAsModal: (props: SavePresentationOpenModalProps) => void
-  closeModal: (event, reason: string) => void
-  save: (
-    data?: Partial<SpectaclePresentation>
-  ) => Promise<SpectaclePresentation>
-}
+// export interface PresentationManagerContextProps {
+//   // isModalOpen: boolean
+//   // openSaveAsModal: (props: SavePresentationOpenModalProps) => void
+//   // closeModal: (event, reason: string) => void
+//   save: (
+//     props: SavePresentationOpenModalProps
+//   ) => Promise<SpectaclePresentation>
+//   // modalReadyToSaveHandler: (position: Position) => void
+// }
 
 interface OpenPresentationOpenModalProps {
   position: Position
-}
-
-interface OpenPresentationContextProps {
-  isModalOpen: boolean
-  openModal: (props: OpenPresentationOpenModalProps) => void
-  closeModal: (event, reason: string) => void
-  listPresentations: () => Promise<VeeDriveListPresentationsResponse>
-  load: (id: string) => Promise<SpectaclePresentation>
 }
 
 export enum ViewMode {
@@ -42,10 +35,6 @@ export interface ThumbnailRegistryItem {
 
 export interface SpectacleContextProps {
   isPresentationClean: boolean
-  savePresentation: SavePresentationContextProps
-  openPresentation: OpenPresentationContextProps
-  openPresentationModalPosition: Position
-  savePresentationModalPosition: Position
   viewMode: ViewMode
   setViewMode(newViewMode: ViewMode): void
   sceneManager: SceneManager

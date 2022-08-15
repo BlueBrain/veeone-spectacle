@@ -7,6 +7,9 @@ import SpectacleScreen from "./SpectacleScreen"
 import { useConfig } from "../../config/AppConfigContext"
 import { getBlueBrainTheme } from "../themes/bbp"
 import ImageKeeperContextProvider from "../../image-keeper/ImageKeeperContextProvider"
+import DialogsContextProvider from "../../dialogs/DialogsContextProvider"
+import PresentationManagerContextProvider from "../presentation-manager/PresentationManagerContextProvider"
+import DialogsPlaceholder from "../../dialogs/DialogsPlaceholder"
 
 export const Spectacle = () => {
   const config = useConfig()
@@ -16,11 +19,16 @@ export const Spectacle = () => {
     <ThemeProvider theme={blueBrainTheme}>
       <CssBaseline />
       <ThemeGradients />
-      <SpectacleContextProvider>
-        <ImageKeeperContextProvider>
-          <SpectacleScreen />
-        </ImageKeeperContextProvider>
-      </SpectacleContextProvider>
+      <DialogsContextProvider>
+        <SpectacleContextProvider>
+          <PresentationManagerContextProvider>
+            <ImageKeeperContextProvider>
+              <SpectacleScreen />
+            </ImageKeeperContextProvider>
+            <DialogsPlaceholder />
+          </PresentationManagerContextProvider>
+        </SpectacleContextProvider>
+      </DialogsContextProvider>
     </ThemeProvider>
   )
 }

@@ -26,6 +26,7 @@ import { MenuData } from "./types"
 import LauncherMenuItem from "./LauncherMenuItem"
 import { useConfig } from "../config/AppConfigContext"
 import { getFreshPresentation } from "../core/presentations/fresh-presentation"
+import { usePresentationManager } from "../core/presentation-manager/PresentationManagerContext"
 
 interface OpenNewFrameArgs {
   type: ContentBlockTypes
@@ -46,6 +47,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
 }) => {
   const config = useConfig()
   const spectacleContext = useSpectacle()
+  const presentationManager = usePresentationManager()
 
   const dispatch = useDispatch()
 
@@ -88,43 +90,30 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
     openNewFrameFromLauncher,
   ])
 
-  const openPresentation = useCallback(() => {
-    spectacleContext.openPresentation.openModal({
-      position: { ...position },
-    })
+  const openPresentation = useCallback(async () => {
     close()
-  }, [close, position, spectacleContext.openPresentation])
+    await presentationManager.openPresentation({ position })
+  }, [close, position, presentationManager])
 
-  const savePresentationAs = useCallback(() => {
-    spectacleContext.savePresentation.openSaveAsModal({
-      position: { ...position },
-    })
+  const savePresentationAs = useCallback(async () => {
     close()
-  }, [close, position, spectacleContext.savePresentation])
+    await presentationManager.savePresentationAs({ position })
+  }, [close, position, presentationManager])
 
-  const savePresentation = useCallback(() => {
-    if (spectacleContext.presentationStore.savedAt) {
-      spectacleContext.savePresentation.save()
-    } else {
-      savePresentationAs()
-    }
+  const savePresentation = useCallback(async () => {
     close()
-  }, [
-    close,
-    savePresentationAs,
-    spectacleContext.presentationStore.savedAt,
-    spectacleContext.savePresentation,
-  ])
+    await presentationManager.savePresentation({ position })
+  }, [close, position, presentationManager])
 
   const switchToScenesView = useCallback(() => {
+    close()
     console.debug("switchToScenesView to scene overview...")
     spectacleContext.setViewMode(ViewMode.SceneOverview)
-    close()
   }, [close, spectacleContext])
 
   const newPresentation = useCallback(() => {
-    dispatch(loadPresentationStore(getFreshPresentation({ config })))
     close()
+    dispatch(loadPresentationStore(getFreshPresentation({ config })))
   }, [close, config, dispatch])
 
   const [menuData, setMenuData] = useState<MenuData>({

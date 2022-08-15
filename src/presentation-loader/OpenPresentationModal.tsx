@@ -1,7 +1,6 @@
 import {
   Button,
   CircularProgress,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -19,33 +18,36 @@ import React, {
   useState,
 } from "react"
 import SpectacleContext from "../core/spectacle/SpectacleContext"
-import { useDispatch } from "react-redux"
-import { loadPresentationStore } from "../core/redux/actions"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"
-import { resizePresentationStore } from "../core/presentations/resizing"
-import { useConfig } from "../config/AppConfigContext"
 import { SlideshowRounded } from "@mui/icons-material"
+import ConfirmDialog from "../confirm-dialog/ConfirmDialog"
+import { usePresentationManager } from "../core/presentation-manager/PresentationManagerContext"
+import { BaseDialog } from "../dialogs/DialogsContext"
 
-interface LoadPresentationModalProps {}
+const OpenPresentationModal: React.FC<BaseDialog> = ({
+  position,
+  resolveDialog,
+  cancelDialog,
+}) => {
+  const presentationManager = usePresentationManager()
+  const { veeDriveService, isPresentationClean } = useContext(SpectacleContext)
 
-const OpenPresentationModal: React.FC<LoadPresentationModalProps> = () => {
-  const config = useConfig()
-  const spectacleContext = useContext(SpectacleContext)
-  const { left, top } = spectacleContext.openPresentationModalPosition
   const [isLoading, setIsLoading] = useState(false)
   const [presentationList, setPresentationList] = useState([])
   const [selectedPresentationId, setSelectedPresentationId] = useState(null)
-  const dispatch = useDispatch()
+  const [isUnsavedWarningVisible, setIsUnsavedWarningVisible] = useState(false)
+  const showUnsavedWarningDialog = () => setIsUnsavedWarningVisible(true)
+  const hideUnsavedWarningDialog = () => setIsUnsavedWarningVisible(false)
 
   useEffect(() => {
     async function getPresentationList() {
       setIsLoading(true)
-      const response = await spectacleContext.openPresentation.listPresentations()
+      const response = await veeDriveService.listPresentations()
       setPresentationList(response.results)
       setIsLoading(false)
     }
     void getPresentationList()
-  }, [spectacleContext.openPresentation])
+  }, [veeDriveService])
 
   const handlePresentationItemClick = async (presentationId: string) => {
     setSelectedPresentationId(presentationId)
@@ -53,48 +55,20 @@ const OpenPresentationModal: React.FC<LoadPresentationModalProps> = () => {
 
   const openPresentation = useCallback(
     presentationId => {
-      async function dispatchLoad(id) {
-        const store = await spectacleContext.openPresentation.load(id)
-        const sizeAdjustedPresentationStore = resizePresentationStore(
-          store,
-          {
-            width: config.VIEWPORT_WIDTH,
-            height: config.VIEWPORT_HEIGHT,
-          },
-          config.MINIMUM_FRAME_LONG_SIDE,
-          config.MAXIMUM_FRAME_LONG_SIDE,
-          {
-            width: config.FILE_BROWSER_WIDTH,
-            height: config.FILE_BROWSER_HEIGHT,
-          }
-        )
-        dispatch(loadPresentationStore(sizeAdjustedPresentationStore))
-      }
-      void dispatchLoad(presentationId)
+      resolveDialog(presentationId)
     },
-    [
-      config.FILE_BROWSER_HEIGHT,
-      config.FILE_BROWSER_WIDTH,
-      config.MAXIMUM_FRAME_LONG_SIDE,
-      config.MINIMUM_FRAME_LONG_SIDE,
-      config.VIEWPORT_HEIGHT,
-      config.VIEWPORT_WIDTH,
-      dispatch,
-      spectacleContext.openPresentation,
-    ]
-  )
-
-  const closeModal = useCallback(
-    event => spectacleContext.openPresentation.closeModal(event, "cancel"),
-    [spectacleContext.openPresentation]
+    [resolveDialog]
   )
 
   const handleOpenPresentationClick = useCallback(
     event => {
-      openPresentation(selectedPresentationId)
-      closeModal(event)
+      if (isPresentationClean) {
+        openPresentation(selectedPresentationId)
+      } else {
+        showUnsavedWarningDialog()
+      }
     },
-    [closeModal, openPresentation, selectedPresentationId]
+    [openPresentation, selectedPresentationId, isPresentationClean]
   )
 
   const presentations = useMemo(
@@ -123,20 +97,55 @@ const OpenPresentationModal: React.FC<LoadPresentationModalProps> = () => {
     [presentationList, selectedPresentationId]
   )
 
+  const saveCurrentAndOpen = useCallback(
+    async event => {
+      await presentationManager.savePresentation({
+        position,
+      })
+      await openPresentation(selectedPresentationId)
+    },
+    [openPresentation, selectedPresentationId, presentationManager, position]
+  )
+
+  const dontSaveCurrentAndOpen = useCallback(
+    event => {
+      openPresentation(selectedPresentationId)
+    },
+    [openPresentation, selectedPresentationId]
+  )
+
+  const unsavedWarningDialog = useMemo(
+    () =>
+      isUnsavedWarningVisible ? (
+        <ConfirmDialog
+          position={position}
+          title={"Save current changes?"}
+          text={
+            "You have unsaved changes in your current presentation. " +
+            "Do you want to save them before opening a new one?"
+          }
+          options={[
+            {
+              label: "No",
+              action: dontSaveCurrentAndOpen,
+              color: "warning",
+              variant: "text",
+            },
+            { label: "Yes", action: saveCurrentAndOpen },
+          ]}
+          onCancel={hideUnsavedWarningDialog}
+        />
+      ) : null,
+    [
+      isUnsavedWarningVisible,
+      dontSaveCurrentAndOpen,
+      saveCurrentAndOpen,
+      position,
+    ]
+  )
+
   return (
-    <Dialog
-      open={spectacleContext.openPresentation.isModalOpen}
-      onClose={spectacleContext.openPresentation.closeModal}
-      fullWidth={Boolean(selectedPresentationId)}
-      PaperProps={{
-        sx: {
-          position: "absolute",
-          transform: "translate(-50%, -50%)",
-          left,
-          top,
-        },
-      }}
-    >
+    <>
       <DialogTitle>Open presentation</DialogTitle>
       <DialogContent>
         <Grid container alignItems={"stretch"}>
@@ -176,15 +185,18 @@ const OpenPresentationModal: React.FC<LoadPresentationModalProps> = () => {
           ) : null}
         </Grid>
       </DialogContent>
+
       <DialogActions>
-        <Button onClick={closeModal}>Cancel</Button>
+        <Button onClick={cancelDialog}>Cancel</Button>
         {selectedPresentationId ? (
           <Button onClick={handleOpenPresentationClick} variant={"contained"}>
             Open presentation
           </Button>
         ) : null}
       </DialogActions>
-    </Dialog>
+
+      {unsavedWarningDialog}
+    </>
   )
 }
 
