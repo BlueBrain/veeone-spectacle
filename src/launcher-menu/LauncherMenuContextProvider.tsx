@@ -95,12 +95,26 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
     close()
   }, [close, position, spectacleContext.openPresentation])
 
-  const savePresentation = useCallback(() => {
-    spectacleContext.savePresentation.openModal({
+  const savePresentationAs = useCallback(() => {
+    spectacleContext.savePresentation.openSaveAsModal({
       position: { ...position },
     })
     close()
   }, [close, position, spectacleContext.savePresentation])
+
+  const savePresentation = useCallback(() => {
+    if (spectacleContext.presentationStore.savedAt) {
+      spectacleContext.savePresentation.save()
+    } else {
+      savePresentationAs()
+    }
+    close()
+  }, [
+    close,
+    savePresentationAs,
+    spectacleContext.presentationStore.savedAt,
+    spectacleContext.savePresentation,
+  ])
 
   const switchToScenesView = useCallback(() => {
     console.debug("switchToScenesView to scene overview...")
@@ -147,7 +161,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
           new LauncherMenuItem({
             label: "Save as",
             icon: SaveAs,
-            action: savePresentation,
+            action: savePresentationAs,
           }),
         ],
       }),

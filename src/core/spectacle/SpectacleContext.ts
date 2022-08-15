@@ -11,9 +11,11 @@ interface SavePresentationOpenModalProps {
 
 interface SavePresentationContextProps {
   isModalOpen: boolean
-  openModal: (props: SavePresentationOpenModalProps) => void
+  openSaveAsModal: (props: SavePresentationOpenModalProps) => void
   closeModal: (event, reason: string) => void
-  save: (data: Partial<SpectaclePresentation>) => void
+  save: (
+    data?: Partial<SpectaclePresentation>
+  ) => Promise<SpectaclePresentation>
 }
 
 interface OpenPresentationOpenModalProps {

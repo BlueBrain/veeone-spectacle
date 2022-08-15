@@ -8,6 +8,7 @@ import {
   Grid,
   List,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
 } from "@mui/material"
 import React, {
@@ -23,6 +24,7 @@ import { loadPresentationStore } from "../core/redux/actions"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"
 import { resizePresentationStore } from "../core/presentations/resizing"
 import { useConfig } from "../config/AppConfigContext"
+import { SlideshowRounded } from "@mui/icons-material"
 
 interface LoadPresentationModalProps {}
 
@@ -108,6 +110,9 @@ const OpenPresentationModal: React.FC<LoadPresentationModalProps> = () => {
             onClick={() => handlePresentationItemClick(presentationItem.id)}
             selected={selectedPresentationId === presentationItem.id}
           >
+            <ListItemIcon>
+              <SlideshowRounded />
+            </ListItemIcon>
             <ListItemText
               primary={presentationItem.name}
               secondary={friendlyDateTime}
@@ -132,14 +137,14 @@ const OpenPresentationModal: React.FC<LoadPresentationModalProps> = () => {
         },
       }}
     >
-      <DialogTitle>Load presentation</DialogTitle>
+      <DialogTitle>Open presentation</DialogTitle>
       <DialogContent>
         <Grid container alignItems={"stretch"}>
           <Grid
             item
             xs
             sx={{
-              width: "16rem",
+              width: "20rem",
               position: "relative",
               maxHeight: "30vh",
               overflowY: "scroll",

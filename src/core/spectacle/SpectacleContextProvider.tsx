@@ -10,6 +10,7 @@ import SceneManager from "../scenes/SceneManager"
 import { useConfig } from "../../config/AppConfigContext"
 import VeeDriveService from "../../veedrive"
 import useStatusUpdate from "../synec/use-status-update"
+import { savePresentationStore } from "../redux/actions"
 
 interface SpectacleContextProviderProps {}
 const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
@@ -120,7 +121,7 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
       },
       savePresentation: {
         isModalOpen: isSaveModalVisible,
-        openModal: ({ position }) => {
+        openSaveAsModal: ({ position }) => {
           setSavePresentationModalPosition(position)
           setIsSaveModalVisible(true)
         },
@@ -130,10 +131,21 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
           }
           setIsSaveModalVisible(false)
         },
-        save: async data => {
-          const storeToSave = { ...presentationStore, ...data }
+        save: async (data = {}) => {
+          const now = Date.now()
+          const storeData = {
+            savedAt: now,
+            updatedAt: now,
+            ...data,
+          }
+          const storeToSave: SpectaclePresentation = {
+            ...presentationStore,
+            ...storeData,
+          }
           console.debug("Saving presentation...", JSON.stringify(storeToSave))
           await veeDriveService.savePresentation(storeToSave)
+          dispatch(savePresentationStore(storeToSave))
+          return storeToSave
         },
       },
       openPresentationModalPosition: openPresentationModalPosition,

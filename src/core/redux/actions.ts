@@ -10,6 +10,7 @@ import {
 
 export enum Actions {
   OpenPresentation,
+  SavePresentation,
   AddFrame,
   ManipulateFrame,
   CloseFrame,
@@ -124,6 +125,11 @@ export const setActiveScene = (sceneId: SceneId) => ({
 
 export const loadPresentationStore = (newStore: SpectaclePresentation) => ({
   type: Actions.OpenPresentation,
+  payload: newStore,
+})
+
+export const savePresentationStore = (newStore: SpectaclePresentation) => ({
+  type: Actions.SavePresentation,
   payload: newStore,
 })
 

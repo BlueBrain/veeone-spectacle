@@ -9,19 +9,23 @@ export const rootReducer = (
   action: ReduxAction,
   config: ApplicationConfig
 ): SpectaclePresentation => {
-  if (action.type === Actions.OpenPresentation) {
-    return { ...action.payload }
-  }
-
-  if (action.type === Actions.ResizePresentation) {
-    return presentationReducer(state, action, config)
-  }
-
-  const newUpdatedAt = action.mutative ? Date.now() : state.updatedAt
-
-  return {
-    ...state,
-    scenes: scenesReducer(state, action),
-    updatedAt: newUpdatedAt,
+  switch (action.type) {
+    case Actions.OpenPresentation: {
+      return { ...action.payload }
+    }
+    case Actions.SavePresentation: {
+      return { ...action.payload }
+    }
+    case Actions.ResizePresentation: {
+      return presentationReducer(state, action, config)
+    }
+    default: {
+      const newUpdatedAt = action.mutative ? Date.now() : state.updatedAt
+      return {
+        ...state,
+        scenes: scenesReducer(state, action),
+        updatedAt: newUpdatedAt,
+      }
+    }
   }
 }

@@ -22,7 +22,9 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
   const spectacleContext = useSpectacle()
   const { left, top } = spectacleContext.savePresentationModalPosition
   const [presentationTitle, setPresentationTitle] = useState(
-    spectacleContext.presentationStore.name
+    spectacleContext.presentationStore.name !== "Untitled"
+      ? spectacleContext.presentationStore.name
+      : ""
   )
 
   const showVisualKeyboard = useCallback((target, initialValue: string) => {
@@ -44,11 +46,8 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
 
   const savePresentation = useCallback(
     (extraData: Partial<SpectaclePresentation> = {}) => {
-      const now = Date.now()
-      spectacleContext.savePresentation.save({
+      const savedStore = spectacleContext.savePresentation.save({
         name: presentationTitle,
-        savedAt: now,
-        updatedAt: now,
         ...extraData,
       })
     },
@@ -56,12 +55,9 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
   )
 
   const handleSaveClick = event => {
-    savePresentation()
-    spectacleContext.savePresentation.closeModal(event, "saved")
-  }
-
-  const handleSaveAsNewClick = event => {
-    savePresentation({ id: generateRandomPresentationId() })
+    savePresentation({
+      id: generateRandomPresentationId(),
+    })
     spectacleContext.savePresentation.closeModal(event, "saved")
   }
 
@@ -85,7 +81,7 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
         },
       }}
     >
-      <DialogTitle>Save presentation</DialogTitle>
+      <DialogTitle>Save presentation as&hellip;</DialogTitle>
       <DialogContent>
         <Grid container alignItems={"center"} sx={{ py: 3 }}>
           <Grid item xs sx={{ paddingBottom: "15rem" }}>
@@ -113,7 +109,6 @@ const SavePresentationModal: React.FC<SavePresentationModalProps> = () => {
         >
           Cancel
         </Button>
-        <Button onClick={handleSaveAsNewClick}>Save as new</Button>
         <Button onClick={handleSaveClick} variant={"contained"}>
           Save
         </Button>
