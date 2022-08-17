@@ -97,7 +97,6 @@ export const sendFrameToBack = frameId => ({
 
 export const deactivateAllFrames = () => ({
   type: Actions.DeactivateAllFrames,
-  mutative: true,
 })
 
 export const closeFrame = (frameId: FrameId) => ({

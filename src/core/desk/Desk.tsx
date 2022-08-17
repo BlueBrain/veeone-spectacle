@@ -109,10 +109,19 @@ const Desk: React.FC = () => {
         if (newLauncherMenus.length !== launcherMenus.length) {
           setLauncherMenus(newLauncherMenus)
         }
+      }
+    },
+    [launcherMenus]
+  )
+
+  const handleDeskTap = useCallback(
+    event => {
+      if (event.target === deskRef.current) {
+        console.debug("handle desk tap")
         dispatch(deactivateAllFrames())
       }
     },
-    [dispatch, launcherMenus]
+    [dispatch]
   )
 
   const handleDeskHold = useCallback(
@@ -139,6 +148,7 @@ const Desk: React.FC = () => {
         holdDuration: config.TOUCH_HOLD_DURATION_MS,
       })
       .on("hold", handleDeskHold)
+      .on("tap", handleDeskTap)
     return () => {
       interact(refElement ?? ((refElement as unknown) as Target)).unset()
     }

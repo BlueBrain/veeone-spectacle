@@ -36,19 +36,6 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
     void connectToVeeDrive()
   }, [veeDriveService])
 
-  const [isSaveModalVisible, setIsSaveModalVisible] = useState(false)
-  const [isOpenModalVisible, setIsOpenModalVisible] = useState(false)
-
-  const [
-    openPresentationModalPosition,
-    setOpenPresentationModalPosition,
-  ] = useState(null)
-
-  const [
-    savePresentationModalPosition,
-    setSavePresentationModalPosition,
-  ] = useState(null)
-
   const [viewMode, setViewMode] = useState(
     // ViewMode.SceneOverview
     ViewMode.Desk
@@ -60,14 +47,17 @@ const SpectacleContextProvider: React.FC<SpectacleContextProviderProps> = ({
 
   const sceneIds: SceneId[] = presentationStore.scenes.sceneOrder
   const activeSceneId: SceneId = presentationStore.scenes.activeScene
+
   const activeSceneIndex: number = useMemo(
     () => sceneIds.indexOf(activeSceneId),
     [activeSceneId, sceneIds]
   )
+
   const previousSceneId: SceneId = useMemo(
     () => sceneIds[activeSceneIndex > 0 ? activeSceneIndex - 1 : null],
     [activeSceneIndex, sceneIds]
   )
+
   const nextSceneId: SceneId = useMemo(
     () =>
       sceneIds[
