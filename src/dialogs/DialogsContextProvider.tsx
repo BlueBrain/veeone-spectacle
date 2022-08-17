@@ -3,8 +3,8 @@ import DialogsContext, {
   DialogsContextProps,
   OpenDialogFunction,
 } from "./DialogsContext"
-import { Dialog } from "@mui/material"
 import { generateRandomId } from "../common/random"
+import SpectacleDialog from "./SpectacleDialog"
 
 export interface DialogsContextProviderProps {}
 
@@ -14,43 +14,24 @@ const DialogsContextProvider: React.FC<DialogsContextProviderProps> = ({
   const [activeDialogs, setActiveDialogs] = useState([])
 
   const openDialog = useCallback<OpenDialogFunction>(
-    (DialogComponent, position) =>
+    (DialogComponent, dialogOptions) =>
       new Promise((resolve, reject) => {
         const dialogId = generateRandomId()
-        const cancelDialog = () => {
-          console.debug("Close dialog...")
-          reject("cancel")
-          closeDialog(dialogId)
-        }
-
-        const resolveDialog = (value: any) => {
-          resolve(value)
-          closeDialog(dialogId)
-        }
-
         const newDialog = (
-          <Dialog
+          <SpectacleDialog
             key={dialogId}
-            open={true}
-            onClose={cancelDialog}
-            fullWidth={true}
-            PaperProps={{
-              sx: {
-                position: "absolute",
-                transform: "translate(-50%, -50%)",
-                left: position.left,
-                top: position.top,
-              },
+            component={DialogComponent}
+            reject={reason => {
+              reject(reason)
+              closeDialog(dialogId)
             }}
-          >
-            <DialogComponent
-              position={position}
-              resolveDialog={resolveDialog}
-              cancelDialog={cancelDialog}
-            />
-          </Dialog>
+            resolve={value => {
+              resolve(value)
+              closeDialog(dialogId)
+            }}
+            options={dialogOptions}
+          />
         )
-
         setActiveDialogs(currentDialogs => {
           return [...currentDialogs, newDialog]
         })
@@ -59,6 +40,7 @@ const DialogsContextProvider: React.FC<DialogsContextProviderProps> = ({
   )
 
   const closeDialog = dialogId => {
+    console.debug("Closing dialog...", dialogId)
     setActiveDialogs(currentValue => {
       return currentValue.filter(value => value.key !== dialogId)
     })

@@ -7,10 +7,11 @@ import {
   TextField,
 } from "@mui/material"
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { useSpectacle } from "../core/spectacle/SpectacleContext"
-import { visualKeyboardService } from "../visualkeyboard"
-import { BaseDialog } from "../dialogs/DialogsContext"
-import { generateRandomPresentationId } from "../core/presentations/utils"
+import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import { visualKeyboardService } from "../../visualkeyboard"
+import { BaseDialog } from "../../dialogs/DialogsContext"
+import { generateRandomPresentationId } from "../../core/presentations/utils"
+import PresentationFolderList from "./PresentationFolderList"
 
 const keyboardId = "savePresentationName"
 
@@ -62,8 +63,11 @@ const SaveAsNewPresentationModal: React.FC<BaseDialog> = ({
     <>
       <DialogTitle>Save presentation as&hellip;</DialogTitle>
       <DialogContent>
-        <Grid container alignItems={"center"} sx={{ py: 3 }}>
-          <Grid item xs sx={{ paddingBottom: "15rem" }}>
+        <Grid container alignItems={"start"}>
+          <Grid item xs md={4}>
+            <PresentationFolderList />
+          </Grid>
+          <Grid item xs md={8} sx={{ padding: `.5rem 0 15rem 0` }}>
             <TextField
               inputRef={presentationNameFieldRef}
               type={"text"}

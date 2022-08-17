@@ -7,7 +7,7 @@ import {
   useSpectacle,
 } from "../spectacle/SpectacleContext"
 import { SpectaclePresentation } from "../types"
-import SaveAsNewPresentationModal from "../../presentation-loader/SaveAsNewPresentationModal"
+import SaveAsNewPresentationModal from "../../presentation-loader/save-as/SaveAsNewPresentationModal"
 import { loadPresentationStore, savePresentationStore } from "../redux/actions"
 import { useDialogs } from "../../dialogs/DialogsContext"
 import { useDispatch } from "react-redux"
@@ -52,10 +52,10 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
 
   const savePresentationAs = useCallback(
     async ({ position }) => {
-      const { presentationName, presentationId } = await dialogs.openDialog(
-        SaveAsNewPresentationModal,
-        position
-      )
+      const {
+        presentationName,
+        presentationId,
+      } = await dialogs.openDialog(SaveAsNewPresentationModal, { position })
       return await performPresentationSave({
         id: presentationId,
         name: presentationName,
@@ -78,10 +78,9 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
 
   const openPresentation = useCallback(
     async ({ position }) => {
-      const presentationId = await dialogs.openDialog(
-        OpenPresentationModal,
-        position
-      )
+      const presentationId = await dialogs.openDialog(OpenPresentationModal, {
+        position,
+      })
       const store = await veeDriveService.getPresentation(presentationId)
       const sizeAdjustedPresentationStore = resizePresentationStore(
         store,
@@ -105,7 +104,10 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
   const newPresentation = useCallback(
     async ({ position }) => {
       if (!isPresentationClean) {
-        const result = await dialogs.openDialog(UnsavedChangesWarning, position)
+        const result = await dialogs.openDialog(UnsavedChangesWarning, {
+          position,
+          maxWidth: "xs",
+        })
         console.debug("NEW PRESENTATION RESULT", result)
       }
       const freshPresentation = getFreshPresentation({ config })

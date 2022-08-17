@@ -1,5 +1,6 @@
 import React, { createContext, useContext } from "react"
 import { Position } from "../common/types"
+import { Breakpoint } from "@mui/system"
 
 type DialogResult = any
 
@@ -9,9 +10,15 @@ export interface BaseDialog {
   cancelDialog: (reason: any) => void
 }
 
+export interface DialogOptions {
+  position: Position
+  maxWidth?: Breakpoint | false
+  fullWidth?: boolean
+}
+
 export type OpenDialogFunction = (
   component: React.FC<BaseDialog> | React.NamedExoticComponent<BaseDialog>,
-  position: Position
+  dialogOptions: DialogOptions
 ) => Promise<DialogResult>
 
 export interface DialogsContextProps {

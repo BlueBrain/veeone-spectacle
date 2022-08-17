@@ -60,7 +60,10 @@ const OpenPresentationModal: React.FC<BaseDialog> = ({
   const handleOpenPresentationClick = useCallback(
     async event => {
       if (!isPresentationClean) {
-        const result = await dialogs.openDialog(UnsavedChangesWarning, position)
+        const result = await dialogs.openDialog(UnsavedChangesWarning, {
+          position,
+          maxWidth: "xs",
+        })
         console.debug("NEW PRESENTATION RESULT", result)
       }
       openPresentation(selectedPresentationId)
@@ -98,23 +101,6 @@ const OpenPresentationModal: React.FC<BaseDialog> = ({
         )
       }),
     [presentationList, selectedPresentationId]
-  )
-
-  const saveCurrentAndOpen = useCallback(
-    async event => {
-      await presentationManager.savePresentation({
-        position,
-      })
-      await openPresentation(selectedPresentationId)
-    },
-    [openPresentation, selectedPresentationId, presentationManager, position]
-  )
-
-  const dontSaveCurrentAndOpen = useCallback(
-    event => {
-      openPresentation(selectedPresentationId)
-    },
-    [openPresentation, selectedPresentationId]
   )
 
   return (
