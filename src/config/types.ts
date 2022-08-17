@@ -26,7 +26,7 @@ export interface ApplicationConfig {
   FILE_BROWSER_OPEN_MEDIA_CASCADE_DELAY_MS: number
   FRAME_CONTROLS_ALWAYS_VISIBLE: boolean
   TOUCH_HOLD_DURATION_MS: number
-  BASE_FONT_SIZE: string
+  BASE_FONT_SIZE: number
   VIEWPORT_WIDTH: number
   VIEWPORT_HEIGHT: number
   MINIMUM_FRAME_LONG_SIDE: number
@@ -37,7 +37,7 @@ export interface ApplicationConfig {
   DEFAULT_NEW_FRAME_WIDTH: number
   DEFAULT_NEW_FRAME_HEIGHT: number
   FULLSCREEN_TRANSITION_MS: number
-  LAUNCHER_MENU_SIZE: string
+  LAUNCHER_MENU_SIZE_REM: number
   SENTRY_DSN: string
   SENTRY_EXCLUDE_ENVIRONMENTS: RunningEnvironment[]
   RUNNING_ENVIRONMENT: RunningEnvironment

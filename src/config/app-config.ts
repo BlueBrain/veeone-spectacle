@@ -27,11 +27,11 @@ let defaultConfig: ApplicationConfig = {
   SENTRY_EXCLUDE_ENVIRONMENTS: [RunningEnvironment.DEV],
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
-  LAUNCHER_MENU_SIZE: "22.5rem",
+  LAUNCHER_MENU_SIZE_REM: 22.5,
   VEEDRIVE_WS_PATH:
     ENV_VARIABLES.SPECTACLE_VEEDRIVE_WS_PATH ??
     "wss://bbpcd013.bbp.epfl.ch:8080/ws",
-  BASE_FONT_SIZE: "16px",
+  BASE_FONT_SIZE: 16,
   FILE_BROWSER_WIDTH: 500,
   FILE_BROWSER_HEIGHT: 400,
   MINIMUM_FRAME_LONG_SIDE: Math.max(viewportLongSide / 12, 200),

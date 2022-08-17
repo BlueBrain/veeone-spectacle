@@ -55,8 +55,8 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
       <Box sx={{ transform: `translate(-50%, -50%)` }} ref={launcherBoxRef}>
         <Box
           sx={{
-            width: config.LAUNCHER_MENU_SIZE,
-            height: config.LAUNCHER_MENU_SIZE,
+            width: `${config.LAUNCHER_MENU_SIZE_REM}rem`,
+            height: `${config.LAUNCHER_MENU_SIZE_REM}rem`,
           }}
         >
           <PieMenu />
