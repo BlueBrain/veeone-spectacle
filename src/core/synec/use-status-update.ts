@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from "react"
 import { SpectacleMemoryStats, SpectacleStatusInformation } from "./types"
-import { ApplicationConfig } from "../../config/types"
+import { ApplicationConfig, RunningEnvironment } from "../../config/types"
 import VeeDriveService from "../../veedrive"
 import { systemStats } from "../spectacle/SpectacleScreen"
 
@@ -18,12 +18,16 @@ const useStatusUpdate = (
   veeDriveService: VeeDriveService
 ) => {
   const worker = useMemo(() => {
+    console.info("SYNEC_CHECKIN_ENABLED", config.SYNEC_CHECKIN_ENABLED)
+    if (!config.SYNEC_CHECKIN_ENABLED) {
+      return null
+    }
     console.info("Creating new worker for Synec check-in...")
     return new Worker(
       // @ts-ignore
       new URL("../synec/workers/synec-check-in", import.meta.url)
     )
-  }, [])
+  }, [config.SYNEC_CHECKIN_ENABLED])
 
   const startedAt = useMemo(() => Date.now(), [])
 
@@ -62,11 +66,11 @@ const useStatusUpdate = (
 
   const postMessageToSynecWorker = useCallback(async () => {
     const payload = await gatherStatusInformation()
-    worker.postMessage({ method: "statusUpdate", payload })
+    worker?.postMessage({ method: "statusUpdate", payload })
   }, [gatherStatusInformation, worker])
 
   useEffect(() => {
-    worker.addEventListener(
+    worker?.addEventListener(
       "message",
       (message: MessageEvent) => {
         console.debug("Received a message from the worker", message.data)
@@ -81,7 +85,7 @@ const useStatusUpdate = (
   useEffect(() => {
     console.info("Initialize worker for Synec check-in...")
 
-    worker.postMessage({
+    worker?.postMessage({
       method: "initialize",
       payload: {
         checkInWebSocketPath: config.SYNEC_CHECKIN_WS_PATH,
@@ -90,6 +94,10 @@ const useStatusUpdate = (
   }, [config.SYNEC_CHECKIN_WS_PATH, worker])
 
   useEffect(() => {
+    if (!config.SYNEC_CHECKIN_ENABLED) {
+      return
+    }
+
     console.debug("Set up new interval to Synec...")
     const interval = setInterval(
       postMessageToSynecWorker,
@@ -100,7 +108,12 @@ const useStatusUpdate = (
       console.debug("Cleaning up interval...")
       clearInterval(interval)
     }
-  }, [config.SYNEC_STATUS_UPDATE_INTERVAL_MS, postMessageToSynecWorker, worker])
+  }, [
+    config.SYNEC_CHECKIN_ENABLED,
+    config.SYNEC_STATUS_UPDATE_INTERVAL_MS,
+    postMessageToSynecWorker,
+    worker,
+  ])
 }
 
 export default useStatusUpdate

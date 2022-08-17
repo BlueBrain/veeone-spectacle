@@ -54,6 +54,9 @@ let defaultConfig: ApplicationConfig = {
   IMAGE_KEEPER_AS_SINGLE_WORKER: true,
   LOAD_IMAGES_AS_CSS_BACKGROUND: true,
   IMAGE_BLUR_BACKGROUND_OPACITY: 0.8,
+  SYNEC_CHECKIN_ENABLED: Boolean(
+    parseInt(ENV_VARIABLES.SPECTACLE_SYNEC_CHECKIN_ENABLED ?? 1)
+  ),
   SYNEC_CHECKIN_WS_PATH:
     ENV_VARIABLES.SPECTACLE_SYNEC_CHECKIN_WS_PATH ??
     "wss://synec.veeone.kcp.bbp.epfl.ch/ws/check-in",
