@@ -7,6 +7,7 @@ export interface ModalProps {
 }
 
 export interface PresentationManagerContextProps {
+  newPresentation: (props: ModalProps) => Promise<SpectaclePresentation>
   openPresentation: (props: ModalProps) => Promise<SpectaclePresentation>
   savePresentation: (props: ModalProps) => Promise<SpectaclePresentation>
   savePresentationAs: (props: ModalProps) => Promise<SpectaclePresentation>

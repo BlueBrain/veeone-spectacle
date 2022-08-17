@@ -14,13 +14,19 @@ import { useDispatch } from "react-redux"
 import OpenPresentationModal from "../../presentation-loader/OpenPresentationModal"
 import { resizePresentationStore } from "../presentations/resizing"
 import { useConfig } from "../../config/AppConfigContext"
+import { getFreshPresentation } from "../presentations/fresh-presentation"
+import UnsavedChangesWarning from "../../presentation-loader/UnsavedChangesWarning"
 
 const PresentationManagerContextProvider: React.FC = ({ children }) => {
   const dispatch = useDispatch()
 
   const config = useConfig()
   const dialogs = useDialogs()
-  const { presentationStore, veeDriveService } = useSpectacle()
+  const {
+    presentationStore,
+    veeDriveService,
+    isPresentationClean,
+  } = useSpectacle()
 
   const performPresentationSave = useCallback(
     async (extraData: Partial<SpectaclePresentation> = {}) => {
@@ -96,13 +102,27 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
     [config, dialogs, dispatch, veeDriveService]
   )
 
+  const newPresentation = useCallback(
+    async ({ position }) => {
+      if (!isPresentationClean) {
+        const result = await dialogs.openDialog(UnsavedChangesWarning, position)
+        console.debug("NEW PRESENTATION RESULT", result)
+      }
+      const freshPresentation = getFreshPresentation({ config })
+      dispatch(loadPresentationStore(freshPresentation))
+      return freshPresentation
+    },
+    [config, dialogs, dispatch, isPresentationClean]
+  )
+
   const providerValue = useMemo<PresentationManagerContextProps>(
     () => ({
       savePresentation,
       savePresentationAs,
       openPresentation,
+      newPresentation,
     }),
-    [openPresentation, savePresentation, savePresentationAs]
+    [newPresentation, openPresentation, savePresentation, savePresentationAs]
   )
   return (
     <PresentationManagerContext.Provider value={providerValue}>

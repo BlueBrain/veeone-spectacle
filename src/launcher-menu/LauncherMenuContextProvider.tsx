@@ -111,10 +111,10 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
     spectacleContext.setViewMode(ViewMode.SceneOverview)
   }, [close, spectacleContext])
 
-  const newPresentation = useCallback(() => {
+  const newPresentation = useCallback(async () => {
     close()
-    dispatch(loadPresentationStore(getFreshPresentation({ config })))
-  }, [close, config, dispatch])
+    await presentationManager.newPresentation({ position })
+  }, [close, position, presentationManager])
 
   const [menuData, setMenuData] = useState<MenuData>({
     items: [

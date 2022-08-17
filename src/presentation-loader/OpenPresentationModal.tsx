@@ -20,9 +20,9 @@ import React, {
 import SpectacleContext from "../core/spectacle/SpectacleContext"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"
 import { SlideshowRounded } from "@mui/icons-material"
-import ConfirmDialog from "../confirm-dialog/ConfirmDialog"
 import { usePresentationManager } from "../core/presentation-manager/PresentationManagerContext"
-import { BaseDialog } from "../dialogs/DialogsContext"
+import { BaseDialog, useDialogs } from "../dialogs/DialogsContext"
+import UnsavedChangesWarning from "./UnsavedChangesWarning"
 
 const OpenPresentationModal: React.FC<BaseDialog> = ({
   position,
@@ -31,13 +31,10 @@ const OpenPresentationModal: React.FC<BaseDialog> = ({
 }) => {
   const presentationManager = usePresentationManager()
   const { veeDriveService, isPresentationClean } = useContext(SpectacleContext)
-
+  const dialogs = useDialogs()
   const [isLoading, setIsLoading] = useState(false)
   const [presentationList, setPresentationList] = useState([])
   const [selectedPresentationId, setSelectedPresentationId] = useState(null)
-  const [isUnsavedWarningVisible, setIsUnsavedWarningVisible] = useState(false)
-  const showUnsavedWarningDialog = () => setIsUnsavedWarningVisible(true)
-  const hideUnsavedWarningDialog = () => setIsUnsavedWarningVisible(false)
 
   useEffect(() => {
     async function getPresentationList() {
@@ -61,14 +58,20 @@ const OpenPresentationModal: React.FC<BaseDialog> = ({
   )
 
   const handleOpenPresentationClick = useCallback(
-    event => {
-      if (isPresentationClean) {
-        openPresentation(selectedPresentationId)
-      } else {
-        showUnsavedWarningDialog()
+    async event => {
+      if (!isPresentationClean) {
+        const result = await dialogs.openDialog(UnsavedChangesWarning, position)
+        console.debug("NEW PRESENTATION RESULT", result)
       }
+      openPresentation(selectedPresentationId)
     },
-    [openPresentation, selectedPresentationId, isPresentationClean]
+    [
+      isPresentationClean,
+      openPresentation,
+      selectedPresentationId,
+      dialogs,
+      position,
+    ]
   )
 
   const presentations = useMemo(
@@ -112,36 +115,6 @@ const OpenPresentationModal: React.FC<BaseDialog> = ({
       openPresentation(selectedPresentationId)
     },
     [openPresentation, selectedPresentationId]
-  )
-
-  const unsavedWarningDialog = useMemo(
-    () =>
-      isUnsavedWarningVisible ? (
-        <ConfirmDialog
-          position={position}
-          title={"Save current changes?"}
-          text={
-            "You have unsaved changes in your current presentation. " +
-            "Do you want to save them before opening a new one?"
-          }
-          options={[
-            {
-              label: "No",
-              action: dontSaveCurrentAndOpen,
-              color: "warning",
-              variant: "text",
-            },
-            { label: "Yes", action: saveCurrentAndOpen },
-          ]}
-          onCancel={hideUnsavedWarningDialog}
-        />
-      ) : null,
-    [
-      isUnsavedWarningVisible,
-      dontSaveCurrentAndOpen,
-      saveCurrentAndOpen,
-      position,
-    ]
   )
 
   return (
@@ -194,8 +167,6 @@ const OpenPresentationModal: React.FC<BaseDialog> = ({
           </Button>
         ) : null}
       </DialogActions>
-
-      {unsavedWarningDialog}
     </>
   )
 }

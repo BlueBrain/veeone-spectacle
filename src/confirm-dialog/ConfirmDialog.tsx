@@ -61,20 +61,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   }, [handleCancel, options])
 
   return (
-    <Dialog
-      open={true}
-      onClose={handleCancel}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-      PaperProps={{
-        sx: {
-          position: "absolute",
-          transform: "translate(-50%, -50%)",
-          left,
-          top,
-        },
-      }}
-    >
+    <>
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
@@ -85,7 +72,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <Button onClick={handleCancel}>Cancel</Button>
         {buttonOptions}
       </DialogActions>
-    </Dialog>
+    </>
   )
 }
 
