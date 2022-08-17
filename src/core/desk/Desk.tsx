@@ -16,6 +16,8 @@ import { LauncherMenuData, LauncherMenuId } from "../../launcher-menu/types"
 import _ from "lodash"
 import VersionLabel from "./VersionLabel"
 import { FullscreenLayer } from "./fullscreen"
+import { deactivateAllFrames } from "../redux/actions"
+import { useDispatch } from "react-redux"
 
 interact.pointerMoveTolerance(4)
 
@@ -39,6 +41,7 @@ function isAnyLauncherNearby(
 }
 
 const Desk: React.FC = () => {
+  const dispatch = useDispatch()
   const config = useConfig()
   const deskRef = useRef()
   const { scene } = useDesk()
@@ -106,9 +109,10 @@ const Desk: React.FC = () => {
         if (newLauncherMenus.length !== launcherMenus.length) {
           setLauncherMenus(newLauncherMenus)
         }
+        dispatch(deactivateAllFrames())
       }
     },
-    [launcherMenus]
+    [dispatch, launcherMenus]
   )
 
   const handleDeskHold = useCallback(
@@ -138,7 +142,7 @@ const Desk: React.FC = () => {
     return () => {
       interact(refElement ?? ((refElement as unknown) as Target)).unset()
     }
-  }, [config.TOUCH_HOLD_DURATION_MS, handleDeskHold, handleDeskClick])
+  }, [config.TOUCH_HOLD_DURATION_MS, handleDeskHold])
 
   const getStackIndex = useCallback(
     frameId => scene.frameStack.indexOf(frameId),

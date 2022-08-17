@@ -245,12 +245,22 @@ export const frameStackReducer = (
     case Actions.BringFrameToFront: {
       const frameId = action.payload.frameId
       return frameStack.includes(frameId)
-        ? [...frameStack.filter(id => id !== frameId), frameId]
+        ? [
+            ...frameStack.filter(value => value !== frameId && value !== null),
+            frameId,
+          ]
         : frameStack
     }
     case Actions.SendFrameToBack: {
       const frameId = action.payload.frameId
-      return [frameId, ...frameStack.filter(id => id !== frameId)]
+      return [
+        frameId,
+        ...frameStack.filter(value => value !== frameId && value !== null),
+      ]
+    }
+    case Actions.DeactivateAllFrames: {
+      const otherFrames = frameStack.filter(value => value !== null)
+      return otherFrames.length > 0 ? [...otherFrames, null] : []
     }
     default:
       return frameStack

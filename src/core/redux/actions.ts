@@ -16,6 +16,7 @@ export enum Actions {
   CloseFrame,
   BringFrameToFront,
   SendFrameToBack,
+  DeactivateAllFrames,
   CloseAllFrames,
   UpdateFrameData,
   AddScene,
@@ -91,6 +92,11 @@ export const bringFrameToFront = frameId => ({
 export const sendFrameToBack = frameId => ({
   type: Actions.SendFrameToBack,
   payload: { frameId },
+  mutative: true,
+})
+
+export const deactivateAllFrames = () => ({
+  type: Actions.DeactivateAllFrames,
   mutative: true,
 })
 
