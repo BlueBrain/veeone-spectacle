@@ -6,6 +6,7 @@ import CloseIconButtonWithRef from "./frame-controls/CloseIconButton"
 import FullscreenIconButtonWithRef from "./frame-controls/FullscreenIconButton"
 import SendToBackIconButtonWithRef from "./frame-controls/SendToBackIconButton"
 import { useDesk } from "../desk/DeskContext"
+import { useConfig } from "../../config/AppConfigContext"
 
 export interface FrameControlBarProps {
   isFullscreenButtonVisible?: boolean
@@ -18,6 +19,7 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
   isSendToBackButtonVisible = true,
   isCloseButtonVisible = true,
 }) => {
+  const config = useConfig()
   const { scene } = useDesk()
 
   const { toggleFullscreen, close, sendToBack, frameId } = useContext(
@@ -42,6 +44,11 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
     [frameId, scene.frameStack]
   )
 
+  const isControlBarAlwaysVisible = useMemo(
+    () => config.FRAME_CONTROLS_ALWAYS_VISIBLE,
+    [config.FRAME_CONTROLS_ALWAYS_VISIBLE]
+  )
+
   return (
     <Box
       sx={[
@@ -61,12 +68,18 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
             transition: `transform ease 500ms`,
           },
           ...(!isTopFrame
-            ? {
-                ".MuiIconButton-root": {
-                  background: `rgba(0, 0, 0, .5)`,
-                  transform: "scale(80%)",
-                },
-              }
+            ? isControlBarAlwaysVisible
+              ? {
+                  ".MuiIconButton-root": {
+                    background: `rgba(0, 0, 0, .5)`,
+                    transform: "scale(80%)",
+                  },
+                }
+              : {
+                  ".MuiIconButton-root": {
+                    display: `none`,
+                  },
+                }
             : {}),
         },
       ]}
