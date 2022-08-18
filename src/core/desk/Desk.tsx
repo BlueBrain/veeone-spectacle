@@ -18,6 +18,7 @@ import VersionLabel from "./VersionLabel"
 import { FullscreenLayer } from "./fullscreen"
 import { deactivateAllFrames } from "../redux/actions"
 import { useDispatch } from "react-redux"
+import KeyboardSandbox from "../../visualkeyboard/components/KeyboardSandbox"
 
 interact.pointerMoveTolerance(4)
 
@@ -225,6 +226,8 @@ const Desk: React.FC = () => {
       })}
 
       <FullscreenLayer />
+
+      <KeyboardSandbox />
     </Box>
   )
 }

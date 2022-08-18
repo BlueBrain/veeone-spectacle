@@ -1,9 +1,10 @@
-import Keyboard from "react-simple-keyboard"
 import "react-simple-keyboard/build/css/index.css"
 import React, { useEffect, useRef, useState } from "react"
 import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
-import styled from "styled-components"
+import { Box } from "@mui/material"
+import Keyboard from "./Keyboard"
+import KeyboardContextProvider from "./KeyboardContextProvider"
 
 type KeyboardLayout = "default" | "shift" | "caps"
 type ShiftMode = "lower" | "upper" | "lock"
@@ -34,10 +35,6 @@ const KEYBOARD_LAYOUTS = {
   ],
 }
 
-const StyledKeyboard = styled.div`
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
-`
-
 const useStyles = makeStyles(theme =>
   createStyles({
     shiftButtonUpper: {
@@ -65,18 +62,16 @@ export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
   identifier,
   onInputChange,
 }) => {
-  const classes = useStyles()
   const [value, setValue] = useState<string>(initialValue)
   const [shiftMode, setShiftMode] = useState<ShiftMode>(SHIFT_MODES[0])
   const [capsLock, setCapsLock] = useState<boolean>(false)
-  const keyboardRef = useRef()
 
   useEffect(() => {
     onInputChange(value)
   }, [value, onInputChange])
 
   const handleInputChange = input => {
-    console.log("Input changed", input)
+    console.log("Input changed (VisualKeyboard level)", input)
     setValue(input)
   }
 
@@ -120,54 +115,23 @@ export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
     setCapsLock(!capsLock)
   }
 
-  const SHIFT_MODE_TO_BUTTON_CLASS = {
-    upper: classes.shiftButtonUpper,
-    lock: classes.shiftButtonLock,
-  }
-
-  const buttonTheme = [
-    ...(shiftMode !== "lower"
-      ? [
-          {
-            class: SHIFT_MODE_TO_BUTTON_CLASS[shiftMode],
-            buttons: "{shift}",
-          },
-        ]
-      : []),
-    ...(capsLock
-      ? [
-          {
-            class: classes.capsLockButtonActive,
-            buttons: "{capslock}",
-          },
-        ]
-      : []),
-  ]
-
-  let layoutName: KeyboardLayout = "default"
-
-  if (shiftMode === "upper" || shiftMode === "lock") {
-    layoutName = "shift"
-  } else if (capsLock) {
-    layoutName = "caps"
-  }
-
-  useEffect(() => {
-    // @ts-ignore
-    keyboardRef?.current?.setInput(initialValue)
-  }, [initialValue])
-
   return (
-    <StyledKeyboard>
-      <Keyboard
-        onChange={handleInputChange}
-        onKeyPress={handleKeyPress}
-        layout={KEYBOARD_LAYOUTS}
-        layoutName={layoutName}
-        buttonTheme={buttonTheme}
-        baseClass={`keyboard-${identifier}`}
-        keyboardRef={r => (keyboardRef.current = r)}
-      />
-    </StyledKeyboard>
+    <Box sx={{ boxShadow: `4px 4px 10px rgba(0, 0, 0, 0.2)` }}>
+      <KeyboardContextProvider
+        initialValue={value}
+        onValueChange={handleInputChange}
+      >
+        <Keyboard />
+      </KeyboardContextProvider>
+      {/*<Keyboard*/}
+      {/*  onChange={handleInputChange}*/}
+      {/*  onKeyPress={handleKeyPress}*/}
+      {/*  layout={KEYBOARD_LAYOUTS}*/}
+      {/*  layoutName={layoutName}*/}
+      {/*  buttonTheme={buttonTheme}*/}
+      {/*  baseClass={`keyboard-${identifier}`}*/}
+      {/*  keyboardRef={r => (keyboardRef.current = r)}*/}
+      {/*/>*/}
+    </Box>
   )
 }

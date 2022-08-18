@@ -3,8 +3,7 @@ import { generateRandomId } from "../../common/random"
 import { OpenVisualKeyboardOptions } from "../types"
 import ReactDOM from "react-dom"
 import React from "react"
-
-import VisualKeyboard from "../components/VisualKeyboard"
+import { VisualKeyboard } from "../components/VisualKeyboard"
 
 class VisualKeyboardInstance {
   constructor(
