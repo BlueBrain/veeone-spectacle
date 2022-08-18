@@ -20,16 +20,12 @@ import React, {
 import SpectacleContext from "../core/spectacle/SpectacleContext"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"
 import { SlideshowRounded } from "@mui/icons-material"
-import { usePresentationManager } from "../core/presentation-manager/PresentationManagerContext"
-import { BaseDialog, useDialogs } from "../dialogs/DialogsContext"
+import { useDialogs } from "../dialogs/DialogsContext"
 import UnsavedChangesWarning from "./UnsavedChangesWarning"
+import { useActiveDialog } from "../dialogs/ActiveDialogContext"
 
-const OpenPresentationModal: React.FC<BaseDialog> = ({
-  position,
-  resolveDialog,
-  cancelDialog,
-}) => {
-  const presentationManager = usePresentationManager()
+const OpenPresentationModal: React.FC = () => {
+  const { dialogOptions, resolveDialog, cancelDialog } = useActiveDialog()
   const { veeDriveService, isPresentationClean } = useContext(SpectacleContext)
   const dialogs = useDialogs()
   const [isLoading, setIsLoading] = useState(false)
@@ -61,7 +57,7 @@ const OpenPresentationModal: React.FC<BaseDialog> = ({
     async event => {
       if (!isPresentationClean) {
         const result = await dialogs.openDialog(UnsavedChangesWarning, {
-          position,
+          position: dialogOptions.position,
           maxWidth: "xs",
         })
         console.debug("NEW PRESENTATION RESULT", result)
@@ -73,7 +69,7 @@ const OpenPresentationModal: React.FC<BaseDialog> = ({
       openPresentation,
       selectedPresentationId,
       dialogs,
-      position,
+      dialogOptions.position,
     ]
   )
 

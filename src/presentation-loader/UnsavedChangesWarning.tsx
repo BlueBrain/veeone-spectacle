@@ -1,26 +1,22 @@
 import ConfirmDialog from "../confirm-dialog/ConfirmDialog"
 import React, { useCallback, useMemo } from "react"
-import { BaseDialog } from "../dialogs/DialogsContext"
 import { usePresentationManager } from "../core/presentation-manager/PresentationManagerContext"
 import { useSpectacle } from "../core/spectacle/SpectacleContext"
+import { useActiveDialog } from "../dialogs/ActiveDialogContext"
 
-const UnsavedChangesWarning: React.FC<BaseDialog> = ({
-  position,
-  resolveDialog,
-  cancelDialog,
-}) => {
+const UnsavedChangesWarning: React.FC = () => {
   const presentationManager = usePresentationManager()
-
   const { presentationStore } = useSpectacle()
+  const { dialogOptions, resolveDialog, cancelDialog } = useActiveDialog()
 
   const saveCurrentAndContinue = useCallback(
     async event => {
       await presentationManager.savePresentation({
-        position,
+        position: dialogOptions.position,
       })
       resolveDialog(true)
     },
-    [presentationManager, position, resolveDialog]
+    [presentationManager, dialogOptions.position, resolveDialog]
   )
 
   const dontSaveCurrentAndContinue = useCallback(
@@ -48,7 +44,7 @@ const UnsavedChangesWarning: React.FC<BaseDialog> = ({
 
   return (
     <ConfirmDialog
-      position={position}
+      position={dialogOptions.position}
       title={warningTitle}
       text={warningText}
       options={[

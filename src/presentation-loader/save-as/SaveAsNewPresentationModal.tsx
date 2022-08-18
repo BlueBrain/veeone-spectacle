@@ -9,20 +9,16 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useSpectacle } from "../../core/spectacle/SpectacleContext"
 import { visualKeyboardService } from "../../visualkeyboard"
-import { BaseDialog } from "../../dialogs/DialogsContext"
 import { generateRandomPresentationId } from "../../core/presentations/utils"
 import PresentationFolderList from "./PresentationFolderList"
+import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
 
 const keyboardId = "savePresentationName"
 
-const SaveAsNewPresentationModal: React.FC<BaseDialog> = ({
-  position,
-  resolveDialog,
-  cancelDialog,
-}) => {
+const SaveAsNewPresentationModal: React.FC = () => {
+  const { resolveDialog, cancelDialog } = useActiveDialog()
   const presentationNameFieldRef = useRef()
   const spectacleContext = useSpectacle()
-  const { left, top } = position
   const [presentationTitle, setPresentationTitle] = useState(
     spectacleContext.presentationStore.name !== "Untitled"
       ? spectacleContext.presentationStore.name

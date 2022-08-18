@@ -1,11 +1,12 @@
 import { Dialog, Paper, PaperProps } from "@mui/material"
-import React, { useCallback, useEffect, useRef } from "react"
-import { BaseDialog, DialogOptions } from "./DialogsContext"
+import React, { useEffect, useRef } from "react"
+import { DialogOptions } from "./DialogsContext"
 import { useConfig } from "../config/AppConfigContext"
 import { ApplicationConfig } from "../config/types"
+import ActiveDialogContextProvider from "./ActiveDialogContextProvider"
 
 interface SpectacleDialogProps {
-  component: React.FC<BaseDialog> | React.NamedExoticComponent<BaseDialog>
+  component: React.FC | React.NamedExoticComponent
   options: DialogOptions
   resolve: (value: any) => void
   reject: (reason: any) => void
@@ -47,27 +48,29 @@ const SpectacleDialog: React.FC<SpectacleDialogProps> = ({
   const DialogComponent = component
 
   return (
-    <Dialog
-      open={true}
-      onClose={reject}
-      maxWidth={maxWidth}
-      fullWidth={fullWidth}
-      PaperComponent={PaperComponent}
-      PaperProps={{
-        sx: {
-          position: "absolute",
-          transform: `translate(-50%, -50%)`,
-          left: position.left,
-          top: position.top,
-        },
-      }}
+    <ActiveDialogContextProvider
+      dialogOptions={options}
+      resolveDialog={resolve}
+      cancelDialog={reject}
     >
-      <DialogComponent
-        position={position}
-        resolveDialog={resolve}
-        cancelDialog={reject}
-      />
-    </Dialog>
+      <Dialog
+        open={true}
+        onClose={reject}
+        maxWidth={maxWidth}
+        fullWidth={fullWidth}
+        PaperComponent={PaperComponent}
+        PaperProps={{
+          sx: {
+            position: "absolute",
+            transform: `translate(-50%, -50%)`,
+            left: position.left,
+            top: position.top,
+          },
+        }}
+      >
+        <DialogComponent />
+      </Dialog>
+    </ActiveDialogContextProvider>
   )
 }
 

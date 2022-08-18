@@ -4,12 +4,6 @@ import { Breakpoint } from "@mui/system"
 
 type DialogResult = any
 
-export interface BaseDialog {
-  position: Position
-  resolveDialog: (value: any) => void
-  cancelDialog: (reason: any) => void
-}
-
 export interface DialogOptions {
   position: Position
   maxWidth?: Breakpoint | false
@@ -17,7 +11,7 @@ export interface DialogOptions {
 }
 
 export type OpenDialogFunction = (
-  component: React.FC<BaseDialog> | React.NamedExoticComponent<BaseDialog>,
+  component: React.FC<any> | React.NamedExoticComponent<any>,
   dialogOptions: DialogOptions
 ) => Promise<DialogResult>
 
