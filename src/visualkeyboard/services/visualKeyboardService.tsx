@@ -5,7 +5,7 @@ import ReactDOM from "react-dom"
 import React from "react"
 import { VisualKeyboard } from "../components/VisualKeyboard"
 
-class VisualKeyboardInstance {
+export class VisualKeyboardInstance {
   constructor(
     public id: string,
     public wrapper: HTMLElement,
@@ -75,19 +75,19 @@ class VisualKeyboardService {
     console.log("Open visual keyboard inside", parent)
     document.body.appendChild(keyboardWrapper)
 
-    const keyboardComponent = (
-      <VisualKeyboard
-        identifier={keyboardWrapperId}
-        onInputChange={handleInputChange}
-        initialValue={options?.initialValue ?? ""}
-        onEscape={() => this.closeKeyboard(keyboardId)}
-      />
-    )
-
     this.keyboards[keyboardId] = new VisualKeyboardInstance(
       keyboardId,
       keyboardWrapper,
       target
+    )
+
+    const keyboardComponent = (
+      <VisualKeyboard
+        instance={this.keyboards[keyboardId]}
+        onInputChange={handleInputChange}
+        initialValue={options?.initialValue ?? ""}
+        onDone={() => this.closeKeyboard(keyboardId)}
+      />
     )
 
     ReactDOM.render(keyboardComponent, keyboardWrapper)

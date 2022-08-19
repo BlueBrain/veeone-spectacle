@@ -14,7 +14,7 @@ const KeyboardRow: React.FC<KeyboardRowProps> = ({ children }) => {
         flexWrap: `nowrap`,
         flexGrow: 1,
         justifyContent: `space-between`,
-        padding: `0.2rem 0`,
+        padding: `0.1rem 0`,
         textTransform: `none`,
       }}
     >

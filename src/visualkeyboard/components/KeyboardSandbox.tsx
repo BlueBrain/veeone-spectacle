@@ -21,8 +21,16 @@ const KeyboardSandbox: React.FC = () => {
   }, [])
 
   return (
-    <Box sx={{ position: "absolute", left: `20rem`, top: `20rem` }}>
-      keyboard sandbox
+    <Box
+      sx={{
+        position: "absolute",
+        left: `10rem`,
+        top: `10rem`,
+        width: `30rem`,
+        height: `5rem`,
+        background: `white`,
+      }}
+    >
       <TextField
         inputRef={ref}
         type={"text"}
