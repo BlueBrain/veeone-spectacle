@@ -11,20 +11,21 @@ import FolderIcon from "@mui/icons-material/Folder"
 import { useDialogs } from "../../dialogs/DialogsContext"
 import CreateNewFolderModal from "../create-new-folder/CreateNewFolderModal"
 import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
-import { visualKeyboardService } from "../../visualkeyboard"
+import { useVisualKeyboard } from "../../visualkeyboard/components/VisualKeyboardContext"
 
 const PresentationFolderList: React.FC = () => {
   const dialogs = useDialogs()
   const { dialogOptions } = useActiveDialog()
+  const { closeKeyboard } = useVisualKeyboard()
   const folderList = ["...", "...", "...", "...", "...", "...", "...", "..."]
 
   const openCreateNewFolderDialog = useCallback(async () => {
-    visualKeyboardService.closeKeyboard("savePresentationName")
-    const newFolder = await dialogs.openDialog(CreateNewFolderModal, {
+    closeKeyboard("savePresentationName")
+    await dialogs.openDialog(CreateNewFolderModal, {
       position: dialogOptions.position,
       maxWidth: "xs",
     })
-  }, [dialogOptions.position, dialogs])
+  }, [closeKeyboard, dialogOptions.position, dialogs])
 
   return (
     <Grid container>

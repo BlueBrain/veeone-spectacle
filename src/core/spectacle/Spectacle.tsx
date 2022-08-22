@@ -1,15 +1,16 @@
 import * as React from "react"
 import { useMemo } from "react"
 import { CssBaseline, ThemeProvider } from "@mui/material"
-import ThemeGradients from "../themes/bbp/ThemeGradients"
+import ThemeGradients from "../../branding/ThemeGradients"
 import SpectacleContextProvider from "./SpectacleContextProvider"
 import SpectacleScreen from "./SpectacleScreen"
 import { useConfig } from "../../config/AppConfigContext"
-import { getBlueBrainTheme } from "../themes/bbp"
+import { getBlueBrainTheme } from "../../branding/bbp-theme"
 import ImageKeeperContextProvider from "../../image-keeper/ImageKeeperContextProvider"
 import DialogsContextProvider from "../../dialogs/DialogsContextProvider"
 import PresentationManagerContextProvider from "../presentation-manager/PresentationManagerContextProvider"
 import DialogsPlaceholder from "../../dialogs/DialogsPlaceholder"
+import VisualKeyboardContextProvider from "../../visualkeyboard/components/VisualKeyboardContextProvider"
 
 export const Spectacle = () => {
   const config = useConfig()
@@ -19,16 +20,18 @@ export const Spectacle = () => {
     <ThemeProvider theme={blueBrainTheme}>
       <CssBaseline />
       <ThemeGradients />
-      <DialogsContextProvider>
+      <VisualKeyboardContextProvider>
         <SpectacleContextProvider>
-          <PresentationManagerContextProvider>
-            <ImageKeeperContextProvider>
-              <SpectacleScreen />
-            </ImageKeeperContextProvider>
-            <DialogsPlaceholder />
-          </PresentationManagerContextProvider>
+          <DialogsContextProvider>
+            <PresentationManagerContextProvider>
+              <ImageKeeperContextProvider>
+                <SpectacleScreen />
+              </ImageKeeperContextProvider>
+              <DialogsPlaceholder />
+            </PresentationManagerContextProvider>
+          </DialogsContextProvider>
         </SpectacleContextProvider>
-      </DialogsContextProvider>
+      </VisualKeyboardContextProvider>
     </ThemeProvider>
   )
 }

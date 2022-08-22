@@ -2,7 +2,7 @@ import React from "react"
 import KeyboardRow from "../KeyboardRow"
 import KeyboardKey from "../KeyboardKey"
 import KeyboardModeKey from "../keyboard-mode-key"
-import Shift from "./Shift"
+import ShiftKey from "./ShiftKey"
 import { Backspace } from "@mui/icons-material"
 
 const KeyboardUppercaseLayout: React.FC = () => {
@@ -56,7 +56,7 @@ const KeyboardUppercaseLayout: React.FC = () => {
         <KeyboardKey label={"|"} />
       </KeyboardRow>
       <KeyboardRow>
-        <KeyboardKey label={<Shift />} mode={KeyboardModeKey.SHIFT} grow={4} />
+        <ShiftKey />
         <KeyboardKey label={"Z"} />
         <KeyboardKey label={"X"} />
         <KeyboardKey label={"C"} />
@@ -67,7 +67,7 @@ const KeyboardUppercaseLayout: React.FC = () => {
         <KeyboardKey label={"<"} />
         <KeyboardKey label={">"} />
         <KeyboardKey label={"?"} />
-        <KeyboardKey label={<Shift />} mode={KeyboardModeKey.SHIFT} grow={4} />
+        <ShiftKey />
       </KeyboardRow>
       <KeyboardRow>
         <KeyboardKey label={"@"} />

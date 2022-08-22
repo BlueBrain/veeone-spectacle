@@ -5,10 +5,11 @@ import DirectoryThumbnailsView from "./DirectoryThumbnailsView"
 import DirectoryListView from "./DirectoryListView"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import EmptyResults from "./EmptyResults"
-import { visualKeyboardService } from "../../visualkeyboard"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
 import { Box } from "@mui/material"
+import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import { useVisualKeyboard } from "../../visualkeyboard/components/VisualKeyboardContext"
 
 interface DirectoryContentProps {
   files: BrowserFile[]
@@ -22,6 +23,7 @@ const DirectoryContent: React.FC<DirectoryContentProps> = ({
   const { frameId, viewType } = useFileBrowser()
   const { setScrollableAreaRef } = useFileBrowserNavigator()
   const { isSearchingInProgress } = useFileBrowserSearch()
+  const { closeKeyboardByTarget } = useVisualKeyboard()
   const displayType = viewType ?? FileBrowserViewTypes.Thumbnails
   const isEmpty = !dirs.length && !files.length
   const scrollableContentRef = useRef(null)
@@ -30,7 +32,8 @@ const DirectoryContent: React.FC<DirectoryContentProps> = ({
     console.debug(
       `Hide keyboard from tapping on directory contents: ${frameId}`
     )
-    visualKeyboardService.closeKeyboard(frameId)
+    // fixme
+    // visualKeyboardService.closeKeyboard(frameId)
   }, [frameId])
 
   useEffect(() => {

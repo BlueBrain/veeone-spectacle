@@ -2,7 +2,7 @@ import { Button, Grid } from "@mui/material"
 import React, { useCallback, useMemo } from "react"
 import { OverridableStringUnion } from "@mui/types"
 import { ButtonPropsColorOverrides } from "@mui/material/Button/Button"
-import { useKeyboard } from "./KeyboardContext"
+import { useCurrentKeyboard } from "./KeyboardContext"
 import KeyboardModeKey from "./keyboard-mode-key"
 
 interface KeyboardKeyProps {
@@ -13,6 +13,7 @@ interface KeyboardKeyProps {
     | "inherit"
     | "primary"
     | "secondary"
+    | "neutral"
     | "success"
     | "error"
     | "info"
@@ -24,12 +25,12 @@ interface KeyboardKeyProps {
 
 const KeyboardKey: React.FC<KeyboardKeyProps> = ({
   label,
-  color = "secondary",
+  color = "neutral",
   grow = 1,
   customValue,
   mode = KeyboardModeKey.NORMAL,
 }) => {
-  const keyboard = useKeyboard()
+  const keyboard = useCurrentKeyboard()
 
   const value: string = useMemo(
     () =>
@@ -55,6 +56,7 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
 
   return (
     <Grid item sx={{ display: `flex`, flexGrow: grow, padding: `0 0.1rem` }}>
+      {/* @ts-ignore */}
       <Button
         onClick={triggerButton}
         variant={"contained"}
@@ -66,6 +68,9 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
           flexGrow: 1,
           padding: `0.1rem`,
           textTransform: `none`,
+          boxShadow: 1,
+          fontWeight: `600`,
+          fontSize: `0.9rem`,
         }}
       >
         {label}

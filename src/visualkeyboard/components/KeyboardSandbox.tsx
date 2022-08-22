@@ -1,8 +1,9 @@
 import { Box, TextField } from "@mui/material"
 import React, { useCallback, useRef, useState } from "react"
-import { visualKeyboardService } from "../services/visualKeyboardService"
+import { useVisualKeyboard } from "./VisualKeyboardContext"
 
 const KeyboardSandbox: React.FC = () => {
+  const { openKeyboard, updateKeyboardState } = useVisualKeyboard()
   const keyboardId = "test"
   const ref = useRef()
   const [value, setValue] = useState("")
@@ -10,15 +11,19 @@ const KeyboardSandbox: React.FC = () => {
   const handleTextInputChange = event => {
     const value = event.target.value
     setValue(value)
-    visualKeyboardService.updateKeyboardState(keyboardId, value)
+    updateKeyboardState(keyboardId, value)
   }
 
-  const showVisualKeyboard = useCallback((target, initialValue: string) => {
-    visualKeyboardService.newKeyboard(target, newValue => setValue(newValue), {
-      initialValue,
-      keyboardId,
-    })
-  }, [])
+  const showVisualKeyboard = useCallback(
+    (target, initialValue: string) => {
+      openKeyboard({
+        target,
+        initial: initialValue,
+        onInputChange: newValue => setValue(newValue),
+      })
+    },
+    [openKeyboard]
+  )
 
   return (
     <Box

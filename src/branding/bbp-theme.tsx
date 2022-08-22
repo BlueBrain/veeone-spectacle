@@ -1,11 +1,55 @@
-import { createTheme } from "@mui/material"
-import { green, grey, red } from "@mui/material/colors"
-import { ApplicationConfig } from "../../../config/types"
-import "./css/colors.css"
+import {
+  activeLinkColor,
+  antiFlashWhite,
+  cetaceanBlue,
+  primaryTextColor,
+  processBlue,
+  smashedPumpkin,
+  strikingRed,
+  wageningenGreen,
+} from "./colors"
 import {
   SUISSE_INTL_FONT_FACES,
   TITILLIUM_WEB_FONT_FACES,
 } from "./font-imports"
+
+import { createTheme, PaletteColorOptions, ThemeOptions } from "@mui/material"
+import "./colors.css"
+
+import React from "react"
+import { ApplicationConfig } from "../config/types"
+
+declare module "@mui/material/styles/createPalette" {
+  interface TypeBackground {
+    light: React.CSSProperties["color"]
+  }
+}
+
+declare module "@mui/material/styles" {
+  interface Theme {
+    branding: {
+      main: string
+    }
+  }
+
+  interface ThemeOptions {
+    branding: {
+      main: string
+    }
+  }
+
+  interface SimplePaletteColorOptions {
+    pale: string
+  }
+
+  interface PaletteColor {
+    pale: string
+  }
+
+  interface PaletteOptions {
+    neutral: PaletteColorOptions
+  }
+}
 
 export const getBlueBrainTheme = (config: ApplicationConfig) => {
   const HIDE_CURSOR_CSS = config.DISPLAY_MOUSE_CURSOR
@@ -14,7 +58,7 @@ export const getBlueBrainTheme = (config: ApplicationConfig) => {
   cursor: none !important;
 }
 `
-  return createTheme({
+  const themeOptions: ThemeOptions = {
     palette: {
       mode: "light",
       primary: {
@@ -26,16 +70,39 @@ export const getBlueBrainTheme = (config: ApplicationConfig) => {
         main: `rgba(62, 197, 255, 1)`,
         pale: `rgba(62, 197, 255, .2)`,
       },
-      screen: {
-        main: `rgba(30, 30, 30, 1)`,
-        pale: `rgba(30, 30, 30, .2)`,
+      neutral: {
+        main: `rgba(250, 250, 250, 1)`,
+        pale: `rgba(220, 220, 220, 1)`,
+        dark: `rgba(230, 230, 230, 1)`,
       },
-      error: red,
-      success: green,
-      info: grey,
       background: {
-        default: `var(--blue-brain-dark-blue)`,
-        light: `var(--blue-brain-light-blue)`,
+        default: antiFlashWhite,
+      },
+      info: {
+        main: processBlue,
+        pale: processBlue,
+      },
+      success: {
+        main: wageningenGreen,
+        pale: wageningenGreen,
+      },
+      warning: {
+        main: smashedPumpkin,
+        pale: smashedPumpkin,
+      },
+      error: {
+        main: strikingRed,
+        pale: strikingRed,
+      },
+      text: {
+        primary: primaryTextColor,
+      },
+      action: {
+        active: activeLinkColor,
+      },
+      screen: {
+        main: cetaceanBlue,
+        pale: processBlue,
       },
     },
     branding: { main: `rgba(62, 197, 255, 1)` },
@@ -100,5 +167,6 @@ ${HIDE_CURSOR_CSS}
         },
       },
     },
-  })
+  }
+  return createTheme(themeOptions)
 }

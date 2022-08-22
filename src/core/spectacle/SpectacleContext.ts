@@ -9,16 +9,6 @@ export interface SavePresentationOpenModalProps {
   position: Position
 }
 
-// export interface PresentationManagerContextProps {
-//   // isModalOpen: boolean
-//   // openSaveAsModal: (props: SavePresentationOpenModalProps) => void
-//   // closeModal: (event, reason: string) => void
-//   save: (
-//     props: SavePresentationOpenModalProps
-//   ) => Promise<SpectaclePresentation>
-//   // modalReadyToSaveHandler: (position: Position) => void
-// }
-
 interface OpenPresentationOpenModalProps {
   position: Position
 }

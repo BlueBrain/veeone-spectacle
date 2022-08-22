@@ -1,6 +1,6 @@
 import { Box, Grid } from "@mui/material"
 import React, { useMemo } from "react"
-import { useKeyboard } from "./KeyboardContext"
+import { useCurrentKeyboard } from "./KeyboardContext"
 import KeyboardNormalLayout from "./layouts/KeyboardNormalLayout"
 import KeyboardLayoutMode from "./keyboard-layout-mode"
 import KeyboardUppercaseLayout from "./layouts/KeyboardUppercaseLayout"
@@ -12,7 +12,7 @@ const KEYBOARD_LAYOUTS = {
 }
 
 const Keyboard: React.FC = () => {
-  const { keyboardLayoutMode } = useKeyboard()
+  const { keyboardLayoutMode } = useCurrentKeyboard()
 
   const KeyboardLayoutComponent = useMemo(
     () => KEYBOARD_LAYOUTS[keyboardLayoutMode],
@@ -24,7 +24,8 @@ const Keyboard: React.FC = () => {
       sx={{
         flexGrow: 1,
         width: `28rem`,
-        background: `white`,
+        // @ts-ignore
+        background: theme => theme.palette.neutral.dark,
         padding: `0.2rem`,
       }}
     >

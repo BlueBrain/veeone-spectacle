@@ -16,4 +16,4 @@ export interface KeyboardContextProps {
 
 export const KeyboardContext = createContext<KeyboardContextProps>(null)
 
-export const useKeyboard = () => useContext(KeyboardContext)
+export const useCurrentKeyboard = () => useContext(KeyboardContext)

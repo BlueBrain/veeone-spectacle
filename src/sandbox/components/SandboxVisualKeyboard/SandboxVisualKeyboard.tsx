@@ -1,16 +1,22 @@
 import "react-simple-keyboard/build/css/index.css"
 import React, { useEffect, useState } from "react"
 import { Button } from "@mui/material"
-import { visualKeyboardService } from "../../../visualkeyboard"
 import { OpenVisualKeyboardOptions } from "../../../visualkeyboard/types"
+import { useVisualKeyboard } from "../../../visualkeyboard/components/VisualKeyboardContext"
 
 const SandboxVisualKeyboard: React.FC = () => {
+  const { openKeyboard } = useVisualKeyboard()
+
   const openVisualKeyboard = (
     target,
     handleInputChange,
     options?: OpenVisualKeyboardOptions
   ) => {
-    visualKeyboardService.newKeyboard(target, handleInputChange, options)
+    openKeyboard({
+      target,
+      onInputChange: handleInputChange,
+      initial: options.initialValue,
+    })
   }
 
   useEffect(() => {

@@ -4,9 +4,9 @@ import {
   KeyboardContextProps,
 } from "./KeyboardContext"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { VisualKeyboardInstance } from "../services/visualKeyboardService"
 import KeyboardModeKey from "./keyboard-mode-key"
 import KeyboardLayoutMode from "./keyboard-layout-mode"
+import VisualKeyboardInstance from "../visual-keyboard-instance"
 
 interface KeyboardContextProviderProps {
   initialValue: string

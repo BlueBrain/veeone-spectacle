@@ -1,28 +1,29 @@
 import "react-simple-keyboard/build/css/index.css"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Box } from "@mui/material"
 import Keyboard from "./Keyboard"
 import KeyboardContextProvider from "./KeyboardContextProvider"
-import { VisualKeyboardInstance } from "../services/visualKeyboardService"
+import { getBlueBrainTheme } from "../../branding/bbp-theme"
+import { useConfig } from "../../config/AppConfigContext"
+import { ThemeProvider } from "@mui/styles"
+import VisualKeyboardInstance from "../visual-keyboard-instance"
 
 interface VisualKeyboardProps {
   instance: VisualKeyboardInstance
-  initialValue?: string
-  onInputChange: (button) => void
   onDone: (result: string) => void
 }
 
 export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
-  initialValue = "",
-  onInputChange,
   instance,
   onDone,
 }) => {
-  const [value, setValue] = useState<string>(initialValue)
+  const [value, setValue] = useState<string>(instance.initial)
+  const config = useConfig()
+  const blueBrainTheme = useMemo(() => getBlueBrainTheme(config), [config])
 
   useEffect(() => {
-    onInputChange(value)
-  }, [value, onInputChange])
+    instance.onInputChange(value)
+  }, [value, instance])
 
   const handleInputChange = input => {
     console.log("Input changed (VisualKeyboard level)", input)
@@ -33,8 +34,21 @@ export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
     onDone(result)
   }
 
+  const targetRect = useMemo(() => instance.target.getBoundingClientRect(), [
+    instance.target,
+  ])
+
   return (
-    <Box sx={{ boxShadow: `4px 4px 15px rgba(0, 0, 0, 0.25)` }}>
+    <Box
+      sx={{
+        boxShadow: `4px 4px 15px rgba(0, 0, 0, 0.25)`,
+        position: `absolute`,
+        left: `${targetRect.left}px`,
+        top: `${targetRect.bottom}px`,
+        marginTop: `0.1rem`,
+        zIndex: 2000,
+      }}
+    >
       <KeyboardContextProvider
         visualKeyboardInstance={instance}
         initialValue={value}

@@ -8,14 +8,18 @@ import {
 } from "@mui/material"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
-import { visualKeyboardService } from "../../visualkeyboard"
-
-const keyboardId = "createNewFolderName"
+import { useVisualKeyboard } from "../../visualkeyboard/components/VisualKeyboardContext"
 
 const CreateNewFolderModal: React.FC = () => {
+  const keyboardId = "createNewFolderName"
   const folderNameRef = useRef()
   const { resolveDialog, cancelDialog } = useActiveDialog()
   const [folderName, setFolderName] = useState("")
+  const {
+    openKeyboard,
+    closeKeyboard,
+    updateKeyboardState,
+  } = useVisualKeyboard()
 
   const createNewFolderAndClose = useCallback(() => {
     const newFolder = {
@@ -27,25 +31,26 @@ const CreateNewFolderModal: React.FC = () => {
   const handleTextInputChange = event => {
     const value = event.target.value
     setFolderName(value)
-    visualKeyboardService.updateKeyboardState(keyboardId, value)
+    updateKeyboardState(keyboardId, value)
   }
 
-  const showVisualKeyboard = useCallback((target, initialValue: string) => {
-    visualKeyboardService.newKeyboard(
-      target,
-      newValue => setFolderName(newValue),
-      {
-        initialValue,
-        keyboardId,
-      }
-    )
-  }, [])
+  const showVisualKeyboard = useCallback(
+    (target, initialValue: string) => {
+      openKeyboard({
+        target,
+        onInputChange: newValue => setFolderName(newValue),
+        initial: initialValue,
+        customKeyboardId: keyboardId,
+      })
+    },
+    [openKeyboard]
+  )
 
   useEffect(() => {
     return () => {
-      visualKeyboardService.closeKeyboard(keyboardId)
+      closeKeyboard(keyboardId)
     }
-  }, [])
+  }, [closeKeyboard])
 
   return (
     <>

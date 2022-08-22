@@ -50,4 +50,8 @@
   --medium-electric-blue: #035696;
   --success-color: var(--jungle-green);
   --warning-color: var(--smashed-pumpkin);
+
+  /* Unofficial helper colors */
+  --desire: #e73654;
+  --striking-red: #d91e11;
 }

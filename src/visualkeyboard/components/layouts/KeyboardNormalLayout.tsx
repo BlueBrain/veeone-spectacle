@@ -3,7 +3,7 @@ import KeyboardRow from "../KeyboardRow"
 import KeyboardKey from "../KeyboardKey"
 import KeyboardModeKey from "../keyboard-mode-key"
 import { Backspace } from "@mui/icons-material"
-import Shift from "./Shift"
+import ShiftKey from "./ShiftKey"
 
 const KeyboardNormalLayout: React.FC = () => {
   return (
@@ -56,7 +56,7 @@ const KeyboardNormalLayout: React.FC = () => {
         <KeyboardKey label={"\\"} />
       </KeyboardRow>
       <KeyboardRow>
-        <KeyboardKey label={<Shift />} mode={KeyboardModeKey.SHIFT} grow={4} />
+        <ShiftKey />
         <KeyboardKey label={"z"} />
         <KeyboardKey label={"x"} />
         <KeyboardKey label={"c"} />
@@ -67,7 +67,7 @@ const KeyboardNormalLayout: React.FC = () => {
         <KeyboardKey label={","} />
         <KeyboardKey label={"."} />
         <KeyboardKey label={"/"} />
-        <KeyboardKey label={<Shift />} mode={KeyboardModeKey.SHIFT} grow={4} />
+        <ShiftKey />
       </KeyboardRow>
       <KeyboardRow>
         <KeyboardKey label={"@"} />

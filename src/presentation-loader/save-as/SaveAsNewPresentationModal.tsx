@@ -8,39 +8,42 @@ import {
 } from "@mui/material"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useSpectacle } from "../../core/spectacle/SpectacleContext"
-import { visualKeyboardService } from "../../visualkeyboard"
 import { generateRandomPresentationId } from "../../core/presentations/utils"
 import PresentationFolderList from "./PresentationFolderList"
 import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
-
-const keyboardId = "savePresentationName"
+import { useVisualKeyboard } from "../../visualkeyboard/components/VisualKeyboardContext"
 
 const SaveAsNewPresentationModal: React.FC = () => {
+  const keyboardId = "savePresentationName"
   const { resolveDialog, cancelDialog } = useActiveDialog()
   const presentationNameFieldRef = useRef()
-  const spectacleContext = useSpectacle()
+  const { presentationStore } = useSpectacle()
+  const {
+    openKeyboard,
+    closeKeyboard,
+    updateKeyboardState,
+  } = useVisualKeyboard()
   const [presentationTitle, setPresentationTitle] = useState(
-    spectacleContext.presentationStore.name !== "Untitled"
-      ? spectacleContext.presentationStore.name
-      : ""
+    presentationStore.name !== "Untitled" ? presentationStore.name : ""
   )
 
-  const showVisualKeyboard = useCallback((target, initialValue: string) => {
-    visualKeyboardService.newKeyboard(
-      target,
-      newValue => setPresentationTitle(newValue),
-      {
-        initialValue,
-        keyboardId,
-      }
-    )
-  }, [])
+  const showVisualKeyboard = useCallback(
+    (target, initialValue: string) => {
+      openKeyboard({
+        target,
+        onInputChange: newValue => setPresentationTitle(newValue),
+        initial: initialValue,
+        customKeyboardId: keyboardId,
+      })
+    },
+    [openKeyboard]
+  )
 
   useEffect(() => {
     return () => {
-      visualKeyboardService.closeKeyboard(keyboardId)
+      closeKeyboard(keyboardId)
     }
-  }, [])
+  }, [closeKeyboard])
 
   const handleSaveClick = async event => {
     resolveDialog({
@@ -52,7 +55,7 @@ const SaveAsNewPresentationModal: React.FC = () => {
   const handleTextInputChange = event => {
     const value = event.target.value
     setPresentationTitle(value)
-    visualKeyboardService.updateKeyboardState(keyboardId, value)
+    updateKeyboardState(keyboardId, value)
   }
 
   return (

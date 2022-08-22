@@ -2,14 +2,13 @@ import React, { useCallback, useEffect, useRef } from "react"
 import { Box, Grid, IconButton, TextField } from "@mui/material"
 import { Close } from "@mui/icons-material"
 import FiltersSelector from "./FiltersSelector"
-import { visualKeyboardService } from "../../visualkeyboard"
 import useInteractable from "../../core/interactable/useInteractable"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
-import { useFileBrowser } from "./FileBrowserContext"
+import { useVisualKeyboard } from "../../visualkeyboard/components/VisualKeyboardContext"
 
 const SearchFilesBar: React.FC = () => {
-  const { frameId } = useFileBrowser()
   const { setSearchMode, requestSearch, searchQuery } = useFileBrowserSearch()
+  const { openKeyboard, closeKeyboardByTarget } = useVisualKeyboard()
 
   const onSearchQueryChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -27,12 +26,13 @@ const SearchFilesBar: React.FC = () => {
 
   const showVisualKeyboard = useCallback(
     (target, initialValue: string) => {
-      visualKeyboardService.newKeyboard(target, handleInputChange, {
-        initialValue,
-        keyboardId: frameId,
+      openKeyboard({
+        target,
+        initial: initialValue,
+        onInputChange: handleInputChange,
       })
     },
-    [frameId, handleInputChange]
+    [handleInputChange, openKeyboard]
   )
 
   const searchFieldRef = useRef()
@@ -46,9 +46,9 @@ const SearchFilesBar: React.FC = () => {
   useEffect(() => {
     const keyboardTarget = searchFieldRef.current
     return () => {
-      visualKeyboardService.closeKeyboardByTarget(keyboardTarget)
+      closeKeyboardByTarget(keyboardTarget)
     }
-  }, [searchFieldRef])
+  }, [searchFieldRef, closeKeyboardByTarget])
 
   return (
     <Grid container alignItems={"center"}>
