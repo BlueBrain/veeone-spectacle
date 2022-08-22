@@ -4,11 +4,13 @@ import { Close } from "@mui/icons-material"
 import FiltersSelector from "./FiltersSelector"
 import useInteractable from "../../core/interactable/useInteractable"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
-import { useVisualKeyboard } from "../../visualkeyboard/components/VisualKeyboardContext"
+import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
+import { useFileBrowser } from "./FileBrowserContext"
 
 const SearchFilesBar: React.FC = () => {
   const { setSearchMode, requestSearch, searchQuery } = useFileBrowserSearch()
   const { openKeyboard, closeKeyboardByTarget } = useVisualKeyboard()
+  const { frameId } = useFileBrowser()
 
   const onSearchQueryChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -30,9 +32,10 @@ const SearchFilesBar: React.FC = () => {
         target,
         initial: initialValue,
         onInputChange: handleInputChange,
+        customKeyboardId: `search-files-${frameId}`,
       })
     },
-    [handleInputChange, openKeyboard]
+    [frameId, handleInputChange, openKeyboard]
   )
 
   const searchFieldRef = useRef()

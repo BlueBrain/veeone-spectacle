@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react"
-import VisualKeyboardInstance from "../visual-keyboard-instance"
+import VisualKeyboardInstance from "./visual-keyboard-instance"
+import { KeyboardId } from "./types"
 
-export type KeyboardId = string
 export interface OpenKeyboardOptions {
   target: HTMLElement
   onInputChange: (value: string) => void

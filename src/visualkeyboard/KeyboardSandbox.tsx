@@ -1,10 +1,11 @@
 import { Box, TextField } from "@mui/material"
 import React, { useCallback, useRef, useState } from "react"
 import { useVisualKeyboard } from "./VisualKeyboardContext"
+import { KeyboardId } from "./types"
 
 const KeyboardSandbox: React.FC = () => {
   const { openKeyboard, updateKeyboardState } = useVisualKeyboard()
-  const keyboardId = "test"
+  const keyboardId: KeyboardId = "test"
   const ref = useRef()
   const [value, setValue] = useState("")
 

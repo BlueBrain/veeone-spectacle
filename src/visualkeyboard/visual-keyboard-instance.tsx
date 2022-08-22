@@ -1,7 +1,7 @@
-import { KeyboardId } from "./components/VisualKeyboardContext"
 import { generateRandomId } from "../common/random"
+import { KeyboardId } from "./types"
 
-export interface VisualKeyboardInstanceConstructorArgs {
+interface VisualKeyboardInstanceConstructorArgs {
   target: HTMLElement
   onInputChange: (value: string) => void
   id?: KeyboardId

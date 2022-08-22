@@ -1,8 +1,8 @@
 import { Forward, Upload } from "@mui/icons-material"
 import React, { useMemo } from "react"
-import { useCurrentKeyboard } from "../KeyboardContext"
-import KeyboardModeKey from "../keyboard-mode-key"
-import KeyboardKey from "../KeyboardKey"
+import { useCurrentKeyboard } from "./KeyboardContext"
+import KeyboardModeKey from "./keyboard-mode-key"
+import KeyboardKey from "./KeyboardKey"
 
 const ShiftKey: React.FC = () => {
   const { uppercaseModeLocked } = useCurrentKeyboard()

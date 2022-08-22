@@ -9,7 +9,7 @@ import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
 import { Box } from "@mui/material"
 import { useSpectacle } from "../../core/spectacle/SpectacleContext"
-import { useVisualKeyboard } from "../../visualkeyboard/components/VisualKeyboardContext"
+import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
 
 interface DirectoryContentProps {
   files: BrowserFile[]
@@ -23,7 +23,7 @@ const DirectoryContent: React.FC<DirectoryContentProps> = ({
   const { frameId, viewType } = useFileBrowser()
   const { setScrollableAreaRef } = useFileBrowserNavigator()
   const { isSearchingInProgress } = useFileBrowserSearch()
-  const { closeKeyboardByTarget } = useVisualKeyboard()
+  const { closeKeyboard } = useVisualKeyboard()
   const displayType = viewType ?? FileBrowserViewTypes.Thumbnails
   const isEmpty = !dirs.length && !files.length
   const scrollableContentRef = useRef(null)
@@ -32,9 +32,9 @@ const DirectoryContent: React.FC<DirectoryContentProps> = ({
     console.debug(
       `Hide keyboard from tapping on directory contents: ${frameId}`
     )
-    // fixme
-    // visualKeyboardService.closeKeyboard(frameId)
-  }, [frameId])
+    const keyboardIdToClose = `search-files-${frameId}`
+    closeKeyboard(keyboardIdToClose)
+  }, [closeKeyboard, frameId])
 
   useEffect(() => {
     const currentRef = scrollableContentRef.current

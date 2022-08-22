@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo, useState } from "react"
 import VisualKeyboardContext, {
-  KeyboardId,
   OpenKeyboardOptions,
   VisualKeyboardContextProps,
 } from "./VisualKeyboardContext"
 import { VisualKeyboard } from "./VisualKeyboard"
-import VisualKeyboardInstance from "../visual-keyboard-instance"
+import VisualKeyboardInstance from "./visual-keyboard-instance"
+import { KeyboardId } from "./types"
 
 const VisualKeyboardContextProvider: React.FC = ({ children }) => {
   const [keyboards, setKeyboards] = useState<VisualKeyboardInstance[]>([])

@@ -1,9 +1,9 @@
 import { Box, Grid } from "@mui/material"
 import React, { useMemo } from "react"
 import { useCurrentKeyboard } from "./KeyboardContext"
-import KeyboardNormalLayout from "./layouts/KeyboardNormalLayout"
+import KeyboardNormalLayout from "./KeyboardNormalLayout"
 import KeyboardLayoutMode from "./keyboard-layout-mode"
-import KeyboardUppercaseLayout from "./layouts/KeyboardUppercaseLayout"
+import KeyboardUppercaseLayout from "./KeyboardUppercaseLayout"
 
 const KEYBOARD_LAYOUTS = {
   [KeyboardLayoutMode.NORMAL]: KeyboardNormalLayout,

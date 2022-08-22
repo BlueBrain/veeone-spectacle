@@ -3,10 +3,9 @@ import React, { useEffect, useMemo, useState } from "react"
 import { Box } from "@mui/material"
 import Keyboard from "./Keyboard"
 import KeyboardContextProvider from "./KeyboardContextProvider"
-import { getBlueBrainTheme } from "../../branding/bbp-theme"
-import { useConfig } from "../../config/AppConfigContext"
-import { ThemeProvider } from "@mui/styles"
-import VisualKeyboardInstance from "../visual-keyboard-instance"
+import { getBlueBrainTheme } from "../branding/bbp-theme"
+import { useConfig } from "../config/AppConfigContext"
+import VisualKeyboardInstance from "./visual-keyboard-instance"
 
 interface VisualKeyboardProps {
   instance: VisualKeyboardInstance

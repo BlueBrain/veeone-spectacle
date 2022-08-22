@@ -1,7 +1,7 @@
 import React from "react"
-import KeyboardRow from "../KeyboardRow"
-import KeyboardKey from "../KeyboardKey"
-import KeyboardModeKey from "../keyboard-mode-key"
+import KeyboardRow from "./KeyboardRow"
+import KeyboardKey from "./KeyboardKey"
+import KeyboardModeKey from "./keyboard-mode-key"
 import ShiftKey from "./ShiftKey"
 import { Backspace } from "@mui/icons-material"
 

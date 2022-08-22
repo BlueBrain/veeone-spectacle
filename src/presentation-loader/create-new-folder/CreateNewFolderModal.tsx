@@ -8,10 +8,11 @@ import {
 } from "@mui/material"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
-import { useVisualKeyboard } from "../../visualkeyboard/components/VisualKeyboardContext"
+import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
+import { KeyboardId } from "../../visualkeyboard/types"
 
 const CreateNewFolderModal: React.FC = () => {
-  const keyboardId = "createNewFolderName"
+  const keyboardId: KeyboardId = "createNewFolderName"
   const folderNameRef = useRef()
   const { resolveDialog, cancelDialog } = useActiveDialog()
   const [folderName, setFolderName] = useState("")

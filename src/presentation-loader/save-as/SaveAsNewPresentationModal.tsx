@@ -11,7 +11,7 @@ import { useSpectacle } from "../../core/spectacle/SpectacleContext"
 import { generateRandomPresentationId } from "../../core/presentations/utils"
 import PresentationFolderList from "./PresentationFolderList"
 import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
-import { useVisualKeyboard } from "../../visualkeyboard/components/VisualKeyboardContext"
+import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
 
 const SaveAsNewPresentationModal: React.FC = () => {
   const keyboardId = "savePresentationName"

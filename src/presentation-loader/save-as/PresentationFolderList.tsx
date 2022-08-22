@@ -11,7 +11,7 @@ import FolderIcon from "@mui/icons-material/Folder"
 import { useDialogs } from "../../dialogs/DialogsContext"
 import CreateNewFolderModal from "../create-new-folder/CreateNewFolderModal"
 import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
-import { useVisualKeyboard } from "../../visualkeyboard/components/VisualKeyboardContext"
+import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
 
 const PresentationFolderList: React.FC = () => {
   const dialogs = useDialogs()

@@ -10,7 +10,7 @@ import ImageKeeperContextProvider from "../../image-keeper/ImageKeeperContextPro
 import DialogsContextProvider from "../../dialogs/DialogsContextProvider"
 import PresentationManagerContextProvider from "../presentation-manager/PresentationManagerContextProvider"
 import DialogsPlaceholder from "../../dialogs/DialogsPlaceholder"
-import VisualKeyboardContextProvider from "../../visualkeyboard/components/VisualKeyboardContextProvider"
+import VisualKeyboardContextProvider from "../../visualkeyboard/VisualKeyboardContextProvider"
 
 export const Spectacle = () => {
   const config = useConfig()
