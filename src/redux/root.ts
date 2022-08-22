@@ -3,7 +3,6 @@ import { presentationReducer, scenesReducer } from "../core/redux/reducers"
 import { SpectaclePresentation } from "../core/types"
 import { Actions } from "../core/redux/actions"
 import { ApplicationConfig } from "../config/types"
-import { generateRandomPresentationId } from "../core/presentations/utils"
 
 export const rootReducer = (
   state: SpectaclePresentation,

@@ -48,7 +48,7 @@ const PathParts: React.FC<PathPartsProps> = ({ path, onSelectPathPart }) => {
         {path
           .split("/")
           .filter(part => part !== "")
-          .map((part, index, all) => (
+          .map((part, index) => (
             <Button
               onClick={() => onSelectPathPart(index + 1)}
               key={index}

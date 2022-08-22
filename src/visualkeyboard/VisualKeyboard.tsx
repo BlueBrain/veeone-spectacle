@@ -3,8 +3,6 @@ import React, { useEffect, useMemo, useState } from "react"
 import { Box } from "@mui/material"
 import Keyboard from "./Keyboard"
 import KeyboardContextProvider from "./KeyboardContextProvider"
-import { getBlueBrainTheme } from "../branding/bbp-theme"
-import { useConfig } from "../config/AppConfigContext"
 import VisualKeyboardInstance from "./visual-keyboard-instance"
 
 interface VisualKeyboardProps {
@@ -17,8 +15,6 @@ export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
   onDone,
 }) => {
   const [value, setValue] = useState<string>(instance.initial)
-  const config = useConfig()
-  const blueBrainTheme = useMemo(() => getBlueBrainTheme(config), [config])
 
   useEffect(() => {
     instance.onInputChange(value)

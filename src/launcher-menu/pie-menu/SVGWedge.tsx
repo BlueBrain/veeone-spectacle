@@ -52,10 +52,7 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
             `,
           }}
         >
-          <SVGSubWedges
-            items={menuItem.children}
-            anglePerItem={anglePerMainItem}
-          />
+          <SVGSubWedges items={menuItem.children} />
         </Box>
       ) : null}
 

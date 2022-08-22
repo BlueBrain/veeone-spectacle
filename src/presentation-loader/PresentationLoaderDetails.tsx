@@ -37,15 +37,9 @@ export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
 
   const isLoading = presentationData === null
 
-  const sceneCount = useMemo(
-    () =>
-      presentationData !== null ? presentationData.scenes.sceneOrder.length : 0,
-    [presentationData]
-  )
-
   const sceneSummaries = useMemo(() => {
     return presentationData !== null
-      ? Object.keys(presentationData.scenes.scenes).map((sceneKey, index) => {
+      ? Object.keys(presentationData.scenes.scenes).map(sceneKey => {
           return {
             frameCount: Object.keys(
               presentationData.scenes.scenes[sceneKey].frames

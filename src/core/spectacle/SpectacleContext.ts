@@ -1,15 +1,10 @@
 import React, { useContext } from "react"
 import { SceneId, SpectaclePresentation } from "../types"
-import { VeeDriveListPresentationsResponse } from "../../veedrive/types"
 import { Position, Size } from "../../common/types"
 import SceneManager from "../scenes/SceneManager"
 import VeeDriveService from "../../veedrive"
 
 export interface SavePresentationOpenModalProps {
-  position: Position
-}
-
-interface OpenPresentationOpenModalProps {
   position: Position
 }
 

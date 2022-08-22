@@ -1,6 +1,5 @@
 import {
   Button,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
@@ -26,7 +25,6 @@ interface ConfirmDialogOption {
 type ConfirmDialogOptions = ConfirmDialogOption[]
 
 interface ConfirmDialogProps {
-  position: Position
   title?: string
   text?: string
   options: ConfirmDialogOptions
@@ -36,12 +34,9 @@ interface ConfirmDialogProps {
 const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   title = "Please confirm",
   text = "",
-  position,
   options,
   onCancel,
 }) => {
-  const { left, top } = position
-
   const handleCancel = useCallback(() => {
     onCancel()
   }, [onCancel])

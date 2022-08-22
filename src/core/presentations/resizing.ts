@@ -1,6 +1,6 @@
 import { SpectaclePresentation } from "../types"
 import { Size } from "../../common/types"
-import _, { cloneDeep, round } from "lodash"
+import { cloneDeep, round } from "lodash"
 import { ContentBlockTypes } from "../../contentblocks/types"
 
 export const getMaximumContentArea = (store: SpectaclePresentation) => {

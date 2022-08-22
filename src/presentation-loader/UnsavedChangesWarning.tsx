@@ -9,22 +9,16 @@ const UnsavedChangesWarning: React.FC = () => {
   const { presentationStore } = useSpectacle()
   const { dialogOptions, resolveDialog, cancelDialog } = useActiveDialog()
 
-  const saveCurrentAndContinue = useCallback(
-    async event => {
-      await presentationManager.savePresentation({
-        position: dialogOptions.position,
-      })
-      resolveDialog(true)
-    },
-    [presentationManager, dialogOptions.position, resolveDialog]
-  )
+  const saveCurrentAndContinue = useCallback(async () => {
+    await presentationManager.savePresentation({
+      position: dialogOptions.position,
+    })
+    resolveDialog(true)
+  }, [presentationManager, dialogOptions.position, resolveDialog])
 
-  const dontSaveCurrentAndContinue = useCallback(
-    event => {
-      resolveDialog(false)
-    },
-    [resolveDialog]
-  )
+  const dontSaveCurrentAndContinue = useCallback(() => {
+    resolveDialog(false)
+  }, [resolveDialog])
 
   const warningTitle = useMemo(
     () =>
@@ -44,7 +38,6 @@ const UnsavedChangesWarning: React.FC = () => {
 
   return (
     <ConfirmDialog
-      position={dialogOptions.position}
       title={warningTitle}
       text={warningText}
       options={[

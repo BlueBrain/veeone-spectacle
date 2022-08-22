@@ -313,7 +313,7 @@ export const useInteractiveFrame = ({
               endOnly: true,
             }),
           ],
-          onstart: event => {
+          onstart: () => {
             bringToFront()
             console.debug("prevent fullscreen")
             isFullscreenEnabled = false

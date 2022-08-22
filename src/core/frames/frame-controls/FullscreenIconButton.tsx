@@ -1,6 +1,6 @@
-import { Close, Fullscreen } from "@mui/icons-material"
+import { Fullscreen } from "@mui/icons-material"
 import { IconButton, Tooltip } from "@mui/material"
-import React, { forwardRef, useRef } from "react"
+import React, { forwardRef } from "react"
 import { controlBarButtonSx } from "./common"
 
 interface FullscreenIconButtonProps {

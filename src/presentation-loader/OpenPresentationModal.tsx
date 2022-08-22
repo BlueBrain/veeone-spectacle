@@ -53,25 +53,22 @@ const OpenPresentationModal: React.FC = () => {
     [resolveDialog]
   )
 
-  const handleOpenPresentationClick = useCallback(
-    async event => {
-      if (!isPresentationClean) {
-        const result = await dialogs.openDialog(UnsavedChangesWarning, {
-          position: dialogOptions.position,
-          maxWidth: "xs",
-        })
-        console.debug("NEW PRESENTATION RESULT", result)
-      }
-      openPresentation(selectedPresentationId)
-    },
-    [
-      isPresentationClean,
-      openPresentation,
-      selectedPresentationId,
-      dialogs,
-      dialogOptions.position,
-    ]
-  )
+  const handleOpenPresentationClick = useCallback(async () => {
+    if (!isPresentationClean) {
+      const result = await dialogs.openDialog(UnsavedChangesWarning, {
+        position: dialogOptions.position,
+        maxWidth: "xs",
+      })
+      console.debug("NEW PRESENTATION RESULT", result)
+    }
+    openPresentation(selectedPresentationId)
+  }, [
+    isPresentationClean,
+    openPresentation,
+    selectedPresentationId,
+    dialogs,
+    dialogOptions.position,
+  ])
 
   const presentations = useMemo(
     () =>

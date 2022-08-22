@@ -77,15 +77,12 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
     [file.path, isSelectionModeEnabled, requestFile, toggleFileSelect]
   )
 
-  const handleHold = useCallback(
-    event => {
-      const selectionModeEnabled = toggleSelectionMode()
-      if (selectionModeEnabled) {
-        selectFile(file.path)
-      }
-    },
-    [file.path, selectFile, toggleSelectionMode]
-  )
+  const handleHold = useCallback(() => {
+    const selectionModeEnabled = toggleSelectionMode()
+    if (selectionModeEnabled) {
+      selectFile(file.path)
+    }
+  }, [file.path, selectFile, toggleSelectionMode])
 
   useEffect(() => {
     const currentRef = ref.current

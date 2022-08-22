@@ -1,8 +1,6 @@
 import { Dialog, Paper, PaperProps } from "@mui/material"
 import React, { useEffect, useRef } from "react"
 import { DialogOptions } from "./DialogsContext"
-import { useConfig } from "../config/AppConfigContext"
-import { ApplicationConfig } from "../config/types"
 import ActiveDialogContextProvider from "./ActiveDialogContextProvider"
 
 interface SpectacleDialogProps {
@@ -12,7 +10,7 @@ interface SpectacleDialogProps {
   reject: (reason: any) => void
 }
 
-const fixBoxPosition = (ref: HTMLDivElement, config: ApplicationConfig) => {
+const fixBoxPosition = (ref: HTMLDivElement) => {
   // TODO fix this
   const parentRect = ref.offsetParent.getBoundingClientRect()
   console.debug("PARENT DESK", parentRect)
@@ -25,12 +23,11 @@ const fixBoxPosition = (ref: HTMLDivElement, config: ApplicationConfig) => {
 
 const PaperComponent: React.FC<PaperProps> = props => {
   const paperRef = useRef()
-  const config = useConfig()
   useEffect(() => {
     const currentPaperRef = paperRef.current as HTMLDivElement
     if (currentPaperRef) {
       // Correct paper component (dialog window) position if too close to the edge
-      fixBoxPosition(currentPaperRef, config)
+      fixBoxPosition(currentPaperRef)
     }
   })
 
@@ -42,7 +39,6 @@ const SpectacleDialog: React.FC<SpectacleDialogProps> = ({
   reject,
   component,
   options,
-  children,
 }) => {
   const { fullWidth = true, maxWidth = "sm", position } = options
   const DialogComponent = component

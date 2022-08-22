@@ -45,7 +45,7 @@ const SaveAsNewPresentationModal: React.FC = () => {
     }
   }, [closeKeyboard])
 
-  const handleSaveClick = async event => {
+  const handleSaveClick = async () => {
     resolveDialog({
       presentationId: generateRandomPresentationId(),
       presentationName: presentationTitle,

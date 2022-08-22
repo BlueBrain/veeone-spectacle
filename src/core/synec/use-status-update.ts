@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from "react"
 import { SpectacleMemoryStats, SpectacleStatusInformation } from "./types"
-import { ApplicationConfig, RunningEnvironment } from "../../config/types"
+import { ApplicationConfig } from "../../config/types"
 import VeeDriveService from "../../veedrive"
 import { systemStats } from "../spectacle/SpectacleScreen"
 

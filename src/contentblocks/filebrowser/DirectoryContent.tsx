@@ -8,7 +8,6 @@ import EmptyResults from "./EmptyResults"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
 import { Box } from "@mui/material"
-import { useSpectacle } from "../../core/spectacle/SpectacleContext"
 import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
 
 interface DirectoryContentProps {

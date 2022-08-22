@@ -17,7 +17,7 @@ import LauncherMenuContext, {
 import React, { useCallback, useMemo, useState } from "react"
 import { useSpectacle, ViewMode } from "../core/spectacle/SpectacleContext"
 import { makeFramePositionSafe } from "../core/frames/makeFramePositionSafe"
-import { addFrame, loadPresentationStore } from "../core/redux/actions"
+import { addFrame } from "../core/redux/actions"
 import { generateFrameId } from "../core/frames/utils"
 import { useDispatch } from "react-redux"
 import { Position, Size } from "../common/types"
@@ -25,7 +25,6 @@ import { CloseLauncherMenuArgs } from "./LauncherMenu"
 import { MenuData } from "./types"
 import LauncherMenuItem from "./LauncherMenuItem"
 import { useConfig } from "../config/AppConfigContext"
-import { getFreshPresentation } from "../core/presentations/fresh-presentation"
 import { usePresentationManager } from "../core/presentation-manager/PresentationManagerContext"
 
 interface OpenNewFrameArgs {
