@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import KeyboardModeKey from "./keyboard-mode-key"
 import KeyboardLayoutMode from "./keyboard-layout-mode"
 import VisualKeyboardInstance from "./visual-keyboard-instance"
+import { debounce, throttle } from "lodash"
 
 interface KeyboardContextProviderProps {
   initialValue: string
@@ -118,19 +119,24 @@ const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
     }
   }, [target])
 
+  const triggerInputValueChange = useCallback(() => {
+    if (target.value !== initialValue) {
+      onValueChange(target.value)
+    }
+  }, [initialValue, onValueChange, target.value])
+
+  const limitedInputValueChanger = useMemo(
+    () => debounce(triggerInputValueChange, 500),
+    [triggerInputValueChange]
+  )
+
   useEffect(() => {
-    const triggerInputValueChange = () => {
-      if (target.value !== initialValue) {
-        onValueChange(target.value)
-      }
-    }
-
-    target.addEventListener("keyup", triggerInputValueChange)
-
+    const eventName = "keydown"
+    target.addEventListener(eventName, limitedInputValueChanger)
     return () => {
-      target.removeEventListener("keyup", triggerInputValueChange)
+      target.removeEventListener(eventName, limitedInputValueChanger)
     }
-  }, [initialValue, onValueChange, target])
+  }, [limitedInputValueChanger, initialValue, onValueChange, target])
 
   return (
     <KeyboardContext.Provider value={providerValue}>

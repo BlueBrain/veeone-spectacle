@@ -42,6 +42,7 @@ export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
         top: `${targetRect.bottom}px`,
         marginTop: `0.1rem`,
         zIndex: 2000,
+        maxWidth: `28rem`,
       }}
     >
       keyboard={value}

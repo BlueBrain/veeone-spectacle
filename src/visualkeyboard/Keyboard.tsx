@@ -23,7 +23,6 @@ const Keyboard: React.FC = () => {
     <Box
       sx={{
         flexGrow: 1,
-        width: `28rem`,
         // @ts-ignore
         background: theme => theme.palette.neutral.dark,
         padding: `0.2rem`,
