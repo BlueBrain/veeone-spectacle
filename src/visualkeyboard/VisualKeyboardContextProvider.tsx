@@ -23,6 +23,7 @@ const VisualKeyboardContextProvider: React.FC = ({ children }) => {
       target,
       initial,
       customKeyboardId,
+      onDone,
     }: OpenKeyboardOptions) => {
       const existingKeyboard = keyboardExistsOnTarget(target)
       if (existingKeyboard) {
@@ -33,6 +34,7 @@ const VisualKeyboardContextProvider: React.FC = ({ children }) => {
         target,
         onInputChange,
         initial,
+        onDone,
       })
       setKeyboards(currentKeyboards => [...currentKeyboards, newKeyboard])
       return newKeyboard
@@ -56,6 +58,9 @@ const VisualKeyboardContextProvider: React.FC = ({ children }) => {
   const onKeyboardDone = useCallback(
     ({ visualKeyboardInstance, value }: VisualKeyboardOnDoneArgs) => {
       closeKeyboard(visualKeyboardInstance.id)
+      if (visualKeyboardInstance.onDone) {
+        visualKeyboardInstance.onDone(value)
+      }
     },
     [closeKeyboard]
   )

@@ -7,6 +7,7 @@ export interface OpenKeyboardOptions {
   onInputChange: (value: string) => void
   initial?: string
   customKeyboardId?: KeyboardId
+  onDone?: (value: string) => void
 }
 
 export interface VisualKeyboardContextProps {
