@@ -76,6 +76,8 @@ const Desk: React.FC = () => {
     },
     [
       config.ALLOW_MAX_LAUNCHER_MENUS,
+      config.BASE_FONT_SIZE,
+      config.LAUNCHER_MENU_SIZE_REM,
       config.VIEWPORT_HEIGHT,
       config.VIEWPORT_WIDTH,
       launcherMenus,
@@ -156,27 +158,24 @@ const Desk: React.FC = () => {
     }
   }, [config.TOUCH_HOLD_DURATION_MS, handleDeskHold, handleDeskTap])
 
-  const getStackIndex = useCallback(
-    frameId => scene.frameStack.indexOf(frameId),
-    [scene.frameStack]
-  )
-
   const frames = useMemo(() => {
-    return scene.frameStack.map(frameId => {
-      console.debug("render framestack", frameId)
+    const sortedFrames = [...scene.frameStack]
+    sortedFrames.sort()
+    return sortedFrames.map(frameId => {
       const frame = scene.frames[frameId]
+      const stackIndex = 100 + scene.frameStack.indexOf(frameId)
       return (
         frame && (
           <Frame
             frame={frame}
             key={frameId}
             frameId={frameId}
-            stackIndex={getStackIndex(frameId)}
+            stackIndex={stackIndex}
           />
         )
       )
     })
-  }, [getStackIndex, scene.frameStack, scene.frames])
+  }, [scene.frameStack, scene.frames])
 
   return (
     <Box
