@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react"
 import { ContentBlockProps } from "../types"
-import { FrameContext } from "../../core/frames"
+import { FrameContext } from "../../frames"
 import { FileBrowserContextProvider } from "./FileBrowserContext"
 import { Box, Grow } from "@mui/material"
 import FileBrowserBlockLayout from "./FileBrowserBlockLayout"

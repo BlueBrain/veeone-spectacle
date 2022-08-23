@@ -4,7 +4,7 @@ import { Json } from "../../common/types"
 import { useImageKeeper } from "../../image-keeper/ImageKeeperContext"
 import { ImageKeeperResponse, KeeperImage } from "../../image-keeper/types"
 import { useConfig } from "../../config/AppConfigContext"
-import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleContext"
 import BlurredImageBackground from "./BlurredImageBackground"
 
 interface ImageBlockParams {

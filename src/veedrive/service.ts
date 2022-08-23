@@ -15,7 +15,7 @@ import {
 import WebsocketAdapter from "./adapters"
 import NetworkFileBrowsingServiceBase from "./base-service"
 import VeeDriveConfig from "./config"
-import { SpectaclePresentation } from "../core/types"
+import { SpectaclePresentation } from "../types"
 
 class VeeDriveService extends NetworkFileBrowsingServiceBase {
   private veeDriveConfig

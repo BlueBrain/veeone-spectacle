@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import React, { useMemo, useRef } from "react"
 import { describeArc } from "./utils"
-import useInteractable from "../../core/interactable/useInteractable"
+import useInteractable from "../../interactable/useInteractable"
 import { generateRandomId } from "../../common/random"
 import { useConfig } from "../../config/AppConfigContext"
 

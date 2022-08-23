@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react"
 import { Json } from "../../common/types"
-import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleContext"
 
 interface OnVideoLoadedArgs {
   width: number

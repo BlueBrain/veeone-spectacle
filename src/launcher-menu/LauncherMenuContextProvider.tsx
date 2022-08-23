@@ -15,17 +15,17 @@ import LauncherMenuContext, {
   LauncherMenuContextProps,
 } from "./LauncherMenuContext"
 import React, { useCallback, useMemo, useState } from "react"
-import { useSpectacle, ViewMode } from "../core/spectacle/SpectacleContext"
-import { makeFramePositionSafe } from "../core/frames/makeFramePositionSafe"
-import { addFrame } from "../core/redux/actions"
-import { generateFrameId } from "../core/frames/utils"
+import { useSpectacle, ViewMode } from "../spectacle/SpectacleContext"
+import { makeFramePositionSafe } from "../frames/makeFramePositionSafe"
+import { addFrame } from "../redux/actions"
+import { generateFrameId } from "../frames/utils"
 import { useDispatch } from "react-redux"
 import { Position, Size } from "../common/types"
 import { CloseLauncherMenuArgs } from "./LauncherMenu"
 import { MenuData } from "./types"
 import LauncherMenuItem from "./LauncherMenuItem"
 import { useConfig } from "../config/AppConfigContext"
-import { usePresentationManager } from "../core/presentation-manager/PresentationManagerContext"
+import { usePresentationManager } from "../presentation-manager/PresentationManagerContext"
 
 interface OpenNewFrameArgs {
   type: ContentBlockTypes

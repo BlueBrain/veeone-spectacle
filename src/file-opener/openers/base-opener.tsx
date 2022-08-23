@@ -1,8 +1,8 @@
 import { Position } from "../../common/types"
 import { ContentBlockTypes } from "../../contentblocks/types"
-import { FrameData, FrameId } from "../../core/types"
-import { generateFrameId } from "../../core/frames/utils"
-import { addFrame, bringFrameToFront } from "../../core/redux/actions"
+import { FrameData, FrameId } from "../../types"
+import { generateFrameId } from "../../frames/utils"
+import { addFrame, bringFrameToFront } from "../../redux/actions"
 
 interface OpenerProps {
   filePath: string

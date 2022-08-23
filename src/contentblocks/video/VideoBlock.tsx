@@ -2,8 +2,8 @@ import React, { useCallback, useContext, useEffect, useRef } from "react"
 import { ContentBlockProps } from "../types"
 import { Box, Grow } from "@mui/material"
 import VideoBlockContent from "./VideoBlockContent"
-import { FrameContext } from "../../core/frames"
-import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
+import { FrameContext } from "../../frames"
+import FloatingFrameControlBar from "../../frames/FloatingFrameControlBar"
 
 const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
   const videoRef = useRef<HTMLVideoElement>(null)

@@ -8,8 +8,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
-import SpectacleContext from "../core/spectacle/SpectacleContext"
-import { SpectaclePresentation } from "../core/types"
+import SpectacleContext from "../spectacle/SpectacleContext"
+import { SpectaclePresentation } from "../types"
 import { friendlyDisplayDateTime } from "../common/datetime"
 import { Crop32Rounded } from "@mui/icons-material"
 

@@ -1,4 +1,4 @@
-import { SpectaclePresentation } from "../core/types"
+import { SpectaclePresentation } from "../types"
 
 export interface VeeDriveListDirectoryRequest {
   path: string

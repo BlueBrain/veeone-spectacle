@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useMemo, useState } from "react"
 import { ContentBlockProps } from "../types"
 import { Box, Grow } from "@mui/material"
-import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
+import FloatingFrameControlBar from "../../frames/FloatingFrameControlBar"
 import ImageBlockContent from "./ImageBlockContent"
-import { FrameContext } from "../../core/frames"
+import { FrameContext } from "../../frames"
 import { KeeperImage } from "../../image-keeper/types"
 
 const ImageBlock: React.FC<ContentBlockProps> = props => {

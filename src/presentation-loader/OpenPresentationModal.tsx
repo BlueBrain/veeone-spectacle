@@ -17,7 +17,7 @@ import React, {
   useMemo,
   useState,
 } from "react"
-import SpectacleContext from "../core/spectacle/SpectacleContext"
+import SpectacleContext from "../spectacle/SpectacleContext"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"
 import { SlideshowRounded } from "@mui/icons-material"
 import { useDialogs } from "../dialogs/DialogsContext"

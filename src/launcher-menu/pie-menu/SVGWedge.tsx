@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from "react"
 import { MenuItem } from "../types"
 import { Box } from "@mui/material"
-import useInteractable from "../../core/interactable/useInteractable"
+import useInteractable from "../../interactable/useInteractable"
 import { describeArc } from "./utils"
 import SVGSubWedges from "./SVGSubWedges"
 import { generateRandomId } from "../../common/random"

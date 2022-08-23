@@ -16,7 +16,7 @@ import _ from "lodash"
 import VeeDriveConfig from "../../veedrive/config"
 import { VeeDriveSearchFileSystemRequest } from "../../veedrive/types"
 import VeeDriveService from "../../veedrive/service"
-import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleContext"
 
 const SEARCH_QUERY_CHANGE_DEBOUNCE_MS = 500
 const SEARCH_RESULTS_FETCH_INTERVAL_MS = 1000

@@ -1,8 +1,8 @@
 import React from "react"
-import { Spectacle } from "./core/spectacle"
+import { Spectacle } from "./spectacle"
 import ReactDOM from "react-dom"
 import AppConfigContextProvider from "./config/AppConfigContextProvider"
-import SpectacleStoreProvider from "./core/redux/SpectacleStoreProvider"
+import SpectacleStoreProvider from "./redux/SpectacleStoreProvider"
 import startSentry from "./sentry"
 import { getConfig } from "./config"
 

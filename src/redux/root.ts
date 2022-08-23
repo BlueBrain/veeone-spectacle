@@ -1,7 +1,7 @@
-import { ReduxAction } from "./actions"
-import { presentationReducer, scenesReducer } from "../core/redux/reducers"
-import { SpectaclePresentation } from "../core/types"
-import { Actions } from "../core/redux/actions"
+import { ReduxAction } from "./types"
+import { presentationReducer, scenesReducer } from "./reducers"
+import { SpectaclePresentation } from "../types"
+import { Actions } from "./actions"
 import { ApplicationConfig } from "../config/types"
 
 export const rootReducer = (
