@@ -5,8 +5,8 @@ import { useWebsiteBlock } from "./WebsiteBlockContext"
 import { useFrame } from "../../frames/FrameContext"
 
 const WebsiteBlockContent: React.FC = () => {
-  const { frameId } = useFrame()
   const { websiteUrl } = useWebsiteBlock()
+  const { frameId, isTopFrame, stackIndex } = useFrame()
   console.debug("WebsiteBlockContent render", websiteUrl)
 
   return (
@@ -30,22 +30,32 @@ const WebsiteBlockContent: React.FC = () => {
           }}
           title={"EPFL"}
           src={websiteUrl}
-          key={`website-${frameId}`}
           allowFullScreen={false}
           sandbox={"allow-same-origin allow-scripts"}
         />
-
         <Box
           sx={{
             background: theme => theme.palette.primary.main,
-            opacity: `0.5`,
+            opacity: `0.0`,
             width: `100%`,
             height: `100%`,
             position: `absolute`,
             left: `0`,
             top: `0`,
+            animation: isTopFrame
+              ? `showWebsiteOverlay${frameId} 500ms ease forwards`
+              : ``,
+            ["@keyframes showWebsiteOverlay" + frameId]: {
+              "0%": {
+                opacity: 0.0,
+              },
+              "100%": {
+                opacity: 0.5,
+              },
+            },
           }}
         />
+        stackIndex={stackIndex}
         <FloatingFrameControlBar isFullscreenButtonVisible={false} />
       </Box>
     </Grow>

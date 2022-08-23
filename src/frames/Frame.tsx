@@ -24,7 +24,7 @@ interface FrameProps {
 
 const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
   const dispatch = useDispatch()
-  const { setFullscreenFrame } = useDesk()
+  const { scene, setFullscreenFrame } = useDesk()
   const { width, height, left, top, angle } = frame.situation
   const [isMovingAllowed, setMovingAllowed] = useState(true)
   const [isResizingAllowed, setResizingAllowed] = useState(true)
@@ -91,9 +91,16 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
     [manipulate, width]
   )
 
+  const isTopFrame = useMemo(
+    () => scene.frameStack.indexOf(frameId) === scene.frameStack.length - 1,
+    [frameId, scene.frameStack]
+  )
+
   const frameContextProvider: FrameContextProps = useMemo(
     () => ({
       frameId,
+      stackIndex,
+      isTopFrame,
       updateAspectRatio,
       preventResizing: () => {
         setResizingAllowed(false)
@@ -119,7 +126,7 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
       },
       setFullscreenParamsProvider,
     }),
-    [frameId, updateAspectRatio, toggleFullscreen, dispatch]
+    [frameId, isTopFrame, updateAspectRatio, toggleFullscreen, dispatch]
   )
 
   const ContentBlockComponent = useMemo(
