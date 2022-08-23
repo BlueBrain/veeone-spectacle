@@ -25,7 +25,7 @@ import { CloseLauncherMenuArgs } from "./LauncherMenu"
 import { MenuData } from "./types"
 import LauncherMenuItem from "./LauncherMenuItem"
 import { useConfig } from "../config/AppConfigContext"
-import { usePresentationManager } from "../presentation-manager/PresentationManagerContext"
+import { usePresentationManager } from "../presentations/presentation-manager/PresentationManagerContext"
 
 interface OpenNewFrameArgs {
   type: ContentBlockTypes

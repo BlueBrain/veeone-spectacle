@@ -7,11 +7,11 @@ import {
   TextField,
 } from "@mui/material"
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { useSpectacle } from "../../spectacle/SpectacleContext"
-import { generateRandomPresentationId } from "../../presentations/utils"
+import { useSpectacle } from "../../../spectacle/SpectacleContext"
+import { generateRandomPresentationId } from "../../utils"
 import PresentationFolderList from "./PresentationFolderList"
-import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
-import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
+import { useActiveDialog } from "../../../dialogs/ActiveDialogContext"
+import { useVisualKeyboard } from "../../../visualkeyboard/VisualKeyboardContext"
 
 const SaveAsNewPresentationModal: React.FC = () => {
   const keyboardId = "savePresentationName"

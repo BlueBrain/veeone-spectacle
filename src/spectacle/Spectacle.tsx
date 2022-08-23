@@ -8,7 +8,7 @@ import { useConfig } from "../config/AppConfigContext"
 import { getBlueBrainTheme } from "../branding/bbp-theme"
 import ImageKeeperContextProvider from "../image-keeper/ImageKeeperContextProvider"
 import DialogsContextProvider from "../dialogs/DialogsContextProvider"
-import PresentationManagerContextProvider from "../presentation-manager/PresentationManagerContextProvider"
+import PresentationManagerContextProvider from "../presentations/presentation-manager/PresentationManagerContextProvider"
 import DialogsPlaceholder from "../dialogs/DialogsPlaceholder"
 import VisualKeyboardContextProvider from "../visualkeyboard/VisualKeyboardContextProvider"
 

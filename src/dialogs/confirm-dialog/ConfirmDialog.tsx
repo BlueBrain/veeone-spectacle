@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@mui/material"
 import React, { MouseEventHandler, useCallback, useMemo } from "react"
-import { Position } from "../common/types"
+import { Position } from "../../common/types"
 
 interface ConfirmDialogOption {
   label: string

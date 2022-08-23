@@ -8,9 +8,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
-import SpectacleContext from "../spectacle/SpectacleContext"
-import { SpectaclePresentation } from "../types"
-import { friendlyDisplayDateTime } from "../common/datetime"
+import SpectacleContext from "../../spectacle/SpectacleContext"
+import { SpectaclePresentation } from "../../types"
+import { friendlyDisplayDateTime } from "../../common/datetime"
 import { Crop32Rounded } from "@mui/icons-material"
 
 interface PresentationLoaderDetailsProps {

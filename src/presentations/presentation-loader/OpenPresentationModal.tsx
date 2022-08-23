@@ -17,12 +17,12 @@ import React, {
   useMemo,
   useState,
 } from "react"
-import SpectacleContext from "../spectacle/SpectacleContext"
+import SpectacleContext from "../../spectacle/SpectacleContext"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"
 import { SlideshowRounded } from "@mui/icons-material"
-import { useDialogs } from "../dialogs/DialogsContext"
+import { useDialogs } from "../../dialogs/DialogsContext"
 import UnsavedChangesWarning from "./UnsavedChangesWarning"
-import { useActiveDialog } from "../dialogs/ActiveDialogContext"
+import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
 
 const OpenPresentationModal: React.FC = () => {
   const { dialogOptions, resolveDialog, cancelDialog } = useActiveDialog()

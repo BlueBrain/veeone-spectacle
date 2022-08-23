@@ -7,9 +7,9 @@ import {
   TextField,
 } from "@mui/material"
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
-import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
-import { KeyboardId } from "../../visualkeyboard/types"
+import { useActiveDialog } from "../../../dialogs/ActiveDialogContext"
+import { useVisualKeyboard } from "../../../visualkeyboard/VisualKeyboardContext"
+import { KeyboardId } from "../../../visualkeyboard/types"
 
 const CreateNewFolderModal: React.FC = () => {
   const keyboardId: KeyboardId = "createNewFolderName"

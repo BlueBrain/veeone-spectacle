@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react"
-import { SpectaclePresentation } from "../types"
-import { Position } from "../common/types"
+import { SpectaclePresentation } from "../../types"
+import { Position } from "../../common/types"
 
 export interface ModalProps {
   position: Position

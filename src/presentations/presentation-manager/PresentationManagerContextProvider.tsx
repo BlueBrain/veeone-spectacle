@@ -5,16 +5,19 @@ import PresentationManagerContext, {
 import {
   SavePresentationOpenModalProps,
   useSpectacle,
-} from "../spectacle/SpectacleContext"
-import { SpectaclePresentation } from "../types"
+} from "../../spectacle/SpectacleContext"
+import { SpectaclePresentation } from "../../types"
 import SaveAsNewPresentationModal from "../presentation-loader/save-as/SaveAsNewPresentationModal"
-import { loadPresentationStore, savePresentationStore } from "../redux/actions"
-import { useDialogs } from "../dialogs/DialogsContext"
+import {
+  loadPresentationStore,
+  savePresentationStore,
+} from "../../redux/actions"
+import { useDialogs } from "../../dialogs/DialogsContext"
 import { useDispatch } from "react-redux"
 import OpenPresentationModal from "../presentation-loader/OpenPresentationModal"
-import { resizePresentationStore } from "../presentations/resizing"
-import { useConfig } from "../config/AppConfigContext"
-import { getFreshPresentation } from "../presentations/fresh-presentation"
+import { resizePresentationStore } from "../resizing"
+import { useConfig } from "../../config/AppConfigContext"
+import { getFreshPresentation } from "../fresh-presentation"
 import UnsavedChangesWarning from "../presentation-loader/UnsavedChangesWarning"
 
 const PresentationManagerContextProvider: React.FC = ({ children }) => {
