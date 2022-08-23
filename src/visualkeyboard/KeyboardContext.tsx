@@ -3,12 +3,12 @@ import KeyboardModeKey from "./keyboard-mode-key"
 import KeyboardLayoutMode from "./keyboard-layout-mode"
 
 export interface ButtonPressedInfo {
-  value: string
+  buttonValue: string
   mode: KeyboardModeKey
 }
 
 export interface KeyboardContextProps {
-  initialValue: string
+  value: string
   onButtonPressed(args: ButtonPressedInfo): void
   keyboardLayoutMode: KeyboardLayoutMode
   uppercaseModeLocked: boolean

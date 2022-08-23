@@ -1,32 +1,23 @@
 import "react-simple-keyboard/build/css/index.css"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useMemo } from "react"
 import { Box } from "@mui/material"
 import Keyboard from "./Keyboard"
 import KeyboardContextProvider from "./KeyboardContextProvider"
 import VisualKeyboardInstance from "./visual-keyboard-instance"
+import { VisualKeyboardOnDoneArgs } from "./types"
 
 interface VisualKeyboardProps {
   instance: VisualKeyboardInstance
-  onDone: (result: string) => void
+  onDone: (args: VisualKeyboardOnDoneArgs) => void
 }
 
 export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
   instance,
   onDone,
 }) => {
-  const [value, setValue] = useState<string>(instance.initial)
-
-  useEffect(() => {
-    instance.onInputChange(value)
-  }, [value, instance])
-
-  const handleInputChange = inputValue => {
-    console.log("Input changed (VisualKeyboard level)", inputValue)
-    setValue(inputValue)
-  }
-
-  const handleOnDone = result => {
-    onDone(result)
+  const handleOnDone = args => {
+    // Just pass on the result
+    onDone(args)
   }
 
   const targetRect = useMemo(() => instance.target.getBoundingClientRect(), [
@@ -45,11 +36,8 @@ export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
         maxWidth: `28rem`,
       }}
     >
-      keyboard={value}
       <KeyboardContextProvider
         visualKeyboardInstance={instance}
-        initialValue={value}
-        onValueChange={handleInputChange}
         onDone={handleOnDone}
       >
         <Keyboard />

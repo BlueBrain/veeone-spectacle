@@ -7,22 +7,20 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import KeyboardModeKey from "./keyboard-mode-key"
 import KeyboardLayoutMode from "./keyboard-layout-mode"
 import VisualKeyboardInstance from "./visual-keyboard-instance"
-import { debounce, throttle } from "lodash"
+import { debounce } from "lodash"
+import { VisualKeyboardOnDoneArgs } from "./types"
 
 interface KeyboardContextProviderProps {
-  initialValue: string
   visualKeyboardInstance: VisualKeyboardInstance
-  onValueChange(newValue: string): void
-  onDone(result: string): void
+  onDone(result: VisualKeyboardOnDoneArgs): void
 }
 
 const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
-  initialValue,
-  onValueChange,
   children,
   visualKeyboardInstance,
   onDone,
 }) => {
+  const [value, setValue] = useState<string>(visualKeyboardInstance.initial)
   const [caretPosition, setCaretPosition] = useState(0)
   const [uppercaseModeLocked, setUppercaseModeLocked] = useState(false)
   const [keyboardLayoutMode, setKeyboardLayoutMode] = useState(
@@ -32,16 +30,16 @@ const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
 
   const onButtonPressed = useCallback(
     (args: ButtonPressedInfo) => {
-      const { value, mode } = args
+      const { buttonValue, mode } = args
 
       switch (mode) {
         case KeyboardModeKey.NORMAL: {
           const resultText =
-            initialValue.substring(0, caretPosition) +
-            value +
-            initialValue.substring(caretPosition)
-          setCaretPosition(caretPosition + value.length)
-          onValueChange(resultText)
+            value.substring(0, caretPosition) +
+            buttonValue +
+            value.substring(caretPosition)
+          setCaretPosition(caretPosition + buttonValue.length)
+          setValue(resultText)
 
           if (
             !uppercaseModeLocked &&
@@ -54,10 +52,10 @@ const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
         }
         case KeyboardModeKey.BACKSPACE: {
           const resultText =
-            initialValue.substring(0, caretPosition - 1) +
-            initialValue.substring(caretPosition)
+            value.substring(0, caretPosition - 1) +
+            value.substring(caretPosition)
           setCaretPosition(caretPosition > 1 ? caretPosition - 1 : 0)
-          onValueChange(resultText)
+          setValue(resultText)
           break
         }
         case KeyboardModeKey.SHIFT: {
@@ -77,29 +75,19 @@ const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
           break
         }
         case KeyboardModeKey.DONE: {
-          onDone(value)
+          onDone({ visualKeyboardInstance, value })
           break
         }
       }
     },
     [
       caretPosition,
-      initialValue,
       keyboardLayoutMode,
       onDone,
-      onValueChange,
       uppercaseModeLocked,
+      value,
+      visualKeyboardInstance,
     ]
-  )
-
-  const providerValue: KeyboardContextProps = useMemo<KeyboardContextProps>(
-    () => ({
-      initialValue,
-      onButtonPressed,
-      keyboardLayoutMode,
-      uppercaseModeLocked,
-    }),
-    [initialValue, keyboardLayoutMode, onButtonPressed, uppercaseModeLocked]
   )
 
   useEffect(() => {
@@ -120,10 +108,10 @@ const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
   }, [target])
 
   const triggerInputValueChange = useCallback(() => {
-    if (target.value !== initialValue) {
-      onValueChange(target.value)
+    if (target.value !== value) {
+      setValue(target.value)
     }
-  }, [initialValue, onValueChange, target.value])
+  }, [target.value, value])
 
   const limitedInputValueChanger = useMemo(
     () => debounce(triggerInputValueChange, 500),
@@ -136,7 +124,21 @@ const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
     return () => {
       target.removeEventListener(eventName, limitedInputValueChanger)
     }
-  }, [limitedInputValueChanger, initialValue, onValueChange, target])
+  }, [limitedInputValueChanger, target])
+
+  useEffect(() => {
+    visualKeyboardInstance.onInputChange(value)
+  }, [value, visualKeyboardInstance])
+
+  const providerValue: KeyboardContextProps = useMemo<KeyboardContextProps>(
+    () => ({
+      value,
+      onButtonPressed,
+      keyboardLayoutMode,
+      uppercaseModeLocked,
+    }),
+    [value, keyboardLayoutMode, onButtonPressed, uppercaseModeLocked]
+  )
 
   return (
     <KeyboardContext.Provider value={providerValue}>

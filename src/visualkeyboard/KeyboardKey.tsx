@@ -45,7 +45,7 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
   const triggerButton = useCallback(() => {
     console.debug("key pressed")
     keyboard.onButtonPressed({
-      value,
+      buttonValue: value,
       mode,
     })
   }, [keyboard, mode, value])

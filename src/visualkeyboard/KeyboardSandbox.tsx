@@ -26,9 +26,6 @@ const KeyboardSandbox: React.FC = () => {
   return (
     <Box
       sx={{
-        position: "absolute",
-        left: `10rem`,
-        top: `10rem`,
         width: `30rem`,
         height: `5rem`,
         background: `white`,
@@ -39,7 +36,6 @@ const KeyboardSandbox: React.FC = () => {
         type={"text"}
         variant={"outlined"}
         label={"Name of your presentation"}
-        autoFocus={true}
         fullWidth={true}
         value={value}
         onChange={handleTextInputChange}

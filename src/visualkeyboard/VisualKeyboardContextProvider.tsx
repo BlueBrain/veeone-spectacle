@@ -5,7 +5,7 @@ import VisualKeyboardContext, {
 } from "./VisualKeyboardContext"
 import { VisualKeyboard } from "./VisualKeyboard"
 import VisualKeyboardInstance from "./visual-keyboard-instance"
-import { KeyboardId } from "./types"
+import { KeyboardId, VisualKeyboardOnDoneArgs } from "./types"
 
 const VisualKeyboardContextProvider: React.FC = ({ children }) => {
   const [keyboards, setKeyboards] = useState<VisualKeyboardInstance[]>([])
@@ -53,6 +53,13 @@ const VisualKeyboardContextProvider: React.FC = ({ children }) => {
     )
   }, [])
 
+  const onKeyboardDone = useCallback(
+    ({ visualKeyboardInstance, value }: VisualKeyboardOnDoneArgs) => {
+      closeKeyboard(visualKeyboardInstance.id)
+    },
+    [closeKeyboard]
+  )
+
   const providerValue = useMemo<VisualKeyboardContextProps>(
     () => ({
       keyboards,
@@ -65,14 +72,14 @@ const VisualKeyboardContextProvider: React.FC = ({ children }) => {
 
   const keyboardComponents = useMemo(
     () =>
-      keyboards.map((keyboard, i) => (
+      keyboards.map(keyboard => (
         <VisualKeyboard
-          key={i}
+          key={keyboard.id}
           instance={keyboard}
-          onDone={() => closeKeyboard(keyboard.id)}
+          onDone={onKeyboardDone}
         />
       )),
-    [closeKeyboard, keyboards]
+    [keyboards, onKeyboardDone]
   )
 
   return (
