@@ -4,6 +4,7 @@ import { VideoBlock } from "./video"
 import React from "react"
 import { FileBrowserBlock } from "./filebrowser"
 import { ContentBlockProps, ContentBlockTypes } from "./types"
+import { WebsiteBlock } from "./website"
 
 export const contentBlockRegister: Record<
   string,
@@ -14,4 +15,5 @@ export const contentBlockRegister: Record<
   [ContentBlockTypes.Video]: VideoBlock,
   [ContentBlockTypes.Vimeo]: VimeoBlock,
   [ContentBlockTypes.FileBrowser]: FileBrowserBlock,
+  [ContentBlockTypes.Website]: WebsiteBlock,
 }

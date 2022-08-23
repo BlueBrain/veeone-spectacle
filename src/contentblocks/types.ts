@@ -8,6 +8,7 @@ export enum ContentBlockTypes {
   SampleVideo = "samplevideo",
   Vimeo = "vimeo",
   FileBrowser = "filebrowser",
+  Website = "website",
 }
 
 export interface ContentBlockProps {

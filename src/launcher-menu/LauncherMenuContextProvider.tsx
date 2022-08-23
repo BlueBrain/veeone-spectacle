@@ -26,10 +26,12 @@ import { MenuData } from "./types"
 import LauncherMenuItem from "./LauncherMenuItem"
 import { useConfig } from "../config/AppConfigContext"
 import { usePresentationManager } from "../presentations/presentation-manager/PresentationManagerContext"
+import { FrameData } from "../types"
 
 interface OpenNewFrameArgs {
   type: ContentBlockTypes
   size: Size
+  contentData?: FrameData
 }
 
 interface LauncherMenuContextProviderProps {
@@ -55,7 +57,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   }, [menuId, onClose])
 
   const openNewFrameFromLauncher = useCallback(
-    ({ type, size }: OpenNewFrameArgs) => {
+    ({ type, size, contentData = null }: OpenNewFrameArgs) => {
       close()
       position = makeFramePositionSafe(position, size, {
         width: config.VIEWPORT_WIDTH,
@@ -68,7 +70,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
           position,
           size,
           type,
-          contentData: null,
+          contentData,
         })
       )
     },
@@ -115,6 +117,23 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
     await presentationManager.newPresentation({ position })
   }, [close, position, presentationManager])
 
+  const openWebsite = useCallback(
+    async (websiteUrl: string) => {
+      close()
+      openNewFrameFromLauncher({
+        type: ContentBlockTypes.Website,
+        size: {
+          width: 700,
+          height: 500,
+        },
+        contentData: {
+          websiteUrl,
+        },
+      })
+    },
+    [close, openNewFrameFromLauncher]
+  )
+
   const [menuData, setMenuData] = useState<MenuData>({
     items: [
       new LauncherMenuItem({
@@ -153,34 +172,39 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
           }),
         ],
       }),
+
       new LauncherMenuItem({
         label: "Login",
         isEnabled: false,
         icon: Person,
       }),
+
+      new LauncherMenuItem({
+        label: "Share your screen",
+        isEnabled: false,
+        icon: ScreenShare,
+      }),
+
       new LauncherMenuItem({
         label: "Open web",
-        isEnabled: false,
+        isEnabled: true,
         icon: Language,
         children: [
           new LauncherMenuItem({
             label: "EPFL",
             icon: Language,
+            action: () => openWebsite("https://epfl.ch"),
           }),
           new LauncherMenuItem({
             label: "BBP",
             icon: Language,
+            action: () => openWebsite("https://bbp.epfl.ch"),
           }),
-          new LauncherMenuItem({
-            label: "Browser",
-            icon: Language,
-          }),
+          // new LauncherMenuItem({
+          //   label: "Browser",
+          //   icon: Language,
+          // }),
         ],
-      }),
-      new LauncherMenuItem({
-        label: "Share your screen",
-        isEnabled: false,
-        icon: ScreenShare,
       }),
     ],
   })
