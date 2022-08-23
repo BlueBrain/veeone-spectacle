@@ -106,15 +106,31 @@ const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
     const updateCaretPosition = () => {
       setCaretPosition(target.selectionStart)
     }
+
     boundEvents.forEach(eventName =>
       target.addEventListener(eventName, updateCaretPosition)
     )
+
     return () => {
       boundEvents.forEach(eventName =>
         target.removeEventListener(eventName, updateCaretPosition)
       )
     }
   }, [target])
+
+  useEffect(() => {
+    const triggerInputValueChange = () => {
+      if (target.value !== initialValue) {
+        onValueChange(target.value)
+      }
+    }
+
+    target.addEventListener("keyup", triggerInputValueChange)
+
+    return () => {
+      target.removeEventListener("keyup", triggerInputValueChange)
+    }
+  }, [initialValue, onValueChange, target])
 
   return (
     <KeyboardContext.Provider value={providerValue}>

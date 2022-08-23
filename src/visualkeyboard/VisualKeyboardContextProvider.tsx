@@ -53,26 +53,14 @@ const VisualKeyboardContextProvider: React.FC = ({ children }) => {
     )
   }, [])
 
-  const updateKeyboardState = useCallback(() => {
-    // todo implement
-    console.debug("Not implemented yet: updateKeyboardState")
-  }, [])
-
   const providerValue = useMemo<VisualKeyboardContextProps>(
     () => ({
       keyboards,
       openKeyboard,
       closeKeyboard,
       closeKeyboardByTarget,
-      updateKeyboardState,
     }),
-    [
-      closeKeyboard,
-      closeKeyboardByTarget,
-      keyboards,
-      openKeyboard,
-      updateKeyboardState,
-    ]
+    [closeKeyboard, closeKeyboardByTarget, keyboards, openKeyboard]
   )
 
   const keyboardComponents = useMemo(

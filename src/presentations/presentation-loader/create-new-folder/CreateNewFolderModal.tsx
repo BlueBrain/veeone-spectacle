@@ -16,11 +16,7 @@ const CreateNewFolderModal: React.FC = () => {
   const folderNameRef = useRef()
   const { resolveDialog, cancelDialog } = useActiveDialog()
   const [folderName, setFolderName] = useState("")
-  const {
-    openKeyboard,
-    closeKeyboard,
-    updateKeyboardState,
-  } = useVisualKeyboard()
+  const { openKeyboard, closeKeyboard } = useVisualKeyboard()
 
   const createNewFolderAndClose = useCallback(() => {
     const newFolder = {
@@ -32,7 +28,6 @@ const CreateNewFolderModal: React.FC = () => {
   const handleTextInputChange = event => {
     const value = event.target.value
     setFolderName(value)
-    updateKeyboardState(keyboardId, value)
   }
 
   const showVisualKeyboard = useCallback(

@@ -14,7 +14,6 @@ export interface VisualKeyboardContextProps {
   openKeyboard: (args: OpenKeyboardOptions) => VisualKeyboardInstance
   closeKeyboard: (keyboardId: KeyboardId) => void
   closeKeyboardByTarget: (target: HTMLElement) => void
-  updateKeyboardState: (keyboardId: KeyboardId, value: string) => void
 }
 
 const VisualKeyboardContext = createContext<VisualKeyboardContextProps>(null)

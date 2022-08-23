@@ -20,9 +20,9 @@ export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
     instance.onInputChange(value)
   }, [value, instance])
 
-  const handleInputChange = input => {
-    console.log("Input changed (VisualKeyboard level)", input)
-    setValue(input)
+  const handleInputChange = inputValue => {
+    console.log("Input changed (VisualKeyboard level)", inputValue)
+    setValue(inputValue)
   }
 
   const handleOnDone = result => {
@@ -44,6 +44,7 @@ export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
         zIndex: 2000,
       }}
     >
+      keyboard={value}
       <KeyboardContextProvider
         visualKeyboardInstance={instance}
         initialValue={value}
