@@ -40,7 +40,6 @@ const WebsiteBlockPageArea = () => {
         title={"EPFL"}
         src={websiteUrl}
         allowFullScreen={false}
-        sandbox={"allow-same-origin allow-scripts"}
         ref={iframeRef}
         key={websiteIframeKey}
       />
