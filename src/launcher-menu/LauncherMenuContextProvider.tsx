@@ -200,6 +200,12 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
             icon: Language,
             action: () => openWebsite("https://bbp.epfl.ch"),
           }),
+          new LauncherMenuItem({
+            label: "Real Neuron Challenge",
+            icon: Language,
+            action: () =>
+              openWebsite("https://bbp.epfl.ch/therealneuronchallenge/"),
+          }),
           // new LauncherMenuItem({
           //   label: "Browser",
           //   icon: Language,

@@ -8,6 +8,8 @@ import WebsiteBlockNavigationButtons from "./WebsiteBlockNavigationButtons"
 const WebsiteBlockNavigationBar: React.FC = () => {
   return (
     <Grid container alignItems={"center"} sx={{ padding: `0.4rem 0` }}>
+      <Grid item md={"auto"} sx={{ minWidth: `1rem` }} />
+
       <Grid item>
         <WebsiteBlockNavigationButtons />
       </Grid>
@@ -16,7 +18,7 @@ const WebsiteBlockNavigationBar: React.FC = () => {
         <WebsiteBlockLocationBar />
       </Grid>
 
-      <Grid item xs md={"auto"}>
+      <Grid item xs md={"auto"} sx={{ paddingRight: `2rem` }}>
         <WebsiteBlockZoomButtons />
       </Grid>
 
