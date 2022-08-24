@@ -5,4 +5,5 @@ export interface WebsiteBlockContentData {
 
   websiteUrl: string
   isInteractiveModeOn: boolean
+  zoomLevel: number
 }

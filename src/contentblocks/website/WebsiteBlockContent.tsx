@@ -5,6 +5,7 @@ import { useWebsiteBlock } from "./WebsiteBlockContext"
 import WebsiteBlockNavigationBar from "./WebsiteBlockNavigationBar"
 import WebsiteBlockPageArea from "./WebsiteBlockPageArea"
 import { useFrame } from "../../frames/FrameContext"
+import { white } from "../../branding/colors"
 
 const WebsiteBlockContent: React.FC = () => {
   const { websiteUrl, isInteractiveModeOn } = useWebsiteBlock()
@@ -44,20 +45,10 @@ const WebsiteBlockContent: React.FC = () => {
           background: "white",
           boxShadow: 3,
           display: `flex`,
-          flexDirection: `column`,
+          flexDirection: `column-reverse`,
           overflow: `hidden`,
         }}
       >
-        <Box
-          ref={navBarRef}
-          sx={{
-            transition: `all ease 300ms`,
-            transform: navBarTransform,
-            boxShadow: 1,
-          }}
-        >
-          <WebsiteBlockNavigationBar />
-        </Box>
         <Box
           sx={{
             position: `relative`,
@@ -69,6 +60,17 @@ const WebsiteBlockContent: React.FC = () => {
           }}
         >
           <WebsiteBlockPageArea />
+        </Box>
+        <Box
+          ref={navBarRef}
+          sx={{
+            background: white,
+            transition: `all ease 300ms`,
+            transform: navBarTransform,
+            boxShadow: 1,
+          }}
+        >
+          <WebsiteBlockNavigationBar />
         </Box>
         <FloatingFrameControlBar isFullscreenButtonVisible={false} />
       </Box>

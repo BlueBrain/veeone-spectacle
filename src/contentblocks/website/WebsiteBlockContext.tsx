@@ -9,6 +9,10 @@ export interface WebsiteBlockContextProps {
   navigateForward: () => void
   navigateUrl: (url: string) => void
   navigateHome: () => void
+  zoomPageIn: () => void
+  zoomPageOut: () => void
+  zoomLevel: number
+  websiteIframeKey: string
 }
 
 const WebsiteBlockContext = createContext<WebsiteBlockContextProps>(null)

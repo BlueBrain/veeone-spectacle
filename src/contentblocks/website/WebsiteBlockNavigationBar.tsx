@@ -8,13 +8,16 @@ import {
   Home,
   LockOpenRounded,
   LockRounded,
-  PlayCircle,
+  ZoomIn,
+  ZoomOut,
 } from "@mui/icons-material"
 import { useWebsiteBlock } from "./WebsiteBlockContext"
+import WebsiteBlockLockSwitch from "./WebsiteBlockLockSwitch"
+import WebsiteBlockZoomButtons from "./WebsiteBlockZoomButtons"
 
 const WebsiteBlockNavigationBar: React.FC = () => {
   const ref = useRef()
-  const { openKeyboard, closeKeyboardByTarget } = useVisualKeyboard()
+  const { openKeyboard } = useVisualKeyboard()
 
   const {
     navigateUrl,
@@ -22,9 +25,6 @@ const WebsiteBlockNavigationBar: React.FC = () => {
     navigateBack,
     navigateForward,
     websiteUrl,
-    activateInteractiveMode,
-    deactivateInteractiveMode,
-    isInteractiveModeOn,
   } = useWebsiteBlock()
 
   const [locationBarUrl, setLocationBarUrl] = useState<string>(websiteUrl)
@@ -101,11 +101,17 @@ const WebsiteBlockNavigationBar: React.FC = () => {
           </Grid>
         </Grid>
       </Grid>
+
       <Grid item xs={12} md>
         <Box
-          sx={{ display: `flex`, flexDirection: `row`, paddingRight: `3rem` }}
+          sx={{
+            display: `flex`,
+            alignItems: `center`,
+            flexDirection: `row`,
+            paddingRight: `4rem`,
+          }}
         >
-          <Box sx={{ flexGrow: 1 }}>
+          <Box sx={{ flexGrow: 1, padding: `0 2rem 0 1rem` }}>
             <TextField
               inputRef={ref}
               type={"text"}
@@ -120,28 +126,19 @@ const WebsiteBlockNavigationBar: React.FC = () => {
             />
           </Box>
 
-          <Tooltip title="Navigate to the URL" enterDelay={1000}>
-            <IconButton
-              onClick={() => navigateUrl(locationBarUrl)}
-              size={"large"}
-            >
-              <PlayCircle fontSize={"large"} />
-            </IconButton>
-          </Tooltip>
+          <Box
+            sx={{
+              display: `flex`,
+              alignItems: `center`,
+              padding: `0 2rem 0 0`,
+            }}
+          >
+            <WebsiteBlockZoomButtons />
+          </Box>
 
-          {isInteractiveModeOn ? (
-            <Tooltip title="Lock page browsing" enterDelay={1000}>
-              <IconButton onClick={deactivateInteractiveMode} size={"large"}>
-                <LockRounded fontSize={"large"} />
-              </IconButton>
-            </Tooltip>
-          ) : (
-            <Tooltip title="Unlock page browsing" enterDelay={1000}>
-              <IconButton onClick={activateInteractiveMode} size={"large"}>
-                <LockOpenRounded fontSize={"large"} />
-              </IconButton>
-            </Tooltip>
-          )}
+          <Box sx={{ display: `flex`, alignItems: `center` }}>
+            <WebsiteBlockLockSwitch />
+          </Box>
         </Box>
       </Grid>
     </Grid>
