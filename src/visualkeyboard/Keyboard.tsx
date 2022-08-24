@@ -1,6 +1,6 @@
 import { Box, Grid } from "@mui/material"
 import React, { useMemo } from "react"
-import { useCurrentKeyboard } from "./KeyboardContext"
+import { useCurrentKeyboard } from "./CurrentKeyboardContext"
 import KeyboardNormalLayout from "./KeyboardNormalLayout"
 import KeyboardLayoutMode from "./keyboard-layout-mode"
 import KeyboardUppercaseLayout from "./KeyboardUppercaseLayout"

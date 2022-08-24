@@ -1,25 +1,27 @@
 import {
   ButtonPressedInfo,
-  KeyboardContext,
-  KeyboardContextProps,
-} from "./KeyboardContext"
+  CurrentKeyboardContext,
+  CurrentKeyboardContextProps,
+} from "./CurrentKeyboardContext"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import KeyboardModeKey from "./keyboard-mode-key"
 import KeyboardLayoutMode from "./keyboard-layout-mode"
 import VisualKeyboardInstance from "./visual-keyboard-instance"
 import { debounce } from "lodash"
 import { VisualKeyboardOnDoneArgs } from "./types"
+import { useVisualKeyboard } from "./VisualKeyboardContext"
 
-interface KeyboardContextProviderProps {
+interface CurrentKeyboardContextProviderProps {
   visualKeyboardInstance: VisualKeyboardInstance
   onDone(result: VisualKeyboardOnDoneArgs): void
 }
 
-const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
+const CurrentKeyboardContextProvider: React.FC<CurrentKeyboardContextProviderProps> = ({
   children,
   visualKeyboardInstance,
   onDone,
 }) => {
+  const { closeKeyboardById } = useVisualKeyboard()
   const [value, setValue] = useState<string>(visualKeyboardInstance.initial)
   const [caretPosition, setCaretPosition] = useState(0)
   const [uppercaseModeLocked, setUppercaseModeLocked] = useState(false)
@@ -27,6 +29,11 @@ const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
     KeyboardLayoutMode.NORMAL
   )
   const target = visualKeyboardInstance.target as HTMLInputElement
+
+  const closeKeyboard = useCallback(
+    () => closeKeyboardById(visualKeyboardInstance.id),
+    [closeKeyboardById, visualKeyboardInstance.id]
+  )
 
   const onButtonPressed = useCallback(
     (args: ButtonPressedInfo) => {
@@ -58,6 +65,11 @@ const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
           setValue(resultText)
           break
         }
+        case KeyboardModeKey.CLEAR_ALL: {
+          setCaretPosition(0)
+          setValue("")
+          break
+        }
         case KeyboardModeKey.SHIFT: {
           if (keyboardLayoutMode === KeyboardLayoutMode.NORMAL) {
             setKeyboardLayoutMode(KeyboardLayoutMode.UPPERCASE)
@@ -78,10 +90,14 @@ const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
           onDone({ visualKeyboardInstance, value })
           break
         }
+        case KeyboardModeKey.CANCEL: {
+          closeKeyboard()
+        }
       }
     },
     [
       caretPosition,
+      closeKeyboard,
       keyboardLayoutMode,
       onDone,
       uppercaseModeLocked,
@@ -130,21 +146,28 @@ const KeyboardContextProvider: React.FC<KeyboardContextProviderProps> = ({
     visualKeyboardInstance.onInputChange(value)
   }, [value, visualKeyboardInstance])
 
-  const providerValue: KeyboardContextProps = useMemo<KeyboardContextProps>(
+  const providerValue: CurrentKeyboardContextProps = useMemo<CurrentKeyboardContextProps>(
     () => ({
       value,
       onButtonPressed,
       keyboardLayoutMode,
       uppercaseModeLocked,
+      visualKeyboardInstance,
     }),
-    [value, keyboardLayoutMode, onButtonPressed, uppercaseModeLocked]
+    [
+      value,
+      keyboardLayoutMode,
+      onButtonPressed,
+      uppercaseModeLocked,
+      visualKeyboardInstance,
+    ]
   )
 
   return (
-    <KeyboardContext.Provider value={providerValue}>
+    <CurrentKeyboardContext.Provider value={providerValue}>
       {children}
-    </KeyboardContext.Provider>
+    </CurrentKeyboardContext.Provider>
   )
 }
 
-export default KeyboardContextProvider
+export default CurrentKeyboardContextProvider

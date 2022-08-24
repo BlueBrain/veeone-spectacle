@@ -7,6 +7,7 @@ interface VisualKeyboardInstanceConstructorArgs {
   id?: KeyboardId
   initial?: string
   onDone?: (value: string) => void
+  doneButtonLabel: string
 }
 
 class VisualKeyboardInstance {
@@ -14,6 +15,7 @@ class VisualKeyboardInstance {
   onInputChange: (value: string) => void
   id?: KeyboardId
   initial?: string
+  doneButtonLabel?: string
   onDone?: (value: string) => void
 
   constructor(args: VisualKeyboardInstanceConstructorArgs) {
@@ -22,6 +24,7 @@ class VisualKeyboardInstance {
     this.target = args.target
     this.onInputChange = args.onInputChange
     this.onDone = args.onDone
+    this.doneButtonLabel = args.doneButtonLabel ?? "Done"
   }
 }
 

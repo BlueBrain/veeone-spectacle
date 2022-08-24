@@ -2,7 +2,7 @@ import "react-simple-keyboard/build/css/index.css"
 import React, { useMemo } from "react"
 import { Box } from "@mui/material"
 import Keyboard from "./Keyboard"
-import KeyboardContextProvider from "./KeyboardContextProvider"
+import CurrentKeyboardContextProvider from "./CurrentKeyboardContextProvider"
 import VisualKeyboardInstance from "./visual-keyboard-instance"
 import { VisualKeyboardOnDoneArgs } from "./types"
 
@@ -36,12 +36,12 @@ export const VisualKeyboard: React.FC<VisualKeyboardProps> = ({
         maxWidth: `28rem`,
       }}
     >
-      <KeyboardContextProvider
+      <CurrentKeyboardContextProvider
         visualKeyboardInstance={instance}
         onDone={handleOnDone}
       >
         <Keyboard />
-      </KeyboardContextProvider>
+      </CurrentKeyboardContextProvider>
     </Box>
   )
 }

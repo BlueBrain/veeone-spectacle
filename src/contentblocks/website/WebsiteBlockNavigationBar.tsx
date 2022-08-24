@@ -47,6 +47,7 @@ const WebsiteBlockNavigationBar: React.FC = () => {
         onInputChange: (newValue: string) => setLocationBarUrl(newValue),
         customKeyboardId: `navigation-bar-${frameId}`,
         onDone: (value: string) => navigateUrl(value),
+        doneButtonLabel: "Go",
       })
     },
     [frameId, navigateUrl, openKeyboard]

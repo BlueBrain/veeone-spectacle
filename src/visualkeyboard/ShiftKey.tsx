@@ -1,6 +1,6 @@
 import { Forward, Upload } from "@mui/icons-material"
 import React, { useMemo } from "react"
-import { useCurrentKeyboard } from "./KeyboardContext"
+import { useCurrentKeyboard } from "./CurrentKeyboardContext"
 import KeyboardModeKey from "./keyboard-mode-key"
 import KeyboardKey from "./KeyboardKey"
 

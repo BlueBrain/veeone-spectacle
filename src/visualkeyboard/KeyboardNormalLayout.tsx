@@ -2,8 +2,9 @@ import React from "react"
 import KeyboardRow from "./KeyboardRow"
 import KeyboardKey from "./KeyboardKey"
 import KeyboardModeKey from "./keyboard-mode-key"
-import { Backspace } from "@mui/icons-material"
+import { Backspace, Clear, ClearRounded } from "@mui/icons-material"
 import ShiftKey from "./ShiftKey"
+import KeyboardBottomRow from "./KeyboardBottomRow"
 
 const KeyboardNormalLayout: React.FC = () => {
   return (
@@ -69,15 +70,7 @@ const KeyboardNormalLayout: React.FC = () => {
         <KeyboardKey label={"/"} />
         <ShiftKey />
       </KeyboardRow>
-      <KeyboardRow>
-        <KeyboardKey label={"@"} />
-        <KeyboardKey label={"Space"} customValue={" "} grow={4} />
-        <KeyboardKey
-          label={"Done"}
-          mode={KeyboardModeKey.DONE}
-          color={"primary"}
-        />
-      </KeyboardRow>
+      <KeyboardBottomRow />
     </>
   )
 }

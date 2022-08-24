@@ -18,7 +18,7 @@ const SaveAsNewPresentationModal: React.FC = () => {
   const { resolveDialog, cancelDialog } = useActiveDialog()
   const presentationNameFieldRef = useRef()
   const { presentationStore } = useSpectacle()
-  const { openKeyboard, closeKeyboard } = useVisualKeyboard()
+  const { openKeyboard, closeKeyboardById } = useVisualKeyboard()
   const [presentationTitle, setPresentationTitle] = useState(
     presentationStore.name !== "Untitled" ? presentationStore.name : ""
   )
@@ -37,9 +37,9 @@ const SaveAsNewPresentationModal: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      closeKeyboard(keyboardId)
+      closeKeyboardById(keyboardId)
     }
-  }, [closeKeyboard])
+  }, [closeKeyboardById])
 
   const handleSaveClick = async () => {
     resolveDialog({

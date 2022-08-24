@@ -22,7 +22,7 @@ const DirectoryContent: React.FC<DirectoryContentProps> = ({
   const { frameId, viewType } = useFileBrowser()
   const { setScrollableAreaRef } = useFileBrowserNavigator()
   const { isSearchingInProgress } = useFileBrowserSearch()
-  const { closeKeyboard } = useVisualKeyboard()
+  const { closeKeyboardById } = useVisualKeyboard()
   const displayType = viewType ?? FileBrowserViewTypes.Thumbnails
   const isEmpty = !dirs.length && !files.length
   const scrollableContentRef = useRef(null)
@@ -32,8 +32,8 @@ const DirectoryContent: React.FC<DirectoryContentProps> = ({
       `Hide keyboard from tapping on directory contents: ${frameId}`
     )
     const keyboardIdToClose = `search-files-${frameId}`
-    closeKeyboard(keyboardIdToClose)
-  }, [closeKeyboard, frameId])
+    closeKeyboardById(keyboardIdToClose)
+  }, [closeKeyboardById, frameId])
 
   useEffect(() => {
     const currentRef = scrollableContentRef.current

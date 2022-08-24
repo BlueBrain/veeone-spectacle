@@ -16,16 +16,16 @@ import { useVisualKeyboard } from "../../../visualkeyboard/VisualKeyboardContext
 const PresentationFolderList: React.FC = () => {
   const dialogs = useDialogs()
   const { dialogOptions } = useActiveDialog()
-  const { closeKeyboard } = useVisualKeyboard()
+  const { closeKeyboardById } = useVisualKeyboard()
   const folderList = ["...", "...", "...", "...", "...", "...", "...", "..."]
 
   const openCreateNewFolderDialog = useCallback(async () => {
-    closeKeyboard("savePresentationName")
+    closeKeyboardById("savePresentationName")
     await dialogs.openDialog(CreateNewFolderModal, {
       position: dialogOptions.position,
       maxWidth: "xs",
     })
-  }, [closeKeyboard, dialogOptions.position, dialogs])
+  }, [closeKeyboardById, dialogOptions.position, dialogs])
 
   return (
     <Grid container>

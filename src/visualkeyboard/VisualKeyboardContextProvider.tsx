@@ -24,6 +24,7 @@ const VisualKeyboardContextProvider: React.FC = ({ children }) => {
       initial,
       customKeyboardId,
       onDone,
+      doneButtonLabel,
     }: OpenKeyboardOptions) => {
       const existingKeyboard = keyboardExistsOnTarget(target)
       if (existingKeyboard) {
@@ -35,6 +36,7 @@ const VisualKeyboardContextProvider: React.FC = ({ children }) => {
         onInputChange,
         initial,
         onDone,
+        doneButtonLabel,
       })
       setKeyboards(currentKeyboards => [...currentKeyboards, newKeyboard])
       return newKeyboard
@@ -69,7 +71,7 @@ const VisualKeyboardContextProvider: React.FC = ({ children }) => {
     () => ({
       keyboards,
       openKeyboard,
-      closeKeyboard,
+      closeKeyboardById: closeKeyboard,
       closeKeyboardByTarget,
     }),
     [closeKeyboard, closeKeyboardByTarget, keyboards, openKeyboard]

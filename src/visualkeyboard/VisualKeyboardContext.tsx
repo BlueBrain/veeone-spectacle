@@ -8,12 +8,13 @@ export interface OpenKeyboardOptions {
   initial?: string
   customKeyboardId?: KeyboardId
   onDone?: (value: string) => void
+  doneButtonLabel?: string
 }
 
 export interface VisualKeyboardContextProps {
   keyboards: VisualKeyboardInstance[]
   openKeyboard: (args: OpenKeyboardOptions) => VisualKeyboardInstance
-  closeKeyboard: (keyboardId: KeyboardId) => void
+  closeKeyboardById: (keyboardId: KeyboardId) => void
   closeKeyboardByTarget: (target: HTMLElement) => void
 }
 

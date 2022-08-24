@@ -1,9 +1,10 @@
 import { Button, Grid } from "@mui/material"
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useMemo, useRef } from "react"
 import { OverridableStringUnion } from "@mui/types"
 import { ButtonPropsColorOverrides } from "@mui/material/Button/Button"
-import { useCurrentKeyboard } from "./KeyboardContext"
+import { useCurrentKeyboard } from "./CurrentKeyboardContext"
 import KeyboardModeKey from "./keyboard-mode-key"
+import useInteractable from "../interactable/useInteractable"
 
 interface KeyboardKeyProps {
   label: string | React.ComponentElement<any, any>
@@ -21,6 +22,7 @@ interface KeyboardKeyProps {
     ButtonPropsColorOverrides
   >
   mode?: KeyboardModeKey
+  onHold?: () => void
 }
 
 const KeyboardKey: React.FC<KeyboardKeyProps> = ({
@@ -28,8 +30,10 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
   color = "neutral",
   grow = 1,
   customValue,
+  onHold,
   mode = KeyboardModeKey.NORMAL,
 }) => {
+  const ref = useRef()
   const keyboard = useCurrentKeyboard()
 
   const value: string = useMemo(
@@ -54,10 +58,20 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
     ...(color ? { color } : {}),
   }
 
+  const onHoldHandler = useCallback(() => {
+    console.debug("Holding button...")
+    if (typeof onHold === "function") {
+      onHold()
+    }
+  }, [onHold])
+
+  useInteractable(ref, { onHold: onHoldHandler })
+
   return (
     <Grid item sx={{ display: `flex`, flexGrow: grow, padding: `0 0.1rem` }}>
       {/* @ts-ignore */}
       <Button
+        ref={ref}
         onClick={triggerButton}
         variant={"contained"}
         {...optionalProps}
