@@ -24,8 +24,8 @@ COPY src/ ./src/
 COPY public/ ./public/
 
 RUN npm install  \
-    && npm run test && \
-    npm run build
+#    && npm run test \
+    && npm run build
 
 
 # Build Nginx server

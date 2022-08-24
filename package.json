@@ -4,10 +4,6 @@
   "description": "",
   "version": "0.1.0",
   "author": "Blue Brain Project",
-  "engines": {
-    "node": "17.0.1",
-    "npm": "8.1.2"
-  },
   "dependencies": {
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
