@@ -18,22 +18,31 @@ const WebsiteBlockContextProvider: React.FC<WebsiteBlockContextProviderProps> = 
 }) => {
   const dispatch = useDispatch()
   const { frameId } = useFrame()
-  const { websiteUrl } = contentData
-  const [isInteractiveMode, setIsInteractiveMode] = useState(false)
+  const { websiteUrl, isInteractiveModeOn } = contentData
 
-  const activateInteractiveMode = useCallback(
-    () => setIsInteractiveMode(true),
-    []
+  const isInteractiveModeOnValue = useMemo(
+    () =>
+      typeof isInteractiveModeOn !== "undefined" ? isInteractiveModeOn : false,
+    [isInteractiveModeOn]
   )
 
-  const deactivateInteractiveMode = useCallback(
-    () => setIsInteractiveMode(false),
-    []
-  )
+  const activateInteractiveMode = useCallback(() => {
+    const frameData: Partial<WebsiteBlockContentData> = {
+      isInteractiveModeOn: true,
+    }
+    dispatch(updateFrameData(frameId, frameData))
+  }, [dispatch, frameId])
+
+  const deactivateInteractiveMode = useCallback(() => {
+    const frameData: Partial<WebsiteBlockContentData> = {
+      isInteractiveModeOn: false,
+    }
+    dispatch(updateFrameData(frameId, frameData))
+  }, [dispatch, frameId])
 
   const navigateUrl = useCallback(
     (newUrl: string) => {
-      const frameData: WebsiteBlockContentData = {
+      const frameData: Partial<WebsiteBlockContentData> = {
         websiteUrl: newUrl,
       }
       console.debug("Navigate to", newUrl)
@@ -59,7 +68,7 @@ const WebsiteBlockContextProvider: React.FC<WebsiteBlockContextProviderProps> = 
       websiteUrl,
       activateInteractiveMode,
       deactivateInteractiveMode,
-      isInteractiveMode,
+      isInteractiveModeOn: isInteractiveModeOnValue,
       navigateForward,
       navigateBack,
       navigateHome,
@@ -68,7 +77,7 @@ const WebsiteBlockContextProvider: React.FC<WebsiteBlockContextProviderProps> = 
     [
       activateInteractiveMode,
       deactivateInteractiveMode,
-      isInteractiveMode,
+      isInteractiveModeOnValue,
       navigateBack,
       navigateForward,
       navigateHome,

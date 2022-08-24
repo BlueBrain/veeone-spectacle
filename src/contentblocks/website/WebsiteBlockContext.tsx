@@ -2,7 +2,7 @@ import { createContext, useContext } from "react"
 
 export interface WebsiteBlockContextProps {
   websiteUrl: string
-  isInteractiveMode: boolean
+  isInteractiveModeOn: boolean
   activateInteractiveMode: () => void
   deactivateInteractiveMode: () => void
   navigateBack: () => void

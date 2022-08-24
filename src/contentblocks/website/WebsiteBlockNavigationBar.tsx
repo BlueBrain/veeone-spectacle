@@ -2,8 +2,14 @@ import { Box, Grid, IconButton, TextField, Tooltip } from "@mui/material"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
 import { useFrame } from "../../frames/FrameContext"
-import { ArrowBack, ArrowForward, Home, Search } from "@mui/icons-material"
-import FiltersSelector from "../filebrowser/FiltersSelector"
+import {
+  ArrowBack,
+  ArrowForward,
+  Home,
+  LockOpenRounded,
+  LockRounded,
+  PlayCircle,
+} from "@mui/icons-material"
 import { useWebsiteBlock } from "./WebsiteBlockContext"
 
 const WebsiteBlockNavigationBar: React.FC = () => {
@@ -16,6 +22,9 @@ const WebsiteBlockNavigationBar: React.FC = () => {
     navigateBack,
     navigateForward,
     websiteUrl,
+    activateInteractiveMode,
+    deactivateInteractiveMode,
+    isInteractiveModeOn,
   } = useWebsiteBlock()
 
   const [locationBarUrl, setLocationBarUrl] = useState<string>(websiteUrl)
@@ -77,7 +86,7 @@ const WebsiteBlockNavigationBar: React.FC = () => {
           </Grid>
 
           <Grid item>
-            <Tooltip title="Search files and directories" enterDelay={1000}>
+            <Tooltip title="Home page" enterDelay={1000}>
               <span>
                 <IconButton
                   onClick={navigateHome}
@@ -92,17 +101,46 @@ const WebsiteBlockNavigationBar: React.FC = () => {
         </Grid>
       </Grid>
       <Grid item xs={12} md>
-        <Box sx={{ paddingRight: `3rem` }}>
-          <TextField
-            inputRef={ref}
-            type={"text"}
-            variant={"outlined"}
-            label={"Enter website address"}
-            fullWidth={true}
-            value={locationBarUrl}
-            onChange={handleTextInputChange}
-            onFocus={event => showVisualKeyboard(event.target, locationBarUrl)}
-          />
+        <Box
+          sx={{ display: `flex`, flexDirection: `row`, paddingRight: `3rem` }}
+        >
+          <Box sx={{ flexGrow: 1 }}>
+            <TextField
+              inputRef={ref}
+              type={"text"}
+              variant={"outlined"}
+              label={"Enter website address"}
+              fullWidth={true}
+              value={locationBarUrl}
+              onChange={handleTextInputChange}
+              onFocus={event =>
+                showVisualKeyboard(event.target, locationBarUrl)
+              }
+            />
+          </Box>
+
+          <Tooltip title="Navigate to the URL" enterDelay={1000}>
+            <IconButton
+              onClick={() => navigateUrl(locationBarUrl)}
+              size={"large"}
+            >
+              <PlayCircle fontSize={"large"} />
+            </IconButton>
+          </Tooltip>
+
+          {isInteractiveModeOn ? (
+            <Tooltip title="Lock page browsing" enterDelay={1000}>
+              <IconButton onClick={deactivateInteractiveMode} size={"large"}>
+                <LockRounded fontSize={"large"} />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Unlock page browsing" enterDelay={1000}>
+              <IconButton onClick={activateInteractiveMode} size={"large"}>
+                <LockOpenRounded fontSize={"large"} />
+              </IconButton>
+            </Tooltip>
+          )}
         </Box>
       </Grid>
     </Grid>

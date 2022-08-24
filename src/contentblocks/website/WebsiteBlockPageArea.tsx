@@ -1,13 +1,18 @@
-import { Box } from "@mui/material"
-import React, { useState } from "react"
+import { alpha, Box, Button } from "@mui/material"
+import React from "react"
 import { useWebsiteBlock } from "./WebsiteBlockContext"
 import { useFrame } from "../../frames/FrameContext"
+import { LockOpenRounded } from "@mui/icons-material"
+import { black } from "../../branding/colors"
 
 const WebsiteBlockPageArea = () => {
-  const { websiteUrl } = useWebsiteBlock()
+  const {
+    websiteUrl,
+    isInteractiveModeOn,
+    activateInteractiveMode,
+  } = useWebsiteBlock()
   const { frameId, isTopFrame, stackIndex } = useFrame()
-
-  console.debug("WebsiteBlockContent render", websiteUrl)
+  // todo display warning only if tapped by user
 
   return (
     <>
@@ -26,7 +31,8 @@ const WebsiteBlockPageArea = () => {
       />
       <Box
         sx={{
-          background: theme => theme.palette.primary.main,
+          background: theme => alpha(black, 0.5),
+          display: isInteractiveModeOn ? `none` : `block`,
           opacity: `0.0`,
           width: `100%`,
           height: `100%`,
@@ -41,11 +47,30 @@ const WebsiteBlockPageArea = () => {
               opacity: 0.0,
             },
             "100%": {
-              opacity: 0.5,
+              opacity: 1,
             },
           },
         }}
-      />
+      >
+        <Box
+          sx={{
+            color: `white`,
+            position: `absolute`,
+            left: `50%`,
+            top: `40%`,
+            transform: `translate(-50%, -50%)`,
+            textAlign: `center`,
+          }}
+        >
+          <Box sx={{ fontSize: `1rem`, fontWeight: `600`, margin: `1rem 0` }}>
+            Page interaction is locked
+          </Box>
+          <Button variant={"contained"} onClick={activateInteractiveMode}>
+            <LockOpenRounded sx={{ margin: `0 0.5rem 0 0` }} />
+            Unlock it
+          </Button>
+        </Box>
+      </Box>
     </>
   )
 }
