@@ -7,7 +7,7 @@ const WebsiteBlockZoomButtons: React.FC = () => {
   const { zoomPageIn, zoomPageOut, zoomLevel } = useWebsiteBlock()
 
   return (
-    <>
+    <Box sx={{ display: `flex`, flexDirection: `row` }}>
       <Tooltip title="Zoom out" enterDelay={1000}>
         <IconButton onClick={zoomPageOut}>
           <ZoomOut />
@@ -23,7 +23,7 @@ const WebsiteBlockZoomButtons: React.FC = () => {
           <ZoomIn />
         </IconButton>
       </Tooltip>
-    </>
+    </Box>
   )
 }
 

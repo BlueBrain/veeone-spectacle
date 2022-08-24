@@ -1,4 +1,4 @@
-import { Switch } from "@mui/material"
+import { Box, Switch } from "@mui/material"
 import { LockOpenRounded, LockRounded } from "@mui/icons-material"
 import React, { useCallback } from "react"
 import { useWebsiteBlock } from "./WebsiteBlockContext"
@@ -22,11 +22,11 @@ const WebsiteBlockLockSwitch: React.FC = () => {
   )
 
   return (
-    <>
+    <Box sx={{ display: `flex`, alignItems: `center` }}>
       <LockOpenRounded />
       <Switch onChange={onSwitchChange} checked={!isInteractiveModeOn} />
       <LockRounded />
-    </>
+    </Box>
   )
 }
 
