@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect } from "react"
 import { ContentBlockProps } from "../types"
 import { FrameContext } from "../../frames"
 import WebsiteBlockContextProvider from "./WebsiteBlockContextProvider"

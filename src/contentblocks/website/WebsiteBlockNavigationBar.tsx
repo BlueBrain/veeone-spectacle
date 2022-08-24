@@ -7,7 +7,7 @@ import WebsiteBlockNavigationButtons from "./WebsiteBlockNavigationButtons"
 
 const WebsiteBlockNavigationBar: React.FC = () => {
   return (
-    <Grid container alignItems={"center"}>
+    <Grid container alignItems={"center"} sx={{ padding: `0.4rem 0` }}>
       <Grid item>
         <WebsiteBlockNavigationButtons />
       </Grid>

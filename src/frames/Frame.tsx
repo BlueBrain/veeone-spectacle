@@ -126,7 +126,14 @@ const Frame: React.FC<FrameProps> = ({ frameId, frame, stackIndex }) => {
       },
       setFullscreenParamsProvider,
     }),
-    [frameId, isTopFrame, updateAspectRatio, toggleFullscreen, dispatch]
+    [
+      frameId,
+      stackIndex,
+      isTopFrame,
+      updateAspectRatio,
+      toggleFullscreen,
+      dispatch,
+    ]
   )
 
   const ContentBlockComponent = useMemo(
