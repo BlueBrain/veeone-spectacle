@@ -191,6 +191,12 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
         icon: Language,
         children: [
           new LauncherMenuItem({
+            label: "RNC",
+            icon: Language,
+            action: () =>
+              openWebsite("https://bbp.epfl.ch/therealneuronchallenge/"),
+          }),
+          new LauncherMenuItem({
             label: "EPFL",
             icon: Language,
             action: () => openWebsite("https://epfl.ch"),
@@ -198,13 +204,8 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
           new LauncherMenuItem({
             label: "BBP",
             icon: Language,
-            action: () => openWebsite("https://bbp.epfl.ch"),
-          }),
-          new LauncherMenuItem({
-            label: "Real Neuron Challenge",
-            icon: Language,
             action: () =>
-              openWebsite("https://bbp.epfl.ch/therealneuronchallenge/"),
+              openWebsite("https://www.epfl.ch/research/domains/bluebrain/"),
           }),
           // new LauncherMenuItem({
           //   label: "Browser",
