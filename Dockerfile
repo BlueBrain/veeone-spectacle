@@ -13,9 +13,15 @@ ENV MAIN_DIR=/usr/src/
 WORKDIR ${MAIN_DIR}
 
 # Copy source and configuration files to WORKDIR
-COPY .eslintignore .eslintrc.yaml babel.config.js jest.config.js \
-    package.json package-lock.json \
-    tsconfig.json tsconfig.eslint.json webpack.config.js ./
+COPY .eslintignore \
+    .eslintrc.yaml \
+    babel.config.js \
+    jest.config.js \
+    package.json \
+    package-lock.json \
+    tsconfig.json \
+    tsconfig.eslint.json \
+    webpack.config.js ./
 
 # Copy directories
 COPY .jest/ ./.jest/

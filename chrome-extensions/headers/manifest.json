@@ -6,9 +6,5 @@
   "background": {
     "scripts": ["headers.js"]
   },
-  "permissions": [
-    "webRequest",
-    "webRequestBlocking",
-    "<all_urls>"
-  ]
+  "permissions": ["webRequest", "webRequestBlocking", "<all_urls>"]
 }
