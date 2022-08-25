@@ -140,6 +140,7 @@ const FrameContextProvider: React.FC<FrameContextProviderProps> = ({
       frameId,
       ContentBlockComponent,
       frameType,
+      frameContentData,
       stackIndex,
       width,
       height,

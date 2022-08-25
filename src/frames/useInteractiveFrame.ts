@@ -314,8 +314,6 @@ export const useInteractiveFrame = ({
             }),
           ],
           onstart: () => {
-            bringToFront()
-            console.debug("prevent fullscreen")
             isFullscreenEnabled = false
             node.style.zIndex = "9999"
             nodeLeft = left
@@ -333,7 +331,7 @@ export const useInteractiveFrame = ({
             node.style.height = `${nodeHeight}px`
           },
           onend: () => {
-            console.debug("enable back fullscreen")
+            console.debug("Dragging ended")
             isFullscreenEnabled = true
             bringToFront()
             manipulate({ left: nodeLeft, top: nodeTop })
