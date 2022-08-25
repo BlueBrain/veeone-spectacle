@@ -4,8 +4,12 @@ import { SxProps } from "@mui/system"
 import { useDesk } from "../DeskContext"
 import interact from "interactjs"
 import { ContentBlockTypes } from "../../contentblocks/types"
-import ImageBlockContent from "../../contentblocks/image/ImageBlockContent"
-import VideoBlockContent from "../../contentblocks/video/VideoBlockContent"
+import ImageBlockContent, {
+  ImageBlockParams,
+} from "../../contentblocks/image/ImageBlockContent"
+import VideoBlockContent, {
+  VideoBlockParams,
+} from "../../contentblocks/video/VideoBlockContent"
 import { useConfig } from "../../config/AppConfigContext"
 
 interface FullscreenVideoExtraData {
@@ -96,7 +100,11 @@ const FullscreenLayer: React.FC = () => {
         // Open image component in fullscreen
         case ContentBlockTypes.Image: {
           content = (
-            <ImageBlockContent contentData={fullscreenFrame.frame.data} />
+            <ImageBlockContent
+              contentData={
+                (fullscreenFrame.frame.data as unknown) as ImageBlockParams
+              }
+            />
           )
           break
         }
@@ -107,7 +115,9 @@ const FullscreenLayer: React.FC = () => {
           content = (
             <VideoBlockContent
               ref={videoRef}
-              contentData={fullscreenFrame.frame.data}
+              contentData={
+                (fullscreenFrame.frame.data as unknown) as VideoBlockParams
+              }
               onFullscreenToggle={exitFullscreen}
               startAt={extraData.videoRef.currentTime}
               allowPlayingInFullscreenMode={true}

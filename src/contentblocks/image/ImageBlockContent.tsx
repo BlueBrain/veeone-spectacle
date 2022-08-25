@@ -1,18 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { Box, CircularProgress, Grid } from "@mui/material"
-import { Json } from "../../common/types"
 import { useImageKeeper } from "../../image-keeper/ImageKeeperContext"
 import { ImageKeeperResponse, KeeperImage } from "../../image-keeper/types"
 import { useConfig } from "../../config/AppConfigContext"
 import { useSpectacle } from "../../spectacle/SpectacleContext"
 import BlurredImageBackground from "./BlurredImageBackground"
 
-interface ImageBlockParams {
+export interface ImageBlockParams {
   path: string
 }
 
 interface ImageBlockContentProps {
-  contentData: { [key: string]: Json } | any
+  contentData: ImageBlockParams
   onImageLoad?(keeperImage: KeeperImage): void
 }
 
@@ -22,7 +21,7 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
 }) => {
   const { thumbnailRegistry } = useSpectacle()
   const { requestImage } = useImageKeeper()
-  const { path: imagePath } = (contentData as unknown) as ImageBlockParams
+  const { path: imagePath } = contentData
   const [keeperImage, setKeeperImage] = useState<KeeperImage>(null)
   const { LOAD_IMAGES_AS_CSS_BACKGROUND } = useConfig()
 

@@ -1,6 +1,6 @@
 import { FrameData, FrameId, FrameSituationUpdate } from "../types"
 import React from "react"
-import { ContentBlockProps, ContentBlockTypes } from "../contentblocks/types"
+import { ContentBlockTypes } from "../contentblocks/types"
 
 export interface FrameContextProps {
   frameId: FrameId
@@ -12,9 +12,7 @@ export interface FrameContextProps {
   top: number
   left: number
   angle: number
-  ContentBlockComponent:
-    | React.FC<ContentBlockProps>
-    | React.NamedExoticComponent<ContentBlockProps>
+  ContentBlockComponent: React.FC | React.NamedExoticComponent
   frameType: ContentBlockTypes
   isFullscreenAllowed: boolean
   isMovingAllowed: boolean

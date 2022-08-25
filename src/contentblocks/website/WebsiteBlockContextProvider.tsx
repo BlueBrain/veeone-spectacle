@@ -9,18 +9,15 @@ import { useFrame } from "../../frames/FrameContext"
 import { useConfig } from "../../config/AppConfigContext"
 import { generateRandomId } from "../../common/random"
 
-interface WebsiteBlockContextProviderProps {
-  contentData: WebsiteBlockContentData
-}
-
-const WebsiteBlockContextProvider: React.FC<WebsiteBlockContextProviderProps> = ({
-  contentData,
-  children,
-}) => {
+const WebsiteBlockContextProvider: React.FC = ({ children }) => {
   const config = useConfig()
   const dispatch = useDispatch()
-  const { frameId } = useFrame()
-  const { websiteUrl, isInteractiveModeOn, zoomLevel } = contentData
+  const { frameId, frameContentData } = useFrame()
+  const {
+    websiteUrl,
+    isInteractiveModeOn,
+    zoomLevel,
+  } = frameContentData as WebsiteBlockContentData
   const [websiteIframeKey, setWebsiteIframeKey] = useState(websiteUrl)
 
   const zoomLevelValue = useMemo(

@@ -5,7 +5,6 @@ import { useFrame } from "./FrameContext"
 
 const FrameBody: React.FC = () => {
   const {
-    frameId,
     width,
     height,
     top,
@@ -20,7 +19,6 @@ const FrameBody: React.FC = () => {
     bringToFront,
     ContentBlockComponent,
     stackIndex,
-    frameContentData,
   } = useFrame()
 
   const [frameRefReceiver] = useInteractiveFrame({
@@ -50,7 +48,7 @@ const FrameBody: React.FC = () => {
         transform: `translateZ(0) translateX(${left}px) translateY(${top}px) rotate(${angle}deg)`,
       }}
     >
-      <ContentBlockComponent frameId={frameId} contentData={frameContentData} />
+      <ContentBlockComponent />
     </Box>
   )
 }

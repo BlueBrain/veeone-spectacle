@@ -1,17 +1,22 @@
-import React, { useContext, useEffect } from "react"
-import { ContentBlockProps } from "../types"
-import { FrameContext } from "../../frames"
+import React, { useEffect } from "react"
 import { FileBrowserContextProvider } from "./FileBrowserContext"
 import { Box, Grow } from "@mui/material"
 import FileBrowserBlockLayout from "./FileBrowserBlockLayout"
+import { useFrame } from "../../frames/FrameContext"
 
-const FileBrowserBlock: React.FC<ContentBlockProps> = ({ frameId }) => {
-  const frameContext = useContext(FrameContext)
+const FileBrowserBlock: React.FC = () => {
+  const {
+    frameId,
+    preventResizing,
+    preventResizingWithWheel,
+    preventFullscreen,
+  } = useFrame()
+
   useEffect(() => {
-    frameContext.preventResizingWithWheel()
-    frameContext.preventResizing()
-    frameContext.preventFullscreen()
-  }, [frameContext])
+    preventResizingWithWheel()
+    preventResizing()
+    preventFullscreen()
+  }, [preventFullscreen, preventResizing, preventResizingWithWheel])
 
   return (
     <FileBrowserContextProvider frameId={frameId}>

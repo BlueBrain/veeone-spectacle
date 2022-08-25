@@ -1,20 +1,17 @@
-import React, { useContext, useEffect } from "react"
-import { ContentBlockProps } from "../types"
-import { FrameContext } from "../../frames"
+import React, { useEffect } from "react"
 import WebsiteBlockContextProvider from "./WebsiteBlockContextProvider"
 import WebsiteBlockContent from "./WebsiteBlockContent"
-import { WebsiteBlockContentData } from "./types"
+import { useFrame } from "../../frames/FrameContext"
 
-const WebsiteBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
-  const frameContext = useContext(FrameContext)
+const WebsiteBlock: React.FC = () => {
+  const { preventFullscreen } = useFrame()
+
   useEffect(() => {
-    frameContext.preventFullscreen()
-  }, [frameContext])
+    preventFullscreen()
+  }, [preventFullscreen])
 
   return (
-    <WebsiteBlockContextProvider
-      contentData={contentData as WebsiteBlockContentData}
-    >
+    <WebsiteBlockContextProvider>
       <WebsiteBlockContent />
     </WebsiteBlockContextProvider>
   )
