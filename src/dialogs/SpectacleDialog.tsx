@@ -1,7 +1,8 @@
 import { Dialog, Paper, PaperProps } from "@mui/material"
-import React, { useEffect, useRef } from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 import { DialogOptions } from "./DialogsContext"
 import ActiveDialogContextProvider from "./ActiveDialogContextProvider"
+import { useConfig } from "../config/AppConfigContext"
 
 interface SpectacleDialogProps {
   component: React.FC | React.NamedExoticComponent
@@ -10,26 +11,57 @@ interface SpectacleDialogProps {
   reject: (reason: any) => void
 }
 
-const fixBoxPosition = (ref: HTMLDivElement) => {
-  // TODO fix this
-  const parentRect = ref.offsetParent.getBoundingClientRect()
-  console.debug("PARENT DESK", parentRect)
-  const leftEdge = ref.offsetLeft - ref.offsetWidth / 2
-  const rightEdge = parentRect.width - ref.offsetLeft + ref.offsetWidth / 2
-  const topEdge = ref.offsetTop - ref.offsetHeight / 2
-  const bottomEdge = ref.offsetHeight / 2 - ref.offsetTop
-  console.debug("BOX CHECK", { leftEdge, topEdge, rightEdge, bottomEdge })
-}
-
 const PaperComponent: React.FC<PaperProps> = props => {
+  const config = useConfig()
   const paperRef = useRef()
+
+  const fixBoxPosition = useCallback(() => {
+    const modalRef = paperRef.current as HTMLDivElement
+    const modalRect = modalRef.getBoundingClientRect()
+    const deskRect = modalRef.offsetParent.getBoundingClientRect()
+
+    console.debug("PARENT DESK", deskRect)
+
+    const leftEdge = modalRef.offsetLeft - modalRef.offsetWidth / 2
+    const rightEdge = deskRect.width - modalRect.width - leftEdge
+    const topEdge = modalRef.offsetTop - modalRef.offsetHeight / 2
+    const bottomEdge = deskRect.height - modalRect.height - topEdge
+    console.debug("BOX CHECK", { leftEdge, topEdge, rightEdge, bottomEdge })
+
+    let transform = `translate(-50%, -50%) `
+
+    if (leftEdge < config.DIALOG_SAFETY_MARGIN_HORIZONTAL_PX) {
+      transform += `translateX(${
+        -leftEdge + config.DIALOG_SAFETY_MARGIN_HORIZONTAL_PX
+      }px) `
+    } else if (rightEdge < config.DIALOG_SAFETY_MARGIN_HORIZONTAL_PX) {
+      transform += `translateX(${
+        rightEdge - config.DIALOG_SAFETY_MARGIN_HORIZONTAL_PX
+      }px) `
+    }
+
+    if (topEdge < config.DIALOG_SAFETY_MARGIN_VERTICAL_PX) {
+      transform += `translateY(${
+        -topEdge + config.DIALOG_SAFETY_MARGIN_VERTICAL_PX
+      }px) `
+    } else if (bottomEdge < config.DIALOG_SAFETY_MARGIN_VERTICAL_PX) {
+      transform += `translateY(${
+        bottomEdge - config.DIALOG_SAFETY_MARGIN_VERTICAL_PX
+      }px) `
+    }
+    modalRef.style.transform = transform
+  }, [
+    config.DIALOG_SAFETY_MARGIN_HORIZONTAL_PX,
+    config.DIALOG_SAFETY_MARGIN_VERTICAL_PX,
+  ])
+
   useEffect(() => {
     const currentPaperRef = paperRef.current as HTMLDivElement
     if (currentPaperRef) {
       // Correct paper component (dialog window) position if too close to the edge
-      fixBoxPosition(currentPaperRef)
+      fixBoxPosition()
     }
-  })
+  }, [fixBoxPosition, props])
 
   return <Paper {...props} ref={paperRef} />
 }
