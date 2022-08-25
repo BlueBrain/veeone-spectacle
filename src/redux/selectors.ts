@@ -8,8 +8,5 @@ export const getScene = (
   sceneId
 ): SpectacleScene => store.scenes.scenes[sceneId]
 
-export const getFrameStack = (store: SpectaclePresentation) =>
-  store.scenes.scenes[store.scenes.activeScene].frameStack
-
 export const getFrame = (store: SpectaclePresentation, frameId: FrameId) =>
   getFrames(store)[frameId]

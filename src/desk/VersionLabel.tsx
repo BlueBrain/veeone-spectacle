@@ -24,13 +24,6 @@ const VersionLabel: React.FC = () => {
 
   const presentationModifiedMarker = isPresentationClean ? "" : "*"
 
-  console.debug(
-    "saved at",
-    presentationStore.savedAt,
-    "updated at",
-    presentationStore.updatedAt
-  )
-
   return (
     <Box sx={sx}>
       {config.VERSION} ({config.REVISION}){" "}

@@ -4,7 +4,6 @@ import { useWebsiteBlock } from "./WebsiteBlockContext"
 import { useFrame } from "../../frames/FrameContext"
 import { LockOpenRounded } from "@mui/icons-material"
 import { black } from "../../branding/colors"
-import WebsiteBlockLockSwitch from "./WebsiteBlockLockSwitch"
 
 const WebsiteBlockPageArea = () => {
   const iframeRef = useRef()

@@ -2,7 +2,7 @@ import React from "react"
 import KeyboardRow from "./KeyboardRow"
 import KeyboardKey from "./KeyboardKey"
 import KeyboardModeKey from "./keyboard-mode-key"
-import { Backspace, Clear, ClearRounded } from "@mui/icons-material"
+import { Backspace } from "@mui/icons-material"
 import ShiftKey from "./ShiftKey"
 import KeyboardBottomRow from "./KeyboardBottomRow"
 
