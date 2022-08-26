@@ -16,7 +16,7 @@ import {
 } from "../../redux/actions"
 import { useDialogs } from "../../dialogs/DialogsContext"
 import { useDispatch } from "react-redux"
-import OpenPresentationModal from "../presentation-loader/OpenPresentationModal"
+import OpenPresentationModal from "../presentation-loader/open-presentation/OpenPresentationModal"
 import { resizePresentationStore } from "../resizing"
 import { useConfig } from "../../config/AppConfigContext"
 import { getFreshPresentation } from "../fresh-presentation"

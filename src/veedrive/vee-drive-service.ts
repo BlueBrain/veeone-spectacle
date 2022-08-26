@@ -90,8 +90,16 @@ class VeeDriveService {
   ): Promise<VeeDriveSavePresentationResponse> =>
     this.sendRequest(this.endpointNames.savePresentation, store)
 
-  public readonly listPresentations = async (): Promise<VeeDriveListPresentationsResponse> =>
-    this.sendRequest(this.endpointNames.listPresentations)
+  public readonly listPresentations = async (
+    folderName?: string
+  ): Promise<VeeDriveListPresentationsResponse> =>
+    this.sendRequest(this.endpointNames.listPresentations, {
+      ...(folderName
+        ? {
+            folder: folderName,
+          }
+        : {}),
+    })
 
   public readonly getPresentation = async (
     id: string

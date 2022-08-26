@@ -13,6 +13,8 @@ import CreateNewFolderModal from "../create-new-folder/CreateNewFolderModal"
 import { useActiveDialog } from "../../../dialogs/ActiveDialogContext"
 import { useVisualKeyboard } from "../../../visualkeyboard/VisualKeyboardContext"
 import { usePresentationManager } from "../../presentation-manager/PresentationManagerContext"
+import { CancelRounded, DoNotDisturb } from "@mui/icons-material"
+import PresentationFolderListItem from "./PresentationFolderListItem"
 
 interface PresentationFolderListProps {
   selectedFolderName: string
@@ -40,17 +42,23 @@ const PresentationFolderList: React.FC<PresentationFolderListProps> = ({
     <Grid container>
       <Grid item>
         <List>
+          <ListItemButton
+            onClick={() => onSelectFolder(null)}
+            selected={!selectedFolderName}
+            color={"secondary"}
+          >
+            <ListItemIcon>
+              <DoNotDisturb />
+            </ListItemIcon>
+            No folder
+          </ListItemButton>
           {folderList.map((name, i) => (
-            <ListItemButton
+            <PresentationFolderListItem
               key={i}
-              onClick={() => onSelectFolder(name)}
-              selected={name === selectedFolderName}
-            >
-              <ListItemIcon>
-                <FolderIcon />
-              </ListItemIcon>
-              <ListItemText primary={name} />
-            </ListItemButton>
+              name={name}
+              onSelectFolder={onSelectFolder}
+              selectedFolderName={selectedFolderName}
+            />
           ))}
         </List>
       </Grid>

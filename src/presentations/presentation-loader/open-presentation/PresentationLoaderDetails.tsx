@@ -2,23 +2,26 @@ import React, { FC, useContext, useEffect, useMemo, useState } from "react"
 import {
   Box,
   CircularProgress,
+  IconButton,
   Table,
   TableBody,
   TableCell,
   TableRow,
   Typography,
 } from "@mui/material"
-import SpectacleContext from "../../spectacle/SpectacleContext"
-import { SpectaclePresentation } from "../../types"
-import { friendlyDisplayDateTime } from "../../common/datetime"
-import { Crop32Rounded } from "@mui/icons-material"
+import SpectacleContext from "../../../spectacle/SpectacleContext"
+import { SpectaclePresentation } from "../../../types"
+import { friendlyDisplayDateTime } from "../../../common/datetime"
+import { ArrowBack, ArrowBackRounded, Crop32Rounded } from "@mui/icons-material"
 
 interface PresentationLoaderDetailsProps {
   presentationId: string
+  onBack: () => void
 }
 
 export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
   presentationId,
+  onBack,
 }) => {
   const { veeDriveService } = useContext(SpectacleContext)
   const [
@@ -71,9 +74,14 @@ export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
         flexDirection: "column",
       }}
     >
-      <Typography variant={"h4"} mb={2}>
-        {presentationData.name}
-      </Typography>
+      <Box sx={{ display: `flex`, flexDirection: `row`, alignItems: `center` }}>
+        <IconButton onClick={onBack}>
+          <ArrowBackRounded />
+        </IconButton>
+        <Typography variant={"h4"} mb={2}>
+          {presentationData.name}
+        </Typography>
+      </Box>
       <Table sx={{ width: "100%" }} size={"small"}>
         <TableBody>
           <TableRow>

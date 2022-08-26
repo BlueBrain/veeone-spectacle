@@ -17,12 +17,13 @@ import React, {
   useMemo,
   useState,
 } from "react"
-import SpectacleContext from "../../spectacle/SpectacleContext"
+import SpectacleContext from "../../../spectacle/SpectacleContext"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"
 import { SlideshowRounded } from "@mui/icons-material"
-import { useDialogs } from "../../dialogs/DialogsContext"
-import UnsavedChangesWarning from "./UnsavedChangesWarning"
-import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
+import { useDialogs } from "../../../dialogs/DialogsContext"
+import UnsavedChangesWarning from "../UnsavedChangesWarning"
+import { useActiveDialog } from "../../../dialogs/ActiveDialogContext"
+import PresentationFolderList from "../save-as/PresentationFolderList"
 
 const OpenPresentationModal: React.FC = () => {
   const { dialogOptions, resolveDialog, cancelDialog } = useActiveDialog()
@@ -31,16 +32,19 @@ const OpenPresentationModal: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [presentationList, setPresentationList] = useState([])
   const [selectedPresentationId, setSelectedPresentationId] = useState(null)
+  const [selectedFolderName, setSelectedFolderName] = useState(null)
 
   useEffect(() => {
     async function getPresentationList() {
       setIsLoading(true)
-      const response = await veeDriveService.listPresentations()
+      const response = await veeDriveService.listPresentations(
+        selectedFolderName
+      )
       setPresentationList(response.results)
       setIsLoading(false)
     }
     void getPresentationList()
-  }, [veeDriveService])
+  }, [selectedFolderName, veeDriveService])
 
   const handlePresentationItemClick = async (presentationId: string) => {
     setSelectedPresentationId(presentationId)
@@ -96,18 +100,38 @@ const OpenPresentationModal: React.FC = () => {
     [presentationList, selectedPresentationId]
   )
 
+  const toggleFolderSelect = useCallback(
+    (folderName: string) => {
+      if (selectedFolderName !== folderName) {
+        setSelectedFolderName(folderName)
+      } else {
+        setSelectedFolderName(null)
+      }
+    },
+    [selectedFolderName]
+  )
+
+  const clearPresentationId = useCallback(() => {
+    setSelectedPresentationId(null)
+  }, [])
+
   return (
     <>
       <DialogTitle>Open presentation</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ height: `20rem` }}>
         <Grid container alignItems={"stretch"}>
+          <Grid item xs md={4}>
+            <PresentationFolderList
+              selectedFolderName={selectedFolderName}
+              onSelectFolder={toggleFolderSelect}
+            />
+          </Grid>
           <Grid
             item
             xs
             sx={{
               width: "20rem",
               position: "relative",
-              maxHeight: "30vh",
               overflowY: "scroll",
             }}
           >
@@ -124,13 +148,9 @@ const OpenPresentationModal: React.FC = () => {
             <List>{presentations}</List>
           </Grid>
           {selectedPresentationId ? (
-            <Grid
-              item
-              xs
-              md={8}
-              sx={{ display: "flex", maxHeight: "30vh", overflowY: "scroll" }}
-            >
+            <Grid item xs md={8} sx={{ display: "flex", overflowY: "scroll" }}>
               <PresentationLoaderDetails
+                onBack={clearPresentationId}
                 presentationId={selectedPresentationId}
               />
             </Grid>
