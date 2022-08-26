@@ -13,7 +13,6 @@ import {
 } from "../../veedrive/common/models"
 import { delay } from "../../common/asynchronous"
 import _ from "lodash"
-import VeeDriveConfig from "../../veedrive/config"
 import { VeeDriveSearchFileSystemRequest } from "../../veedrive/types"
 import VeeDriveService from "../../veedrive"
 import { useSpectacle } from "../../spectacle/SpectacleContext"
