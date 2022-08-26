@@ -70,6 +70,12 @@ export interface VeeDriveListPresentationsResponse {
   results: SpectaclePresentationListEntry[]
 }
 
+export type VeeDriveListFoldersResponse = string[]
+
+export type VeeDriveCreateFolderResponse = string
+
+export type VeeDriveRemoveFolderResponse = string
+
 export interface VeeDriveSavePresentationResponse {}
 
 export type VeeDriveSearchResultDirectory = string

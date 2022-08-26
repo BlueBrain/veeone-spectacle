@@ -1,12 +1,15 @@
 import {
   SearchFileSystemResponse,
+  VeeDriveCreateFolderResponse,
   VeeDriveFileRequest,
   VeeDriveFileResponse,
   VeeDriveImageRequest,
   VeeDriveImageResponse,
   VeeDriveListDirectoryRequest,
   VeeDriveListDirectoryResponse,
+  VeeDriveListFoldersResponse,
   VeeDriveListPresentationsResponse,
+  VeeDriveRemoveFolderResponse,
   VeeDriveSavePresentationRequest,
   VeeDriveSavePresentationResponse,
   VeeDriveSearchFileSystemRequest,
@@ -81,6 +84,15 @@ class VeeDriveService extends NetworkFileBrowsingServiceBase {
     id: string
   ): Promise<SpectaclePresentation> =>
     this.sendRequest(this.veeDriveConfig.endpointNames.getPresentation, { id })
+
+  public readonly listFolders = async (): Promise<VeeDriveListFoldersResponse> =>
+    this.sendRequest(this.veeDriveConfig.endpointNames.listFolders)
+
+  public readonly createFolder = async (): Promise<VeeDriveCreateFolderResponse> =>
+    this.sendRequest(this.veeDriveConfig.endpointNames.createFolder)
+
+  public readonly removeFolder = async (): Promise<VeeDriveRemoveFolderResponse> =>
+    this.sendRequest(this.veeDriveConfig.endpointNames.removeFolder)
 }
 
 export default VeeDriveService

@@ -1,1 +1,1 @@
-export { default } from "./service"
+export { default } from "./vee-drive-service"
