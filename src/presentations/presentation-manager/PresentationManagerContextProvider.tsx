@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import PresentationManagerContext, {
   PresentationManagerContextProps,
 } from "./PresentationManagerContext"
@@ -7,7 +7,9 @@ import {
   useSpectacle,
 } from "../../spectacle/SpectacleContext"
 import { SpectaclePresentation } from "../../types"
-import SaveAsNewPresentationModal from "../presentation-loader/save-as/SaveAsNewPresentationModal"
+import SaveAsNewPresentationModal, {
+  SaveAsNewPresentationModalResponse,
+} from "../presentation-loader/save-as/SaveAsNewPresentationModal"
 import {
   loadPresentationStore,
   savePresentationStore,
@@ -22,7 +24,6 @@ import UnsavedChangesWarning from "../presentation-loader/UnsavedChangesWarning"
 
 const PresentationManagerContextProvider: React.FC = ({ children }) => {
   const dispatch = useDispatch()
-
   const config = useConfig()
   const dialogs = useDialogs()
   const {
@@ -30,6 +31,8 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
     veeDriveService,
     isPresentationClean,
   } = useSpectacle()
+
+  const [folderList, setFolderList] = useState([])
 
   const performPresentationSave = useCallback(
     async (extraData: Partial<SpectaclePresentation> = {}) => {
@@ -58,10 +61,14 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
       const {
         presentationName,
         presentationId,
-      } = await dialogs.openDialog(SaveAsNewPresentationModal, { position })
+        folderName,
+      } = (await dialogs.openDialog(SaveAsNewPresentationModal, {
+        position,
+      })) as SaveAsNewPresentationModalResponse
       return await performPresentationSave({
         id: presentationId,
         name: presentationName,
+        folder: folderName,
       })
     },
     [dialogs, performPresentationSave]
@@ -120,14 +127,53 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
     [config, dialogs, dispatch, isPresentationClean]
   )
 
+  const loadFolderList = useCallback(async () => {
+    const folders = await veeDriveService.listFolders()
+    setFolderList(folders)
+    return folders
+  }, [veeDriveService])
+
+  const createFolder = useCallback(
+    async (folderName: string) => {
+      await veeDriveService.createFolder(folderName)
+      await loadFolderList()
+    },
+    [loadFolderList, veeDriveService]
+  )
+
+  const removeFolder = useCallback(
+    async (folderName: string) => {
+      await veeDriveService.removeFolder(folderName)
+      await loadFolderList()
+    },
+    [loadFolderList, veeDriveService]
+  )
+
+  useEffect(() => {
+    void loadFolderList()
+  }, [loadFolderList])
+
   const providerValue = useMemo<PresentationManagerContextProps>(
     () => ({
       savePresentation,
       savePresentationAs,
       openPresentation,
       newPresentation,
+      folderList,
+      loadFolderList,
+      createFolder,
+      removeFolder,
     }),
-    [newPresentation, openPresentation, savePresentation, savePresentationAs]
+    [
+      createFolder,
+      folderList,
+      loadFolderList,
+      newPresentation,
+      openPresentation,
+      savePresentation,
+      savePresentationAs,
+      removeFolder,
+    ]
   )
   return (
     <PresentationManagerContext.Provider value={providerValue}>

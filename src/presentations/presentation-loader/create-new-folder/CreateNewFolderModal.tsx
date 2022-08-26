@@ -10,6 +10,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useActiveDialog } from "../../../dialogs/ActiveDialogContext"
 import { useVisualKeyboard } from "../../../visualkeyboard/VisualKeyboardContext"
 import { KeyboardId } from "../../../visualkeyboard/types"
+import { usePresentationManager } from "../../presentation-manager/PresentationManagerContext"
 
 const CreateNewFolderModal: React.FC = () => {
   const keyboardId: KeyboardId = "createNewFolderName"
@@ -17,13 +18,15 @@ const CreateNewFolderModal: React.FC = () => {
   const { resolveDialog, cancelDialog } = useActiveDialog()
   const [folderName, setFolderName] = useState("")
   const { openKeyboard, closeKeyboardById } = useVisualKeyboard()
+  const { createFolder } = usePresentationManager()
 
-  const createNewFolderAndClose = useCallback(() => {
+  const createNewFolderAndClose = useCallback(async () => {
     const newFolder = {
       folderName,
     }
+    await createFolder(folderName)
     resolveDialog(newFolder)
-  }, [folderName, resolveDialog])
+  }, [folderName, resolveDialog, createFolder])
 
   const handleTextInputChange = event => {
     const value = event.target.value

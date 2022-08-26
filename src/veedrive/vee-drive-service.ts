@@ -101,11 +101,19 @@ class VeeDriveService {
   public readonly listFolders = async (): Promise<VeeDriveListFoldersResponse> =>
     this.sendRequest(this.endpointNames.listFolders)
 
-  public readonly createFolder = async (): Promise<VeeDriveCreateFolderResponse> =>
-    this.sendRequest(this.endpointNames.createFolder)
+  public readonly createFolder = async (
+    folderName: string
+  ): Promise<VeeDriveCreateFolderResponse> =>
+    this.sendRequest(this.endpointNames.createFolder, {
+      folder_name: folderName,
+    })
 
-  public readonly removeFolder = async (): Promise<VeeDriveRemoveFolderResponse> =>
-    this.sendRequest(this.endpointNames.removeFolder)
+  public readonly removeFolder = async (
+    folderName: string
+  ): Promise<VeeDriveRemoveFolderResponse> =>
+    this.sendRequest(this.endpointNames.removeFolder, {
+      folder_name: folderName,
+    })
 }
 
 export default VeeDriveService

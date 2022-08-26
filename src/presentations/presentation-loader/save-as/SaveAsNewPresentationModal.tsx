@@ -13,21 +13,28 @@ import PresentationFolderList from "./PresentationFolderList"
 import { useActiveDialog } from "../../../dialogs/ActiveDialogContext"
 import { useVisualKeyboard } from "../../../visualkeyboard/VisualKeyboardContext"
 
+export interface SaveAsNewPresentationModalResponse {
+  presentationId: string
+  presentationName: string
+  folderName: string
+}
+
 const SaveAsNewPresentationModal: React.FC = () => {
   const keyboardId = "savePresentationName"
   const { resolveDialog, cancelDialog } = useActiveDialog()
   const presentationNameFieldRef = useRef()
   const { presentationStore } = useSpectacle()
   const { openKeyboard, closeKeyboardById } = useVisualKeyboard()
-  const [presentationTitle, setPresentationTitle] = useState(
+  const [presentationName, setPresentationName] = useState(
     presentationStore.name !== "Untitled" ? presentationStore.name : ""
   )
+  const [folderName, setFolderName] = useState(null)
 
   const showVisualKeyboard = useCallback(
     (target, initialValue: string) => {
       openKeyboard({
         target,
-        onInputChange: newValue => setPresentationTitle(newValue),
+        onInputChange: newValue => setPresentationName(newValue),
         initial: initialValue,
         customKeyboardId: keyboardId,
       })
@@ -42,15 +49,17 @@ const SaveAsNewPresentationModal: React.FC = () => {
   }, [closeKeyboardById])
 
   const handleSaveClick = async () => {
+    const presentationId = generateRandomPresentationId()
     resolveDialog({
-      presentationId: generateRandomPresentationId(),
-      presentationName: presentationTitle,
-    })
+      presentationId,
+      presentationName,
+      folderName,
+    } as SaveAsNewPresentationModalResponse)
   }
 
   const handleTextInputChange = event => {
     const value = event.target.value
-    setPresentationTitle(value)
+    setPresentationName(value)
   }
 
   return (
@@ -59,7 +68,10 @@ const SaveAsNewPresentationModal: React.FC = () => {
       <DialogContent>
         <Grid container alignItems={"start"}>
           <Grid item xs md={4}>
-            <PresentationFolderList />
+            <PresentationFolderList
+              selectedFolderName={folderName}
+              onSelectFolder={setFolderName}
+            />
           </Grid>
           <Grid item xs md={8} sx={{ padding: `.5rem 0 15rem 0` }}>
             <TextField
@@ -69,10 +81,10 @@ const SaveAsNewPresentationModal: React.FC = () => {
               label={"Name of your presentation"}
               autoFocus={true}
               fullWidth={true}
-              value={presentationTitle}
+              value={presentationName}
               onChange={handleTextInputChange}
               onFocus={event =>
-                showVisualKeyboard(event.target, presentationTitle)
+                showVisualKeyboard(event.target, presentationName)
               }
             />
           </Grid>

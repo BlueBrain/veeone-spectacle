@@ -11,6 +11,10 @@ export interface PresentationManagerContextProps {
   openPresentation: (props: ModalProps) => Promise<SpectaclePresentation>
   savePresentation: (props: ModalProps) => Promise<SpectaclePresentation>
   savePresentationAs: (props: ModalProps) => Promise<SpectaclePresentation>
+  folderList: string[]
+  loadFolderList: () => Promise<string[]>
+  createFolder: (folderName: string) => Promise<any>
+  removeFolder: (folderName: string) => Promise<any>
 }
 
 export const PresentationManagerContext = createContext<PresentationManagerContextProps>(

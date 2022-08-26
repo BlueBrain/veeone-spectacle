@@ -66,6 +66,7 @@ export interface SpectaclePresentationMeta {
 export interface SpectaclePresentation {
   id: string
   name: string
+  folder: string
   createdAt: number
   updatedAt: number
   savedAt: number

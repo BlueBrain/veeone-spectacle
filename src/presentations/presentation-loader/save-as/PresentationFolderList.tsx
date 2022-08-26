@@ -2,7 +2,7 @@ import {
   Button,
   Grid,
   List,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
 } from "@mui/material"
@@ -12,12 +12,21 @@ import { useDialogs } from "../../../dialogs/DialogsContext"
 import CreateNewFolderModal from "../create-new-folder/CreateNewFolderModal"
 import { useActiveDialog } from "../../../dialogs/ActiveDialogContext"
 import { useVisualKeyboard } from "../../../visualkeyboard/VisualKeyboardContext"
+import { usePresentationManager } from "../../presentation-manager/PresentationManagerContext"
 
-const PresentationFolderList: React.FC = () => {
+interface PresentationFolderListProps {
+  selectedFolderName: string
+  onSelectFolder: (folderName: string) => void
+}
+
+const PresentationFolderList: React.FC<PresentationFolderListProps> = ({
+  selectedFolderName,
+  onSelectFolder,
+}) => {
   const dialogs = useDialogs()
   const { dialogOptions } = useActiveDialog()
   const { closeKeyboardById } = useVisualKeyboard()
-  const folderList = ["...", "...", "...", "...", "...", "...", "...", "..."]
+  const { folderList } = usePresentationManager()
 
   const openCreateNewFolderDialog = useCallback(async () => {
     closeKeyboardById("savePresentationName")
@@ -32,12 +41,16 @@ const PresentationFolderList: React.FC = () => {
       <Grid item>
         <List>
           {folderList.map((name, i) => (
-            <ListItem key={i}>
+            <ListItemButton
+              key={i}
+              onClick={() => onSelectFolder(name)}
+              selected={name === selectedFolderName}
+            >
               <ListItemIcon>
                 <FolderIcon />
               </ListItemIcon>
               <ListItemText primary={name} />
-            </ListItem>
+            </ListItemButton>
           ))}
         </List>
       </Grid>
