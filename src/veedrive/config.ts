@@ -13,7 +13,6 @@ const VeeDriveConfig = {
     createFolder: "CreateFolder",
     removeFolder: "RemoveFolder",
   },
-  minSearchQueryLength: 3,
 }
 
 export default VeeDriveConfig
