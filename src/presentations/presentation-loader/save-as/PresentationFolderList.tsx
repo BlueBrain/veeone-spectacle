@@ -1,19 +1,11 @@
-import {
-  Button,
-  Grid,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material"
+import { Button, Grid, List, ListItemButton, ListItemIcon } from "@mui/material"
 import React, { useCallback } from "react"
-import FolderIcon from "@mui/icons-material/Folder"
 import { useDialogs } from "../../../dialogs/DialogsContext"
 import CreateNewFolderModal from "../create-new-folder/CreateNewFolderModal"
 import { useActiveDialog } from "../../../dialogs/ActiveDialogContext"
 import { useVisualKeyboard } from "../../../visualkeyboard/VisualKeyboardContext"
 import { usePresentationManager } from "../../presentation-manager/PresentationManagerContext"
-import { CancelRounded, DoNotDisturb } from "@mui/icons-material"
+import { DoNotDisturb } from "@mui/icons-material"
 import PresentationFolderListItem from "./PresentationFolderListItem"
 
 interface PresentationFolderListProps {
