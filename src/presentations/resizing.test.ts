@@ -12,6 +12,7 @@ describe("resizing", () => {
     savedAt: null,
     createdAt: null,
     updatedAt: null,
+    folder: null,
     scenes: {
       scenes: {
         sceneA: {
@@ -195,6 +196,7 @@ describe("getMaximumContentArea function", () => {
       savedAt: null,
       createdAt: null,
       updatedAt: null,
+      folder: null,
       scenes: {
         sceneOrder: [],
         activeScene: "",
