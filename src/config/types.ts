@@ -57,4 +57,5 @@ export interface ApplicationConfig {
   WEBSITE_BLOCK_ZOOM_STEP: number
   WEBSITE_BLOCK_DEFAULT_ZOOM: number
   WEBSITE_BLOCK_HOME_URL: string
+  WEBSITE_BLOCK_ALLOW_CHANGING_URL: boolean
 }

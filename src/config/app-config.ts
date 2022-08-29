@@ -75,6 +75,7 @@ let defaultConfig: ApplicationConfig = {
   WEBSITE_BLOCK_MIN_ZOOM: 50,
   WEBSITE_BLOCK_MAX_ZOOM: 200,
   WEBSITE_BLOCK_ZOOM_STEP: 10,
+  WEBSITE_BLOCK_ALLOW_CHANGING_URL: false,
 }
 
 defaultConfig = {

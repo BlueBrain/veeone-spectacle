@@ -3,9 +3,11 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
 import { useWebsiteBlock } from "./WebsiteBlockContext"
 import { useFrame } from "../../frames/FrameContext"
+import { useConfig } from "../../config/AppConfigContext"
 
 const WebsiteBlockLocationBar: React.FC = () => {
   const ref = useRef()
+  const config = useConfig()
   const { openKeyboard } = useVisualKeyboard()
 
   const { navigateUrl, websiteUrl } = useWebsiteBlock()
@@ -51,6 +53,7 @@ const WebsiteBlockLocationBar: React.FC = () => {
         value={locationBarUrl}
         onChange={handleTextInputChange}
         onFocus={event => showVisualKeyboard(event.target, locationBarUrl)}
+        disabled={!config.WEBSITE_BLOCK_ALLOW_CHANGING_URL}
       />
     </Box>
   )
