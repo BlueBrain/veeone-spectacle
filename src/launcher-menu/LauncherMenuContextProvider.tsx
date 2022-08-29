@@ -123,15 +123,20 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
       openNewFrameFromLauncher({
         type: ContentBlockTypes.Website,
         size: {
-          width: 700,
-          height: 500,
+          width: config.WEBSITE_BLOCK_DEFAULT_WIDTH,
+          height: config.WEBSITE_BLOCK_DEFAULT_HEIGHT,
         },
         contentData: {
           websiteUrl,
         },
       })
     },
-    [close, openNewFrameFromLauncher]
+    [
+      close,
+      config.WEBSITE_BLOCK_DEFAULT_HEIGHT,
+      config.WEBSITE_BLOCK_DEFAULT_WIDTH,
+      openNewFrameFromLauncher,
+    ]
   )
 
   const [menuData, setMenuData] = useState<MenuData>({
@@ -197,16 +202,21 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
               openWebsite("https://bbp.epfl.ch/therealneuronchallenge/"),
           }),
           new LauncherMenuItem({
-            label: "EPFL",
+            label: "Atlas",
             icon: Language,
-            action: () => openWebsite("https://epfl.ch"),
+            action: () => openWebsite("https://bbp.epfl.ch/nexus/cell-atlas/"),
           }),
-          new LauncherMenuItem({
-            label: "BBP",
-            icon: Language,
-            action: () =>
-              openWebsite("https://www.epfl.ch/research/domains/bluebrain/"),
-          }),
+          // new LauncherMenuItem({
+          //   label: "EPFL",
+          //   icon: Language,
+          //   action: () => openWebsite("https://epfl.ch"),
+          // }),
+          // new LauncherMenuItem({
+          //   label: "BBP",
+          //   icon: Language,
+          //   action: () =>
+          //     openWebsite("https://www.epfl.ch/research/domains/bluebrain/"),
+          // }),
           // new LauncherMenuItem({
           //   label: "Browser",
           //   icon: Language,

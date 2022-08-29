@@ -53,10 +53,11 @@ const Desk: React.FC = () => {
     ({ top, left }: Position) => {
       const baseFontSize = config.BASE_FONT_SIZE
 
-      const minTop = (1.2 * config.LAUNCHER_MENU_SIZE_REM * baseFontSize) / 2
+      const minTop = (config.LAUNCHER_MENU_SAFETY_MARGIN_REM * baseFontSize) / 2
       const maxTop = config.VIEWPORT_HEIGHT - minTop
 
-      const minLeft = (1.2 * config.LAUNCHER_MENU_SIZE_REM * baseFontSize) / 2
+      const minLeft =
+        (config.LAUNCHER_MENU_SAFETY_MARGIN_REM * baseFontSize) / 2
       const maxLeft = config.VIEWPORT_WIDTH - minLeft
 
       const newLauncherMenu: LauncherMenuData = {

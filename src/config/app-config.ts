@@ -28,6 +28,8 @@ let defaultConfig: ApplicationConfig = {
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
   LAUNCHER_MENU_SIZE_REM: 22.5,
+  LAUNCHER_SUBWEDGE_ANGLE: 22,
+  LAUNCHER_MENU_SAFETY_MARGIN_REM: 35,
   VEEDRIVE_WS_PATH:
     ENV_VARIABLES.SPECTACLE_VEEDRIVE_WS_PATH ??
     "wss://bbpcd013.bbp.epfl.ch:8080/ws",
@@ -69,13 +71,14 @@ let defaultConfig: ApplicationConfig = {
     "wss://synec.veeone.kcp.bbp.epfl.ch/ws/controller",
   SYNEC_STATUS_UPDATE_INTERVAL_MS:
     ENV_VARIABLES.SPECTACLE_SYNEC_STATUS_UPDATE_INTERVAL_MS ?? 30 * 1000,
-  LAUNCHER_SUBWEDGE_ANGLE: 22,
   WEBSITE_BLOCK_HOME_URL: "https://www.epfl.ch/research/domains/bluebrain/",
   WEBSITE_BLOCK_DEFAULT_ZOOM: 70,
   WEBSITE_BLOCK_MIN_ZOOM: 50,
   WEBSITE_BLOCK_MAX_ZOOM: 200,
   WEBSITE_BLOCK_ZOOM_STEP: 10,
   WEBSITE_BLOCK_ALLOW_CHANGING_URL: false,
+  WEBSITE_BLOCK_DEFAULT_WIDTH: 800,
+  WEBSITE_BLOCK_DEFAULT_HEIGHT: 500,
 }
 
 defaultConfig = {
