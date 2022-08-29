@@ -15,11 +15,9 @@ import LauncherMenuContext, {
   LauncherMenuContextProps,
 } from "./LauncherMenuContext"
 import React, { useCallback, useMemo, useState } from "react"
-import { useSpectacle, ViewMode } from "../spectacle/SpectacleContext"
+import { useSpectacle, ViewMode } from "../spectacle/SpectacleStateContext"
 import { makeFramePositionSafe } from "../frames/makeFramePositionSafe"
-import { addFrame } from "../redux/actions"
 import { generateFrameId } from "../frames/utils"
-import { useDispatch } from "react-redux"
 import { Position, Size } from "../common/types"
 import { CloseLauncherMenuArgs } from "./LauncherMenu"
 import { MenuData } from "./types"
@@ -47,10 +45,8 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   children,
 }) => {
   const config = useConfig()
-  const spectacleContext = useSpectacle()
+  const { addFrame, setViewMode } = useSpectacle()
   const presentationManager = usePresentationManager()
-
-  const dispatch = useDispatch()
 
   const close = useCallback(() => {
     onClose({ menuId })
@@ -64,15 +60,13 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
         height: config.VIEWPORT_HEIGHT,
       })
 
-      dispatch(
-        addFrame({
-          frameId: generateFrameId(),
-          position,
-          size,
-          type,
-          contentData,
-        })
-      )
+      addFrame({
+        frameId: generateFrameId(),
+        position,
+        size,
+        type,
+        contentData,
+      })
     },
     []
   )
@@ -109,8 +103,8 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   const switchToScenesView = useCallback(() => {
     close()
     console.debug("switchToScenesView to scene overview...")
-    spectacleContext.setViewMode(ViewMode.SceneOverview)
-  }, [close, spectacleContext])
+    setViewMode(ViewMode.SceneOverview)
+  }, [close, setViewMode])
 
   const newPresentation = useCallback(async () => {
     close()

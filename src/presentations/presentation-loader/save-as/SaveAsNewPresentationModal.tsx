@@ -7,7 +7,7 @@ import {
   TextField,
 } from "@mui/material"
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { useSpectacle } from "../../../spectacle/SpectacleContext"
+import { useSpectacle } from "../../../spectacle/SpectacleStateContext"
 import { generateRandomPresentationId } from "../../utils"
 import PresentationFolderList from "./PresentationFolderList"
 import { useActiveDialog } from "../../../dialogs/ActiveDialogContext"

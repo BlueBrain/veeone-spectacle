@@ -2,7 +2,6 @@ import React from "react"
 import { Spectacle } from "./spectacle"
 import ReactDOM from "react-dom"
 import AppConfigContextProvider from "./config/AppConfigContextProvider"
-import SpectacleStoreProvider from "./redux/SpectacleStoreProvider"
 import startSentry from "./sentry"
 import { getConfig } from "./config"
 
@@ -19,9 +18,7 @@ function start() {
 
   ReactDOM.render(
     <AppConfigContextProvider>
-      <SpectacleStoreProvider>
-        <Spectacle />
-      </SpectacleStoreProvider>
+      <Spectacle />
     </AppConfigContextProvider>,
     document.getElementById("root")
   )

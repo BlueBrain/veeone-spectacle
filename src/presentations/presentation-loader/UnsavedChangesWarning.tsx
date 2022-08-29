@@ -1,7 +1,7 @@
 import ConfirmDialog from "../../dialogs/confirm-dialog/ConfirmDialog"
 import React, { useCallback, useMemo } from "react"
 import { usePresentationManager } from "../presentation-manager/PresentationManagerContext"
-import { useSpectacle } from "../../spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleStateContext"
 import { useActiveDialog } from "../../dialogs/ActiveDialogContext"
 
 const UnsavedChangesWarning: React.FC = () => {

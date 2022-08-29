@@ -1,18 +1,25 @@
 import React, { useCallback, useMemo } from "react"
 import { Box, IconButton } from "@mui/material"
-import { useSpectacle, ViewMode } from "../spectacle/SpectacleContext"
+import { useSpectacle, ViewMode } from "../spectacle/SpectacleStateContext"
 import { ChevronLeft, ChevronRight } from "@mui/icons-material"
+import { useScenes } from "./SceneContext"
 
 const SceneDeskNavigation: React.FC = () => {
-  const { sceneManager, viewMode, activeSceneIndex, sceneIds } = useSpectacle()
+  const { viewMode } = useSpectacle()
+  const {
+    activeSceneIndex,
+    sceneIds,
+    switchToNextScene,
+    switchToPreviousScene,
+  } = useScenes()
 
   const goToPreviousScene = useCallback(() => {
-    sceneManager.switchToPreviousScene()
-  }, [sceneManager])
+    switchToPreviousScene()
+  }, [switchToPreviousScene])
 
   const goToNextScene = useCallback(() => {
-    sceneManager.switchToNextScene()
-  }, [sceneManager])
+    switchToNextScene()
+  }, [switchToNextScene])
 
   const canGoLeft = useMemo(() => activeSceneIndex > 0, [activeSceneIndex])
 

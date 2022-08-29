@@ -3,15 +3,14 @@ import WebsiteBlockContext, {
   WebsiteBlockContextProps,
 } from "./WebsiteBlockContext"
 import { WebsiteBlockContentData } from "./types"
-import { useDispatch } from "react-redux"
-import { updateFrameData } from "../../redux/actions"
 import { useFrame } from "../../frames/FrameContext"
 import { useConfig } from "../../config/AppConfigContext"
 import { generateRandomId } from "../../common/random"
+import { useSpectacle } from "../../spectacle/SpectacleStateContext"
 
 const WebsiteBlockContextProvider: React.FC = ({ children }) => {
   const config = useConfig()
-  const dispatch = useDispatch()
+  const { updateFrameData } = useSpectacle()
   const { frameId, frameContentData } = useFrame()
   const {
     websiteUrl,
@@ -38,15 +37,15 @@ const WebsiteBlockContextProvider: React.FC = ({ children }) => {
     const frameData: Partial<WebsiteBlockContentData> = {
       isInteractiveModeOn: true,
     }
-    dispatch(updateFrameData(frameId, frameData))
-  }, [dispatch, frameId])
+    updateFrameData({ frameId, data: frameData })
+  }, [frameId, updateFrameData])
 
   const deactivateInteractiveMode = useCallback(() => {
     const frameData: Partial<WebsiteBlockContentData> = {
       isInteractiveModeOn: false,
     }
-    dispatch(updateFrameData(frameId, frameData))
-  }, [dispatch, frameId])
+    updateFrameData({ frameId, data: frameData })
+  }, [frameId, updateFrameData])
 
   const navigateUrl = useCallback(
     (newUrl: string) => {
@@ -54,9 +53,9 @@ const WebsiteBlockContextProvider: React.FC = ({ children }) => {
         websiteUrl: newUrl,
       }
       setWebsiteIframeKey(`${websiteUrl}-${generateRandomId()}`)
-      dispatch(updateFrameData(frameId, frameData))
+      updateFrameData({ frameId, data: frameData })
     },
-    [dispatch, frameId, websiteUrl]
+    [updateFrameData, frameId, websiteUrl]
   )
 
   const navigateHome = useCallback(() => {
@@ -78,13 +77,13 @@ const WebsiteBlockContextProvider: React.FC = ({ children }) => {
           ? zoomLevelValue + config.WEBSITE_BLOCK_ZOOM_STEP
           : zoomLevelValue,
     }
-    dispatch(updateFrameData(frameId, data))
+    updateFrameData({ frameId, data })
   }, [
     config.WEBSITE_BLOCK_MAX_ZOOM,
     config.WEBSITE_BLOCK_ZOOM_STEP,
-    dispatch,
     frameId,
     zoomLevelValue,
+    updateFrameData,
   ])
 
   const zoomPageOut = useCallback(() => {
@@ -94,11 +93,11 @@ const WebsiteBlockContextProvider: React.FC = ({ children }) => {
           ? zoomLevelValue - config.WEBSITE_BLOCK_ZOOM_STEP
           : zoomLevelValue,
     }
-    dispatch(updateFrameData(frameId, data))
+    updateFrameData({ frameId, data })
   }, [
     config.WEBSITE_BLOCK_MIN_ZOOM,
     config.WEBSITE_BLOCK_ZOOM_STEP,
-    dispatch,
+    updateFrameData,
     frameId,
     zoomLevelValue,
   ])

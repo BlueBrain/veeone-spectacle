@@ -9,10 +9,10 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
-import SpectacleContext from "../../../spectacle/SpectacleContext"
+import SpectacleStateContext from "../../../spectacle/SpectacleStateContext"
 import { SpectaclePresentation } from "../../../types"
 import { friendlyDisplayDateTime } from "../../../common/datetime"
-import { ArrowBack, ArrowBackRounded, Crop32Rounded } from "@mui/icons-material"
+import { ArrowBackRounded, Crop32Rounded } from "@mui/icons-material"
 
 interface PresentationLoaderDetailsProps {
   presentationId: string
@@ -23,7 +23,7 @@ export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
   presentationId,
   onBack,
 }) => {
-  const { veeDriveService } = useContext(SpectacleContext)
+  const { veeDriveService } = useContext(SpectacleStateContext)
   const [
     presentationData,
     setPresentationData,

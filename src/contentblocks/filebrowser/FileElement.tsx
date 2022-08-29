@@ -7,7 +7,7 @@ import interact from "interactjs"
 import FileThumbnailSelected from "./selection-mode/FileThumbnailSelected"
 import { Box } from "@mui/material"
 import makeEllipsis, { EllipsisPosition } from "../../common/text/makeEllipsis"
-import { useSpectacle } from "../../spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleStateContext"
 import { useConfig } from "../../config/AppConfigContext"
 
 interface FileElementProps {

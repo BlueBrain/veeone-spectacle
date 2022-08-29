@@ -18,8 +18,9 @@ import { IconButton, Slider } from "@mui/material"
 import withStyles from "@mui/styles/withStyles"
 import interact from "interactjs"
 import { friendlyFormatTime } from "./display"
-import { useSpectacle, ViewMode } from "../../spectacle/SpectacleContext"
+import { useSpectacle, ViewMode } from "../../spectacle/SpectacleStateContext"
 import { useDesk } from "../../desk/DeskContext"
+import { useScenes } from "../../scenes/SceneContext"
 
 const CONTROLS_FADING_TIME_MS = 500
 const CONTROLS_AUTO_HIDE_AFTER_MS = 5000
@@ -121,8 +122,9 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   const [active, setActive] = useState(true)
   const [activeCssDisplay, setActiveCssDisplay] = useState(active)
   const [autoHideTimeoutId, setAutoHideTimeoutId] = useState(null)
-  const { viewMode, activeSceneId } = useSpectacle()
+  const { viewMode } = useSpectacle()
   const { sceneId, fullscreenFrame } = useDesk()
+  const { activeSceneId } = useScenes()
 
   const isPlaybackAllowed = useMemo(
     () =>

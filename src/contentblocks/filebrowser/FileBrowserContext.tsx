@@ -10,15 +10,13 @@ import { FileBrowserSearchContextProvider } from "./FileBrowserSearchContext"
 import { FrameId } from "../../types"
 import { FileBrowserNavigatorContextProvider } from "./FileBrowserNavigatorContext"
 import { FileBrowserFilterContextProvider } from "./FileBrowserFilterContext"
-import { useDispatch } from "react-redux"
 import { FileBrowserBlockPayload, FileBrowserViewTypes } from "./types"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import _ from "lodash"
-import { updateFrameData } from "../../redux/actions"
 import { FileBrowserSelectionModeContextProvider } from "./selection-mode/FileBrowserSelectionModeContext"
-import { useDesk } from "../../desk/DeskContext"
 import VeeDriveService from "../../veedrive"
-import { useSpectacle } from "../../spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleStateContext"
+import { useDesk } from "../../desk/DeskContext"
 
 interface FileBrowserContextProviderProps {
   frameId: FrameId
@@ -65,9 +63,9 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
   frameId,
   children,
 }) => {
-  const { veeDriveService } = useSpectacle()
-  const dispatch = useDispatch()
+  const { veeDriveService, updateFrameData } = useSpectacle()
   const { getFrame } = useDesk()
+
   const frameData = useMemo(() => getFrame(frameId), [frameId, getFrame])
   const blockData = (frameData.data as unknown) as FileBrowserBlockPayload
   const history = useMemo(() => blockData?.history ?? [""], [
@@ -100,12 +98,12 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
 
   const changeViewType = useCallback(
     async (newType: FileBrowserViewTypes) => {
-      const newFrameData = {
+      const data = {
         viewType: newType,
       }
-      dispatch(updateFrameData(frameId, newFrameData))
+      updateFrameData({ frameId, data })
     },
-    [dispatch, frameId]
+    [updateFrameData, frameId]
   )
 
   useEffect(() => {

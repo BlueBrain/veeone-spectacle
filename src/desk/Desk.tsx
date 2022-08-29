@@ -9,15 +9,13 @@ import { generateRandomId } from "../common/random"
 import { CloseLauncherMenuArgs } from "../launcher-menu/LauncherMenu"
 import { DeskBranding } from "./DeskBranding"
 import { Box } from "@mui/material"
-import { useSpectacle } from "../spectacle/SpectacleContext"
-import { useDesk } from "./DeskContext"
+import { useSpectacle } from "../spectacle/SpectacleStateContext"
 import { useConfig } from "../config/AppConfigContext"
 import { LauncherMenuData, LauncherMenuId } from "../launcher-menu/types"
 import _ from "lodash"
 import VersionLabel from "./VersionLabel"
 import { FullscreenLayer } from "./fullscreen"
-import { deactivateAllFrames } from "../redux/actions"
-import { useDispatch } from "react-redux"
+import { useDesk } from "./DeskContext"
 
 interact.pointerMoveTolerance(4)
 
@@ -41,12 +39,11 @@ function isAnyLauncherNearby(
 }
 
 const Desk: React.FC = () => {
-  const dispatch = useDispatch()
   const config = useConfig()
   const deskRef = useRef()
   const { scene } = useDesk()
-  const spectacleContext = useSpectacle()
-  const meta = spectacleContext.presentationStore.meta
+  const { presentationStore, deactivateAllFrames } = useSpectacle()
+  const meta = presentationStore.meta
   const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])
 
   const openLauncherMenu = useCallback(
@@ -78,7 +75,7 @@ const Desk: React.FC = () => {
     [
       config.ALLOW_MAX_LAUNCHER_MENUS,
       config.BASE_FONT_SIZE,
-      config.LAUNCHER_MENU_SIZE_REM,
+      config.LAUNCHER_MENU_SAFETY_MARGIN_REM,
       config.VIEWPORT_HEIGHT,
       config.VIEWPORT_WIDTH,
       launcherMenus,
@@ -123,10 +120,10 @@ const Desk: React.FC = () => {
     event => {
       if (event.target === deskRef.current) {
         console.debug("handle desk tap")
-        dispatch(deactivateAllFrames())
+        deactivateAllFrames()
       }
     },
-    [dispatch]
+    [deactivateAllFrames]
   )
 
   const handleDeskHold = useCallback(
@@ -176,7 +173,7 @@ const Desk: React.FC = () => {
         )
       )
     })
-  }, [scene.frameStack, scene.frames])
+  }, [scene])
 
   return (
     <Box

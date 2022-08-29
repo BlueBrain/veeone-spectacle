@@ -17,7 +17,7 @@ import React, {
   useMemo,
   useState,
 } from "react"
-import SpectacleContext from "../../../spectacle/SpectacleContext"
+import SpectacleStateContext from "../../../spectacle/SpectacleStateContext"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"
 import { SlideshowRounded } from "@mui/icons-material"
 import { useDialogs } from "../../../dialogs/DialogsContext"
@@ -27,7 +27,9 @@ import PresentationFolderList from "../save-as/PresentationFolderList"
 
 const OpenPresentationModal: React.FC = () => {
   const { dialogOptions, resolveDialog, cancelDialog } = useActiveDialog()
-  const { veeDriveService, isPresentationClean } = useContext(SpectacleContext)
+  const { veeDriveService, isPresentationClean } = useContext(
+    SpectacleStateContext
+  )
   const dialogs = useDialogs()
   const [isLoading, setIsLoading] = useState(false)
   const [presentationList, setPresentationList] = useState([])

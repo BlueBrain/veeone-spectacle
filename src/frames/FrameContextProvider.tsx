@@ -1,16 +1,11 @@
 import { FrameContext, FrameContextProps } from "./index"
 import * as React from "react"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useDispatch } from "react-redux"
 import { useDesk } from "../desk/DeskContext"
-import {
-  bringFrameToFront,
-  closeFrame,
-  manipulateFrame,
-  sendFrameToBack,
-} from "../redux/actions"
 import { FrameEntry, FrameId, FrameSituationUpdate } from "../types"
 import { contentBlockRegister } from "../contentblocks/content-block-register"
+import { useScenes } from "../scenes/SceneContext"
+import { useSpectacle } from "../spectacle/SpectacleStateContext"
 
 interface FrameContextProviderProps {
   frame: FrameEntry
@@ -23,8 +18,14 @@ const FrameContextProvider: React.FC<FrameContextProviderProps> = ({
   stackIndex,
   children,
 }) => {
-  const dispatch = useDispatch()
-  const { scene, setFullscreenFrame } = useDesk()
+  const { setFullscreenFrame } = useDesk()
+  const { activeScene } = useScenes()
+  const {
+    manipulateFrame,
+    bringFrameToFront,
+    closeFrame,
+    sendFrameToBack,
+  } = useSpectacle()
   const { width, height, left, top, angle } = frame.situation
   const [isMovingAllowed, setMovingAllowed] = useState(true)
   const [isResizingAllowed, setResizingAllowed] = useState(true)
@@ -38,15 +39,17 @@ const FrameContextProvider: React.FC<FrameContextProviderProps> = ({
   ] = useState<Function | null>(null)
 
   const manipulate = useCallback(
-    (newSituation: FrameSituationUpdate) => {
-      dispatch(manipulateFrame(frameId, newSituation))
+    (situationUpdate: FrameSituationUpdate) => {
+      manipulateFrame({ frameId, situationUpdate })
     },
-    [dispatch, frameId]
+    [manipulateFrame, frameId]
   )
 
   const isTopFrame = useMemo(
-    () => scene.frameStack.indexOf(frameId) === scene.frameStack.length - 1,
-    [frameId, scene.frameStack]
+    () =>
+      activeScene.frameStack.indexOf(frameId) ===
+      activeScene.frameStack.length - 1,
+    [frameId, activeScene.frameStack]
   )
 
   const bringToFront = useCallback(
@@ -54,9 +57,9 @@ const FrameContextProvider: React.FC<FrameContextProviderProps> = ({
       if (event?.double) {
         return
       }
-      dispatch(bringFrameToFront(frameId))
+      bringFrameToFront({ frameId })
     },
-    [frameId, dispatch]
+    [bringFrameToFront, frameId]
   )
 
   // Send frame contents to fullscreen layer
@@ -129,10 +132,10 @@ const FrameContextProvider: React.FC<FrameContextProviderProps> = ({
         toggleFullscreen()
       },
       close: async () => {
-        dispatch(closeFrame(frameId))
+        closeFrame({ frameId })
       },
       sendToBack: async () => {
-        dispatch(sendFrameToBack(frameId))
+        sendFrameToBack({ frameId })
       },
       setFullscreenParamsProvider,
     }),
@@ -156,7 +159,8 @@ const FrameContextProvider: React.FC<FrameContextProviderProps> = ({
       isTopFrame,
       updateAspectRatio,
       toggleFullscreen,
-      dispatch,
+      closeFrame,
+      sendFrameToBack,
     ]
   )
 

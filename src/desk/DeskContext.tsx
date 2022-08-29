@@ -7,10 +7,10 @@ export interface FullscreenFrame {
   extraData: any
 }
 
-interface DeskContextProps {
+export interface DeskContextProps {
   sceneId: SceneId
   scene: SpectacleScene
-  getFrame(frameId: FrameId): FrameEntry
+  getFrame: (frameId: FrameId) => FrameEntry
   setFullscreenFrame(fullscreenFrame: FullscreenFrame): void
   fullscreenFrame: FullscreenFrame
 }

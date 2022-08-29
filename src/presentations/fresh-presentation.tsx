@@ -20,6 +20,7 @@ export const getFreshPresentation: GetFreshPresentationArgs = ({ config }) => {
   const newStore: SpectaclePresentation = {
     id: generateRandomPresentationId(),
     name: "",
+    folder: null,
     createdAt: now,
     updatedAt: now,
     savedAt: null,

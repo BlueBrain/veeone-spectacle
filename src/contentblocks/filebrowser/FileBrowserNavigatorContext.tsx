@@ -1,16 +1,14 @@
 import React, { useCallback, useContext, useMemo, useState } from "react"
 import { FrameId } from "../../types"
 import { FileBrowserBlockPayload } from "./types"
-import { updateFrameData } from "../../redux/actions"
-import { useDispatch } from "react-redux"
 import { fileOpenerService } from "../../file-opener"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 import { useFileBrowser } from "./FileBrowserContext"
 import { Position, Size } from "../../common/types"
-import { useDesk } from "../../desk/DeskContext"
 import { useConfig } from "../../config/AppConfigContext"
-import { useSpectacle } from "../../spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleStateContext"
+import { useDesk } from "../../desk/DeskContext"
 
 interface FileBrowserNavigatorContextProviderProps {
   frameId: FrameId
@@ -51,10 +49,13 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
     searchResults,
   } = useFileBrowserSearch()
 
-  const { thumbnailRegistry } = useSpectacle()
-
+  const {
+    thumbnailRegistry,
+    updateFrameData,
+    addFrame,
+    bringFrameToFront,
+  } = useSpectacle()
   const { filteredFiles } = useFileBrowserFilter()
-  const dispatch = useDispatch()
   const { getFrame } = useDesk()
   const frameData = useMemo(() => getFrame(frameId), [frameId, getFrame])
   const situation = frameData.situation
@@ -73,9 +74,9 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
         historyIndex: newHistoryIndex,
       }
       console.debug("addToBrowsingHistory", newFrameData)
-      dispatch(updateFrameData(frameId, newFrameData))
+      updateFrameData({ frameId, data: newFrameData })
     },
-    [dispatch, frameId, history, historyIndex, setSearchMode]
+    [frameId, history, historyIndex, setSearchMode, updateFrameData]
   )
 
   const navigateUp = useCallback(async () => {
@@ -101,9 +102,9 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
         history: history,
         historyIndex: newHistoryIndex,
       }
-      dispatch(updateFrameData(frameId, newFrameData))
+      updateFrameData({ frameId, data: newFrameData })
     },
-    [dispatch, frameId, history]
+    [frameId, history, updateFrameData]
   )
 
   const moveBrowsingHistoryIndex = useCallback(
@@ -119,9 +120,9 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
         history: history,
         historyIndex: newHistoryIndex,
       }
-      dispatch(updateFrameData(frameId, newFrameData))
+      updateFrameData({ frameId, data: newFrameData })
     },
-    [dispatch, frameId, history, historyIndex]
+    [updateFrameData, frameId, history, historyIndex]
   )
 
   const navigateBack = useCallback(async () => {
@@ -209,13 +210,15 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
         filePath,
         referencePosition ?? getNextAvailablePositionForFrame(),
         getInitialFrameSize(filePath),
-        dispatch
+        addFrame,
+        bringFrameToFront
       )
     },
     [
+      addFrame,
+      bringFrameToFront,
       config.DEFAULT_NEW_FRAME_HEIGHT,
       config.DEFAULT_NEW_FRAME_WIDTH,
-      dispatch,
       frameId,
       getNextAvailablePositionForFrame,
       thumbnailRegistry,
@@ -263,6 +266,7 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
         : activePathFiles.length,
     [activePathFiles, searchResults.files, shouldDisplaySearchResults]
   )
+
   const hiddenFilesCount = useMemo(
     () => totalFilesCount - filteredFiles.length,
     [filteredFiles.length, totalFilesCount]
