@@ -1,8 +1,9 @@
 import { SvgIconComponent } from "@mui/icons-material"
 import { Position } from "../common/types"
+import React from "react"
 
 export interface MenuItem {
-  label: string
+  label: string | React.ReactNode
   icon?: SvgIconComponent
   action?(): void
   isEnabled?: boolean

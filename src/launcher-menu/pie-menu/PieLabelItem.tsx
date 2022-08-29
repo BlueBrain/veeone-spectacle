@@ -57,11 +57,12 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
         }}
       >
         <Box sx={{}} className={"MenuItemIcon"}>
-          <IconComponent sx={{ fontSize: "2.7rem" }} />
+          <IconComponent sx={{ fontSize: "2.6rem" }} />
         </Box>
         <Box
           sx={{
-            fontSize: ".8rem",
+            fontSize: `0.9rem`,
+            fontWeight: `500`,
           }}
           className={"MenuItemLabel"}
         >

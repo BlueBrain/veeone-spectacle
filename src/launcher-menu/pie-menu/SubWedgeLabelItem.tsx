@@ -43,7 +43,7 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
         position: "absolute",
         left: "50%",
         top: "50%",
-        width: "30%",
+        width: "28%",
         textAlign: "center",
         opacity: 0,
         animation: `openPieSubItems${animationId} 500ms ease forwards`,
@@ -65,7 +65,7 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
             transform: `
               translate(-50%, -50%)
               rotate(${rotateAngle}deg)
-              translateX(13.4rem)
+              translateX(13.6rem)
               rotate(${-rotateAngle}deg)
               `,
           },
@@ -73,11 +73,11 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
       }}
     >
       <Box sx={{}} className={"MenuItemIcon"}>
-        <IconComponent sx={{ fontSize: "1.5rem" }} />
+        <IconComponent sx={{ fontSize: `1.4rem` }} />
       </Box>
       <Box
         sx={{
-          fontSize: ".8rem",
+          fontSize: `0.75rem`,
         }}
         className={"MenuItemLabel"}
       >

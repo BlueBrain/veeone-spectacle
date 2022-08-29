@@ -185,7 +185,13 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
       }),
 
       new LauncherMenuItem({
-        label: "Share your screen",
+        label: (
+          <>
+            Share your
+            <br />
+            screen
+          </>
+        ),
         isEnabled: false,
         icon: ScreenShare,
       }),
@@ -196,13 +202,19 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
         icon: Language,
         children: [
           new LauncherMenuItem({
-            label: "RNC",
+            label: (
+              <>
+                Real Neuron
+                <br />
+                Challenge
+              </>
+            ),
             icon: Language,
             action: () =>
               openWebsite("https://bbp.epfl.ch/therealneuronchallenge/"),
           }),
           new LauncherMenuItem({
-            label: "Atlas",
+            label: "Cell Atlas",
             icon: Language,
             action: () => openWebsite("https://bbp.epfl.ch/nexus/cell-atlas/"),
           }),
