@@ -11,6 +11,7 @@ import { useActiveDialog } from "../../../dialogs/ActiveDialogContext"
 import { useVisualKeyboard } from "../../../visualkeyboard/VisualKeyboardContext"
 import { KeyboardId } from "../../../visualkeyboard/types"
 import { usePresentationManager } from "../../presentation-manager/PresentationManagerContext"
+import { CreateNewFolderModalResult } from "../types"
 
 const CreateNewFolderModal: React.FC = () => {
   const keyboardId: KeyboardId = "createNewFolderName"
@@ -21,11 +22,11 @@ const CreateNewFolderModal: React.FC = () => {
   const { createFolder } = usePresentationManager()
 
   const createNewFolderAndClose = useCallback(async () => {
-    const newFolder = {
+    const result: CreateNewFolderModalResult = {
       folderName,
     }
     await createFolder(folderName)
-    resolveDialog(newFolder)
+    resolveDialog(result)
   }, [folderName, resolveDialog, createFolder])
 
   const handleTextInputChange = event => {

@@ -124,6 +124,7 @@ const OpenPresentationModal: React.FC = () => {
             <PresentationFolderList
               selectedFolderName={selectedFolderName}
               onSelectFolder={toggleFolderSelect}
+              showCreateNewFolderButton={false}
             />
           </Grid>
           <Grid
