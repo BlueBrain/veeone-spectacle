@@ -8,8 +8,7 @@ import React, {
   useEffect,
   useState,
 } from "react"
-import { Json } from "../../common/types"
-import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleContext"
 
 interface OnVideoLoadedArgs {
   width: number
@@ -17,14 +16,14 @@ interface OnVideoLoadedArgs {
 }
 
 interface VideoBlockContentProps {
-  contentData: { [key: string]: Json } | any
+  contentData: VideoBlockParams
   onFullscreenToggle(): void
   onVideoLoaded?(args: OnVideoLoadedArgs): void
   startAt?: number
   allowPlayingInFullscreenMode?: boolean
 }
 
-interface VideoBlockParams {
+export interface VideoBlockParams {
   path: string
 }
 
@@ -39,7 +38,7 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
   videoRef
 ) => {
   const { veeDriveService } = useSpectacle()
-  const { path } = (contentData as unknown) as VideoBlockParams
+  const { path } = contentData
   const [videoSource, setVideoSource] = useState("")
   const [activeModeToggleHandler, setActiveModeToggleHandler] = useState(null)
   const elementStyle: CSSProperties = {

@@ -1,14 +1,13 @@
-import React, { useContext, useEffect, useMemo, useState } from "react"
-import { ContentBlockProps } from "../types"
+import React, { useEffect, useMemo, useState } from "react"
 import { Box, Grow } from "@mui/material"
-import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
-import ImageBlockContent from "./ImageBlockContent"
-import { FrameContext } from "../../core/frames"
+import FloatingFrameControlBar from "../../frames/FloatingFrameControlBar"
+import ImageBlockContent, { ImageBlockParams } from "./ImageBlockContent"
 import { KeeperImage } from "../../image-keeper/types"
+import { useFrame } from "../../frames/FrameContext"
 
-const ImageBlock: React.FC<ContentBlockProps> = props => {
+const ImageBlock: React.FC = () => {
   const [aspectRatio, setAspectRatio] = useState(1)
-  const { updateAspectRatio } = useContext(FrameContext)
+  const { updateAspectRatio, frameContentData } = useFrame()
 
   useEffect(() => {
     if (!isNaN(aspectRatio)) {
@@ -36,8 +35,8 @@ const ImageBlock: React.FC<ContentBlockProps> = props => {
         }}
       >
         <ImageBlockContent
-          contentData={props.contentData}
           onImageLoad={onImageLoad}
+          contentData={(frameContentData as unknown) as ImageBlockParams}
         />
         <FloatingFrameControlBar />
       </Box>

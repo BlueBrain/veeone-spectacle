@@ -1,33 +1,37 @@
 import {
-  CloudDownload,
-  CloudQueueRounded,
+  AddBoxOutlined,
   CloudSync,
   CloudUpload,
   GridView,
   ImageSearch,
   Language,
   Person,
+  Save,
+  SaveAs,
   ScreenShare,
 } from "@mui/icons-material"
 import { ContentBlockTypes } from "../contentblocks/types"
 import LauncherMenuContext, {
   LauncherMenuContextProps,
 } from "./LauncherMenuContext"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useSpectacle, ViewMode } from "../core/spectacle/SpectacleContext"
-import { makeFramePositionSafe } from "../core/frames/makeFramePositionSafe"
-import { addFrame } from "../core/redux/actions"
-import { generateFrameId } from "../core/frames/utils"
+import React, { useCallback, useMemo, useState } from "react"
+import { useSpectacle, ViewMode } from "../spectacle/SpectacleContext"
+import { makeFramePositionSafe } from "../frames/makeFramePositionSafe"
+import { addFrame } from "../redux/actions"
+import { generateFrameId } from "../frames/utils"
 import { useDispatch } from "react-redux"
 import { Position, Size } from "../common/types"
 import { CloseLauncherMenuArgs } from "./LauncherMenu"
 import { MenuData } from "./types"
 import LauncherMenuItem from "./LauncherMenuItem"
 import { useConfig } from "../config/AppConfigContext"
+import { usePresentationManager } from "../presentations/presentation-manager/PresentationManagerContext"
+import { FrameData } from "../types"
 
 interface OpenNewFrameArgs {
   type: ContentBlockTypes
   size: Size
+  contentData?: FrameData
 }
 
 interface LauncherMenuContextProviderProps {
@@ -44,6 +48,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
 }) => {
   const config = useConfig()
   const spectacleContext = useSpectacle()
+  const presentationManager = usePresentationManager()
 
   const dispatch = useDispatch()
 
@@ -52,7 +57,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   }, [menuId, onClose])
 
   const openNewFrameFromLauncher = useCallback(
-    ({ type, size }: OpenNewFrameArgs) => {
+    ({ type, size, contentData = null }: OpenNewFrameArgs) => {
       close()
       position = makeFramePositionSafe(position, size, {
         width: config.VIEWPORT_WIDTH,
@@ -65,7 +70,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
           position,
           size,
           type,
-          contentData: null,
+          contentData,
         })
       )
     },
@@ -80,32 +85,59 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
         height: config.FILE_BROWSER_HEIGHT,
       },
     })
-  }, [openNewFrameFromLauncher])
+  }, [
+    config.FILE_BROWSER_HEIGHT,
+    config.FILE_BROWSER_WIDTH,
+    openNewFrameFromLauncher,
+  ])
 
-  const openPresentation = useCallback(() => {
-    spectacleContext.openPresentation.openModal({
-      position: { ...position },
-    })
+  const openPresentation = useCallback(async () => {
     close()
-  }, [close, position, spectacleContext.openPresentation])
+    await presentationManager.openPresentation({ position })
+  }, [close, position, presentationManager])
 
-  const savePresentation = useCallback(() => {
-    spectacleContext.savePresentation.openModal({
-      position: { ...position },
-    })
+  const savePresentationAs = useCallback(async () => {
     close()
-  }, [close, position, spectacleContext.savePresentation])
+    await presentationManager.savePresentationAs({ position })
+  }, [close, position, presentationManager])
+
+  const savePresentation = useCallback(async () => {
+    close()
+    await presentationManager.savePresentation({ position })
+  }, [close, position, presentationManager])
 
   const switchToScenesView = useCallback(() => {
+    close()
     console.debug("switchToScenesView to scene overview...")
     spectacleContext.setViewMode(ViewMode.SceneOverview)
-    close()
   }, [close, spectacleContext])
 
-  const newPresentation = useCallback(() => {
-    // todo make new presentation
+  const newPresentation = useCallback(async () => {
     close()
-  }, [close])
+    await presentationManager.newPresentation({ position })
+  }, [close, position, presentationManager])
+
+  const openWebsite = useCallback(
+    async (websiteUrl: string) => {
+      close()
+      openNewFrameFromLauncher({
+        type: ContentBlockTypes.Website,
+        size: {
+          width: config.WEBSITE_BLOCK_DEFAULT_WIDTH,
+          height: config.WEBSITE_BLOCK_DEFAULT_HEIGHT,
+        },
+        contentData: {
+          websiteUrl,
+        },
+      })
+    },
+    [
+      close,
+      config.WEBSITE_BLOCK_DEFAULT_HEIGHT,
+      config.WEBSITE_BLOCK_DEFAULT_WIDTH,
+      openNewFrameFromLauncher,
+    ]
+  )
 
   const [menuData, setMenuData] = useState<MenuData>({
     items: [
@@ -125,7 +157,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
         children: [
           new LauncherMenuItem({
             label: "New",
-            icon: CloudQueueRounded,
+            icon: AddBoxOutlined,
             action: newPresentation,
           }),
           new LauncherMenuItem({
@@ -135,39 +167,73 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
           }),
           new LauncherMenuItem({
             label: "Save",
-            icon: CloudDownload,
+            icon: Save,
             action: savePresentation,
+          }),
+          new LauncherMenuItem({
+            label: "Save as",
+            icon: SaveAs,
+            action: savePresentationAs,
           }),
         ],
       }),
+
       new LauncherMenuItem({
         label: "Login",
         isEnabled: false,
         icon: Person,
       }),
+
+      new LauncherMenuItem({
+        label: (
+          <>
+            Share your
+            <br />
+            screen
+          </>
+        ),
+        isEnabled: false,
+        icon: ScreenShare,
+      }),
+
       new LauncherMenuItem({
         label: "Open web",
-        isEnabled: false,
+        isEnabled: true,
         icon: Language,
         children: [
           new LauncherMenuItem({
-            label: "EPFL",
+            label: (
+              <>
+                Real Neuron
+                <br />
+                Challenge
+              </>
+            ),
             icon: Language,
+            action: () =>
+              openWebsite("https://bbp.epfl.ch/therealneuronchallenge/"),
           }),
           new LauncherMenuItem({
-            label: "BBP",
+            label: "Cell Atlas",
             icon: Language,
+            action: () => openWebsite("https://bbp.epfl.ch/nexus/cell-atlas/"),
           }),
-          new LauncherMenuItem({
-            label: "Browser",
-            icon: Language,
-          }),
+          // new LauncherMenuItem({
+          //   label: "EPFL",
+          //   icon: Language,
+          //   action: () => openWebsite("https://epfl.ch"),
+          // }),
+          // new LauncherMenuItem({
+          //   label: "BBP",
+          //   icon: Language,
+          //   action: () =>
+          //     openWebsite("https://www.epfl.ch/research/domains/bluebrain/"),
+          // }),
+          // new LauncherMenuItem({
+          //   label: "Browser",
+          //   icon: Language,
+          // }),
         ],
-      }),
-      new LauncherMenuItem({
-        label: "Share your screen",
-        isEnabled: false,
-        icon: ScreenShare,
       }),
     ],
   })

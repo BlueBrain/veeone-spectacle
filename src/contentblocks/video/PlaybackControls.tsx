@@ -18,8 +18,8 @@ import { IconButton, Slider } from "@mui/material"
 import withStyles from "@mui/styles/withStyles"
 import interact from "interactjs"
 import { friendlyFormatTime } from "./display"
-import { useSpectacle, ViewMode } from "../../core/spectacle/SpectacleContext"
-import { useDesk } from "../../core/desk/DeskContext"
+import { useSpectacle, ViewMode } from "../../spectacle/SpectacleContext"
+import { useDesk } from "../../desk/DeskContext"
 
 const CONTROLS_FADING_TIME_MS = 500
 const CONTROLS_AUTO_HIDE_AFTER_MS = 5000

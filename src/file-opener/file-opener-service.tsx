@@ -36,7 +36,7 @@ class FileOpenerService {
   }
 
   public registerOpener(openerClass: typeof BaseOpener, extensions: string[]) {
-    extensions.forEach((ext, i) => {
+    extensions.forEach(ext => {
       this.openerRegistry[ext.toLowerCase()] = openerClass
     })
   }

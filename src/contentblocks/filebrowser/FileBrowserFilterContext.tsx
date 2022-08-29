@@ -1,13 +1,13 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react"
 import { fileOpenerService } from "../../file-opener"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
-import { updateFrameData } from "../../core/redux/actions"
+import { updateFrameData } from "../../redux/actions"
 import { FileBrowserBlockPayload } from "./types"
 import { useDispatch } from "react-redux"
-import { FrameId } from "../../core/types"
+import { FrameId } from "../../types"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
-import { useDesk } from "../../core/desk/DeskContext"
+import { useDesk } from "../../desk/DeskContext"
 
 interface FileBrowserFilterContextProps {
   filteredFiles: BrowserFile[]

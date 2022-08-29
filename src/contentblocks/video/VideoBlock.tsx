@@ -1,11 +1,12 @@
 import React, { useCallback, useContext, useEffect, useRef } from "react"
-import { ContentBlockProps } from "../types"
 import { Box, Grow } from "@mui/material"
-import VideoBlockContent from "./VideoBlockContent"
-import { FrameContext } from "../../core/frames"
-import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
+import VideoBlockContent, { VideoBlockParams } from "./VideoBlockContent"
+import { FrameContext } from "../../frames"
+import FloatingFrameControlBar from "../../frames/FloatingFrameControlBar"
+import { useFrame } from "../../frames/FrameContext"
 
-const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
+const VideoBlock: React.FC = () => {
+  const { frameContentData } = useFrame()
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const {
@@ -46,8 +47,8 @@ const VideoBlock: React.FC<ContentBlockProps> = ({ contentData }) => {
         }}
       >
         <VideoBlockContent
+          contentData={(frameContentData as unknown) as VideoBlockParams}
           ref={videoRef}
-          contentData={contentData}
           onFullscreenToggle={toggleFullscreen}
           onVideoLoaded={handleVideoLoaded}
         />

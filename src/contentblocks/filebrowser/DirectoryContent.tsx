@@ -5,10 +5,10 @@ import DirectoryThumbnailsView from "./DirectoryThumbnailsView"
 import DirectoryListView from "./DirectoryListView"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import EmptyResults from "./EmptyResults"
-import { visualKeyboardService } from "../../visualkeyboard"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
 import { Box } from "@mui/material"
+import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
 
 interface DirectoryContentProps {
   files: BrowserFile[]
@@ -22,6 +22,7 @@ const DirectoryContent: React.FC<DirectoryContentProps> = ({
   const { frameId, viewType } = useFileBrowser()
   const { setScrollableAreaRef } = useFileBrowserNavigator()
   const { isSearchingInProgress } = useFileBrowserSearch()
+  const { closeKeyboardById } = useVisualKeyboard()
   const displayType = viewType ?? FileBrowserViewTypes.Thumbnails
   const isEmpty = !dirs.length && !files.length
   const scrollableContentRef = useRef(null)
@@ -30,8 +31,9 @@ const DirectoryContent: React.FC<DirectoryContentProps> = ({
     console.debug(
       `Hide keyboard from tapping on directory contents: ${frameId}`
     )
-    visualKeyboardService.closeKeyboard(frameId)
-  }, [frameId])
+    const keyboardIdToClose = `search-files-${frameId}`
+    closeKeyboardById(keyboardIdToClose)
+  }, [closeKeyboardById, frameId])
 
   useEffect(() => {
     const currentRef = scrollableContentRef.current

@@ -7,18 +7,18 @@ import React, {
   useState,
 } from "react"
 import { FileBrowserSearchContextProvider } from "./FileBrowserSearchContext"
-import { FrameId } from "../../core/types"
+import { FrameId } from "../../types"
 import { FileBrowserNavigatorContextProvider } from "./FileBrowserNavigatorContext"
 import { FileBrowserFilterContextProvider } from "./FileBrowserFilterContext"
 import { useDispatch } from "react-redux"
 import { FileBrowserBlockPayload, FileBrowserViewTypes } from "./types"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
 import _ from "lodash"
-import { updateFrameData } from "../../core/redux/actions"
+import { updateFrameData } from "../../redux/actions"
 import { FileBrowserSelectionModeContextProvider } from "./selection-mode/FileBrowserSelectionModeContext"
-import { useDesk } from "../../core/desk/DeskContext"
+import { useDesk } from "../../desk/DeskContext"
 import VeeDriveService from "../../veedrive"
-import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleContext"
 
 interface FileBrowserContextProviderProps {
   frameId: FrameId

@@ -13,10 +13,10 @@ import {
 } from "../../veedrive/common/models"
 import { delay } from "../../common/asynchronous"
 import _ from "lodash"
-import VeeDriveConfig from "../../veedrive/config"
 import { VeeDriveSearchFileSystemRequest } from "../../veedrive/types"
-import VeeDriveService from "../../veedrive/service"
-import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import VeeDriveService from "../../veedrive"
+import { useSpectacle } from "../../spectacle/SpectacleContext"
+import { useConfig } from "../../config/AppConfigContext"
 
 const SEARCH_QUERY_CHANGE_DEBOUNCE_MS = 500
 const SEARCH_RESULTS_FETCH_INTERVAL_MS = 1000
@@ -49,6 +49,7 @@ async function* newFilesystemSearch(
 }
 
 export const FileBrowserSearchContextProvider: React.FC = ({ children }) => {
+  const config = useConfig()
   const { veeDriveService } = useSpectacle()
   const [searchMode, setSearchMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -103,7 +104,7 @@ export const FileBrowserSearchContextProvider: React.FC = ({ children }) => {
         this.stopped = true
       },
     }
-    if (searchQuery.length >= VeeDriveConfig.minSearchQueryLength) {
+    if (searchQuery.length >= config.FILE_BROWSER_SEARCH_QUERY_CHARS_MIN) {
       debouncedSearchQueryChange(searchQuery, stopper)
     } else {
       setSearchResults({ files: [], directories: [] })
@@ -111,10 +112,19 @@ export const FileBrowserSearchContextProvider: React.FC = ({ children }) => {
     return () => {
       stopper.stop()
     }
-  }, [debouncedSearchQueryChange, searchQuery, triggerSearchQueryChange])
+  }, [
+    config.FILE_BROWSER_SEARCH_QUERY_CHARS_MIN,
+    debouncedSearchQueryChange,
+    searchQuery,
+    triggerSearchQueryChange,
+  ])
 
-  const shouldDisplaySearchResults =
-    searchMode && searchQuery.length >= VeeDriveConfig.minSearchQueryLength
+  const shouldDisplaySearchResults = useMemo(
+    () =>
+      searchMode &&
+      searchQuery.length >= config.FILE_BROWSER_SEARCH_QUERY_CHARS_MIN,
+    [config.FILE_BROWSER_SEARCH_QUERY_CHARS_MIN, searchMode, searchQuery.length]
+  )
 
   const requestSearch = async (query: string) => {
     setSearchQuery(query)

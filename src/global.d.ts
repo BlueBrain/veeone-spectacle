@@ -1,5 +1,4 @@
 import React from "react"
-import { PaletteOptions } from "@mui/material/styles/createPalette"
 
 declare module "*.svg" {
   const content: any

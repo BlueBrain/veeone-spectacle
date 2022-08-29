@@ -3,22 +3,23 @@ import { Box } from "@mui/material"
 import { MenuItem } from "../types"
 import { SvgIconComponent } from "@mui/icons-material"
 import { generateRandomId } from "../../common/random"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface SubWedgeLabelItemProps {
   menuItem: MenuItem
   index: number
   mainRotationAngle: number
   totalSubitemCount: number
-  anglePerMainItem: number
 }
 const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
   index,
   menuItem,
   mainRotationAngle,
   totalSubitemCount,
-  anglePerMainItem,
 }) => {
+  const { LAUNCHER_SUBWEDGE_ANGLE } = useConfig()
   const { label, icon } = menuItem
+  const anglePerMainItem = LAUNCHER_SUBWEDGE_ANGLE * totalSubitemCount
   const animationId = useMemo(() => generateRandomId(), [])
   const anglePerSubWedge = useMemo(() => anglePerMainItem / totalSubitemCount, [
     anglePerMainItem,
@@ -42,9 +43,11 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
         position: "absolute",
         left: "50%",
         top: "50%",
-        width: "30%",
+        width: "28%",
         textAlign: "center",
+        opacity: 0,
         animation: `openPieSubItems${animationId} 500ms ease forwards`,
+        animationDelay: `300ms`,
         [`@keyframes openPieSubItems${animationId}`]: {
           "0%": {
             opacity: 0,
@@ -54,7 +57,7 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
               translateX(8rem)
               rotate(${-rotateAngle}deg)`,
           },
-          "30%": {
+          "40%": {
             opacity: 0,
           },
           "100%": {
@@ -62,7 +65,7 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
             transform: `
               translate(-50%, -50%)
               rotate(${rotateAngle}deg)
-              translateX(13.4rem)
+              translateX(13.6rem)
               rotate(${-rotateAngle}deg)
               `,
           },
@@ -70,11 +73,11 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
       }}
     >
       <Box sx={{}} className={"MenuItemIcon"}>
-        <IconComponent sx={{ fontSize: "1.5rem" }} />
+        <IconComponent sx={{ fontSize: `1.4rem` }} />
       </Box>
       <Box
         sx={{
-          fontSize: ".8rem",
+          fontSize: `0.75rem`,
         }}
         className={"MenuItemLabel"}
       >

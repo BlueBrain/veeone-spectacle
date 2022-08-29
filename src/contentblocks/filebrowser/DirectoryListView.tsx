@@ -1,8 +1,5 @@
 import React from "react"
-import styled from "styled-components"
 import { Box, List, ListItem, ListItemIcon, ListItemText } from "@mui/material"
-import createStyles from "@mui/styles/createStyles"
-import makeStyles from "@mui/styles/makeStyles"
 import { Folder, InsertDriveFile } from "@mui/icons-material"
 import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"

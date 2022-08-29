@@ -1,16 +1,16 @@
 import React, { useCallback, useContext, useMemo, useState } from "react"
-import { FrameId } from "../../core/types"
+import { FrameId } from "../../types"
 import { FileBrowserBlockPayload } from "./types"
-import { updateFrameData } from "../../core/redux/actions"
+import { updateFrameData } from "../../redux/actions"
 import { useDispatch } from "react-redux"
 import { fileOpenerService } from "../../file-opener"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowserFilter } from "./FileBrowserFilterContext"
 import { useFileBrowser } from "./FileBrowserContext"
 import { Position, Size } from "../../common/types"
-import { useDesk } from "../../core/desk/DeskContext"
+import { useDesk } from "../../desk/DeskContext"
 import { useConfig } from "../../config/AppConfigContext"
-import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleContext"
 
 interface FileBrowserNavigatorContextProviderProps {
   frameId: FrameId

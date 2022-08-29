@@ -1,4 +1,4 @@
-import { SpectaclePresentation } from "../core/types"
+import { SpectaclePresentation } from "../types"
 
 export interface VeeDriveListDirectoryRequest {
   path: string
@@ -69,6 +69,12 @@ export interface VeeDriveListPresentationsResponse {
   count: number
   results: SpectaclePresentationListEntry[]
 }
+
+export type VeeDriveListFoldersResponse = string[]
+
+export type VeeDriveCreateFolderResponse = string
+
+export type VeeDriveRemoveFolderResponse = string
 
 export interface VeeDriveSavePresentationResponse {}
 

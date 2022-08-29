@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from "react"
 import { MenuItem } from "../types"
 import { Box } from "@mui/material"
-import useInteractable from "../../core/interactable/useInteractable"
+import useInteractable from "../../interactable/useInteractable"
 import { describeArc } from "./utils"
 import SVGSubWedges from "./SVGSubWedges"
 import { generateRandomId } from "../../common/random"
@@ -48,16 +48,11 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
           sx={{
             transformOrigin: "center",
             transform: `
-              rotate(${anglePerMainItem / menuItem.children.length / 2}deg)
-              rotate(${-anglePerMainItem / 2}deg)
               rotate(${anglePerMainItem * index}deg)
             `,
           }}
         >
-          <SVGSubWedges
-            items={menuItem.children}
-            anglePerItem={anglePerMainItem}
-          />
+          <SVGSubWedges items={menuItem.children} />
         </Box>
       ) : null}
 
@@ -77,7 +72,7 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
               transform: `scale(0.3)`,
             },
             "20%": {
-              opacity: 0.2,
+              opacity: 0.1,
               transform: `scale(1) `,
             },
             "100%": {

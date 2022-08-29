@@ -7,7 +7,7 @@ import interact from "interactjs"
 import FileThumbnailSelected from "./selection-mode/FileThumbnailSelected"
 import { Box } from "@mui/material"
 import makeEllipsis, { EllipsisPosition } from "../../common/text/makeEllipsis"
-import { useSpectacle } from "../../core/spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleContext"
 import { useConfig } from "../../config/AppConfigContext"
 
 interface FileElementProps {
@@ -77,15 +77,12 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
     [file.path, isSelectionModeEnabled, requestFile, toggleFileSelect]
   )
 
-  const handleHold = useCallback(
-    event => {
-      const selectionModeEnabled = toggleSelectionMode()
-      if (selectionModeEnabled) {
-        selectFile(file.path)
-      }
-    },
-    [file.path, selectFile, toggleSelectionMode]
-  )
+  const handleHold = useCallback(() => {
+    const selectionModeEnabled = toggleSelectionMode()
+    if (selectionModeEnabled) {
+      selectFile(file.path)
+    }
+  }, [file.path, selectFile, toggleSelectionMode])
 
   useEffect(() => {
     const currentRef = ref.current

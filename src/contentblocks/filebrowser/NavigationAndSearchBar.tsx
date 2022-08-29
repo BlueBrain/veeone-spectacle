@@ -6,7 +6,7 @@ import SearchFilesBar from "./SearchFilesBar"
 import FiltersSelector from "./FiltersSelector"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
-import FloatingFrameControlBar from "../../core/frames/FloatingFrameControlBar"
+import FloatingFrameControlBar from "../../frames/FloatingFrameControlBar"
 
 const NavigationAndSearchBar: React.FC = () => {
   const { history, historyIndex } = useFileBrowser()

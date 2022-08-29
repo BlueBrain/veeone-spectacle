@@ -2,7 +2,7 @@ import { Folder } from "@mui/icons-material"
 import React, { useMemo, useRef } from "react"
 import { useFileBrowserNavigator } from "./FileBrowserNavigatorContext"
 import { BrowserDirectory } from "../../veedrive/common/models"
-import useInteractable from "../../core/interactable/useInteractable"
+import useInteractable from "../../interactable/useInteractable"
 import { Box } from "@mui/material"
 import makeEllipsis, { EllipsisPosition } from "../../common/text/makeEllipsis"
 
