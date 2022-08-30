@@ -373,8 +373,13 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
     presentationStore.updatedAt,
   ])
 
+  const presentationName = useMemo(() => presentationStore.name, [
+    presentationStore.name,
+  ])
+
   const providerValue: SpectacleStateContextProps = useMemo<SpectacleStateContextProps>(
     () => ({
+      presentationName,
       isPresentationClean,
       veeDriveService,
       viewMode,
@@ -396,6 +401,7 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
       closeAllFrames,
     }),
     [
+      presentationName,
       isPresentationClean,
       veeDriveService,
       viewMode,

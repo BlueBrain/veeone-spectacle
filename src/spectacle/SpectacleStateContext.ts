@@ -31,6 +31,7 @@ export interface SpectacleStateContextProps {
   viewMode: ViewMode
   setViewMode(newViewMode: ViewMode): void
   presentationStore: SpectaclePresentation
+  presentationName: string
   updatePresentationStore: (
     callback: (state: SpectaclePresentation) => SpectaclePresentation
   ) => void
