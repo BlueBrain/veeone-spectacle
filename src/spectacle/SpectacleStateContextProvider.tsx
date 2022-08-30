@@ -19,6 +19,11 @@ import {
 } from "./types"
 import { getFreshPresentation } from "../presentations/fresh-presentation"
 import { resizePresentationStore } from "../presentations/resizing"
+import {
+  SpectacleWorkerMethod,
+  UpdateStoreParams,
+  WorkerToSpectacleMethod,
+} from "./workers/methods"
 
 interface SpectacleContextProviderProps {}
 
@@ -26,6 +31,7 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
   children,
 }) => {
   const config = useConfig()
+
   const veeDriveService = useMemo(
     () => new VeeDriveService(config.VEEDRIVE_WS_PATH),
     [config]
@@ -53,10 +59,63 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
 
   const freshPresentation = useMemo(() => getFreshPresentation({ config }), [])
 
+  // The presentationStore holds the global state of the application like
+  // frames, scenes etc. This object is saved to store and reload presentation.
   const [
     presentationStore,
     setPresentationStore,
   ] = useState<SpectaclePresentation>(freshPresentation)
+
+  const worker = useMemo(() => {
+    console.info("Creating new worker for Spectacle state...")
+    return new Worker(
+      // @ts-ignore
+      new URL("workers/state-reloader-worker", import.meta.url)
+    )
+  }, [])
+
+  const handleIncomingWorkerMessage = useCallback((message: MessageEvent) => {
+    switch (message.data.method) {
+      case WorkerToSpectacleMethod.ReceiveLatestStore: {
+        console.log(
+          "Received latest store.. restoring....",
+          message.data.params
+        )
+        if (message.data.params.presentationStore) {
+          loadPresentationStore(message.data.params.presentationStore)
+        }
+        break
+      }
+      default: {
+        console.warn("Unhandled message", message)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    worker.addEventListener("message", handleIncomingWorkerMessage)
+  }, [worker, handleIncomingWorkerMessage])
+
+  const restoreLatestPresentationStore = useCallback(() => {
+    worker.postMessage({
+      method: SpectacleWorkerMethod.GetLatestStore,
+    })
+  }, [handleIncomingWorkerMessage])
+
+  useEffect(() => {
+    restoreLatestPresentationStore()
+  }, [])
+
+  useEffect(() => {
+    worker.postMessage({
+      id: Date.now(),
+      method: SpectacleWorkerMethod.UpdateStore,
+      params: {
+        timestamp: Date.now(),
+        presentationStore,
+      } as UpdateStoreParams,
+    })
+  }, [presentationStore])
 
   const addThumbnailToRegistry = useCallback(
     (path: string, thumbnail: ThumbnailRegistryItem) => {

@@ -81,5 +81,3 @@ class ImageKeeperWorker {
 const api = new ImageKeeperWorker()
 
 onmessage = api.onmessage
-
-console.debug("First worker imported!")
