@@ -4,26 +4,14 @@ import SpectacleStateContext, {
   ThumbnailRegistryItem,
   ViewMode,
 } from "./SpectacleStateContext"
-import { FramesRegister, FrameStack, SpectaclePresentation } from "../types"
 import { useConfig } from "../config/AppConfigContext"
 import VeeDriveService from "../veedrive"
-import useStatusUpdate from "../synec/use-status-update"
-import {
-  AddFramePayload,
-  BringFrameToFrontPayload,
-  CloseFramePayload,
-  ManipulateFramePayload,
-  ResizePresentationPayload,
-  SendFrameToBackPayload,
-  UpdateFrameDataPayload,
-} from "./types"
+import useStatusUpdate from "../synec/hooks/use-status-update"
+import { ResizePresentationPayload } from "./types"
 import { getFreshPresentation } from "../presentations/fresh-presentation"
 import { resizePresentationStore } from "../presentations/resizing"
-import {
-  SpectacleWorkerMethod,
-  UpdateStoreParams,
-  WorkerToSpectacleMethod,
-} from "./workers/methods"
+import usePresentationStateManager from "./hooks/usePresentationStateManager"
+import useFrameManager from "./hooks/useFrameManager"
 
 interface SpectacleContextProviderProps {}
 
@@ -32,12 +20,35 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
 }) => {
   const config = useConfig()
 
+  const freshPresentation = useMemo(() => getFreshPresentation({ config }), [])
+
   const veeDriveService = useMemo(
     () => new VeeDriveService(config.VEEDRIVE_WS_PATH),
     [config]
   )
 
-  const [hasBeenMutated, setHasBeenMutated] = useState(false)
+  // This hook is for sending reports to Synec about the status/health of the app
+  useStatusUpdate(config, veeDriveService)
+
+  const {
+    presentationStore,
+    setPresentationStore,
+    loadPresentationStore,
+    markMutatedState,
+    isPresentationClean,
+    savePresentationStore,
+  } = usePresentationStateManager({ freshPresentation })
+
+  const {
+    addFrame,
+    manipulateFrame,
+    updateFrameData,
+    bringFrameToFront,
+    sendFrameToBack,
+    deactivateAllFrames,
+    closeFrame,
+    closeAllFrames,
+  } = useFrameManager({ setPresentationStore, markMutatedState })
 
   const [thumbnailRegistry, setThumbnailRegistry] = useState<{
     [key: string]: ThumbnailRegistryItem
@@ -57,66 +68,6 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
     ViewMode.Desk
   )
 
-  const freshPresentation = useMemo(() => getFreshPresentation({ config }), [])
-
-  // The presentationStore holds the global state of the application like
-  // frames, scenes etc. This object is saved to store and reload presentation.
-  const [
-    presentationStore,
-    setPresentationStore,
-  ] = useState<SpectaclePresentation>(freshPresentation)
-
-  const worker = useMemo(() => {
-    console.info("Creating new worker for Spectacle state...")
-    return new Worker(
-      // @ts-ignore
-      new URL("workers/state-reloader-worker", import.meta.url)
-    )
-  }, [])
-
-  const handleIncomingWorkerMessage = useCallback((message: MessageEvent) => {
-    switch (message.data.method) {
-      case WorkerToSpectacleMethod.ReceiveLatestStore: {
-        console.log(
-          "Received latest store.. restoring....",
-          message.data.params
-        )
-        if (message.data.params.presentationStore) {
-          loadPresentationStore(message.data.params.presentationStore)
-        }
-        break
-      }
-      default: {
-        console.warn("Unhandled message", message)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    worker.addEventListener("message", handleIncomingWorkerMessage)
-  }, [worker, handleIncomingWorkerMessage])
-
-  const restoreLatestPresentationStore = useCallback(() => {
-    worker.postMessage({
-      method: SpectacleWorkerMethod.GetLatestStore,
-    })
-  }, [handleIncomingWorkerMessage])
-
-  useEffect(() => {
-    restoreLatestPresentationStore()
-  }, [])
-
-  useEffect(() => {
-    worker.postMessage({
-      id: Date.now(),
-      method: SpectacleWorkerMethod.UpdateStore,
-      params: {
-        timestamp: Date.now(),
-        presentationStore,
-      } as UpdateStoreParams,
-    })
-  }, [presentationStore])
-
   const addThumbnailToRegistry = useCallback(
     (path: string, thumbnail: ThumbnailRegistryItem) => {
       console.debug("addThumbnailToRegistry called", path, thumbnail)
@@ -126,203 +77,6 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
       }))
     },
     []
-  )
-
-  const markMutatedState = useCallback(() => {
-    setHasBeenMutated(true)
-  }, [])
-
-  const markCleanState = useCallback(() => {
-    setHasBeenMutated(false)
-  }, [])
-
-  const updateFrameState = useCallback(
-    (
-      getFramesObject:
-        | ((currentFrames: FramesRegister) => FramesRegister)
-        | null,
-      getFrameStackObject: ((state) => FrameStack) | null
-    ) => {
-      setPresentationStore(currentState => {
-        const activeSceneId = currentState.scenes.activeScene
-        const frames = currentState.scenes.scenes[activeSceneId].frames
-        const frameStack = currentState.scenes.scenes[activeSceneId].frameStack
-
-        return {
-          ...currentState,
-          scenes: {
-            ...currentState.scenes,
-            scenes: {
-              ...currentState.scenes.scenes,
-              [activeSceneId]: {
-                frames: getFramesObject ? getFramesObject(frames) : frames,
-                frameStack: getFrameStackObject
-                  ? getFrameStackObject(frameStack)
-                  : frameStack,
-              },
-            },
-          },
-        }
-      })
-    },
-    []
-  )
-
-  const updateFrames = useCallback(
-    (getFramesObject: (frames: FramesRegister) => FramesRegister) => {
-      updateFrameState(getFramesObject, null)
-    },
-    [updateFrameState]
-  )
-
-  const updateFrameStack = useCallback(
-    (getFrameStackObject: (frameStack) => FrameStack) => {
-      updateFrameState(null, getFrameStackObject)
-    },
-    [updateFrameState]
-  )
-
-  const addFrame = useCallback(
-    (payload: AddFramePayload) => {
-      const { width, height } = payload.size
-      const left = payload.position.left - width / 2
-      const top = payload.position.top - height / 2
-      updateFrameState(
-        frames => ({
-          ...frames,
-          [payload.frameId]: {
-            type: payload.type,
-            situation: {
-              left: left,
-              top: top,
-              width: width,
-              height: height,
-              angle: 0,
-            },
-            data: payload.contentData,
-          },
-        }),
-        frameStack => [...frameStack, payload.frameId]
-      )
-      markMutatedState()
-    },
-    [markMutatedState, updateFrameState]
-  )
-
-  const manipulateFrame = useCallback(
-    (payload: ManipulateFramePayload) => {
-      updateFrames(frames => {
-        if (!frames[payload.frameId]) {
-          return frames
-        }
-        const newSituation = {
-          ...frames[payload.frameId].situation,
-          ...payload.situationUpdate,
-        }
-        return {
-          ...frames,
-          [payload.frameId]: {
-            ...frames[payload.frameId],
-            situation: { ...newSituation },
-          },
-        }
-      })
-      markMutatedState()
-    },
-    [markMutatedState, updateFrames]
-  )
-
-  const updateFrameData = useCallback(
-    (payload: UpdateFrameDataPayload) => {
-      updateFrames(frames => ({
-        ...frames,
-        [payload.frameId]: {
-          ...frames[payload.frameId],
-          data: {
-            ...frames[payload.frameId].data,
-            ...payload.data,
-          },
-        },
-      }))
-      markMutatedState()
-    },
-    [markMutatedState, updateFrames]
-  )
-
-  const closeFrame = useCallback(
-    (payload: CloseFramePayload) => {
-      updateFrameState(
-        frames => {
-          const { [payload.frameId]: value, ...newFrames } = frames
-          return newFrames
-        },
-        frameStack => [...frameStack.filter(id => id !== payload.frameId)]
-      )
-      markMutatedState()
-    },
-    [markMutatedState, updateFrameState]
-  )
-
-  const closeAllFrames = useCallback(() => {
-    updateFrameState(
-      frames => ({}),
-      frameStack => []
-    )
-    markMutatedState()
-  }, [markMutatedState, updateFrameState])
-
-  const bringFrameToFront = useCallback(
-    (payload: BringFrameToFrontPayload) => {
-      updateFrameStack(frameStack =>
-        frameStack.includes(payload.frameId)
-          ? [
-              ...frameStack.filter(
-                value => value !== payload.frameId && value !== null
-              ),
-              payload.frameId,
-            ]
-          : frameStack
-      )
-      markMutatedState()
-    },
-    [markMutatedState, updateFrameStack]
-  )
-
-  const sendFrameToBack = useCallback(
-    (payload: SendFrameToBackPayload) => {
-      updateFrameStack(frameStack => [
-        payload.frameId,
-        ...frameStack.filter(
-          value => value !== payload.frameId && value !== null
-        ),
-      ])
-      markMutatedState()
-    },
-    [markMutatedState, updateFrameStack]
-  )
-
-  const deactivateAllFrames = useCallback(() => {
-    updateFrameStack(frameStack => {
-      const otherFrames = frameStack.filter(value => value !== null)
-      return otherFrames.length > 0 ? [...otherFrames, null] : []
-    })
-    markMutatedState()
-  }, [markMutatedState, updateFrameStack])
-
-  const loadPresentationStore = useCallback(
-    (newStore: SpectaclePresentation) => {
-      setPresentationStore({ ...newStore })
-      markCleanState()
-    },
-    [markCleanState]
-  )
-
-  const savePresentationStore = useCallback(
-    (newStore: SpectaclePresentation) => {
-      setPresentationStore({ ...newStore })
-      markCleanState()
-    },
-    [markCleanState]
   )
 
   const resizePresentation = useCallback(
@@ -354,25 +108,6 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
     setPresentationStore(state => callback(state))
   }, [])
 
-  const isPresentationClean = useMemo(() => {
-    // Ignore empty presentation as if they were not modified
-    return (
-      (presentationStore.savedAt === null &&
-        presentationStore.scenes.sceneOrder.length === 1 &&
-        presentationStore.scenes.scenes[presentationStore.scenes.activeScene]
-          .frameStack.length === 0) ||
-      (presentationStore.savedAt === presentationStore.updatedAt &&
-        !hasBeenMutated)
-    )
-  }, [
-    hasBeenMutated,
-    presentationStore.savedAt,
-    presentationStore.scenes.activeScene,
-    presentationStore.scenes.sceneOrder.length,
-    presentationStore.scenes.scenes,
-    presentationStore.updatedAt,
-  ])
-
   const presentationName = useMemo(() => presentationStore.name, [
     presentationStore.name,
   ])
@@ -395,10 +130,10 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
       sendFrameToBack,
       deactivateAllFrames,
       closeFrame,
+      closeAllFrames,
       loadPresentationStore,
       savePresentationStore,
       resizePresentation,
-      closeAllFrames,
     }),
     [
       presentationName,
@@ -422,8 +157,6 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
       closeAllFrames,
     ]
   )
-
-  useStatusUpdate(config, veeDriveService)
 
   return (
     <SpectacleStateContext.Provider value={providerValue}>
