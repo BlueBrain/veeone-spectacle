@@ -1,12 +1,13 @@
 import { SpectaclePresentation } from "../../types"
 
 export enum SpectacleWorkerMethod {
+  Initialize,
   UpdateStore,
   GetLatestStore,
 }
 
 export enum WorkerToSpectacleMethod {
-  ReceiveLatestStore,
+  ProvideLatestStore,
 }
 
 export interface ReceiveLatestStore {
@@ -17,4 +18,11 @@ export interface ReceiveLatestStore {
 export interface UpdateStoreParams {
   timestamp: number
   presentationStore: SpectaclePresentation
+}
+
+export interface InitializeParams {
+  dbName?: string
+  storeStateKeepMaxCount?: number
+  infiniteReloadProtectionPeriodSeconds?: number
+  infiniteReloadProtectionMaxAttempts?: number
 }

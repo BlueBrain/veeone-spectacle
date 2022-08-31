@@ -10,8 +10,8 @@ import useStatusUpdate from "../synec/hooks/use-status-update"
 import { ResizePresentationPayload } from "./types"
 import { getFreshPresentation } from "../presentations/fresh-presentation"
 import { resizePresentationStore } from "../presentations/resizing"
-import usePresentationStateManager from "./hooks/usePresentationStateManager"
-import useFrameManager from "./hooks/useFrameManager"
+import usePresentationStateManager from "./hooks/use-presentation-state-manager"
+import useFrameManager from "./hooks/use-frame-manager"
 
 interface SpectacleContextProviderProps {}
 
