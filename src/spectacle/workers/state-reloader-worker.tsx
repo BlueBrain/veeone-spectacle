@@ -8,6 +8,7 @@ import _ from "lodash"
 import { SpectaclePresentation } from "../../types"
 
 const DB_NAME = "spectacle"
+const STORE_STATE_KEEP_MAX_COUNT = 100
 
 enum StoreName {
   StateHistory = "StateHistory",
@@ -63,9 +64,9 @@ class StateReloaderWorker {
     }
 
     this.DBOpenRequest.onupgradeneeded = (event: IDBVersionChangeEvent) => {
-      // @ts-ignore
-      const db = event.target.result as IDBDatabase
-      const objectStore = db.createObjectStore(StoreName.StateHistory)
+      const target = event.target as IDBRequest
+      const db = target.result as IDBDatabase
+      db.createObjectStore(StoreName.StateHistory)
     }
   }
 
@@ -81,14 +82,6 @@ class StateReloaderWorker {
       "readwrite"
     )
 
-    transaction.oncomplete = () => {
-      console.debug("Transaction complete!")
-    }
-
-    transaction.onerror = () => {
-      console.error("Error on transaction", transaction.error)
-    }
-
     const objectStore = transaction.objectStore(StoreName.StateHistory)
     console.log("objectStore", objectStore)
 
@@ -96,6 +89,8 @@ class StateReloaderWorker {
     request.onsuccess = event => {
       console.log("Entry written successfully", event)
     }
+
+    await this.removeOldStoreStates()
   }
 
   private fetchLatestStore = async (): Promise<SpectaclePresentation> => {
@@ -107,9 +102,8 @@ class StateReloaderWorker {
       const objectStore = transaction.objectStore(StoreName.StateHistory)
 
       objectStore.openCursor(null, "prev").onsuccess = event => {
-        // @ts-ignore
-        const cursor = event.target.result as IDBCursorWithValue
-        console.log("RESULT", cursor)
+        const target = event.target as IDBRequest
+        const cursor = target.result as IDBCursorWithValue
         if (cursor) {
           resolve({ ...cursor.value })
         } else {
@@ -129,6 +123,32 @@ class StateReloaderWorker {
       method: WorkerToSpectacleMethod.ReceiveLatestStore,
       params,
     })
+  }
+
+  private removeOldStoreStates = async () => {
+    const transaction = this.db.transaction(
+      [StoreName.StateHistory],
+      "readwrite"
+    )
+    const objectStore = transaction.objectStore(StoreName.StateHistory)
+    const count = objectStore.count()
+    count.onsuccess = event => {
+      const target = event.target as IDBRequest
+      const itemsToDelete = target.result - STORE_STATE_KEEP_MAX_COUNT
+      let itemsDeleted = 0
+      if (itemsToDelete > 0) {
+        objectStore.openCursor(null, "next").onsuccess = event => {
+          const target = event.target as IDBRequest
+          const cursor = target.result as IDBCursorWithValue
+          if (cursor && itemsToDelete > itemsDeleted) {
+            cursor.delete().onsuccess = () => {
+              itemsDeleted++
+            }
+            cursor.continue()
+          }
+        }
+      }
+    }
   }
 }
 
