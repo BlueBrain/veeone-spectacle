@@ -16,6 +16,7 @@ import { resizePresentationStore } from "../resizing"
 import { useConfig } from "../../config/AppConfigContext"
 import { getFreshPresentation } from "../fresh-presentation"
 import UnsavedChangesWarning from "../presentation-loader/UnsavedChangesWarning"
+import { generateRandomPresentationId } from "../utils"
 
 const PresentationManagerContextProvider: React.FC = ({ children }) => {
   const config = useConfig()
@@ -41,6 +42,11 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
         ...presentationStore,
         ...timestampData,
         ...extraData,
+      }
+
+      // Assign a unique random ID for new presentations
+      if (storeToSave.id === null) {
+        storeToSave.id = generateRandomPresentationId()
       }
 
       console.debug("Saving presentation...", JSON.stringify(storeToSave))

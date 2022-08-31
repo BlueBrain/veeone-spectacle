@@ -64,7 +64,7 @@ export interface SpectaclePresentationMeta {
 }
 
 export interface SpectaclePresentation {
-  id: string
+  id: string | null
   name: string
   folder: string | null
   createdAt: number
