@@ -71,6 +71,8 @@ let defaultConfig: ApplicationConfig = {
     "wss://synec.veeone.kcp.bbp.epfl.ch/ws/controller",
   SYNEC_STATUS_UPDATE_INTERVAL_MS:
     ENV_VARIABLES.SPECTACLE_SYNEC_STATUS_UPDATE_INTERVAL_MS ?? 30 * 1000,
+
+  // These setting affect the embedded websites content block
   WEBSITE_BLOCK_HOME_URL: "https://www.epfl.ch/research/domains/bluebrain/",
   WEBSITE_BLOCK_DEFAULT_ZOOM: 100,
   WEBSITE_BLOCK_MIN_ZOOM: 50,
@@ -79,9 +81,18 @@ let defaultConfig: ApplicationConfig = {
   WEBSITE_BLOCK_ALLOW_CHANGING_URL: false,
   WEBSITE_BLOCK_DEFAULT_WIDTH: 800,
   WEBSITE_BLOCK_DEFAULT_HEIGHT: 500,
+
+  // How many state changes in presentation we want to store in IndexedDB
   STORE_STATE_KEEP_MAX_COUNT: 100,
+
+  // These settings are prepared to prevent a situation where some content
+  // cause browser to crash. Normally it would keep restoring the same state
+  // over and over again. To prevent this, there is time and number limit
+  // of how often the state will be reloaded from IndexedDB during startup
   INFINITE_RELOAD_PROTECTION_PERIOD_SECONDS: 60,
   INFINITE_RELOAD_PROTECTION_MAX_ATTEMPTS: 5,
+
+  // Name of the IndexedDB database that app uses to store i.a. state changes
   STATE_STORE_INDEXEDDB_NAME: "spectacle",
 }
 

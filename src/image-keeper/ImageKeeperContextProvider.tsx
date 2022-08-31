@@ -9,25 +9,35 @@ import { ImageKeeperResponse } from "./types"
 const ImageKeeperContextProvider: React.FC = ({ children }) => {
   const config = useConfig()
 
-  const globalImageWorker = useMemo(
-    // @ts-ignore
-    () => new Worker(new URL("./worker", import.meta.url)),
-    []
-  )
+  const globalImageWorker = useMemo(() => {
+    console.log("create new globalImageWorker instance")
+    return new Worker(
+      new URL(
+        "./workers/image-keeper-worker",
+        // @ts-ignore
+        import.meta.url
+      )
+    )
+  }, [])
 
-  const getImageWorker = useCallback(
+  const imageWorker = useMemo(
     () =>
       config.IMAGE_KEEPER_AS_SINGLE_WORKER
         ? globalImageWorker
-        : // @ts-ignore
-          new Worker(new URL("./worker", import.meta.url)),
+        : new Worker(
+            new URL(
+              "./workers/image-keeper-worker",
+              // @ts-ignore
+              import.meta.url
+            )
+          ),
     [config.IMAGE_KEEPER_AS_SINGLE_WORKER, globalImageWorker]
   )
 
   const requestImage = useCallback(
     (path: string): Promise<ImageKeeperResponse> => {
+      console.log("Request new image", path)
       return new Promise(resolve => {
-        const imageWorker = getImageWorker()
         const imageId = generateRandomId()
         const handleImageRequest = message => {
           console.debug("Received message in ContextProvider", message)
@@ -54,7 +64,7 @@ const ImageKeeperContextProvider: React.FC = ({ children }) => {
         })
       })
     },
-    [config.VEEDRIVE_WS_PATH, getImageWorker]
+    [config.VEEDRIVE_WS_PATH, imageWorker]
   )
 
   const providerValue = useMemo<ImageKeeperContextProps>(
