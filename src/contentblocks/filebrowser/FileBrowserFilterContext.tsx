@@ -1,12 +1,11 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react"
 import { fileOpenerService } from "../../file-opener"
 import { BrowserDirectory, BrowserFile } from "../../veedrive/common/models"
-import { updateFrameData } from "../../redux/actions"
 import { FileBrowserBlockPayload } from "./types"
-import { useDispatch } from "react-redux"
 import { FrameId } from "../../types"
 import { useFileBrowserSearch } from "./FileBrowserSearchContext"
 import { useFileBrowser } from "./FileBrowserContext"
+import { useSpectacle } from "../../spectacle/SpectacleStateContext"
 import { useDesk } from "../../desk/DeskContext"
 
 interface FileBrowserFilterContextProps {
@@ -38,12 +37,11 @@ export const FileBrowserFilterContextProvider: React.FC<FileBrowserFilterContext
   frameId,
   children,
 }) => {
-  const dispatch = useDispatch()
-
   const { searchResults, shouldDisplaySearchResults } = useFileBrowserSearch()
   const { activePathFiles, activePathDirs } = useFileBrowser()
   const { getFrame } = useDesk()
   const frameData = useMemo(() => getFrame(frameId), [frameId, getFrame])
+  const { updateFrameData } = useSpectacle()
 
   const blockData = (frameData.data as unknown) as FileBrowserBlockPayload
 
@@ -113,49 +111,54 @@ export const FileBrowserFilterContextProvider: React.FC<FileBrowserFilterContext
 
   const filterByName = useCallback(
     (query: string) => {
-      dispatch(
-        updateFrameData(frameId, {
+      updateFrameData({
+        frameId,
+        data: {
           nameFilterQuery: query,
-        } as FileBrowserBlockPayload)
-      )
+        } as FileBrowserBlockPayload,
+      })
     },
-    [dispatch, frameId]
+    [updateFrameData, frameId]
   )
 
   const resetFilters = useCallback(() => {
-    dispatch(
-      updateFrameData(frameId, {
+    updateFrameData({
+      frameId,
+      data: {
         nameFilterQuery: "",
         isShowingHiddenFiles: false,
         isShowingUnsupportedFiles: false,
-      } as FileBrowserBlockPayload)
-    )
-  }, [dispatch, frameId])
+      } as FileBrowserBlockPayload,
+    })
+  }, [updateFrameData, frameId])
 
   const toggleShowHiddenFilesFilter = useCallback(() => {
-    dispatch(
-      updateFrameData(frameId, {
+    updateFrameData({
+      frameId,
+      data: {
         isShowingHiddenFiles: !isShowingHiddenFiles,
-      } as FileBrowserBlockPayload)
-    )
-  }, [dispatch, frameId, isShowingHiddenFiles])
+      } as FileBrowserBlockPayload,
+    })
+  }, [updateFrameData, frameId, isShowingHiddenFiles])
 
   const toggleShowUnsupportedFilesFilter = useCallback(() => {
-    dispatch(
-      updateFrameData(frameId, {
+    updateFrameData({
+      frameId,
+      data: {
         isShowingUnsupportedFiles: !isShowingUnsupportedFiles,
-      } as FileBrowserBlockPayload)
-    )
-  }, [dispatch, frameId, isShowingUnsupportedFiles])
+      } as FileBrowserBlockPayload,
+    })
+  }, [updateFrameData, frameId, isShowingUnsupportedFiles])
 
   const displayAllHiddenFiles = useCallback(() => {
-    dispatch(
-      updateFrameData(frameId, {
+    updateFrameData({
+      frameId,
+      data: {
         isShowingHiddenFiles: true,
         isShowingUnsupportedFiles: true,
-      } as FileBrowserBlockPayload)
-    )
-  }, [dispatch, frameId])
+      } as FileBrowserBlockPayload,
+    })
+  }, [updateFrameData, frameId])
 
   const providerValue: FileBrowserFilterContextProps = useMemo(
     () => ({

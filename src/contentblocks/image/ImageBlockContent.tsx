@@ -3,7 +3,7 @@ import { Box, CircularProgress, Grid } from "@mui/material"
 import { useImageKeeper } from "../../image-keeper/ImageKeeperContext"
 import { ImageKeeperResponse, KeeperImage } from "../../image-keeper/types"
 import { useConfig } from "../../config/AppConfigContext"
-import { useSpectacle } from "../../spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleStateContext"
 import BlurredImageBackground from "./BlurredImageBackground"
 
 export interface ImageBlockParams {

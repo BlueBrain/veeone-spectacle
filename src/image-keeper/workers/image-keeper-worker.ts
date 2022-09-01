@@ -6,10 +6,12 @@ let veeDriveService: VeeDriveService
 
 class ImageKeeperWorker {
   private readonly imageCache: Map<string, KeeperImage>
+  private isReady: boolean = false
 
   veeDriveService: VeeDriveService
 
   constructor() {
+    console.log("new ImageKeeperWorker")
     this.imageCache = new Map()
   }
 
@@ -36,9 +38,13 @@ class ImageKeeperWorker {
   }
 
   handleInit = ({ wsPath }) => {
+    if (this.isReady) {
+      return
+    }
     console.debug("Initializing worker...")
     this.veeDriveService = new VeeDriveService(wsPath)
     console.debug("veedrive service created", veeDriveService)
+    this.isReady = true
   }
 
   fetchNewBlob = async path => {
@@ -81,5 +87,3 @@ class ImageKeeperWorker {
 const api = new ImageKeeperWorker()
 
 onmessage = api.onmessage
-
-console.debug("First worker imported!")

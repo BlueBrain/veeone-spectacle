@@ -2,7 +2,6 @@ import { Position } from "../../common/types"
 import { ContentBlockTypes } from "../../contentblocks/types"
 import { FrameData, FrameId } from "../../types"
 import { generateFrameId } from "../../frames/utils"
-import { addFrame, bringFrameToFront } from "../../redux/actions"
 
 interface OpenerProps {
   filePath: string
@@ -21,20 +20,18 @@ export default class BaseOpener {
     this.frameId = generateFrameId()
   }
 
-  public makeFrame(dispatch, defaultSize) {
-    dispatch(
-      addFrame({
-        type: this.contentBlockType,
-        frameId: this.frameId,
-        position: this.position,
-        size: defaultSize,
-        contentData: {
-          path: this.filePath,
-          ...this.getContentData(),
-        },
-      })
-    )
-    setTimeout(() => dispatch(bringFrameToFront(this.frameId)))
+  public makeFrame(defaultSize, addFrame, bringFrameToFront) {
+    addFrame({
+      type: this.contentBlockType,
+      frameId: this.frameId,
+      position: this.position,
+      size: defaultSize,
+      contentData: {
+        path: this.filePath,
+        ...this.getContentData(),
+      },
+    })
+    setTimeout(() => bringFrameToFront(this.frameId))
   }
 
   public getContentData(): FrameData {

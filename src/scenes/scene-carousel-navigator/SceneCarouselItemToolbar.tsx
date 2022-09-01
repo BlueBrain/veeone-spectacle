@@ -8,7 +8,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
-import { useSpectacle } from "../../spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleStateContext"
 import {
   DeleteRounded,
   Menu as MenuIcon,
@@ -17,6 +17,7 @@ import {
   SkipPreviousRounded,
 } from "@mui/icons-material"
 import { SceneId } from "../../types"
+import { useScenes } from "../SceneContext"
 
 interface SceneCarouselItemToolbarProps {
   sceneId: SceneId
@@ -27,12 +28,18 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
   sceneId,
   index,
 }) => {
+  const { presentationStore } = useSpectacle()
+
   const {
     activeSceneIndex,
-    presentationStore,
-    sceneManager,
     sceneIds,
-  } = useSpectacle()
+    removeScene,
+    moveSceneRight,
+    moveSceneLeft,
+    moveSceneToEnd,
+    moveSceneToBeginning,
+  } = useScenes()
+
   const viewport = presentationStore.meta.viewport
   const [
     viewTypeAnchorElement,
@@ -47,29 +54,30 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
     setViewTypeAnchorElement(null)
   }
 
-  const removeScene = useCallback(() => {
+  const handleRemoveScene = useCallback(() => {
     closeMenu()
-    sceneManager.removeScene(sceneId)
-  }, [sceneId, sceneManager])
+    removeScene({ sceneId })
+  }, [removeScene, sceneId])
 
-  const moveSceneLeft = useCallback(() => {
+  const handleMoveSceneLeft = useCallback(() => {
     closeMenu()
-    sceneManager.moveSceneLeft(sceneId)
-  }, [sceneId, sceneManager])
-  const moveSceneToBeginning = useCallback(() => {
-    closeMenu()
-    sceneManager.moveSceneToBeginning(sceneId)
-  }, [sceneId, sceneManager])
+    moveSceneLeft({ sceneId })
+  }, [moveSceneLeft, sceneId])
 
-  const moveSceneToEnd = useCallback(() => {
+  const handleMoveSceneToBeginning = useCallback(() => {
     closeMenu()
-    sceneManager.moveSceneToEnd(sceneId)
-  }, [sceneId, sceneManager])
+    moveSceneToBeginning({ sceneId })
+  }, [moveSceneToBeginning, sceneId])
 
-  const moveSceneRight = useCallback(() => {
+  const handleMoveSceneToEnd = useCallback(() => {
     closeMenu()
-    sceneManager.moveSceneRight(sceneId)
-  }, [sceneId, sceneManager])
+    moveSceneToEnd({ sceneId })
+  }, [moveSceneToEnd, sceneId])
+
+  const handleMoveSceneRight = useCallback(() => {
+    closeMenu()
+    moveSceneRight({ sceneId })
+  }, [moveSceneRight, sceneId])
 
   return (
     <Box
@@ -116,31 +124,31 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
           onClose={closeMenu}
         >
           {index > 0 ? (
-            <MenuItem onClick={moveSceneToBeginning}>
+            <MenuItem onClick={handleMoveSceneToBeginning}>
               <SkipPreviousRounded />
               <Typography>Move to the beginning</Typography>
             </MenuItem>
           ) : null}
           {index > 0 ? (
-            <MenuItem onClick={moveSceneLeft}>
+            <MenuItem onClick={handleMoveSceneLeft}>
               <PlayArrowRounded sx={{ transform: "scale(-1,-1)" }} />
               <Typography>Move left</Typography>
             </MenuItem>
           ) : null}
           {index + 1 < sceneIds.length ? (
-            <MenuItem onClick={moveSceneRight}>
+            <MenuItem onClick={handleMoveSceneRight}>
               <PlayArrowRounded />
               <Typography>Move right</Typography>
             </MenuItem>
           ) : null}
           {index + 1 < sceneIds.length ? (
-            <MenuItem onClick={moveSceneToEnd}>
+            <MenuItem onClick={handleMoveSceneToEnd}>
               <SkipNextRounded />
               <Typography>Move to the end</Typography>
             </MenuItem>
           ) : null}
           <Divider />
-          <MenuItem onClick={removeScene}>
+          <MenuItem onClick={handleRemoveScene}>
             <DeleteRounded />
             <Typography>Delete scene</Typography>
           </MenuItem>

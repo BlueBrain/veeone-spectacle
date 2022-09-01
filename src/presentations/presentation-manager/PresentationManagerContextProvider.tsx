@@ -5,31 +5,28 @@ import PresentationManagerContext, {
 import {
   SavePresentationOpenModalProps,
   useSpectacle,
-} from "../../spectacle/SpectacleContext"
+} from "../../spectacle/SpectacleStateContext"
 import { SpectaclePresentation } from "../../types"
 import SaveAsNewPresentationModal, {
   SaveAsNewPresentationModalResponse,
 } from "../presentation-loader/save-as/SaveAsNewPresentationModal"
-import {
-  loadPresentationStore,
-  savePresentationStore,
-} from "../../redux/actions"
 import { useDialogs } from "../../dialogs/DialogsContext"
-import { useDispatch } from "react-redux"
 import OpenPresentationModal from "../presentation-loader/open-presentation/OpenPresentationModal"
 import { resizePresentationStore } from "../resizing"
 import { useConfig } from "../../config/AppConfigContext"
 import { getFreshPresentation } from "../fresh-presentation"
 import UnsavedChangesWarning from "../presentation-loader/UnsavedChangesWarning"
+import { generateRandomPresentationId } from "../utils"
 
 const PresentationManagerContextProvider: React.FC = ({ children }) => {
-  const dispatch = useDispatch()
   const config = useConfig()
   const dialogs = useDialogs()
   const {
     presentationStore,
     veeDriveService,
     isPresentationClean,
+    savePresentationStore,
+    loadPresentationStore,
   } = useSpectacle()
 
   const [folderList, setFolderList] = useState([])
@@ -47,13 +44,18 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
         ...extraData,
       }
 
+      // Assign a unique random ID for new presentations
+      if (storeToSave.id === null) {
+        storeToSave.id = generateRandomPresentationId()
+      }
+
       console.debug("Saving presentation...", JSON.stringify(storeToSave))
-      dispatch(savePresentationStore(storeToSave))
+      savePresentationStore(storeToSave)
       await veeDriveService.savePresentation(storeToSave)
 
       return storeToSave
     },
-    [dispatch, presentationStore, veeDriveService]
+    [presentationStore, savePresentationStore, veeDriveService]
   )
 
   const savePresentationAs = useCallback(
@@ -105,10 +107,20 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
           height: config.FILE_BROWSER_HEIGHT,
         }
       )
-      dispatch(loadPresentationStore(sizeAdjustedPresentationStore))
+      loadPresentationStore(sizeAdjustedPresentationStore)
       return sizeAdjustedPresentationStore
     },
-    [config, dialogs, dispatch, veeDriveService]
+    [
+      config.FILE_BROWSER_HEIGHT,
+      config.FILE_BROWSER_WIDTH,
+      config.MAXIMUM_FRAME_LONG_SIDE,
+      config.MINIMUM_FRAME_LONG_SIDE,
+      config.VIEWPORT_HEIGHT,
+      config.VIEWPORT_WIDTH,
+      dialogs,
+      loadPresentationStore,
+      veeDriveService,
+    ]
   )
 
   const newPresentation = useCallback(
@@ -121,10 +133,10 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
         console.debug("NEW PRESENTATION RESULT", result)
       }
       const freshPresentation = getFreshPresentation({ config })
-      dispatch(loadPresentationStore(freshPresentation))
+      loadPresentationStore(freshPresentation)
       return freshPresentation
     },
-    [config, dialogs, dispatch, isPresentationClean]
+    [config, dialogs, isPresentationClean, loadPresentationStore]
   )
 
   const loadFolderList = useCallback(async () => {

@@ -1,18 +1,16 @@
 import { Box } from "@mui/material"
 import React, { useMemo } from "react"
-import { useSpectacle, ViewMode } from "../../spectacle/SpectacleContext"
+import { useSpectacle, ViewMode } from "../../spectacle/SpectacleStateContext"
 import SceneCarouselItem from "./SceneCarouselItem"
 import SceneCarouselItemToolbar from "./SceneCarouselItemToolbar"
 import { AddRounded } from "@mui/icons-material"
+import { useScenes } from "../SceneContext"
 
 const SceneCarouselNavigator: React.FC = () => {
-  const {
-    sceneIds,
-    viewMode,
-    activeSceneIndex,
-    presentationStore,
-    sceneManager,
-  } = useSpectacle()
+  const { viewMode, presentationStore } = useSpectacle()
+
+  const { activeSceneIndex, sceneIds, addNewScene } = useScenes()
+
   const viewport = presentationStore.meta.viewport
 
   const isScenesOverviewMode = useMemo(
@@ -86,7 +84,7 @@ const SceneCarouselNavigator: React.FC = () => {
               background: `rgba(255, 255, 255, .1)`,
             },
           }}
-          onClick={sceneManager.addNewScene}
+          onClick={addNewScene}
         >
           <AddRounded
             sx={{ fontSize: "20rem", color: `rgba(255, 255, 255, .06)` }}

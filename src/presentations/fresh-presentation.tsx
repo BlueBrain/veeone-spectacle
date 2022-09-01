@@ -18,8 +18,9 @@ export const getFreshPresentation: GetFreshPresentationArgs = ({ config }) => {
    */
   const now = Date.now()
   const newStore: SpectaclePresentation = {
-    id: generateRandomPresentationId(),
+    id: null,
     name: "",
+    folder: null,
     createdAt: now,
     updatedAt: now,
     savedAt: null,

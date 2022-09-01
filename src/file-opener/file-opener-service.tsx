@@ -16,14 +16,15 @@ class FileOpenerService {
     filePath: string,
     position: Position,
     defaultSize: Size,
-    dispatch
+    addFrameCallback,
+    bringFrameToFrontCallback
   ) {
     const openerClass = this.handleFileByExtension(filePath)
     const opener = new openerClass({
       filePath,
       position,
     })
-    opener.makeFrame(dispatch, defaultSize)
+    opener.makeFrame(defaultSize, addFrameCallback, bringFrameToFrontCallback)
   }
 
   private handleFileByExtension(filePath: string) {
@@ -51,6 +52,7 @@ class FileOpenerService {
 }
 
 const fileOpenerService = new FileOpenerService()
+
 fileOpenerService.registerOpener(ImageOpener, [
   "jpg",
   "jpeg",
@@ -59,6 +61,7 @@ fileOpenerService.registerOpener(ImageOpener, [
   "gif",
   "webp",
 ])
+
 fileOpenerService.registerOpener(MovieOpener, [
   "mp4",
   "mov",
@@ -68,4 +71,5 @@ fileOpenerService.registerOpener(MovieOpener, [
   "webm",
   "mkv",
 ])
+
 export default fileOpenerService

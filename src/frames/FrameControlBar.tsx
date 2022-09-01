@@ -5,8 +5,8 @@ import useInteractable from "../interactable/useInteractable"
 import CloseIconButtonWithRef from "./frame-controls/CloseIconButton"
 import FullscreenIconButtonWithRef from "./frame-controls/FullscreenIconButton"
 import SendToBackIconButtonWithRef from "./frame-controls/SendToBackIconButton"
-import { useDesk } from "../desk/DeskContext"
 import { useConfig } from "../config/AppConfigContext"
+import { useScenes } from "../scenes/SceneContext"
 
 export interface FrameControlBarProps {
   isFullscreenButtonVisible?: boolean
@@ -20,7 +20,7 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
   isCloseButtonVisible = true,
 }) => {
   const config = useConfig()
-  const { scene } = useDesk()
+  const { activeScene } = useScenes()
 
   const { toggleFullscreen, close, sendToBack, frameId } = useContext(
     FrameContext
@@ -40,8 +40,10 @@ const FrameControlBar: React.FC<FrameControlBarProps> = ({
   useInteractable(fullscreenRef, { onTap: toggleFullscreen })
 
   const isTopFrame = useMemo(
-    () => scene.frameStack.indexOf(frameId) === scene.frameStack.length - 1,
-    [frameId, scene.frameStack]
+    () =>
+      activeScene.frameStack.indexOf(frameId) ===
+      activeScene.frameStack.length - 1,
+    [frameId, activeScene.frameStack]
   )
 
   const isControlBarAlwaysVisible = useMemo(

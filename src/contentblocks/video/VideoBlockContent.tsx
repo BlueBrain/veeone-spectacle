@@ -8,7 +8,7 @@ import React, {
   useEffect,
   useState,
 } from "react"
-import { useSpectacle } from "../../spectacle/SpectacleContext"
+import { useSpectacle } from "../../spectacle/SpectacleStateContext"
 
 interface OnVideoLoadedArgs {
   width: number

@@ -2,8 +2,9 @@ import React, { useCallback, useMemo, useRef } from "react"
 import Scene from "../Scene"
 import { Box } from "@mui/material"
 import { SceneId } from "../../types"
-import { useSpectacle, ViewMode } from "../../spectacle/SpectacleContext"
+import { useSpectacle, ViewMode } from "../../spectacle/SpectacleStateContext"
 import useInteractable from "../../interactable/useInteractable"
+import { useScenes } from "../SceneContext"
 
 interface SceneCarouselItemProps {
   index: number
@@ -15,14 +16,13 @@ const SceneCarouselItem: React.FC<SceneCarouselItemProps> = ({
   sceneId,
 }) => {
   const ref = useRef()
-  const {
-    presentationStore,
-    activeSceneId,
-    sceneManager,
-    viewMode,
-    setViewMode,
-  } = useSpectacle()
+
+  const { presentationStore, viewMode, setViewMode } = useSpectacle()
+
+  const { activeSceneId, setActiveScene } = useScenes()
+
   const { width, height } = presentationStore.meta.viewport
+
   const isActive = useMemo(() => activeSceneId === sceneId, [
     activeSceneId,
     sceneId,
@@ -34,11 +34,11 @@ const SceneCarouselItem: React.FC<SceneCarouselItemProps> = ({
     }
     console.debug("setActive", sceneId)
     if (!isActive) {
-      sceneManager.setActiveScene(sceneId)
+      setActiveScene({ sceneId })
     } else if (viewMode === ViewMode.SceneOverview) {
       setViewMode(ViewMode.Desk)
     }
-  }, [isActive, sceneId, sceneManager, setViewMode, viewMode])
+  }, [isActive, sceneId, setActiveScene, setViewMode, viewMode])
 
   useInteractable(ref, { onTap: activateScene })
 

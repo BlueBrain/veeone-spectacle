@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo } from "react"
-import { SpectacleMemoryStats, SpectacleStatusInformation } from "./types"
-import { ApplicationConfig } from "../config/types"
-import VeeDriveService from "../veedrive"
-import { systemStats } from "../spectacle/SpectacleScreen"
+import { SpectacleMemoryStats, SpectacleStatusInformation } from "../types"
+import { ApplicationConfig } from "../../config/types"
+import VeeDriveService from "../../veedrive"
+import { systemStats } from "../../spectacle/SpectacleScreen"
 
 const getMemoryStats = (): SpectacleMemoryStats => ({
   // @ts-ignore
@@ -25,7 +25,7 @@ const useStatusUpdate = (
     console.info("Creating new worker for Synec check-in...")
     return new Worker(
       // @ts-ignore
-      new URL("../synec/workers/synec-check-in", import.meta.url)
+      new URL("../workers/synec-check-in", import.meta.url)
     )
   }, [config.SYNEC_CHECKIN_ENABLED])
 

@@ -2,7 +2,7 @@ import React, { useMemo } from "react"
 import { Box, Theme } from "@mui/material"
 import { useConfig } from "../config/AppConfigContext"
 import { SxProps } from "@mui/system"
-import { useSpectacle } from "../spectacle/SpectacleContext"
+import { useSpectacle } from "../spectacle/SpectacleStateContext"
 
 const VersionLabel: React.FC = () => {
   const config = useConfig()

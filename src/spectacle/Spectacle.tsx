@@ -2,7 +2,7 @@ import * as React from "react"
 import { useMemo } from "react"
 import { CssBaseline, ThemeProvider } from "@mui/material"
 import ThemeGradients from "../branding/ThemeGradients"
-import SpectacleContextProvider from "./SpectacleContextProvider"
+import SpectacleStateContextProvider from "./SpectacleStateContextProvider"
 import SpectacleScreen from "./SpectacleScreen"
 import { useConfig } from "../config/AppConfigContext"
 import { getBlueBrainTheme } from "../branding/bbp-theme"
@@ -11,6 +11,7 @@ import DialogsContextProvider from "../dialogs/DialogsContextProvider"
 import PresentationManagerContextProvider from "../presentations/presentation-manager/PresentationManagerContextProvider"
 import DialogsPlaceholder from "../dialogs/DialogsPlaceholder"
 import VisualKeyboardContextProvider from "../visualkeyboard/VisualKeyboardContextProvider"
+import SceneContextProvider from "../scenes/SceneContextProvider"
 
 export const Spectacle = () => {
   const config = useConfig()
@@ -21,16 +22,18 @@ export const Spectacle = () => {
       <CssBaseline />
       <ThemeGradients />
       <VisualKeyboardContextProvider>
-        <SpectacleContextProvider>
-          <DialogsContextProvider>
-            <PresentationManagerContextProvider>
-              <ImageKeeperContextProvider>
-                <SpectacleScreen />
-              </ImageKeeperContextProvider>
-              <DialogsPlaceholder />
-            </PresentationManagerContextProvider>
-          </DialogsContextProvider>
-        </SpectacleContextProvider>
+        <SpectacleStateContextProvider>
+          <SceneContextProvider>
+            <DialogsContextProvider>
+              <PresentationManagerContextProvider>
+                <ImageKeeperContextProvider>
+                  <SpectacleScreen />
+                </ImageKeeperContextProvider>
+                <DialogsPlaceholder />
+              </PresentationManagerContextProvider>
+            </DialogsContextProvider>
+          </SceneContextProvider>
+        </SpectacleStateContextProvider>
       </VisualKeyboardContextProvider>
     </ThemeProvider>
   )

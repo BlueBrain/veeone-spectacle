@@ -1,8 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react"
-import DeskContext from "./DeskContext"
-import { SceneId, SpectaclePresentation, SpectacleScene } from "../types"
-import { useSelector } from "react-redux"
-import { getScene } from "../redux/selectors"
+import DeskContext, { DeskContextProps } from "./DeskContext"
+import { FrameId, SceneId } from "../types"
+import { useScenes } from "../scenes/SceneContext"
 
 interface DeskContextProviderProps {
   sceneId: SceneId
@@ -12,20 +11,17 @@ const DeskContextProvider: React.FC<DeskContextProviderProps> = ({
   sceneId,
   children,
 }) => {
-  const scene = (useSelector<SpectaclePresentation>(state =>
-    getScene(state, sceneId)
-  ) as unknown) as SpectacleScene
-
-  const getFrame = useCallback(
-    frameId => {
-      return scene.frames[frameId]
-    },
-    [scene.frames]
-  )
-
   const [fullscreenFrame, setFullscreenFrame] = useState(null)
 
-  const providerValue = useMemo(
+  const { getScene } = useScenes()
+
+  const scene = useMemo(() => getScene(sceneId), [getScene, sceneId])
+
+  const getFrame = useCallback((frameId: FrameId) => scene.frames[frameId], [
+    scene,
+  ])
+
+  const providerValue: DeskContextProps = useMemo(
     () => ({
       sceneId,
       scene,
@@ -33,7 +29,7 @@ const DeskContextProvider: React.FC<DeskContextProviderProps> = ({
       setFullscreenFrame,
       fullscreenFrame,
     }),
-    [sceneId, scene, getFrame, fullscreenFrame, setFullscreenFrame]
+    [sceneId, scene, getFrame, fullscreenFrame]
   )
 
   return (
