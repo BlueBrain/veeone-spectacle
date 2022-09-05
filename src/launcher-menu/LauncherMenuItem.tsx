@@ -1,8 +1,9 @@
 import { MenuItem } from "./types"
 import { CategoryRounded, SvgIconComponent } from "@mui/icons-material"
+import React from "react"
 
 class LauncherMenuItem implements MenuItem {
-  label: string
+  label: string | React.ReactNode
   isEnabled: boolean
   isOpen: boolean = false
   icon: SvgIconComponent

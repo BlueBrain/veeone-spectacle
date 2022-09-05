@@ -19,6 +19,24 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
   const mainRotationAngle = anglePerMainItem * index
   const IconComponent = useMemo<SvgIconComponent>(() => icon, [icon])
 
+  const subWedgeLabelItems = useMemo(
+    () =>
+      isOpen ? (
+        <>
+          {children.map((menuItem, i, total) => (
+            <SubWedgeLabelItem
+              key={i}
+              index={i}
+              menuItem={menuItem}
+              totalSubitemCount={total.length}
+              mainRotationAngle={mainRotationAngle}
+            />
+          ))}
+        </>
+      ) : null,
+    [children, isOpen, mainRotationAngle]
+  )
+
   return (
     <>
       <Box
@@ -31,7 +49,7 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
           width: "50%",
           animation: `openPieItemsEffect${index} 1000ms ease forwards`,
           opacity: 0,
-          willChange: `transform`,
+          willChange: `transform, opacity`,
           ["@keyframes openPieItemsEffect" + index]: {
             "0%": {
               opacity: 0.0,
@@ -69,19 +87,7 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
           {label}
         </Box>
       </Box>
-      {isOpen ? (
-        <>
-          {children.map((menuItem, i, total) => (
-            <SubWedgeLabelItem
-              key={i}
-              index={i}
-              menuItem={menuItem}
-              totalSubitemCount={total.length}
-              mainRotationAngle={mainRotationAngle}
-            />
-          ))}
-        </>
-      ) : null}
+      {subWedgeLabelItems}
     </>
   )
 }
