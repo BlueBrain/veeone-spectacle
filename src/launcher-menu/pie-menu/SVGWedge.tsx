@@ -42,17 +42,12 @@ const SVGWedge: React.FC<SVGWedgeProps> = ({
   return (
     <>
       {menuItem.isOpen ? (
-        <Box
-          mask={"url(#largeCircleMask)"}
-          component={"g"}
-          sx={{
-            transformOrigin: "center",
-            transform: `
-              rotate(${anglePerMainItem * index}deg)
-            `,
-          }}
-        >
-          <SVGSubWedges items={menuItem.children} />
+        <Box mask={"url(#largeCircleMask)"} component={"g"}>
+          <SVGSubWedges
+            items={menuItem.children}
+            anglePerMainItem={anglePerMainItem}
+            index={index}
+          />
         </Box>
       ) : null}
 

@@ -41,11 +41,11 @@ const PieMenu: React.FC<PieMenuProps> = () => {
         overflow={"visible"}
       >
         <defs>
-          <mask id={"circleMask"}>
+          <mask id={"circleMask"} style={{ maskType: "luminance" }}>
             <rect x={-50} y={-50} width={200} height={200} fill={"white"} />
             <circle r={15} cx={50} cy={50} fill={"black"} />
           </mask>
-          <mask id={"largeCircleMask"}>
+          <mask id={"largeCircleMask"} style={{ maskType: "luminance" }}>
             <rect x={-50} y={-50} width={200} height={200} fill={"white"} />
             <circle r={49.5} cx={50} cy={50} fill={"black"} />
           </mask>
