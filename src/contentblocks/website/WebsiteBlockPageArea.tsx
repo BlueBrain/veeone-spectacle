@@ -41,6 +41,7 @@ const WebsiteBlockPageArea = () => {
         allowFullScreen={false}
         ref={iframeRef}
         key={websiteIframeKey}
+        sandbox={"allow-top-navigation allow-same-origin allow-scripts"}
       />
       <Box
         sx={{

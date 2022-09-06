@@ -196,6 +196,11 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
         icon: Language,
         children: [
           new LauncherMenuItem({
+            label: "Curiosity",
+            icon: Language,
+            action: () => openWebsite("https://eyes.nasa.gov/curiosity/"),
+          }),
+          new LauncherMenuItem({
             label: (
               <>
                 Real Neuron
@@ -217,12 +222,12 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
           //   icon: Language,
           //   action: () => openWebsite("https://epfl.ch"),
           // }),
-          // new LauncherMenuItem({
-          //   label: "BBP",
-          //   icon: Language,
-          //   action: () =>
-          //     openWebsite("https://www.epfl.ch/research/domains/bluebrain/"),
-          // }),
+          new LauncherMenuItem({
+            label: "BBP",
+            icon: Language,
+            action: () => openWebsite("https://bluebrain.epfl.ch/"),
+          }),
+
           // new LauncherMenuItem({
           //   label: "Browser",
           //   icon: Language,
