@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": false,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src/",
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "diagnostics": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "extendedDiagnostics": false,
+    "incremental": false,
+    "jsx": "react",
+    "lib": ["dom", "dom.iterable", "es2018", "ES2021"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "outDir": "./dist/",
+    "paths": {
+      "*": ["src/*", "node_modules/*"]
+    },
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+
+    "strict": false,
+    "strictNullChecks": false,
+    "target": "es2018"
+  },
+  "output": ["./dist"],
+  "files": ["src/index.tsx"],
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "./src/**/*.css",
+    "./src/**/*.svg",
+    "./src/**/*.png",
+    "./src/**/*.jpg",
+    "./src/**/*.jpeg",
+    "./src/**/*.gif"
+  ],
+  "exclude": ["node_modules/", "doc/", "**/*.spec.*", "**/*.test.*"]
+}

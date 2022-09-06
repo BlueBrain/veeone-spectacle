@@ -1,0 +1,31 @@
+env:
+  browser: true
+  jest/globals: true
+rules:
+  strict: off
+  import/no-anonymous-default-export:
+    - "error"
+    - allowObject: true
+  react/prop-types: "off"
+  no-unused-vars: "off"
+  "@typescript-eslint/no-unused-vars": "off"
+extends:
+  - "prettier"
+  - "eslint:recommended"
+  - "react-app"
+  - "react-app/jest"
+  - "plugin:react/recommended"
+  - "plugin:jest/recommended"
+parser: "@typescript-eslint/parser"
+parserOptions:
+  project: "./tsconfig.eslint.json"
+  ecmaVersion: 2020
+plugins:
+  - "eslint-plugin-prefer-arrow"
+  - "eslint-plugin-import"
+  - "eslint-plugin-no-null"
+  - "eslint-plugin-unicorn"
+  - "eslint-plugin-jsdoc"
+  - "eslint-plugin-jest"
+  - "eslint-plugin-react"
+  - "@typescript-eslint/eslint-plugin"
