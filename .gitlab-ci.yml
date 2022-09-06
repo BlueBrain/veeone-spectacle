@@ -10,6 +10,7 @@ stages:
 variables:
   KUBERNETES_MEMORY_LIMIT: 4Gi
   KUBERNETES_MEMORY_REQUEST: 4Gi
+  # CI_COMMIT_SHORT_SHA is needed to put into the config of Spectacle to display the build version
   DOCKER_BUILD_ARGS: "--build-arg CI_COMMIT_SHORT_SHA=$CI_COMMIT_SHORT_SHA"
 
 # Common configurations
