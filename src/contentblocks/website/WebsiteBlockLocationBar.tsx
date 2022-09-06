@@ -4,6 +4,7 @@ import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
 import { useWebsiteBlock } from "./WebsiteBlockContext"
 import { useFrame } from "../../frames/FrameContext"
 import { useConfig } from "../../config/AppConfigContext"
+import sanitizeLocationUrl from "./sanitize-location-url"
 
 const WebsiteBlockLocationBar: React.FC = () => {
   const ref = useRef()
@@ -31,7 +32,7 @@ const WebsiteBlockLocationBar: React.FC = () => {
         initial: initialValue,
         onInputChange: (newValue: string) => setLocationBarUrl(newValue),
         customKeyboardId: `navigation-bar-${frameId}`,
-        onDone: (value: string) => navigateUrl(value),
+        onDone: (value: string) => navigateUrl(sanitizeLocationUrl(value)),
         doneButtonLabel: "Go",
       })
     },

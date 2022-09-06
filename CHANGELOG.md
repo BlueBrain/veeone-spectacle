@@ -1,41 +1,38 @@
 # Changelog
 
-## 0.2
+## 1.0
 
-Planned
+Unreleased
 
-### Added
+VeeDrive version: `0.3.0`
 
-- Folders for saved presentations
+### New features
 
-### Changed
-
-- Improve Load/Save presentation experience
-
-### Removed
-
-N/A
-
-## 0.1
-
-In progress
-
-### Added
-
+- General
+  - Manipulate content frames
+  - Move, resize, close frames
+  - Environment configuration via query params
+- Loading and saving presentations
+  - Monitor when presentation has been changed and warn users
+  - Save / Save as functionality
+  - Open presentation from VeeDrive
+  - Restore presentation state after the browser has been reloaded (prevent data loss)
 - File browser
-- Opening media files (images, videos)
-- Manipulating content frames
-- Video playback
+  - Open media files (images, videos)
+  - Open multiple files at once (multiselection mode)
+  - Display file thumbnails
+  - Grid or list view in folders
+  - Image keeper (loading and caching system in Web Workers)
+- Embedded websites
+  - Open custom URLs
+  - Switch between interactive and frame mode (interact with the content or with the frame)
+  - Parse and validate URLs
+- Video files
+  - Playback controls
+  - Fullscreen
+  - Skip forwards/backwards
 - Virtual keyboard
+  - Customizable layout and keys
 - Scenes
-- Environment configuration via query params
-- Global state in a Redux store
-- Image keeper (loading and caching system in Web Workers)
-
-### Changed
-
-N/A
-
-### Removed
-
-N/A
+  - Add and manage the scenes
+  - Navigate between the scenes
