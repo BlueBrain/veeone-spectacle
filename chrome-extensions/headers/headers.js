@@ -1,10 +1,13 @@
 console.info("Header Remover extension loaded")
 
-const HEADERS_TO_REMOVE = ["content-security-policy", "x-frame-options"]
+const HEADERS_TO_REMOVE = [
+  "content-security-policy",
+  "x-frame-options",
+  "referrer-policy",
+]
 
 chrome.webRequest.onHeadersReceived.addListener(
   details => {
-    console.debug("HEADERS_TO_REMOVE", HEADERS_TO_REMOVE)
     console.debug("removing headers", details)
     return {
       responseHeaders: details.responseHeaders.filter(
