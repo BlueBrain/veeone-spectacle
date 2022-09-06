@@ -2,7 +2,7 @@
 
 ## 1.0
 
-Unreleased
+2022-09-06
 
 VeeDrive version: `0.3.0`
 
