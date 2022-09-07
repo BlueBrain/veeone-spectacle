@@ -1,6 +1,7 @@
 include:
   - project: viz/ci/gitlabpipelines
     file: index.yml
+    ref: veeone/spectacle
 
 stages:
   - precheck
@@ -85,8 +86,9 @@ publish-version:
   before_script:
     # Git tags should be in "v0.0.0" format, but versions are without "v", so "0.0.0" is used
     - SPECTACLE_VERSION=$(echo $CI_COMMIT_TAG | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)?$')
-    - echo $SPECTACLE_VERSION
+    - echo "SPECTACLE_VERSION = $SPECTACLE_VERSION"
     - REGISTRY_IMAGE_TAG=$SPECTACLE_VERSION
+    - echo "REGISTRY_IMAGE_TAG = $REGISTRY_IMAGE_TAG"
   rules:
     - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+(\.[0-9]+)?$/
 
