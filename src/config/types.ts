@@ -43,6 +43,7 @@ export interface ApplicationConfig {
   LAUNCHER_MENU_SIZE_REM: number
   SENTRY_DSN: string
   SENTRY_EXCLUDE_ENVIRONMENTS: RunningEnvironment[]
+  IS_SENTRY_ENABLED: boolean
   RUNNING_ENVIRONMENT: RunningEnvironment
   IMAGE_KEEPER_AS_SINGLE_WORKER: boolean
   LOAD_IMAGES_AS_CSS_BACKGROUND: boolean

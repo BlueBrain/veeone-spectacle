@@ -7,7 +7,10 @@ const startSentry = () => {
   const config = getConfig()
 
   // Don't report to Sentry in excluded environments (e.g. local development)
-  if (config.SENTRY_EXCLUDE_ENVIRONMENTS.includes(config.RUNNING_ENVIRONMENT)) {
+  if (
+    config.SENTRY_EXCLUDE_ENVIRONMENTS.includes(config.RUNNING_ENVIRONMENT) ||
+    !config.IS_SENTRY_ENABLED
+  ) {
     return
   }
 
