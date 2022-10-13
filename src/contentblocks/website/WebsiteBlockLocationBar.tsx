@@ -34,10 +34,10 @@ const WebsiteBlockLocationBar: React.FC = () => {
   )
 
   const showVisualKeyboard = useCallback(
-    (target, initialValue: string) => {
+    (target, initial: string) => {
       openKeyboard({
         target,
-        initial: initialValue,
+        initial,
         onInputChange: (newValue: string) => setLocationBarUrl(newValue),
         customKeyboardId: `navigation-bar-${frameId}`,
         onDone: (value: string) => navigateToGivenUrl(value),
