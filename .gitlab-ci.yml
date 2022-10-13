@@ -69,16 +69,16 @@ publish-develop:
   variables:
     REGISTRY_IMAGE_TAG: latest
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop" && $SANDBOX == null
+    - if: $CI_COMMIT_BRANCH == "develop"
 
 # We can publish every branch into a "sandbox" instance by running a manual pipeline
-# and providing a "SANDBOX" variable that is a number 1-3 indicating target sandbox environment.
+# and providing a sandbox-1, sandbox-2 or sandbox-3 git tag that indicates target sandbox environment.
 publish-sandbox:
   extends: .publish-spectacle
   variables:
-    REGISTRY_IMAGE_TAG: sandbox-$SANDBOX
+    REGISTRY_IMAGE_TAG: $CI_COMMIT_TAG
   rules:
-    - if: $SANDBOX =~ /^[1-3]$/
+    - if: $CI_COMMIT_TAG =~ /^sandbox-[1-3]$/
 
 # Once a version tag is appended and commit goes into master - we create a version tag for the image.
 publish-version:
