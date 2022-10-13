@@ -6,10 +6,10 @@ describe("sanitizeLocationUrl", () => {
   })
 
   it("should append https before the address", () => {
-    expect(sanitizeLocationUrl("epfl.ch")).toEqual("https://epfl.ch")
-    expect(sanitizeLocationUrl("bbp.epfl.ch")).toEqual("https://bbp.epfl.ch")
+    expect(sanitizeLocationUrl("epfl.ch")).toEqual("https://epfl.ch/")
+    expect(sanitizeLocationUrl("bbp.epfl.ch")).toEqual("https://bbp.epfl.ch/")
     expect(sanitizeLocationUrl("www.google.com")).toEqual(
-      "https://www.google.com"
+      "https://www.google.com/"
     )
   })
 })
