@@ -5,6 +5,7 @@ import { useWebsiteBlock } from "./WebsiteBlockContext"
 import { useFrame } from "../../frames/FrameContext"
 import { useConfig } from "../../config/AppConfigContext"
 import sanitizeLocationUrl from "./sanitize-location-url"
+import Keys from "../../common/keys"
 
 const WebsiteBlockLocationBar: React.FC = () => {
   const ref = useRef()
@@ -25,6 +26,13 @@ const WebsiteBlockLocationBar: React.FC = () => {
     [locationBarUrl]
   )
 
+  const navigateToGivenUrl = useCallback(
+    url => {
+      navigateUrl(sanitizeLocationUrl(url))
+    },
+    [navigateUrl]
+  )
+
   const showVisualKeyboard = useCallback(
     (target, initialValue: string) => {
       openKeyboard({
@@ -32,11 +40,20 @@ const WebsiteBlockLocationBar: React.FC = () => {
         initial: initialValue,
         onInputChange: (newValue: string) => setLocationBarUrl(newValue),
         customKeyboardId: `navigation-bar-${frameId}`,
-        onDone: (value: string) => navigateUrl(sanitizeLocationUrl(value)),
+        onDone: (value: string) => navigateToGivenUrl(value),
         doneButtonLabel: "Go",
       })
     },
-    [frameId, navigateUrl, openKeyboard]
+    [frameId, navigateToGivenUrl, openKeyboard]
+  )
+
+  const handleKeyDown = useCallback(
+    event => {
+      if (event.key === Keys.Enter) {
+        navigateToGivenUrl(event.target.value)
+      }
+    },
+    [navigateToGivenUrl]
   )
 
   useEffect(() => {
@@ -54,6 +71,7 @@ const WebsiteBlockLocationBar: React.FC = () => {
         value={locationBarUrl}
         onChange={handleTextInputChange}
         onFocus={event => showVisualKeyboard(event.target, locationBarUrl)}
+        onKeyDown={handleKeyDown}
         disabled={!config.WEBSITE_BLOCK_ALLOW_CHANGING_URL}
       />
     </Box>
