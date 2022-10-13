@@ -27,6 +27,16 @@ const WebsiteBlockPageArea = () => {
     }
   }, [zoomLevel])
 
+  const sandbox = useMemo(
+    () =>
+      [
+        // "allow-top-navigation",
+        "allow-same-origin",
+        "allow-scripts",
+      ].join(" "),
+    []
+  )
+
   return (
     <>
       <Box
@@ -41,7 +51,7 @@ const WebsiteBlockPageArea = () => {
         allowFullScreen={false}
         ref={iframeRef}
         key={websiteIframeKey}
-        sandbox={"allow-top-navigation allow-same-origin allow-scripts"}
+        sandbox={sandbox}
       />
       <Box
         sx={{
