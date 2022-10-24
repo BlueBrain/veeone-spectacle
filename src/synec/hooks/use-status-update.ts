@@ -13,6 +13,11 @@ const getMemoryStats = (): SpectacleMemoryStats => ({
   usedHeapSize: window.performance?.memory?.usedJSHeapSize,
 })
 
+const globalWorker = new Worker(
+  // @ts-ignore
+  new URL("../workers/synec-check-in", import.meta.url)
+)
+
 const useStatusUpdate = (
   config: ApplicationConfig,
   veeDriveService: VeeDriveService
@@ -23,10 +28,7 @@ const useStatusUpdate = (
       return null
     }
     console.info("Creating new worker for Synec check-in...")
-    return new Worker(
-      // @ts-ignore
-      new URL("../workers/synec-check-in", import.meta.url)
-    )
+    return globalWorker
   }, [config.SYNEC_CHECKIN_ENABLED])
 
   const startedAt = useMemo(() => Date.now(), [])

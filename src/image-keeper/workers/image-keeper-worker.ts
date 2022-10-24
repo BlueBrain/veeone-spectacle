@@ -1,8 +1,11 @@
 import VeeDriveService from "../../veedrive"
 import { KeeperImage } from "../types"
 import { Size } from "../../common/types"
+import { getConfig } from "../../config"
 
 let veeDriveService: VeeDriveService
+
+const globalVeeDriveService = new VeeDriveService(getConfig().VEEDRIVE_WS_PATH)
 
 class ImageKeeperWorker {
   private readonly imageCache: Map<string, KeeperImage>
@@ -42,7 +45,7 @@ class ImageKeeperWorker {
       return
     }
     console.debug("Initializing worker...")
-    this.veeDriveService = new VeeDriveService(wsPath)
+    this.veeDriveService = globalVeeDriveService
     console.debug("veedrive service created", veeDriveService)
     this.isReady = true
   }

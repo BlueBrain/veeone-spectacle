@@ -12,6 +12,14 @@ interface UsePresentationRestorerProps {
   freshPresentation: SpectaclePresentation
 }
 
+const globalWorker = new Worker(
+  new URL(
+    `../workers/state-reloader-worker`,
+    // @ts-ignore
+    import.meta.url
+  )
+)
+
 const usePresentationStateManager = ({
   freshPresentation,
 }: UsePresentationRestorerProps) => {
@@ -52,13 +60,7 @@ const usePresentationStateManager = ({
 
   const worker = useMemo(() => {
     console.info("Creating new worker for Spectacle state...")
-    const newWorker = new Worker(
-      new URL(
-        `../workers/state-reloader-worker`,
-        // @ts-ignore
-        import.meta.url
-      )
-    )
+    const newWorker = globalWorker
 
     newWorker.postMessage({
       method: SpectacleWorkerMethod.Initialize,

@@ -6,18 +6,20 @@ import { useConfig } from "../config/AppConfigContext"
 import { generateRandomId } from "../common/random"
 import { ImageKeeperResponse } from "./types"
 
+const globalWorker = new Worker(
+  new URL(
+    "./workers/image-keeper-worker",
+    // @ts-ignore
+    import.meta.url
+  )
+)
+
 const ImageKeeperContextProvider: React.FC = ({ children }) => {
   const config = useConfig()
 
   const globalImageWorker = useMemo(() => {
     console.log("create new globalImageWorker instance")
-    return new Worker(
-      new URL(
-        "./workers/image-keeper-worker",
-        // @ts-ignore
-        import.meta.url
-      )
-    )
+    return globalWorker
   }, [])
 
   const imageWorker = useMemo(

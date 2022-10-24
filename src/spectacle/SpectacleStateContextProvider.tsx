@@ -16,6 +16,7 @@ import { getConfig } from "../config"
 
 interface SpectacleContextProviderProps {}
 
+console.info("New VeeDriveService at context provider...")
 const globalVeeDriveService = new VeeDriveService(getConfig().VEEDRIVE_WS_PATH)
 
 const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = ({
