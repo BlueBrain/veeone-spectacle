@@ -12,20 +12,22 @@ import { getFreshPresentation } from "../presentations/fresh-presentation"
 import { resizePresentationStore } from "../presentations/resizing"
 import usePresentationStateManager from "./hooks/use-presentation-state-manager"
 import useFrameManager from "./hooks/use-frame-manager"
+import { getConfig } from "../config"
 
 interface SpectacleContextProviderProps {}
+
+const globalVeeDriveService = new VeeDriveService(getConfig().VEEDRIVE_WS_PATH)
 
 const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = ({
   children,
 }) => {
   const config = useConfig()
 
-  const freshPresentation = useMemo(() => getFreshPresentation({ config }), [])
+  const freshPresentation = useMemo(() => getFreshPresentation({ config }), [
+    config,
+  ])
 
-  const veeDriveService = useMemo(
-    () => new VeeDriveService(config.VEEDRIVE_WS_PATH),
-    [config]
-  )
+  const veeDriveService = useMemo(() => globalVeeDriveService, [])
 
   // This hook is for sending reports to Synec about the status/health of the app
   useStatusUpdate(config, veeDriveService)
