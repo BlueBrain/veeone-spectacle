@@ -1,6 +1,5 @@
 import {
   Alert,
-  Box,
   Button,
   DialogActions,
   DialogContent,
@@ -14,7 +13,6 @@ import { generateRandomPresentationId } from "../../utils"
 import PresentationFolderList from "./PresentationFolderList"
 import { useActiveDialog } from "../../../dialogs/ActiveDialogContext"
 import { useVisualKeyboard } from "../../../visualkeyboard/VisualKeyboardContext"
-import VeeDriveService from "../../../veedrive"
 
 export interface SaveAsNewPresentationModalResponse {
   presentationId: string
