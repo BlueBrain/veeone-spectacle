@@ -178,7 +178,10 @@ const SceneContextProvider: React.FC = ({ children }) => {
   const removeScene = useCallback(
     (payload: RemoveScenePayload) => {
       updateScenes(scenes => {
-        console.error("remove scene...")
+        // Prevent deleting the scene if it's the last one
+        if (scenes.sceneOrder.length === 1) {
+          return scenes
+        }
         const newScenes = { ...scenes.scenes }
         const deletedSceneIndex = scenes.sceneOrder.indexOf(payload.sceneId)
         delete newScenes[payload.sceneId]
