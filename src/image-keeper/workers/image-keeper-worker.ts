@@ -15,6 +15,10 @@ class ImageKeeperWorker {
     this.imageCache = new Map()
   }
 
+  resetImageCache = () => {
+    this.imageCache.clear()
+  }
+
   saveImageInCache = (path: string, objectUrl: string, size: Size) => {
     this.imageCache[path] = { objectUrl, size } as KeeperImage
     return this.imageCache[path]
@@ -81,6 +85,7 @@ class ImageKeeperWorker {
   messageHandlers = {
     init: this.handleInit,
     requestImage: this.handleRequestImage,
+    clearImageCache: this.resetImageCache,
   }
 }
 
