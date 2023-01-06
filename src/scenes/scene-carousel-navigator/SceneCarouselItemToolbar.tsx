@@ -147,8 +147,7 @@ const SceneCarouselItemToolbar: FC<SceneCarouselItemToolbarProps> = ({
               <Typography>Move to the end</Typography>
             </MenuItem>
           ) : null}
-          <Divider />
-          <MenuItem onClick={handleRemoveScene}>
+          <MenuItem onClick={handleRemoveScene} disabled={sceneIds.length <= 1}>
             <DeleteRounded />
             <Typography>Delete scene</Typography>
           </MenuItem>
