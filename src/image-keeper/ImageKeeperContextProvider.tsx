@@ -1,13 +1,15 @@
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useEffect, useMemo } from "react"
 import ImageKeeperContext, {
   ImageKeeperContextProps,
 } from "./ImageKeeperContext"
 import { useConfig } from "../config/AppConfigContext"
 import { generateRandomId } from "../common/random"
 import { ImageKeeperResponse } from "./types"
+import { useSpectacle } from "../spectacle/SpectacleStateContext"
 
 const ImageKeeperContextProvider: React.FC = ({ children }) => {
   const config = useConfig()
+  const { presentationStore } = useSpectacle()
 
   const globalImageWorker = useMemo(() => {
     console.log("create new globalImageWorker instance")
@@ -73,6 +75,13 @@ const ImageKeeperContextProvider: React.FC = ({ children }) => {
     }),
     [requestImage]
   )
+
+  useEffect(() => {
+    // Reset image cache when presentation changes (id)
+    imageWorker.postMessage({
+      action: "clearImageCache",
+    })
+  }, [presentationStore.createdAt])
 
   return (
     <ImageKeeperContext.Provider value={providerValue}>
