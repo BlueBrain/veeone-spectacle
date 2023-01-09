@@ -65,14 +65,16 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
     }
   }, [onHold])
 
-  useInteractable(ref, { onHold: onHoldHandler })
+  useInteractable(ref, {
+    onHold: onHoldHandler,
+    onTap: triggerButton,
+  })
 
   return (
     <Grid item sx={{ display: `flex`, flexGrow: grow, padding: `0 0.1rem` }}>
       {/* @ts-ignore */}
       <Button
         ref={ref}
-        onClick={triggerButton}
         variant={"contained"}
         {...optionalProps}
         sx={{
