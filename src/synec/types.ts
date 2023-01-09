@@ -9,6 +9,8 @@ export interface SpectacleMemoryStats {
 export interface VeeDriveStats {
   isConnected: boolean
   homeDirCount: number
+  filesystemOk: boolean
+  databaseOk: boolean
 }
 
 export interface SpectacleStatusInformation {
