@@ -101,12 +101,16 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
       config.MAXIMUM_FRAME_LONG_SIDE,
       config.MINIMUM_FRAME_LONG_SIDE,
       markMutatedState,
+      setPresentationStore,
     ]
   )
 
-  const updatePresentationStore = useCallback(callback => {
-    setPresentationStore(state => callback(state))
-  }, [])
+  const updatePresentationStore = useCallback(
+    callback => {
+      setPresentationStore(state => callback(state))
+    },
+    [setPresentationStore]
+  )
 
   const presentationName = useMemo(() => presentationStore.name, [
     presentationStore.name,

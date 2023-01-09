@@ -3,6 +3,7 @@ import { SpectacleMemoryStats, SpectacleStatusInformation } from "../types"
 import { ApplicationConfig } from "../../config/types"
 import VeeDriveService from "../../veedrive"
 import { systemStats } from "../../spectacle/SpectacleScreen"
+import VeeDriveHealthCheckService from "../../veedrive/vee-drive-health-check"
 
 const getMemoryStats = (): SpectacleMemoryStats => ({
   // @ts-ignore
@@ -17,6 +18,11 @@ const useStatusUpdate = (
   config: ApplicationConfig,
   veeDriveService: VeeDriveService
 ) => {
+  const veeDriveHealthCheckService = useMemo(
+    () => new VeeDriveHealthCheckService(config.VEEDRIVE_HEALTH_CHECK_WS_PATH),
+    [config.VEEDRIVE_HEALTH_CHECK_WS_PATH]
+  )
+
   const worker = useMemo(() => {
     console.info("SYNEC_CHECKIN_ENABLED", config.SYNEC_CHECKIN_ENABLED)
     if (!config.SYNEC_CHECKIN_ENABLED) {
@@ -35,8 +41,14 @@ const useStatusUpdate = (
     const reportedAt = Date.now()
     const uptime = reportedAt - startedAt
     const memory = getMemoryStats()
+
+    // VeeDrive checks
     const dirList = await veeDriveService.listDirectory({ path: "" })
     const homeDirCount = dirList.directories.length
+    const healthCheckResponse = await veeDriveHealthCheckService.checkHealth()
+    const filesystemOk = healthCheckResponse.fs_ok
+    const databaseOk = healthCheckResponse.db_ok
+
     const clientId = config.CLIENT_ID
     const environment = config.RUNNING_ENVIRONMENT
     const lastUserActivityAt = systemStats.lastUserActivityAt
@@ -58,6 +70,8 @@ const useStatusUpdate = (
       veeDrive: {
         isConnected: veeDriveService.isConnected(),
         homeDirCount,
+        filesystemOk,
+        databaseOk,
       },
       lastUserActivityAt,
     }

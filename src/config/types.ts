@@ -17,6 +17,7 @@ export interface ApplicationConfig {
   VERSION: string
   REVISION: string
   VEEDRIVE_WS_PATH: string
+  VEEDRIVE_HEALTH_CHECK_WS_PATH: string
   FILE_BROWSER_WIDTH: number
   FILE_BROWSER_HEIGHT: number
   FILE_BROWSER_OPEN_MEDIA_OFFSET: number

@@ -79,3 +79,8 @@ export type VeeDriveRemoveFolderResponse = string
 export interface VeeDriveSavePresentationResponse {}
 
 export type VeeDriveSearchResultDirectory = string
+
+export interface VeeDriveHealthCheckResponse {
+  fs_ok: boolean
+  db_ok: boolean
+}
