@@ -1,16 +1,18 @@
 import { Box, TextField } from "@mui/material"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useVisualKeyboard } from "../../visualkeyboard/VisualKeyboardContext"
 import { useWebsiteBlock } from "./WebsiteBlockContext"
 import { useFrame } from "../../frames/FrameContext"
 import { useConfig } from "../../config/AppConfigContext"
 import sanitizeLocationUrl from "./sanitize-location-url"
 import Keys from "../../common/keys"
+import { generateRandomId } from "../../common/random"
 
 const WebsiteBlockLocationBar: React.FC = () => {
+  const keyboardId = useMemo(() => `website-${generateRandomId()}`, [])
   const ref = useRef()
   const config = useConfig()
-  const { openKeyboard } = useVisualKeyboard()
+  const { openKeyboard, closeKeyboardById } = useVisualKeyboard()
 
   const { navigateUrl, websiteUrl } = useWebsiteBlock()
 
@@ -39,7 +41,7 @@ const WebsiteBlockLocationBar: React.FC = () => {
         target,
         initial,
         onInputChange: (newValue: string) => setLocationBarUrl(newValue),
-        customKeyboardId: `navigation-bar-${frameId}`,
+        customKeyboardId: keyboardId,
         onDone: (value: string) => navigateToGivenUrl(value),
         doneButtonLabel: "Go",
       })
@@ -59,6 +61,12 @@ const WebsiteBlockLocationBar: React.FC = () => {
   useEffect(() => {
     setLocationBarUrl(websiteUrl)
   }, [websiteUrl])
+
+  useEffect(() => {
+    return () => {
+      closeKeyboardById(keyboardId)
+    }
+  }, [closeKeyboardById])
 
   return (
     <Box sx={{ flexGrow: 1, padding: `0 2rem 0 1rem` }}>
