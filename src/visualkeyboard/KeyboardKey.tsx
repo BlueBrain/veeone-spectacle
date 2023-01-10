@@ -1,5 +1,5 @@
 import { Button, Grid } from "@mui/material"
-import React, { useCallback, useMemo, useRef } from "react"
+import React, { useCallback, useMemo, useRef, useState } from "react"
 import { OverridableStringUnion } from "@mui/types"
 import { ButtonPropsColorOverrides } from "@mui/material/Button/Button"
 import { useCurrentKeyboard } from "./CurrentKeyboardContext"
@@ -47,7 +47,6 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
   )
 
   const triggerButton = useCallback(() => {
-    console.debug("key pressed")
     keyboard.onButtonPressed({
       buttonValue: value,
       mode,
@@ -58,15 +57,36 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
     ...(color ? { color } : {}),
   }
 
+  const [triggeringInterval, setTriggeringInterval] = useState(null)
+
+  const startTriggering = useCallback(() => {
+    const timeout = setInterval(triggerButton, 300)
+    setTriggeringInterval(timeout)
+  }, [triggerButton])
+
+  const stopTriggering = useCallback(() => {
+    if (triggeringInterval !== null) {
+      clearInterval(triggeringInterval)
+      setTriggeringInterval(null)
+    }
+  }, [triggeringInterval])
+
   const onHoldHandler = useCallback(() => {
     console.debug("Holding button...")
+    startTriggering()
     if (typeof onHold === "function") {
       onHold()
     }
-  }, [onHold])
+  }, [onHold, startTriggering])
+
+  const onPointerUpHandler = useCallback(() => {
+    console.debug("Pointer release...")
+    stopTriggering()
+  }, [stopTriggering])
 
   useInteractable(ref, {
     onHold: onHoldHandler,
+    onPointerUp: onPointerUpHandler,
     onTap: triggerButton,
   })
 

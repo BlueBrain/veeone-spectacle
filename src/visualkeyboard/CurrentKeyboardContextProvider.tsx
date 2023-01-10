@@ -38,6 +38,8 @@ const CurrentKeyboardContextProvider: React.FC<CurrentKeyboardContextProviderPro
   const onButtonPressed = useCallback(
     (args: ButtonPressedInfo) => {
       const { buttonValue, mode } = args
+      console.debug("onButtonPressed", buttonValue, mode, "value=", value)
+      // todo fix - initial value is always the same (with the interval; it doesn't work)
 
       switch (mode) {
         case KeyboardModeKey.NORMAL: {
