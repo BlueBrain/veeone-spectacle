@@ -5,6 +5,7 @@ import { ButtonPropsColorOverrides } from "@mui/material/Button/Button"
 import { useCurrentKeyboard } from "./CurrentKeyboardContext"
 import KeyboardModeKey from "./keyboard-mode-key"
 import useInteractable from "../interactable/useInteractable"
+import { useConfig } from "../config/AppConfigContext"
 
 interface KeyboardKeyProps {
   label: string | React.ComponentElement<any, any>
@@ -35,6 +36,7 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
 }) => {
   const ref = useRef()
   const keyboard = useCurrentKeyboard()
+  const config = useConfig()
 
   const value: string = useMemo(
     () =>
@@ -60,7 +62,10 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
   const [triggeringInterval, setTriggeringInterval] = useState(null)
 
   const startTriggering = useCallback(() => {
-    const timeout = setInterval(triggerButton, 300)
+    const timeout = setInterval(
+      triggerButton,
+      config.VISUAL_KEYBOARD_REPEAT_INTERVAL_MS
+    )
     setTriggeringInterval(timeout)
   }, [triggerButton])
 
@@ -72,7 +77,6 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
   }, [triggeringInterval])
 
   const onHoldHandler = useCallback(() => {
-    console.debug("Holding button...")
     startTriggering()
     if (typeof onHold === "function") {
       onHold()
@@ -80,7 +84,6 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
   }, [onHold, startTriggering])
 
   const onPointerUpHandler = useCallback(() => {
-    console.debug("Pointer release...")
     stopTriggering()
   }, [stopTriggering])
 
