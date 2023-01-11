@@ -4,11 +4,13 @@ import interact from "interactjs"
 interface UseInteracatableArgs {
   onTap?(event): void
   onHold?(event): void
+  onPointerUp?(event): void
+  onPointerDown?(event): void
 }
 
 const useInteractable = (
   ref: RefObject<any>,
-  { onTap, onHold }: UseInteracatableArgs
+  { onTap, onHold, onPointerUp, onPointerDown }: UseInteracatableArgs
 ) => {
   useEffect(() => {
     const target = ref.current
@@ -19,11 +21,17 @@ const useInteractable = (
       if (onHold) {
         interact(target).on("hold", onHold)
       }
+      if (onPointerUp) {
+        interact(target).on("up", onPointerUp)
+      }
+      if (onPointerDown) {
+        interact(target).on("down", onPointerDown)
+      }
     }
     return () => {
       interact(target).unset()
     }
-  }, [onHold, onTap, ref])
+  }, [onHold, onPointerUp, onTap, ref])
 }
 
 export default useInteractable

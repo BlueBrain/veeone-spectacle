@@ -98,6 +98,9 @@ let defaultConfig: ApplicationConfig = {
 
   // Name of the IndexedDB database that app uses to store i.a. state changes
   STATE_STORE_INDEXEDDB_NAME: "spectacle",
+
+  // Visual keyboard
+  VISUAL_KEYBOARD_REPEAT_INTERVAL_MS: 50,
 }
 
 defaultConfig = {
