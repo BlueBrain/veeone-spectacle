@@ -172,28 +172,30 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
     setAutoHideTimeoutId(timeoutId)
   }, [autoHideTimeoutId])
 
-  useEffect(() => {
-    if (active) {
-      restartHidingTimer()
-    }
-    return () => {
-      autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
-    }
-  }, [])
+  // FIXME THIS IS CAUSING PROBLEMS
+  // useEffect(() => {
+  //   if (active) {
+  //     restartHidingTimer()
+  //   }
+  //   return () => {
+  //     autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
+  //   }
+  // }, [])
 
+  // FIXME THIS IS CAUSING PROBLEMS
   // Allow changing active mode from external components within this video context
-  useEffect(() => {
-    const toggleActive = () => {
-      setActive(!active)
-    }
-    onActiveModeToggle(() => toggleActive)
-    if (active) {
-      restartHidingTimer()
-    }
-    return () => {
-      autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
-    }
-  }, [active, onActiveModeToggle, setActive])
+  // useEffect(() => {
+  //   const toggleActive = () => {
+  //     setActive(!active)
+  //   }
+  //   onActiveModeToggle(() => toggleActive)
+  //   if (active) {
+  //     restartHidingTimer()
+  //   }
+  //   return () => {
+  //     autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
+  //   }
+  // }, [active, onActiveModeToggle, setActive])
 
   // Play/Pause handling
   useEffect(() => {
@@ -251,8 +253,12 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
     }
 
     return () => {
-      interact(currentControlsRef).unset()
-      interact(currentSliderRef).unset()
+      if (currentControlsRef) {
+        interact(currentControlsRef).unset()
+      }
+      if (currentSliderRef) {
+        interact(currentSliderRef).unset()
+      }
     }
   }, [])
 
