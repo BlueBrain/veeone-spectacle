@@ -102,7 +102,6 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
 
   const switchToScenesView = useCallback(() => {
     close()
-    console.debug("switchToScenesView to scene overview...")
     setViewMode(ViewMode.SceneOverview)
   }, [close, setViewMode])
 

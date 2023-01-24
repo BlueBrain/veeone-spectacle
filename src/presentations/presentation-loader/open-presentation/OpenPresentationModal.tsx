@@ -65,7 +65,6 @@ const OpenPresentationModal: React.FC = () => {
         position: dialogOptions.position,
         maxWidth: "xs",
       })
-      console.debug("NEW PRESENTATION RESULT", result)
     }
     openPresentation(selectedPresentationId)
   }, [

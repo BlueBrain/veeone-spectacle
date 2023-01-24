@@ -20,7 +20,6 @@ const SearchFilesBar: React.FC = () => {
 
   const handleInputChange = useCallback(
     (value: string) => {
-      console.log("handleOnChange for component", value)
       requestSearch(value)
     },
     [requestSearch]

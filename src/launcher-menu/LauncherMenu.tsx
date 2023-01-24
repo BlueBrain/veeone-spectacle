@@ -31,7 +31,6 @@ const LauncherMenu: React.FC<LauncherMenuProps> = ({
     const launcherInteract = interact(launcherBoxRef.current)
 
     launcherInteract.on("tap", event => {
-      console.debug("Catch tap on launcher menu area")
       event.stopPropagation()
     })
 

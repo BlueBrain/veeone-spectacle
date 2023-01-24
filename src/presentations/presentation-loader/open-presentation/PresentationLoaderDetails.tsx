@@ -32,7 +32,6 @@ export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
   useEffect(() => {
     async function loadPresentationData() {
       const data = await veeDriveService.getPresentation(presentationId)
-      console.debug("Load presentation data", data)
       setPresentationData(data)
     }
     void loadPresentationData()

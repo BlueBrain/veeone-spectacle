@@ -62,13 +62,9 @@ const WebsiteBlockContextProvider: React.FC = ({ children }) => {
     navigateUrl(config.WEBSITE_BLOCK_HOME_URL)
   }, [config.WEBSITE_BLOCK_HOME_URL, navigateUrl])
 
-  const navigateBack = useCallback(() => {
-    console.error("not implemented")
-  }, [])
+  const navigateBack = useCallback(() => {}, [])
 
-  const navigateForward = useCallback(() => {
-    console.error("not implemented")
-  }, [])
+  const navigateForward = useCallback(() => {}, [])
 
   const zoomPageIn = useCallback(() => {
     const data: Partial<WebsiteBlockContentData> = {

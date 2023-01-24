@@ -73,7 +73,6 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
         history: newHistory,
         historyIndex: newHistoryIndex,
       }
-      console.debug("addToBrowsingHistory", newFrameData)
       updateFrameData({ frameId, data: newFrameData })
     },
     [frameId, history, historyIndex, setSearchMode, updateFrameData]
@@ -202,10 +201,8 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
                 width: config.DEFAULT_NEW_FRAME_WIDTH,
                 height: config.DEFAULT_NEW_FRAME_HEIGHT,
               }
-        console.debug("Initial frame size is", size)
         return size
       }
-      console.debug(`Requesting ${filePath} from frame=${frameId}`)
       await fileOpenerService.handleFile(
         filePath,
         referencePosition ?? getNextAvailablePositionForFrame(),

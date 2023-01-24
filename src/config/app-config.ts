@@ -12,9 +12,7 @@ let clientId = `CLIENTID_${Math.round(Math.random() * 10000)}`
 
 try {
   clientId = crypto.randomUUID()
-} catch (e) {
-  console.warn("crypto library is not available")
-}
+} catch (e) {}
 
 let defaultConfig: ApplicationConfig = {
   CLIENT_ID: clientId,

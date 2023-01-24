@@ -20,7 +20,6 @@ const SelectionModeStatusBar: React.FC = () => {
   const { filteredFiles } = useFileBrowserFilter()
 
   const openSelectedFiles = () => {
-    console.debug("openSelectedFiles", selectedFiles)
     requestMultipleFiles(selectedFiles)
     setSelectedFiles([])
     setIsSelectionModeEnabled(false)

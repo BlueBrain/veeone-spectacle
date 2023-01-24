@@ -84,7 +84,6 @@ const SceneContextProvider: React.FC = ({ children }) => {
     updateScenes((scenes: SpectacleScenes) => {
       const newSceneId = generateRandomId()
       const newScene: SpectacleScene = { frames: {}, frameStack: [] }
-      console.debug("Add new scene....")
       return {
         ...scenes,
         sceneOrder: [...scenes.sceneOrder, newSceneId],

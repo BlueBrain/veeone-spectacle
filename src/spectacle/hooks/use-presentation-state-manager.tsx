@@ -51,7 +51,6 @@ const usePresentationStateManager = ({
   )
 
   const worker = useMemo(() => {
-    console.info("Creating new worker for Spectacle state...")
     const newWorker = new Worker(
       new URL(
         `../workers/state-reloader-worker`,
@@ -88,7 +87,6 @@ const usePresentationStateManager = ({
         break
       }
       default: {
-        console.warn("Unhandled message", message)
       }
     }
   }, [])

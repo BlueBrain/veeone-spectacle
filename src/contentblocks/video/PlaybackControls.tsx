@@ -193,7 +193,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
     return () => {
       autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
     }
-  }, [active, onActiveModeToggle])
+  }, [active, onActiveModeToggle, setActive])
 
   // Play/Pause handling
   useEffect(() => {

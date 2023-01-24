@@ -31,7 +31,6 @@ const FileElement: React.FC<FileElementProps> = ({ file }) => {
   // Load thumbnail image
   useEffect(() => {
     function handleImageLoaded() {
-      console.debug("Loaded thumbnail", file.path)
       setThumbnailUrl(this.src)
       // Register this thumbnail in the global registry so that
       // we can refer to it when opening an image frame

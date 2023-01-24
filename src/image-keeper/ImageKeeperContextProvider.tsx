@@ -12,7 +12,6 @@ const ImageKeeperContextProvider: React.FC = ({ children }) => {
   const { presentationStore } = useSpectacle()
 
   const globalImageWorker = useMemo(() => {
-    console.log("create new globalImageWorker instance")
     return new Worker(
       new URL(
         "./workers/image-keeper-worker",
@@ -38,13 +37,10 @@ const ImageKeeperContextProvider: React.FC = ({ children }) => {
 
   const requestImage = useCallback(
     (path: string): Promise<ImageKeeperResponse> => {
-      console.log("Request new image", path)
       return new Promise(resolve => {
         const imageId = generateRandomId()
         const handleImageRequest = message => {
-          console.debug("Received message in ContextProvider", message)
           if (message.data.imageId === imageId) {
-            console.debug("Received image blob!", imageId)
             imageWorker.removeEventListener("message", handleImageRequest)
             resolve(message.data as ImageKeeperResponse)
           }

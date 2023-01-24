@@ -50,7 +50,6 @@ const fetchDirectoryContents = async (
     dirs = _.sortBy(dirsList, "name")
   } catch (err) {
     // todo this error should be logged/reported
-    console.error(err)
     return { dirs: [], files: [] }
   }
   const files = response.files.map(
@@ -86,7 +85,6 @@ export const FileBrowserContextProvider: React.FC<FileBrowserContextProviderProp
   const [activePathDirs, setActivePathDirs] = useState([] as BrowserDirectory[])
 
   const initializeTree = useCallback(async () => {
-    console.debug("initializeTree", activePath)
     setPathLoaded(null)
     const tree = await fetchDirectoryContents(activePath, veeDriveService)
     setPathLoaded(activePath)
