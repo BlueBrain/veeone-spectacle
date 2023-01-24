@@ -26,10 +26,6 @@ const SelectionModeStatusBar: React.FC = () => {
   }
 
   const selectAllFiles = () => {
-    console.debug(
-      "SELECT ALL FILES",
-      filteredFiles.map(value => value.path)
-    )
     const newFiles = [
       ...selectedFiles,
       ...filteredFiles.map(value => value.path),

@@ -78,10 +78,6 @@ const usePresentationStateManager = ({
     switch (message.data.method) {
       case WorkerToSpectacleMethod.ProvideLatestStore: {
         if (message.data.params.presentationStore) {
-          console.log(
-            "Received latest store.. restoring....",
-            message.data.params
-          )
           loadPresentationStore(message.data.params.presentationStore)
         }
         break
