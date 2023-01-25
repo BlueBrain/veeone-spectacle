@@ -21,6 +21,7 @@ import { friendlyFormatTime } from "./display"
 import { useSpectacle, ViewMode } from "../../spectacle/SpectacleStateContext"
 import { useDesk } from "../../desk/DeskContext"
 import { useScenes } from "../../scenes/SceneContext"
+import { useFrame } from "../../frames/FrameContext"
 
 const CONTROLS_FADING_TIME_MS = 500
 const CONTROLS_AUTO_HIDE_AFTER_MS = 5000
@@ -121,10 +122,11 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   const [isPlaying, setIsPlaying] = useState(true)
   const [active, setActive] = useState(true)
   const [activeCssDisplay, setActiveCssDisplay] = useState(active)
-  const [autoHideTimeoutId, setAutoHideTimeoutId] = useState(null)
   const { viewMode } = useSpectacle()
   const { sceneId, fullscreenFrame } = useDesk()
   const { activeSceneId } = useScenes()
+  const autoHideTimeoutId = useRef(null)
+  const { isTopFrame } = useFrame()
 
   const isPlaybackAllowed = useMemo(
     () =>
@@ -165,21 +167,12 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 
   // Reset timer that otherwise hides the playback controls
   const restartHidingTimer = useCallback(() => {
-    autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
+    autoHideTimeoutId.current && clearTimeout(autoHideTimeoutId.current)
     const timeoutId = setTimeout(() => {
       setActive(false)
     }, CONTROLS_AUTO_HIDE_AFTER_MS)
-    setAutoHideTimeoutId(timeoutId)
+    autoHideTimeoutId.current = timeoutId
   }, [autoHideTimeoutId])
-
-  useEffect(() => {
-    if (active) {
-      restartHidingTimer()
-    }
-    return () => {
-      autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
-    }
-  }, [])
 
   // Allow changing active mode from external components within this video context
   useEffect(() => {
@@ -191,9 +184,9 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
       restartHidingTimer()
     }
     return () => {
-      autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
+      autoHideTimeoutId.current && clearTimeout(autoHideTimeoutId.current)
     }
-  }, [active, onActiveModeToggle])
+  }, [active, onActiveModeToggle, setActive])
 
   // Play/Pause handling
   useEffect(() => {
@@ -251,8 +244,12 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
     }
 
     return () => {
-      interact(currentControlsRef).unset()
-      interact(currentSliderRef).unset()
+      if (currentControlsRef) {
+        interact(currentControlsRef).unset()
+      }
+      if (currentSliderRef) {
+        interact(currentSliderRef).unset()
+      }
     }
   }, [])
 
@@ -271,6 +268,12 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
       timeout && clearTimeout(timeout)
     }
   }, [active])
+
+  useEffect(() => {
+    if (!isTopFrame) {
+      setActive(false)
+    }
+  }, [isTopFrame])
 
   const timelineProgress = useMemo(() => {
     return totalTime ? Math.ceil((100 * currentTime) / totalTime) : 0

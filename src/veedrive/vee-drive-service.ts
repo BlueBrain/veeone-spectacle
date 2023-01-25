@@ -64,21 +64,17 @@ class VeeDriveService {
   public async *searchFileSystem(
     params: VeeDriveSearchFileSystemRequest
   ): AsyncIterableIterator<SearchFileSystemResponse> {
-    console.debug("Send search request", params)
     const searchResponse: VeeDriveSearchFileSystemResponse = await this.sendRequest(
       this.endpointNames.searchFiles,
       params
     )
     const searchId = searchResponse.searchId
-    console.debug("Got searchId", searchId)
     while (true) {
-      console.debug("Fetch results for", searchId)
       const currentResults: SearchFileSystemResponse = await this.sendRequest(
         this.endpointNames.searchResults,
         { searchId }
       )
       if (typeof currentResults === "undefined") {
-        console.warn("currentResults was undefined", searchId)
         return
       }
       yield currentResults

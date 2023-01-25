@@ -54,7 +54,6 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
   useEffect(() => {
     async function loadFromVeeDrive() {
       const response = await veeDriveService.requestFile({ path: path })
-      console.debug("VideoBlock path=", response.url)
       setVideoSource(response.url)
     }
     void loadFromVeeDrive()

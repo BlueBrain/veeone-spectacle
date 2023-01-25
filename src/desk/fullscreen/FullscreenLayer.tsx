@@ -46,7 +46,6 @@ const FullscreenLayer: React.FC = () => {
 
   useEffect(() => {
     if (isFullscreenMode) {
-      console.debug("Fullscreen ON")
       setTimeout(() => (ref.current.style.opacity = 1), 0)
       setFullscreenDisplay("block")
     }
@@ -54,13 +53,10 @@ const FullscreenLayer: React.FC = () => {
 
   const synchronizePlayback = useCallback(() => {
     const extraData = fullscreenFrame.extraData as FullscreenVideoExtraData
-    console.debug(`Set playback to ${videoRef.current.currentTime}`)
     extraData.videoRef.currentTime = videoRef.current.currentTime
   }, [fullscreenFrame])
 
   const exitFullscreen = useCallback(() => {
-    console.debug("exit fullscreen with", fullscreenFrame)
-
     if (fullscreenFrame.frame.type === ContentBlockTypes.Video) {
       synchronizePlayback()
     }
@@ -78,18 +74,14 @@ const FullscreenLayer: React.FC = () => {
   ])
 
   useEffect(() => {
-    console.debug("useEffect in fullscreen layer")
     const currentRef = ref.current
     if (currentRef) {
-      console.debug("Append doubletap listener")
       interact(currentRef).on("doubletap", () => {
-        console.debug("Exit fullscreen")
         exitFullscreen()
       })
     }
     return () => {
       interact(currentRef).unset()
-      console.debug("Unset interact from fullscreen")
     }
   }, [exitFullscreen, ref, setFullscreenFrame])
 

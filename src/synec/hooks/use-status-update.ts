@@ -24,11 +24,9 @@ const useStatusUpdate = (
   )
 
   const worker = useMemo(() => {
-    console.info("SYNEC_CHECKIN_ENABLED", config.SYNEC_CHECKIN_ENABLED)
     if (!config.SYNEC_CHECKIN_ENABLED) {
       return null
     }
-    console.info("Creating new worker for Synec check-in...")
     return new Worker(
       // @ts-ignore
       new URL("../workers/synec-check-in", import.meta.url)
@@ -87,7 +85,6 @@ const useStatusUpdate = (
     worker?.addEventListener(
       "message",
       (message: MessageEvent) => {
-        console.debug("Received a message from the worker", message.data)
         if (message.data.method === "ready") {
           void postMessageToSynecWorker()
         }
@@ -97,8 +94,6 @@ const useStatusUpdate = (
   }, [config.SYNEC_CHECKIN_WS_PATH, postMessageToSynecWorker, worker])
 
   useEffect(() => {
-    console.info("Initialize worker for Synec check-in...")
-
     worker?.postMessage({
       method: "initialize",
       payload: {
@@ -112,14 +107,12 @@ const useStatusUpdate = (
       return
     }
 
-    console.debug("Set up new interval to Synec...")
     const interval = setInterval(
       postMessageToSynecWorker,
       config.SYNEC_STATUS_UPDATE_INTERVAL_MS
     )
 
     return () => {
-      console.debug("Cleaning up interval...")
       clearInterval(interval)
     }
   }, [

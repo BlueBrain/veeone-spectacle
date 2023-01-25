@@ -74,7 +74,6 @@ const FrameContextProvider: React.FC<FrameContextProviderProps> = ({
 
   const updateAspectRatio = useCallback(
     (aspectRatio: number) => {
-      console.debug("updateAspectRatio", aspectRatio)
       const newWidth = width
       const newHeight = width / aspectRatio
       manipulate({ width: newWidth, height: newHeight })
@@ -91,7 +90,6 @@ const FrameContextProvider: React.FC<FrameContextProviderProps> = ({
   const frameContentData = frame.data
 
   useEffect(() => {
-    console.debug("Frame size is", width, height)
     updateAspectRatio(width / height)
   }, [height, updateAspectRatio, width])
 
@@ -125,7 +123,6 @@ const FrameContextProvider: React.FC<FrameContextProviderProps> = ({
         setMovingAllowed(false)
       },
       preventFullscreen: () => {
-        console.debug("Prevent fullscreen")
         setFullscreenAllowed(false)
       },
       toggleFullscreen: async () => {

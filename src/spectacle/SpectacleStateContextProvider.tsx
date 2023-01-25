@@ -56,9 +56,7 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
 
   useEffect(() => {
     async function connectToVeeDrive() {
-      console.debug("Connecting to VeeDrive...")
       await veeDriveService.connect()
-      console.info("VeeDrive connected.")
     }
     void connectToVeeDrive()
   }, [veeDriveService])
@@ -70,7 +68,6 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
 
   const addThumbnailToRegistry = useCallback(
     (path: string, thumbnail: ThumbnailRegistryItem) => {
-      console.debug("addThumbnailToRegistry called", path, thumbnail)
       setThumbnailRegistry(oldState => ({
         [path]: thumbnail,
         ...oldState,

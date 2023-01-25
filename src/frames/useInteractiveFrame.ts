@@ -95,7 +95,6 @@ export const useInteractiveFrame = ({
         // This triggers fullscreen mode for the selected frame when double tap is performed.
         interactiveNode.on("doubletap", () => {
           if (isFullscreenAllowed && isFullscreenEnabled) {
-            console.debug("Double tap detected - going fullscreen...")
             toggleFullscreen()
           }
         })
@@ -331,7 +330,6 @@ export const useInteractiveFrame = ({
             node.style.height = `${nodeHeight}px`
           },
           onend: () => {
-            console.debug("Dragging ended")
             isFullscreenEnabled = true
             bringToFront()
             manipulate({ left: nodeLeft, top: nodeTop })
