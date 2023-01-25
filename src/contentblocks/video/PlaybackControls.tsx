@@ -121,10 +121,10 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   const [isPlaying, setIsPlaying] = useState(true)
   const [active, setActive] = useState(true)
   const [activeCssDisplay, setActiveCssDisplay] = useState(active)
-  const [autoHideTimeoutId, setAutoHideTimeoutId] = useState(null)
   const { viewMode } = useSpectacle()
   const { sceneId, fullscreenFrame } = useDesk()
   const { activeSceneId } = useScenes()
+  const autoHideTimeoutId = useRef(null)
 
   const isPlaybackAllowed = useMemo(
     () =>
@@ -165,37 +165,26 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 
   // Reset timer that otherwise hides the playback controls
   const restartHidingTimer = useCallback(() => {
-    autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
+    autoHideTimeoutId.current && clearTimeout(autoHideTimeoutId.current)
     const timeoutId = setTimeout(() => {
       setActive(false)
     }, CONTROLS_AUTO_HIDE_AFTER_MS)
-    setAutoHideTimeoutId(timeoutId)
+    autoHideTimeoutId.current = timeoutId
   }, [autoHideTimeoutId])
 
-  // FIXME THIS IS CAUSING PROBLEMS
-  // useEffect(() => {
-  //   if (active) {
-  //     restartHidingTimer()
-  //   }
-  //   return () => {
-  //     autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
-  //   }
-  // }, [])
-
-  // FIXME THIS IS CAUSING PROBLEMS
   // Allow changing active mode from external components within this video context
-  // useEffect(() => {
-  //   const toggleActive = () => {
-  //     setActive(!active)
-  //   }
-  //   onActiveModeToggle(() => toggleActive)
-  //   if (active) {
-  //     restartHidingTimer()
-  //   }
-  //   return () => {
-  //     autoHideTimeoutId && clearTimeout(autoHideTimeoutId)
-  //   }
-  // }, [active, onActiveModeToggle, setActive])
+  useEffect(() => {
+    const toggleActive = () => {
+      setActive(!active)
+    }
+    onActiveModeToggle(() => toggleActive)
+    if (active) {
+      restartHidingTimer()
+    }
+    return () => {
+      autoHideTimeoutId.current && clearTimeout(autoHideTimeoutId.current)
+    }
+  }, [active, onActiveModeToggle, setActive])
 
   // Play/Pause handling
   useEffect(() => {
