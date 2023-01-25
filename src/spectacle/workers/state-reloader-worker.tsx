@@ -81,7 +81,6 @@ class StateReloaderWorker {
   }
 
   private connectToDatabase = async () => {
-    const availableDatabase = await indexedDB.databases()
     this.DBOpenRequest = indexedDB.open(this.dbName, this.DATABASE_VERSION)
     this.DBOpenRequest.onerror = event => {}
 
