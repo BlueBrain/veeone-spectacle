@@ -23,7 +23,7 @@ let defaultConfig: ApplicationConfig = {
   SENTRY_DSN:
     "https://a091d41e9df94ce787371864e96e7301@o224246.ingest.sentry.io/6367583",
   SENTRY_EXCLUDE_ENVIRONMENTS: [RunningEnvironment.DEV],
-  IS_SENTRY_ENABLED: false,
+  IS_SENTRY_ENABLED: true,
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
   LAUNCHER_MENU_SIZE_REM: 22.5,
