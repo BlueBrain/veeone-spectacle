@@ -21,6 +21,7 @@ import { friendlyFormatTime } from "./display"
 import { useSpectacle, ViewMode } from "../../spectacle/SpectacleStateContext"
 import { useDesk } from "../../desk/DeskContext"
 import { useScenes } from "../../scenes/SceneContext"
+import { useFrame } from "../../frames/FrameContext"
 
 const CONTROLS_FADING_TIME_MS = 500
 const CONTROLS_AUTO_HIDE_AFTER_MS = 5000
@@ -125,6 +126,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   const { sceneId, fullscreenFrame } = useDesk()
   const { activeSceneId } = useScenes()
   const autoHideTimeoutId = useRef(null)
+  const { isTopFrame } = useFrame()
 
   const isPlaybackAllowed = useMemo(
     () =>
@@ -266,6 +268,12 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
       timeout && clearTimeout(timeout)
     }
   }, [active])
+
+  useEffect(() => {
+    if (!isTopFrame) {
+      setActive(false)
+    }
+  }, [isTopFrame])
 
   const timelineProgress = useMemo(() => {
     return totalTime ? Math.ceil((100 * currentTime) / totalTime) : 0
