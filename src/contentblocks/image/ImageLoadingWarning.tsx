@@ -1,6 +1,6 @@
 import React from "react"
 import { Box } from "@mui/material"
-import { Warning } from "@mui/icons-material"
+import { WarningRounded } from "@mui/icons-material"
 
 const ImageLoadingWarning: React.FC = () => {
   return (
@@ -20,7 +20,7 @@ const ImageLoadingWarning: React.FC = () => {
         overflow: "hidden",
       }}
     >
-      <Warning sx={{ fontSize: "2rem" }} />
+      <WarningRounded sx={{ fontSize: "2rem" }} />
       <Box sx={{ fontWeight: "bold", textAlign: "center" }}>
         This image
         <br />

@@ -2,6 +2,7 @@ import { Position, Size } from "../common/types"
 import BaseOpener from "./openers/base-opener"
 import ImageOpener from "./openers/image-opener"
 import MovieOpener from "./openers/video-opener"
+import PDFOpener from "./openers/pdf-opener"
 
 type OpenerRegistry = Record<string, typeof BaseOpener>
 
@@ -71,5 +72,7 @@ fileOpenerService.registerOpener(MovieOpener, [
   "webm",
   "mkv",
 ])
+
+fileOpenerService.registerOpener(PDFOpener, ["pdf"])
 
 export default fileOpenerService
