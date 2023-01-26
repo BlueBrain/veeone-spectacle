@@ -2,6 +2,7 @@ import CommunicationAdapterBase from "./base"
 import { JsonRPCRequest, JsonRPCResponse } from "../json-rpc"
 import { delay } from "../../common/asynchronous"
 import { Json } from "../../common/types"
+import JSONRPCError from "../../errors/jsonrpcerror"
 
 export class PendingRequest {
   constructor(
@@ -73,6 +74,12 @@ export default class WebsocketAdapter implements CommunicationAdapterBase {
     if (!pendingRequest) {
       throw new Error(`Request ${response.id} does not exist in the queue.`)
     }
+
+    if (response.error) {
+      pendingRequest.reject(new JSONRPCError(pendingRequest, response))
+      // throw new JSONRPCError(pendingRequest, response)
+    }
+
     pendingRequest.resolve(response.result)
     this.removeFromQueue(pendingRequest)
   }

@@ -194,15 +194,14 @@ export const FileBrowserNavigatorContextProvider: React.FC<FileBrowserNavigatorC
       }
 
       function getInitialFrameSize(path) {
-        const size =
-          path in thumbnailRegistry
-            ? adjustThumbnailToFrameSize(thumbnailRegistry[path].size)
-            : {
-                width: config.DEFAULT_NEW_FRAME_WIDTH,
-                height: config.DEFAULT_NEW_FRAME_HEIGHT,
-              }
-        return size
+        return path in thumbnailRegistry
+          ? adjustThumbnailToFrameSize(thumbnailRegistry[path].size)
+          : {
+              width: config.DEFAULT_NEW_FRAME_WIDTH,
+              height: config.DEFAULT_NEW_FRAME_HEIGHT,
+            }
       }
+
       await fileOpenerService.handleFile(
         filePath,
         referencePosition ?? getNextAvailablePositionForFrame(),
