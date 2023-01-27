@@ -168,10 +168,9 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   // Reset timer that otherwise hides the playback controls
   const restartHidingTimer = useCallback(() => {
     autoHideTimeoutId.current && clearTimeout(autoHideTimeoutId.current)
-    const timeoutId = setTimeout(() => {
+    autoHideTimeoutId.current = setTimeout(() => {
       setActive(false)
     }, CONTROLS_AUTO_HIDE_AFTER_MS)
-    autoHideTimeoutId.current = timeoutId
   }, [autoHideTimeoutId])
 
   // Allow changing active mode from external components within this video context
@@ -186,7 +185,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
     return () => {
       autoHideTimeoutId.current && clearTimeout(autoHideTimeoutId.current)
     }
-  }, [active, onActiveModeToggle, setActive])
+  }, [active, onActiveModeToggle, restartHidingTimer, setActive])
 
   // Play/Pause handling
   useEffect(() => {
