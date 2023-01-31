@@ -84,7 +84,6 @@ const Desk: React.FC = () => {
 
   const closeLauncherMenu = useCallback(
     ({ menuId }: CloseLauncherMenuArgs) => {
-      console.debug("Closing launcher")
       setLauncherMenus(launcherMenus.filter(menu => menu.menuId !== menuId))
     },
     [launcherMenus]
@@ -92,7 +91,6 @@ const Desk: React.FC = () => {
 
   const handleLauncherMenuFullyOpen = useCallback(
     (menuId: LauncherMenuId) => {
-      console.debug("handleLauncherMenuFullyOpen", menuId)
       const newLauncherMenus = [...launcherMenus]
       const targetMenu: LauncherMenuData = _.find(
         newLauncherMenus,
@@ -119,7 +117,6 @@ const Desk: React.FC = () => {
   const handleDeskTap = useCallback(
     event => {
       if (event.target === deskRef.current) {
-        console.debug("handle desk tap")
         deactivateAllFrames()
       }
     },
@@ -130,12 +127,10 @@ const Desk: React.FC = () => {
     event => {
       const position = { left: event.x, top: event.y }
       if (event.target === deskRef.current) {
-        console.debug("Holding...", event)
         if (!isAnyLauncherNearby(position, launcherMenus)) {
           openLauncherMenu(position)
         } else {
           // todo any feedback to the user that the launcher couldn't have been opened?
-          console.debug("Too close to other launcher menus. Not opening.")
         }
       }
     },

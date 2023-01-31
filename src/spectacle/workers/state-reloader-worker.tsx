@@ -23,9 +23,7 @@ class StateReloaderWorker {
   db: IDBDatabase
   isReady = false
 
-  constructor() {
-    console.info("StateReloaderWorker initialized")
-  }
+  constructor() {}
 
   private initialize = async (params: InitializeParams) => {
     if (this.isReady) {
@@ -63,7 +61,6 @@ class StateReloaderWorker {
     }
 
     if (!this.isReady) {
-      console.log("Hold message because not yet initialized")
       setTimeout(() => this.onmessage(message), 100)
       return
     }
@@ -79,23 +76,17 @@ class StateReloaderWorker {
         break
       }
       default: {
-        console.warn("Unhandled method", message.data)
       }
     }
   }
 
   private connectToDatabase = async () => {
-    const availableDatabase = await indexedDB.databases()
-    console.debug("availableDatabase", availableDatabase)
     this.DBOpenRequest = indexedDB.open(this.dbName, this.DATABASE_VERSION)
-    this.DBOpenRequest.onerror = event => {
-      console.error("DBOpenRequest: Something went wrong")
-    }
+    this.DBOpenRequest.onerror = event => {}
 
     this.DBOpenRequest.onsuccess = event => {
       this.db = this.DBOpenRequest.result
       this.isReady = true
-      console.debug("Database initialized.", event, "db=", this.db)
     }
 
     this.DBOpenRequest.onupgradeneeded = (event: IDBVersionChangeEvent) => {
@@ -109,22 +100,17 @@ class StateReloaderWorker {
   private addNewStoreItem = async (params: UpdateStoreParams) => {
     const latestStore = await this.fetchLatestStore()
     if (_.isEqual(params.presentationStore, latestStore)) {
-      console.log("State is equal as the latest one. No update.")
       return
     }
-    console.log("addNewStoreItem", params)
     const transaction = this.db.transaction(
       [StoreName.StateHistory],
       "readwrite"
     )
 
     const objectStore = transaction.objectStore(StoreName.StateHistory)
-    console.log("objectStore", objectStore)
 
     const request = objectStore.add(params.presentationStore, params.timestamp)
-    request.onsuccess = event => {
-      console.log("Entry written successfully", event)
-    }
+    request.onsuccess = event => {}
 
     await this.removeOldStoreStates()
   }
@@ -202,8 +188,6 @@ class StateReloaderWorker {
 
     await this.incrementLatestStoreSenderCounter()
     const retrievalCount = await this.getLatestStoreRetrievalCount()
-
-    console.log("Send latest store to the frontend attempts = ", retrievalCount)
 
     if (retrievalCount <= this.infiniteReloadProtectionMaxAttempts) {
       postMessage({

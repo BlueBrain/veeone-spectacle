@@ -32,7 +32,6 @@ const SceneCarouselItem: React.FC<SceneCarouselItemProps> = ({
     if (viewMode === ViewMode.Desk) {
       return
     }
-    console.debug("setActive", sceneId)
     if (!isActive) {
       setActiveScene({ sceneId })
     } else if (viewMode === ViewMode.SceneOverview) {

@@ -5,6 +5,7 @@ import { ImageKeeperResponse, KeeperImage } from "../../image-keeper/types"
 import { useConfig } from "../../config/AppConfigContext"
 import { useSpectacle } from "../../spectacle/SpectacleStateContext"
 import BlurredImageBackground from "./BlurredImageBackground"
+import ImageLoadingWarning from "./ImageLoadingWarning"
 
 export interface ImageBlockParams {
   path: string
@@ -23,6 +24,7 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   const { requestImage } = useImageKeeper()
   const { path: imagePath } = contentData
   const [keeperImage, setKeeperImage] = useState<KeeperImage>(null)
+  const [isLoadingImage, setIsLoadingImage] = useState<boolean>(false)
   const { LOAD_IMAGES_AS_CSS_BACKGROUND } = useConfig()
 
   const imageKeeperResponse = useMemo<Promise<ImageKeeperResponse>>(
@@ -33,9 +35,11 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   useEffect(() => {
     async function wait() {
       const keeperImage = (await imageKeeperResponse).keeperImage
+      setIsLoadingImage(false)
       // Actually load the image
       setKeeperImage(keeperImage)
     }
+    setIsLoadingImage(true)
     void wait()
   }, [imageKeeperResponse, onImageLoad])
 
@@ -76,12 +80,19 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
     [LOAD_IMAGES_AS_CSS_BACKGROUND, keeperImage]
   )
 
+  const shouldDisplayWarning = useMemo(() => !isLoadingImage && !keeperImage, [
+    isLoadingImage,
+    keeperImage,
+  ])
+
   return (
     <>
       <BlurredImageBackground
         imageUrl={thumbnailRegistry[imagePath]?.objectUrl}
       />
-      {keeperImage ? (
+      {shouldDisplayWarning ? (
+        <ImageLoadingWarning />
+      ) : keeperImage ? (
         imageComponent
       ) : (
         <Grid

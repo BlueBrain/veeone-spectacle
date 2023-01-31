@@ -11,8 +11,11 @@ class ImageKeeperWorker {
   veeDriveService: VeeDriveService
 
   constructor() {
-    console.log("new ImageKeeperWorker")
     this.imageCache = new Map()
+  }
+
+  resetImageCache = () => {
+    this.imageCache.clear()
   }
 
   saveImageInCache = (path: string, objectUrl: string, size: Size) => {
@@ -28,12 +31,10 @@ class ImageKeeperWorker {
   }
 
   onmessage = (message: MessageEvent) => {
-    console.debug("Message received in webworker...", message)
     const actionName = message.data.action
     if (actionName && Object.keys(this.messageHandlers).includes(actionName)) {
       this.messageHandlers[message.data.action](message.data.params)
     } else {
-      console.error(`Action ${actionName} is not handled by the worker.`)
     }
   }
 
@@ -41,15 +42,12 @@ class ImageKeeperWorker {
     if (this.isReady) {
       return
     }
-    console.debug("Initializing worker...")
     this.veeDriveService = new VeeDriveService(wsPath)
-    console.debug("veedrive service created", veeDriveService)
     this.isReady = true
   }
 
   fetchNewBlob = async path => {
     const response = await this.veeDriveService.requestFile({ path })
-    console.debug("Got response from worker VeeDrive", response)
     const { url } = response
     const fileResponse = await fetch(url, {})
     return await fileResponse.blob()
@@ -81,6 +79,7 @@ class ImageKeeperWorker {
   messageHandlers = {
     init: this.handleInit,
     requestImage: this.handleRequestImage,
+    clearImageCache: this.resetImageCache,
   }
 }
 

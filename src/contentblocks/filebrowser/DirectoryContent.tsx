@@ -28,9 +28,6 @@ const DirectoryContent: React.FC<DirectoryContentProps> = ({
   const scrollableContentRef = useRef(null)
 
   const closeAnyKeyboards = useCallback(() => {
-    console.debug(
-      `Hide keyboard from tapping on directory contents: ${frameId}`
-    )
     const keyboardIdToClose = `search-files-${frameId}`
     closeKeyboardById(keyboardIdToClose)
   }, [closeKeyboardById, frameId])

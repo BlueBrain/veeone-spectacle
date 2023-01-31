@@ -1,10 +1,11 @@
 import { Button, Grid } from "@mui/material"
-import React, { useCallback, useMemo, useRef } from "react"
+import React, { useCallback, useMemo, useRef, useState } from "react"
 import { OverridableStringUnion } from "@mui/types"
 import { ButtonPropsColorOverrides } from "@mui/material/Button/Button"
 import { useCurrentKeyboard } from "./CurrentKeyboardContext"
 import KeyboardModeKey from "./keyboard-mode-key"
 import useInteractable from "../interactable/useInteractable"
+import { useConfig } from "../config/AppConfigContext"
 
 interface KeyboardKeyProps {
   label: string | React.ComponentElement<any, any>
@@ -35,6 +36,7 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
 }) => {
   const ref = useRef()
   const keyboard = useCurrentKeyboard()
+  const config = useConfig()
 
   const value: string = useMemo(
     () =>
@@ -47,7 +49,6 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
   )
 
   const triggerButton = useCallback(() => {
-    console.debug("key pressed")
     keyboard.onButtonPressed({
       buttonValue: value,
       mode,
@@ -58,21 +59,45 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
     ...(color ? { color } : {}),
   }
 
+  const [triggeringInterval, setTriggeringInterval] = useState(null)
+
+  const startTriggering = useCallback(() => {
+    const timeout = setInterval(
+      triggerButton,
+      config.VISUAL_KEYBOARD_REPEAT_INTERVAL_MS
+    )
+    setTriggeringInterval(timeout)
+  }, [triggerButton])
+
+  const stopTriggering = useCallback(() => {
+    if (triggeringInterval !== null) {
+      clearInterval(triggeringInterval)
+      setTriggeringInterval(null)
+    }
+  }, [triggeringInterval])
+
   const onHoldHandler = useCallback(() => {
-    console.debug("Holding button...")
+    startTriggering()
     if (typeof onHold === "function") {
       onHold()
     }
-  }, [onHold])
+  }, [onHold, startTriggering])
 
-  useInteractable(ref, { onHold: onHoldHandler })
+  const onPointerUpHandler = useCallback(() => {
+    stopTriggering()
+  }, [stopTriggering])
+
+  useInteractable(ref, {
+    onHold: onHoldHandler,
+    onPointerUp: onPointerUpHandler,
+    onTap: triggerButton,
+  })
 
   return (
     <Grid item sx={{ display: `flex`, flexGrow: grow, padding: `0 0.1rem` }}>
       {/* @ts-ignore */}
       <Button
         ref={ref}
-        onClick={triggerButton}
         variant={"contained"}
         {...optionalProps}
         sx={{

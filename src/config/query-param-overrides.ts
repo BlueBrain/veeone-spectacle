@@ -14,12 +14,7 @@ class QueryParamOverrideService {
       confParamValue = queryParams.get("conf")
       try {
         paramsObject = JSON.parse(confParamValue)
-      } catch (e) {
-        console.error(
-          "Error in parsing query params config. Validate this JSON:",
-          confParamValue
-        )
-      }
+      } catch (e) {}
     }
     return paramsObject
   }

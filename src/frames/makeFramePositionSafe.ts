@@ -5,7 +5,6 @@ export const makeFramePositionSafe = (
   size: Size,
   viewPortSize: Size
 ): Position => {
-  console.debug("makeFramePositionSafe", position, size)
   const halfWidth = size.width / 2
   const halfHeight = size.height / 2
   const leftDistance = position.left - halfWidth

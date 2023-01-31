@@ -33,7 +33,7 @@ const VideoBlock: React.FC = () => {
         }
       })
     }
-  }, [setFullscreenParamsProvider, videoRef.current])
+  }, [setFullscreenParamsProvider])
 
   return (
     <Grow in={true}>

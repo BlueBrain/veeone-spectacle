@@ -6,7 +6,6 @@ const getCurrentRevision = () => {
   // Revision hash comes from an environment variable (CI)
   const envRevision = process.env.CI_COMMIT_SHORT_SHA
   if (envRevision) {
-    console.log(`Retrieving revision from CI_COMMIT_SHORT_SHA = ${envRevision}`)
     return envRevision
   }
   // Get revision hash from Git commit
@@ -25,9 +24,6 @@ const plugin = env => {
 
   require("dotenv").config({ path: dotEnvFilePath })
 
-  console.log(`Frontend Env Variables Plugin`)
-  console.log(`.env path = "${dotEnvFilePath}"`)
-
   // Add additional variables
   frontendEnvVariables.SPECTACLE_VERSION = getPackageVersion()
   frontendEnvVariables.SPECTACLE_REVISION = getCurrentRevision()
@@ -39,7 +35,6 @@ const plugin = env => {
   })
 
   const envVariables = JSON.stringify(frontendEnvVariables)
-  console.log(`ENV_VARIABLES = ${envVariables}`)
 
   return new webpack.DefinePlugin({
     ENV_VARIABLES: envVariables,

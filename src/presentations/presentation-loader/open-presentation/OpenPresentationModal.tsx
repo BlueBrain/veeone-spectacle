@@ -17,7 +17,9 @@ import React, {
   useMemo,
   useState,
 } from "react"
-import SpectacleStateContext from "../../../spectacle/SpectacleStateContext"
+import SpectacleStateContext, {
+  useSpectacle,
+} from "../../../spectacle/SpectacleStateContext"
 import { PresentationLoaderDetails } from "./PresentationLoaderDetails"
 import { SlideshowRounded } from "@mui/icons-material"
 import { useDialogs } from "../../../dialogs/DialogsContext"
@@ -27,9 +29,7 @@ import PresentationFolderList from "../save-as/PresentationFolderList"
 
 const OpenPresentationModal: React.FC = () => {
   const { dialogOptions, resolveDialog, cancelDialog } = useActiveDialog()
-  const { veeDriveService, isPresentationClean } = useContext(
-    SpectacleStateContext
-  )
+  const { veeDriveService, isPresentationClean } = useSpectacle()
   const dialogs = useDialogs()
   const [isLoading, setIsLoading] = useState(false)
   const [presentationList, setPresentationList] = useState([])
@@ -65,7 +65,6 @@ const OpenPresentationModal: React.FC = () => {
         position: dialogOptions.position,
         maxWidth: "xs",
       })
-      console.debug("NEW PRESENTATION RESULT", result)
     }
     openPresentation(selectedPresentationId)
   }, [

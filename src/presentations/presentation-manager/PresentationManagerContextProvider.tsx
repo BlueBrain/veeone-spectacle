@@ -49,7 +49,6 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
         storeToSave.id = generateRandomPresentationId()
       }
 
-      console.debug("Saving presentation...", JSON.stringify(storeToSave))
       savePresentationStore(storeToSave)
       await veeDriveService.savePresentation(storeToSave)
 
@@ -130,7 +129,6 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
           position,
           maxWidth: "xs",
         })
-        console.debug("NEW PRESENTATION RESULT", result)
       }
       const freshPresentation = getFreshPresentation({ config })
       loadPresentationStore(freshPresentation)

@@ -12,6 +12,13 @@ const sanitizeLocationUrl = (value: string) => {
     }
   }
 
+  try {
+    url = new URL(urlString)
+    urlString = url.href
+  } catch (error) {
+    urlString = "https://epfl.ch"
+  }
+
   return urlString
 }
 

@@ -68,7 +68,6 @@ export const FileBrowserSearchContextProvider: React.FC = ({ children }) => {
         directories: [],
       })
       setIsSearchingInProgress(true)
-      console.debug(`Starting new search for "${newQuery}"`)
       for await (const result of newFilesystemSearch(
         newQuery,
         veeDriveService
@@ -81,7 +80,6 @@ export const FileBrowserSearchContextProvider: React.FC = ({ children }) => {
         await delay(SEARCH_RESULTS_FETCH_INTERVAL_MS)
       }
       setIsSearchingInProgress(false)
-      console.debug("Finished searching process")
     },
     [veeDriveService]
   )
@@ -100,7 +98,6 @@ export const FileBrowserSearchContextProvider: React.FC = ({ children }) => {
     const stopper = {
       stopped: false,
       stop: function () {
-        console.debug("Stop fetching results")
         this.stopped = true
       },
     }
