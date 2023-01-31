@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1
+
+2023-01-31
+
+- PDF support
+- Improve url string handling in the location bar (embedded websites)
+- Improve visual keyboard experience
+- Minor fixes
+
 ## 1.0
 
 2022-09-06
