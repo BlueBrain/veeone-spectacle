@@ -1,16 +1,17 @@
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useEffect, useMemo } from "react"
 import ImageKeeperContext, {
   ImageKeeperContextProps,
 } from "./ImageKeeperContext"
 import { useConfig } from "../config/AppConfigContext"
 import { generateRandomId } from "../common/random"
 import { ImageKeeperResponse } from "./types"
+import { useSpectacle } from "../spectacle/SpectacleStateContext"
 
 const ImageKeeperContextProvider: React.FC = ({ children }) => {
   const config = useConfig()
+  const { presentationStore } = useSpectacle()
 
   const globalImageWorker = useMemo(() => {
-    console.log("create new globalImageWorker instance")
     return new Worker(
       new URL(
         "./workers/image-keeper-worker",
@@ -36,13 +37,10 @@ const ImageKeeperContextProvider: React.FC = ({ children }) => {
 
   const requestImage = useCallback(
     (path: string): Promise<ImageKeeperResponse> => {
-      console.log("Request new image", path)
       return new Promise(resolve => {
         const imageId = generateRandomId()
         const handleImageRequest = message => {
-          console.debug("Received message in ContextProvider", message)
           if (message.data.imageId === imageId) {
-            console.debug("Received image blob!", imageId)
             imageWorker.removeEventListener("message", handleImageRequest)
             resolve(message.data as ImageKeeperResponse)
           }
@@ -73,6 +71,13 @@ const ImageKeeperContextProvider: React.FC = ({ children }) => {
     }),
     [requestImage]
   )
+
+  useEffect(() => {
+    // Reset image cache when presentation changes (id)
+    imageWorker.postMessage({
+      action: "clearImageCache",
+    })
+  }, [presentationStore.createdAt])
 
   return (
     <ImageKeeperContext.Provider value={providerValue}>

@@ -11,7 +11,6 @@ const WebsiteBlockContent: React.FC = () => {
   const { websiteUrl, isInteractiveModeOn } = useWebsiteBlock()
   const { isTopFrame } = useFrame()
   const navBarRef = useRef()
-  console.debug("WebsiteBlockContent render", websiteUrl)
 
   const navBarTransform = useMemo(
     () =>

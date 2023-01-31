@@ -17,6 +17,7 @@ export interface ApplicationConfig {
   VERSION: string
   REVISION: string
   VEEDRIVE_WS_PATH: string
+  VEEDRIVE_HEALTH_CHECK_WS_PATH: string
   FILE_BROWSER_WIDTH: number
   FILE_BROWSER_HEIGHT: number
   FILE_BROWSER_OPEN_MEDIA_OFFSET: number
@@ -43,6 +44,7 @@ export interface ApplicationConfig {
   LAUNCHER_MENU_SIZE_REM: number
   SENTRY_DSN: string
   SENTRY_EXCLUDE_ENVIRONMENTS: RunningEnvironment[]
+  IS_SENTRY_ENABLED: boolean
   RUNNING_ENVIRONMENT: RunningEnvironment
   IMAGE_KEEPER_AS_SINGLE_WORKER: boolean
   LOAD_IMAGES_AS_CSS_BACKGROUND: boolean
@@ -65,4 +67,5 @@ export interface ApplicationConfig {
   INFINITE_RELOAD_PROTECTION_PERIOD_SECONDS: number
   INFINITE_RELOAD_PROTECTION_MAX_ATTEMPTS: number
   STATE_STORE_INDEXEDDB_NAME: string
+  VISUAL_KEYBOARD_REPEAT_INTERVAL_MS: number
 }

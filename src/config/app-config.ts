@@ -12,9 +12,7 @@ let clientId = `CLIENTID_${Math.round(Math.random() * 10000)}`
 
 try {
   clientId = crypto.randomUUID()
-} catch (e) {
-  console.warn("crypto library is not available")
-}
+} catch (e) {}
 
 let defaultConfig: ApplicationConfig = {
   CLIENT_ID: clientId,
@@ -25,6 +23,7 @@ let defaultConfig: ApplicationConfig = {
   SENTRY_DSN:
     "https://a091d41e9df94ce787371864e96e7301@o224246.ingest.sentry.io/6367583",
   SENTRY_EXCLUDE_ENVIRONMENTS: [RunningEnvironment.DEV],
+  IS_SENTRY_ENABLED: true,
   VIEWPORT_WIDTH: viewportWidth,
   VIEWPORT_HEIGHT: viewportHeight,
   LAUNCHER_MENU_SIZE_REM: 22.5,
@@ -33,6 +32,9 @@ let defaultConfig: ApplicationConfig = {
   VEEDRIVE_WS_PATH:
     ENV_VARIABLES.SPECTACLE_VEEDRIVE_WS_PATH ??
     "wss://bbpcd013.bbp.epfl.ch:8080/ws",
+  VEEDRIVE_HEALTH_CHECK_WS_PATH:
+    ENV_VARIABLES.SPECTACLE_VEEDRIVE_HEALTH_CHECK_WS_PATH ??
+    "wss://bbpcd013.bbp.epfl.ch:8080/healthcheck",
   BASE_FONT_SIZE: 16,
   DIALOG_SAFETY_MARGIN_HORIZONTAL_PX: 10,
   DIALOG_SAFETY_MARGIN_VERTICAL_PX: 20,
@@ -94,6 +96,9 @@ let defaultConfig: ApplicationConfig = {
 
   // Name of the IndexedDB database that app uses to store i.a. state changes
   STATE_STORE_INDEXEDDB_NAME: "spectacle",
+
+  // Visual keyboard
+  VISUAL_KEYBOARD_REPEAT_INTERVAL_MS: 50,
 }
 
 defaultConfig = {

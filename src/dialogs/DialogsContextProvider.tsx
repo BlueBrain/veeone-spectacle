@@ -40,7 +40,6 @@ const DialogsContextProvider: React.FC<DialogsContextProviderProps> = ({
   )
 
   const closeDialog = dialogId => {
-    console.debug("Closing dialog...", dialogId)
     setActiveDialogs(currentValue => {
       return currentValue.filter(value => value.key !== dialogId)
     })

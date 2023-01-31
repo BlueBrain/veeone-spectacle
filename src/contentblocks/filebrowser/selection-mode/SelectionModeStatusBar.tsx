@@ -20,17 +20,12 @@ const SelectionModeStatusBar: React.FC = () => {
   const { filteredFiles } = useFileBrowserFilter()
 
   const openSelectedFiles = () => {
-    console.debug("openSelectedFiles", selectedFiles)
     requestMultipleFiles(selectedFiles)
     setSelectedFiles([])
     setIsSelectionModeEnabled(false)
   }
 
   const selectAllFiles = () => {
-    console.debug(
-      "SELECT ALL FILES",
-      filteredFiles.map(value => value.path)
-    )
     const newFiles = [
       ...selectedFiles,
       ...filteredFiles.map(value => value.path),

@@ -51,7 +51,6 @@ const usePresentationStateManager = ({
   )
 
   const worker = useMemo(() => {
-    console.info("Creating new worker for Spectacle state...")
     const newWorker = new Worker(
       new URL(
         `../workers/state-reloader-worker`,
@@ -79,16 +78,11 @@ const usePresentationStateManager = ({
     switch (message.data.method) {
       case WorkerToSpectacleMethod.ProvideLatestStore: {
         if (message.data.params.presentationStore) {
-          console.log(
-            "Received latest store.. restoring....",
-            message.data.params
-          )
           loadPresentationStore(message.data.params.presentationStore)
         }
         break
       }
       default: {
-        console.warn("Unhandled message", message)
       }
     }
   }, [])

@@ -16,14 +16,21 @@ interface CurrentKeyboardContextProviderProps {
   onDone(result: VisualKeyboardOnDoneArgs): void
 }
 
+interface KeyboardState {
+  text: string
+  caret: number
+}
+
 const CurrentKeyboardContextProvider: React.FC<CurrentKeyboardContextProviderProps> = ({
   children,
   visualKeyboardInstance,
   onDone,
 }) => {
   const { closeKeyboardById } = useVisualKeyboard()
-  const [value, setValue] = useState<string>(visualKeyboardInstance.initial)
-  const [caretPosition, setCaretPosition] = useState(0)
+  const [keyboardState, setKeyboardState] = useState<KeyboardState>({
+    text: visualKeyboardInstance.initial,
+    caret: visualKeyboardInstance.initial.length,
+  })
   const [uppercaseModeLocked, setUppercaseModeLocked] = useState(false)
   const [keyboardLayoutMode, setKeyboardLayoutMode] = useState(
     KeyboardLayoutMode.NORMAL
@@ -41,33 +48,38 @@ const CurrentKeyboardContextProvider: React.FC<CurrentKeyboardContextProviderPro
 
       switch (mode) {
         case KeyboardModeKey.NORMAL: {
-          const resultText =
-            value.substring(0, caretPosition) +
-            buttonValue +
-            value.substring(caretPosition)
-          setCaretPosition(caretPosition + buttonValue.length)
-          setValue(resultText)
-
-          if (
-            !uppercaseModeLocked &&
-            keyboardLayoutMode === KeyboardLayoutMode.UPPERCASE
-          ) {
-            setKeyboardLayoutMode(KeyboardLayoutMode.NORMAL)
-          }
-
+          setKeyboardState((prevState: KeyboardState) => {
+            const textBefore = prevState.text.substring(0, prevState.caret)
+            const textAfter = prevState.text.substring(prevState.caret)
+            const newText = textBefore + buttonValue + textAfter
+            if (
+              !uppercaseModeLocked &&
+              keyboardLayoutMode === KeyboardLayoutMode.UPPERCASE
+            ) {
+              setKeyboardLayoutMode(KeyboardLayoutMode.NORMAL)
+            }
+            return {
+              text: newText,
+              caret: prevState.caret + buttonValue.length,
+            }
+          })
           break
         }
         case KeyboardModeKey.BACKSPACE: {
-          const resultText =
-            value.substring(0, caretPosition - 1) +
-            value.substring(caretPosition)
-          setCaretPosition(caretPosition > 1 ? caretPosition - 1 : 0)
-          setValue(resultText)
+          setKeyboardState((prevState: KeyboardState) => {
+            const newText =
+              prevState.text.substring(0, prevState.caret - 1) +
+              prevState.text.substring(prevState.caret)
+            return {
+              text: newText,
+              caret: prevState.caret > 1 ? prevState.caret - 1 : 0,
+            }
+          })
+
           break
         }
         case KeyboardModeKey.CLEAR_ALL: {
-          setCaretPosition(0)
-          setValue("")
+          setKeyboardState({ text: "", caret: 0 })
           break
         }
         case KeyboardModeKey.SHIFT: {
@@ -87,7 +99,7 @@ const CurrentKeyboardContextProvider: React.FC<CurrentKeyboardContextProviderPro
           break
         }
         case KeyboardModeKey.DONE: {
-          onDone({ visualKeyboardInstance, value })
+          onDone({ visualKeyboardInstance, value: keyboardState.text })
           break
         }
         case KeyboardModeKey.CANCEL: {
@@ -96,12 +108,11 @@ const CurrentKeyboardContextProvider: React.FC<CurrentKeyboardContextProviderPro
       }
     },
     [
-      caretPosition,
+      keyboardState,
       closeKeyboard,
       keyboardLayoutMode,
       onDone,
       uppercaseModeLocked,
-      value,
       visualKeyboardInstance,
     ]
   )
@@ -109,7 +120,10 @@ const CurrentKeyboardContextProvider: React.FC<CurrentKeyboardContextProviderPro
   useEffect(() => {
     const boundEvents = ["click", "focus", "keydown", "keyup"]
     const updateCaretPosition = () => {
-      setCaretPosition(target.selectionStart)
+      setKeyboardState((prevState: KeyboardState) => ({
+        text: prevState.text,
+        caret: target.selectionStart,
+      }))
     }
 
     boundEvents.forEach(eventName =>
@@ -124,10 +138,13 @@ const CurrentKeyboardContextProvider: React.FC<CurrentKeyboardContextProviderPro
   }, [target])
 
   const triggerInputValueChange = useCallback(() => {
-    if (target.value !== value) {
-      setValue(target.value)
+    if (target.value !== keyboardState.text) {
+      setKeyboardState((prevState: KeyboardState) => ({
+        text: target.value,
+        caret: prevState.caret,
+      }))
     }
-  }, [target.value, value])
+  }, [target.value, keyboardState.text])
 
   const limitedInputValueChanger = useMemo(
     () => debounce(triggerInputValueChange, 500),
@@ -143,19 +160,19 @@ const CurrentKeyboardContextProvider: React.FC<CurrentKeyboardContextProviderPro
   }, [limitedInputValueChanger, target])
 
   useEffect(() => {
-    visualKeyboardInstance.onInputChange(value)
-  }, [value, visualKeyboardInstance])
+    visualKeyboardInstance.onInputChange(keyboardState.text)
+  }, [keyboardState.text, visualKeyboardInstance])
 
   const providerValue: CurrentKeyboardContextProps = useMemo<CurrentKeyboardContextProps>(
     () => ({
-      value,
+      value: keyboardState.text,
       onButtonPressed,
       keyboardLayoutMode,
       uppercaseModeLocked,
       visualKeyboardInstance,
     }),
     [
-      value,
+      keyboardState.text,
       keyboardLayoutMode,
       onButtonPressed,
       uppercaseModeLocked,

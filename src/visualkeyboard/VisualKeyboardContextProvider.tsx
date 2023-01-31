@@ -45,7 +45,6 @@ const VisualKeyboardContextProvider: React.FC = ({ children }) => {
   )
 
   const closeKeyboardByTarget = useCallback((target: HTMLElement) => {
-    console.debug("closeKeyboardByTarget")
     setKeyboards(currentKeyboards =>
       currentKeyboards.filter(k => k.target !== target)
     )

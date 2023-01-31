@@ -54,7 +54,6 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
   useEffect(() => {
     async function loadFromVeeDrive() {
       const response = await veeDriveService.requestFile({ path: path })
-      console.debug("VideoBlock path=", response.url)
       setVideoSource(response.url)
     }
     void loadFromVeeDrive()
@@ -85,13 +84,14 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
     },
     // `videoRef.current` is used instead of `videoRef` because otherwise
     // the current time is not passed correctly
-    [videoRef.current, startAt]
+    [startAt, videoRef]
   )
 
   return (
     <>
       {videoSource ? (
-        <video
+        <Box
+          component={"video"}
           width={"100%"}
           height={"100%"}
           autoPlay={true}
@@ -103,7 +103,7 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
           disablePictureInPicture
         >
           <source src={videoSource} />
-        </video>
+        </Box>
       ) : (
         <Grid
           container

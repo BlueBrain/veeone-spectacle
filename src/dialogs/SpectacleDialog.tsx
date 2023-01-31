@@ -20,13 +20,10 @@ const PaperComponent: React.FC<PaperProps> = props => {
     const modalRect = modalRef.getBoundingClientRect()
     const deskRect = modalRef.offsetParent.getBoundingClientRect()
 
-    console.debug("PARENT DESK", deskRect)
-
     const leftEdge = modalRef.offsetLeft - modalRef.offsetWidth / 2
     const rightEdge = deskRect.width - modalRect.width - leftEdge
     const topEdge = modalRef.offsetTop - modalRef.offsetHeight / 2
     const bottomEdge = deskRect.height - modalRect.height - topEdge
-    console.debug("BOX CHECK", { leftEdge, topEdge, rightEdge, bottomEdge })
 
     let transform = `translate(-50%, -50%) `
 

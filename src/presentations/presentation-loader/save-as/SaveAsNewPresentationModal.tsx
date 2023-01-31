@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   DialogActions,
   DialogContent,
@@ -6,7 +7,7 @@ import {
   Grid,
   TextField,
 } from "@mui/material"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useSpectacle } from "../../../spectacle/SpectacleStateContext"
 import { generateRandomPresentationId } from "../../utils"
 import PresentationFolderList from "./PresentationFolderList"
@@ -23,12 +24,13 @@ const SaveAsNewPresentationModal: React.FC = () => {
   const keyboardId = "savePresentationName"
   const { resolveDialog, cancelDialog } = useActiveDialog()
   const presentationNameFieldRef = useRef()
-  const { presentationStore } = useSpectacle()
+  const { presentationStore, veeDriveService } = useSpectacle()
   const { openKeyboard, closeKeyboardById } = useVisualKeyboard()
   const [presentationName, setPresentationName] = useState(
     presentationStore.name !== "Untitled" ? presentationStore.name : ""
   )
   const [folderName, setFolderName] = useState(null)
+  const [isNameAvailable, setIsNameAvailable] = useState<boolean | null>(null)
 
   const showVisualKeyboard = useCallback(
     (target, initialValue: string) => {
@@ -42,25 +44,68 @@ const SaveAsNewPresentationModal: React.FC = () => {
     [openKeyboard]
   )
 
+  const checkPresentationNameExistsInFolder = useCallback(async (): Promise<boolean> => {
+    const response = await veeDriveService.listPresentations(folderName)
+    const existingNames = response.results.map(value => value.name)
+    return existingNames.includes(presentationName)
+  }, [folderName, presentationName, veeDriveService])
+
   useEffect(() => {
     return () => {
       closeKeyboardById(keyboardId)
     }
   }, [closeKeyboardById])
 
-  const handleSaveClick = async () => {
+  const handleSaveClick = useCallback(async () => {
     const presentationId = generateRandomPresentationId()
-    resolveDialog({
-      presentationId,
-      presentationName,
-      folderName,
-    } as SaveAsNewPresentationModalResponse)
-  }
+    const nameExists = await checkPresentationNameExistsInFolder()
+    if (!nameExists) {
+      resolveDialog({
+        presentationId,
+        presentationName,
+        folderName,
+      } as SaveAsNewPresentationModalResponse)
+    }
+  }, [
+    checkPresentationNameExistsInFolder,
+    folderName,
+    presentationName,
+    resolveDialog,
+  ])
 
   const handleTextInputChange = event => {
     const value = event.target.value
     setPresentationName(value)
   }
+
+  useEffect(() => {
+    async function checkAvailability() {
+      const nameExists = await checkPresentationNameExistsInFolder()
+      setIsNameAvailable(!nameExists)
+    }
+    void checkAvailability()
+  }, [
+    veeDriveService,
+    folderName,
+    presentationName,
+    checkPresentationNameExistsInFolder,
+  ])
+
+  const dialogButtons = useMemo(
+    () => (
+      <>
+        <Button onClick={cancelDialog}>Cancel</Button>
+        <Button
+          onClick={handleSaveClick}
+          variant={"contained"}
+          disabled={!isNameAvailable || !presentationName}
+        >
+          Save
+        </Button>
+      </>
+    ),
+    [cancelDialog, handleSaveClick, isNameAvailable, presentationName]
+  )
 
   return (
     <>
@@ -76,6 +121,7 @@ const SaveAsNewPresentationModal: React.FC = () => {
           <Grid item xs md={8} sx={{ padding: `.5rem 0 15rem 0` }}>
             <TextField
               inputRef={presentationNameFieldRef}
+              error={!isNameAvailable}
               type={"text"}
               variant={"outlined"}
               label={"Name of your presentation"}
@@ -91,10 +137,16 @@ const SaveAsNewPresentationModal: React.FC = () => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={cancelDialog}>Cancel</Button>
-        <Button onClick={handleSaveClick} variant={"contained"}>
-          Save
-        </Button>
+        {!isNameAvailable ? (
+          <Alert severity={"error"}>
+            Presentation named `{presentationName}` already exists in `
+            {folderName}.
+          </Alert>
+        ) : null}
+        {!presentationName ? (
+          <Alert severity={"error"}>Presentation name cannot be empty.</Alert>
+        ) : null}
+        {dialogButtons}
       </DialogActions>
     </>
   )

@@ -16,18 +16,15 @@ const PieMenu: React.FC<PieMenuProps> = () => {
     const newMenuData = { ...menuData }
 
     if (!menuItem.isEnabled) {
-      console.warn("This menu item is disabled")
       return
     }
 
     if (newMenuData.items[index]?.children?.length > 0) {
       newMenuData.items[index].isOpen = !newMenuData.items[index].isOpen
-      console.debug("Tapped", newMenuData.items[index].isOpen, index, menuItem)
       setMenuData(newMenuData)
     } else if (menuData.items[index].action) {
       menuData.items[index].action()
     } else {
-      console.warn("Menu item action is not defined")
     }
   }
 
