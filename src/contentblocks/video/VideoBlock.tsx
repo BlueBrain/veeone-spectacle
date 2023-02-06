@@ -24,16 +24,20 @@ const VideoBlock: React.FC = () => {
   )
 
   // Set what happens if this frame goes fullscreen (we need to pass the timeline to synchronize)
-  useEffect(() => {
-    const currentVideoRef = videoRef.current
-    if (currentVideoRef) {
-      setFullscreenParamsProvider(() => () => {
-        return {
-          videoRef: currentVideoRef,
-        }
-      })
-    }
-  }, [setFullscreenParamsProvider])
+  useEffect(
+    () => {
+      const currentVideoRef = videoRef.current
+      if (currentVideoRef) {
+        setFullscreenParamsProvider(() => () => {
+          return {
+            videoRef: currentVideoRef,
+          }
+        })
+      }
+    },
+    // We must depend on `videoRef.current` here - don't remove it despite ESLint remarks!
+    [setFullscreenParamsProvider, videoRef.current]
+  )
 
   return (
     <Grow in={true}>
