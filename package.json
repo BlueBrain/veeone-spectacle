@@ -2,7 +2,7 @@
   "name": "spectacle",
   "private": true,
   "description": "",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "author": "Blue Brain Project",
   "dependencies": {
     "@emotion/react": "^11.6.0",
