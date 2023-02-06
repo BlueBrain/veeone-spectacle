@@ -84,7 +84,7 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
     },
     // `videoRef.current` is used instead of `videoRef` because otherwise
     // the current time is not passed correctly
-    [startAt, videoRef]
+    [startAt, videoRef.current]
   )
 
   return (

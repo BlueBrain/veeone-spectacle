@@ -126,7 +126,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   const { sceneId, fullscreenFrame } = useDesk()
   const { activeSceneId } = useScenes()
   const autoHideTimeoutId = useRef(null)
-  const { isTopFrame } = useFrame()
+  const frameAttrs = useFrame()
 
   const isPlaybackAllowed = useMemo(
     () =>
@@ -269,10 +269,10 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   }, [active])
 
   useEffect(() => {
-    if (!isTopFrame) {
+    if (frameAttrs && frameAttrs.isTopFrame) {
       setActive(false)
     }
-  }, [isTopFrame])
+  }, [frameAttrs])
 
   const timelineProgress = useMemo(() => {
     return totalTime ? Math.ceil((100 * currentTime) / totalTime) : 0
