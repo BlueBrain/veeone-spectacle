@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+2023-02-06
+
+- Fix for movies playing in the fullscreen mode
+
 ## 1.1
 
 2023-01-31

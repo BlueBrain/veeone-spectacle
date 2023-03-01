@@ -4,6 +4,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const EnvironmentVariablesPlugin = require("./webpack/plugins/environment-variables-plugin")
+const SentryWebpackPlugin = require("@sentry/webpack-plugin")
+const _ = require("lodash")
 
 module.exports = (env, argv) => {
   let smp
@@ -20,7 +22,7 @@ module.exports = (env, argv) => {
       type: "memory",
     },
     output: {
-      filename: "bundle.[contenthash].js",
+      filename: "spectacle-[name]-[contenthash].dist.js",
       path: path.resolve(__dirname, "dist/"),
     },
     entry: [path.join(__dirname, "src", "index.tsx")],
@@ -30,8 +32,17 @@ module.exports = (env, argv) => {
       port: 8000,
       proxy: {},
     },
+    devtool: "source-map",
     plugins: [
       EnvironmentVariablesPlugin(env),
+      new SentryWebpackPlugin({
+        org: "blue-brain-project",
+        project: "spectacle",
+        include: "./dist",
+        authToken:
+          "93371630b52945e994737be35f7f661059b2ddf418bd4794a33bee4e0a23cadc",
+        release: _.get(env, "SPECTACLE_REVISION", "unknown-release"),
+      }),
       new CleanWebpackPlugin({
         // We don't want to remove the "index.html" file
         // after the incremental build triggered by watch.
@@ -56,17 +67,17 @@ module.exports = (env, argv) => {
       }),
     ],
     optimization: {
-      // minimize: true,
+      minimize: true,
       // runtimeChunk: "single",
-      // splitChunks: {
-      //   cacheGroups: {
-      //     vendor: {
-      //       test: /[\\/]node_modules[\\/]/,
-      //       name: "libs",
-      //       chunks: "all",
-      //     },
-      //   },
-      // },
+      splitChunks: {
+        cacheGroups: {
+          commons: {
+            test: /[\\/]node_modules[\\/]/,
+            filename: "[name].bundle.js",
+            chunks: "all",
+          },
+        },
+      },
       // Prevent "libs.[contenthash].js" from changing its hash if not needed.
       moduleIds: "deterministic",
     },

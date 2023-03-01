@@ -19,12 +19,13 @@ config.RUNNING_ENVIRONMENT=${config.RUNNING_ENVIRONMENT}`
     return
   }
 
+  console.info("Sentry initialization...")
   Sentry.init({
     dsn: config.SENTRY_DSN,
     integrations: [new BrowserTracing()],
     tracesSampleRate: 1.0,
     environment: config.RUNNING_ENVIRONMENT,
-    release: config.VERSION,
+    release: config.REVISION,
   })
 }
 

@@ -12,6 +12,7 @@ import { getFreshPresentation } from "../presentations/fresh-presentation"
 import { resizePresentationStore } from "../presentations/resizing"
 import usePresentationStateManager from "./hooks/use-presentation-state-manager"
 import useFrameManager from "./hooks/use-frame-manager"
+import * as Sentry from "@sentry/browser"
 
 interface SpectacleContextProviderProps {}
 
@@ -66,6 +67,10 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
     ViewMode.Desk
   )
 
+  const [browserOfflineSince, setBrowserOfflineSince] = useState<number | null>(
+    null
+  )
+
   const addThumbnailToRegistry = useCallback(
     (path: string, thumbnail: ThumbnailRegistryItem) => {
       setThumbnailRegistry(oldState => ({
@@ -113,10 +118,41 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
     presentationStore.name,
   ])
 
+  useEffect(() => {
+    function handleGoingOffline() {
+      setBrowserOfflineSince(Date.now())
+    }
+
+    function handleGoingOnline() {
+      const now = new Date()
+      const nowTimestamp = Date.now()
+      const wasOfflineForSeconds = (nowTimestamp - browserOfflineSince) / 1000
+      const offlineSince = new Date(browserOfflineSince)
+      setBrowserOfflineSince(null)
+      Sentry.captureMessage(
+        `Spectacle was offline for ${wasOfflineForSeconds} second(s). 
+Went offline from ${offlineSince.toISOString()} to ${now.toISOString()}`
+      )
+    }
+
+    window.addEventListener("offline", handleGoingOffline)
+    window.addEventListener("online", handleGoingOnline)
+
+    return () => {
+      window.removeEventListener("offline", handleGoingOffline)
+      window.removeEventListener("online", handleGoingOnline)
+    }
+  }, [browserOfflineSince])
+
+  const isOnline = useMemo(() => browserOfflineSince === null, [
+    browserOfflineSince,
+  ])
+
   const providerValue: SpectacleStateContextProps = useMemo<SpectacleStateContextProps>(
     () => ({
       presentationName,
       isPresentationClean,
+      isOnline,
       veeDriveService,
       viewMode,
       setViewMode,
@@ -139,6 +175,7 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
     [
       presentationName,
       isPresentationClean,
+      isOnline,
       veeDriveService,
       viewMode,
       presentationStore,
