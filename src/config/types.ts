@@ -31,6 +31,10 @@ export interface ApplicationConfig {
   BASE_FONT_SIZE: number
   VIEWPORT_WIDTH: number
   VIEWPORT_HEIGHT: number
+  DEVICE_PIXEL_RATIO: number
+  VIEWPORT_REAL_WIDTH: number
+  VIEWPORT_REAL_HEIGHT: number
+  VIEWPORT_ASPECT_RATIO: number
   MINIMUM_FRAME_LONG_SIDE: number
   MAXIMUM_FRAME_LONG_SIDE: number
   DIALOG_SAFETY_MARGIN_HORIZONTAL_PX: number

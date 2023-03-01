@@ -30,7 +30,8 @@ class FileOpenerService {
 
   private handleFileByExtension(filePath: string) {
     const fileExtension = filePath.split(".").pop() ?? ""
-    return this.getOpenerClass(fileExtension)
+    const openerClass = this.getOpenerClass(fileExtension)
+    return openerClass
   }
 
   private getOpenerClass(fileExtension: string) {
