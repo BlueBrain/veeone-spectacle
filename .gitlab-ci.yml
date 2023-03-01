@@ -18,6 +18,10 @@ variables:
 .common-spectacle:
   tags:
     - kubernetes
+  before_script:
+    - echo "Running common-spectacle before_script..."
+    - SPECTACLE_REVISION=$CI_COMMIT_SHORT_SHA
+    - echo "SPECTACLE_REVISION = ${SPECTACLE_REVISION}"
 
 .publish-spectacle:
   extends:

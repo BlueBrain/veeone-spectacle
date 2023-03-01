@@ -28,6 +28,7 @@ export interface ThumbnailRegistryItem {
 
 export interface SpectacleStateContextProps {
   isPresentationClean: boolean
+  isOnline: boolean
   viewMode: ViewMode
   setViewMode(newViewMode: ViewMode): void
   presentationStore: SpectaclePresentation

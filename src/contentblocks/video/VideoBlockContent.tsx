@@ -87,6 +87,25 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
     [startAt, videoRef.current]
   )
 
+  const handleVideoProblem = useCallback(event => {
+    throw new Error("Video has stalled")
+  }, [])
+
+  useEffect(() => {
+    function errorHandler() {
+      throw new Error("got some video error")
+    }
+    const currentVideo = videoRef.current as HTMLVideoElement
+    let videoSource
+    if (currentVideo) {
+      videoSource = currentVideo.querySelector("source")
+      videoSource.addEventListener("error", errorHandler)
+    }
+    return () => {
+      videoSource?.removeEventListener("error", errorHandler)
+    }
+  }, [videoRef.current])
+
   return (
     <>
       {videoSource ? (
@@ -101,6 +120,7 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
           onLoadedMetadata={handleMetadata}
           ref={videoRef}
           disablePictureInPicture
+          onStalled={handleVideoProblem}
         >
           <source src={videoSource} />
         </Box>
