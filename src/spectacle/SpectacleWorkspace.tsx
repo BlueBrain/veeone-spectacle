@@ -1,13 +1,16 @@
 import { Box } from "@mui/material"
 import * as React from "react"
 import { ReactNode, useEffect, useRef } from "react"
+import { Size } from "../common/types"
 
 interface SpectacleWorkspaceProps {
   children: ReactNode
+  onWorkspaceSizeChange(size: Size)
 }
 
 export default function SpectacleWorkspace({
   children,
+  onWorkspaceSizeChange,
 }: SpectacleWorkspaceProps) {
   const workspaceRef = useRef<HTMLDivElement>()
 
@@ -16,8 +19,9 @@ export default function SpectacleWorkspace({
       const { width, height } = workspaceRef.current.getBoundingClientRect()
       const aspectRatio = width / height
       console.debug("workspaceRef", width, height, aspectRatio)
+      onWorkspaceSizeChange({ width, height })
     }
-  }, [])
+  }, [onWorkspaceSizeChange])
 
   return (
     <Box

@@ -19,6 +19,7 @@ export const getFreshPresentation: GetFreshPresentationArgs = ({ config }) => {
   const now = Date.now()
   const newStore: SpectaclePresentation = {
     id: null,
+    targetEnvironment: null,
     name: "",
     folder: null,
     createdAt: now,
