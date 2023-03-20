@@ -29,12 +29,15 @@ export default function SpectacleWorkspace({
         position: "absolute",
         left: "60px",
         right: "0",
-        border: "2rem solid red",
+        padding: "2rem",
         boxSizing: "border-box",
-        background: "green",
+        background: "#303030",
         overflow: "hidden",
         height: "100vh",
         maxWidth: "100vw",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
       ref={workspaceRef}
     >
