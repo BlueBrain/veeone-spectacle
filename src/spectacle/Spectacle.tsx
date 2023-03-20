@@ -14,6 +14,7 @@ import VisualKeyboardContextProvider from "../visualkeyboard/VisualKeyboardConte
 import SceneContextProvider from "../scenes/SceneContextProvider"
 import { RunningEnvironment } from "../config/types"
 import SpectacleUserInterface from "./SpectacleUserInterface"
+import SpectacleUserInterfaceContextProvider from "./SpectacleUserInterfaceContextProvider"
 
 export const Spectacle = () => {
   const config = useConfig()
@@ -26,13 +27,15 @@ export const Spectacle = () => {
       )
     ) {
       return (
-        <SpectacleUserInterface>
-          <SpectacleScreen />
-        </SpectacleUserInterface>
+        <SpectacleUserInterfaceContextProvider>
+          <SpectacleUserInterface>
+            <SpectacleScreen />
+          </SpectacleUserInterface>
+        </SpectacleUserInterfaceContextProvider>
       )
     }
     return <SpectacleScreen />
-  }, [])
+  }, [config.RUNNING_ENVIRONMENT])
 
   return (
     <ThemeProvider theme={blueBrainTheme}>

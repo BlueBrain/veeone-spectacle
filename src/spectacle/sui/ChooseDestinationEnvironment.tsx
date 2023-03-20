@@ -7,6 +7,7 @@ import { useCallback } from "react"
 import { resizePresentationStore } from "../../presentations/resizing"
 import { RunningEnvironment } from "../../config/types"
 import ENVIRONMENT_CONFIGS from "../../config/environmentConfigs"
+import { useSpectacleUserInterface } from "../SpectacleUserInterfaceContextProvider"
 
 interface ChooserButtonProps {
   label: string
@@ -37,6 +38,7 @@ function ChooserButton({ label, onClick }: ChooserButtonProps) {
 
 export default function ChooseDestinationEnvironment() {
   const config = useConfig()
+  const { workspaceSize } = useSpectacleUserInterface()
   const { presentationStore, loadPresentationStore } = useSpectacle()
 
   const activateEnvironment = useCallback(
@@ -46,11 +48,17 @@ export default function ChooseDestinationEnvironment() {
         targetConfig.aspectRatio = targetConfig.pxWidth / targetConfig.pxHeight
       }
       console.debug("targetConfig", targetConfig)
+
+      // todo scale should be configurable ("zoom")
+      const scale = 1.0
+      const width = scale * workspaceSize.width
+      const height = scale * (width / targetConfig.aspectRatio)
+
       const sizeAdjustedPresentationStore = resizePresentationStore(
         presentationStore,
         {
-          width: config.VIEWPORT_WIDTH,
-          height: config.VIEWPORT_HEIGHT,
+          width,
+          height,
         },
         config.MINIMUM_FRAME_LONG_SIDE,
         config.MAXIMUM_FRAME_LONG_SIDE,
@@ -61,7 +69,15 @@ export default function ChooseDestinationEnvironment() {
       )
       loadPresentationStore(sizeAdjustedPresentationStore)
     },
-    []
+    [
+      config.FILE_BROWSER_HEIGHT,
+      config.FILE_BROWSER_WIDTH,
+      config.MAXIMUM_FRAME_LONG_SIDE,
+      config.MINIMUM_FRAME_LONG_SIDE,
+      loadPresentationStore,
+      presentationStore,
+      workspaceSize.width,
+    ]
   )
 
   return (

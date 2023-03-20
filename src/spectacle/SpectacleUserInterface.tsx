@@ -22,15 +22,6 @@ export default function SpectacleUserInterface({
     []
   )
 
-  const [workspaceSize, setWorkspaceSize] = useState<Size>({
-    width: 0,
-    height: 0,
-  })
-
-  const handleWorkspaceSizeChange = useCallback((newSize: Size) => {
-    setWorkspaceSize(newSize)
-  }, [])
-
   return (
     <Box sx={{ position: "relative" }}>
       <Box
@@ -54,9 +45,7 @@ export default function SpectacleUserInterface({
         </IconButton>
       </Box>
 
-      <SpectacleWorkspace onWorkspaceSizeChange={handleWorkspaceSizeChange}>
-        {children}
-      </SpectacleWorkspace>
+      <SpectacleWorkspace>{children}</SpectacleWorkspace>
 
       {isEnvironmentPickerVisible ? <ChooseDestinationEnvironment /> : null}
     </Box>

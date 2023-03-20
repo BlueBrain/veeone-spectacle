@@ -12,7 +12,7 @@ export const systemStats = {
 const SpectacleScreen: React.FC = () => {
   const config = useConfig()
   const ref = useRef()
-  const { isOnline } = useSpectacle()
+  const { isOnline, presentationStore } = useSpectacle()
 
   useEffect(() => {
     const currentRef = ref.current as HTMLElement
@@ -33,8 +33,8 @@ const SpectacleScreen: React.FC = () => {
       ref={ref}
       sx={{
         background: theme => theme.palette.screen.main,
-        width: `${config.VIEWPORT_WIDTH}px`,
-        height: `${config.VIEWPORT_HEIGHT}px`,
+        width: `${presentationStore.meta.viewport.width}px`,
+        height: `${presentationStore.meta.viewport.height}px`,
         overflow: "hidden",
         contain: `content`,
         filter: isOnline ? "" : "grayscale(100%)",
