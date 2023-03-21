@@ -3,6 +3,7 @@ import { SvgIconComponent } from "@mui/icons-material"
 import React, { useMemo } from "react"
 import { MenuItem } from "../types"
 import SubWedgeLabelItem from "./SubWedgeLabelItem"
+import { useConfig } from "../../config/AppConfigContext"
 
 interface PieLabelItemProps {
   index: number
@@ -18,6 +19,7 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
   const { label, icon, isOpen, children, isEnabled } = menuItem
   const mainRotationAngle = anglePerMainItem * index
   const IconComponent = useMemo<SvgIconComponent>(() => icon, [icon])
+  const { LAUNCHER_MENU_SIZE_REM } = useConfig()
 
   const subWedgeLabelItems = useMemo(
     () =>
@@ -66,7 +68,7 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
               transform: `
               translate(-50%)
               rotate(${mainRotationAngle}deg)
-              translate(0, -7.4rem)
+              translate(0, ${LAUNCHER_MENU_SIZE_REM / -3}rem)
               rotate(${-mainRotationAngle}deg)
               translateY(-50%)
             `,
@@ -75,11 +77,15 @@ const PieLabelItem: React.FC<PieLabelItemProps> = ({
         }}
       >
         <Box sx={{}} className={"MenuItemIcon"}>
-          <IconComponent sx={{ fontSize: "2.6rem" }} />
+          <IconComponent
+            sx={{
+              fontSize: `${LAUNCHER_MENU_SIZE_REM / 8.0}rem`,
+            }}
+          />
         </Box>
         <Box
           sx={{
-            fontSize: `0.9rem`,
+            fontSize: `${Math.max(0.7, LAUNCHER_MENU_SIZE_REM / 25.0)}rem`,
             fontWeight: `500`,
           }}
           className={"MenuItemLabel"}
