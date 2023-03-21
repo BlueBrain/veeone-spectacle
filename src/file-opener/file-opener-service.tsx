@@ -21,17 +21,18 @@ class FileOpenerService {
     bringFrameToFrontCallback
   ) {
     const openerClass = this.handleFileByExtension(filePath)
-    const opener = new openerClass({
-      filePath,
-      position,
-    })
-    opener.makeFrame(defaultSize, addFrameCallback, bringFrameToFrontCallback)
+    if (openerClass) {
+      const opener = new openerClass({
+        filePath,
+        position,
+      })
+      opener.makeFrame(defaultSize, addFrameCallback, bringFrameToFrontCallback)
+    }
   }
 
   private handleFileByExtension(filePath: string) {
     const fileExtension = filePath.split(".").pop() ?? ""
-    const openerClass = this.getOpenerClass(fileExtension)
-    return openerClass
+    return this.getOpenerClass(fileExtension)
   }
 
   private getOpenerClass(fileExtension: string) {

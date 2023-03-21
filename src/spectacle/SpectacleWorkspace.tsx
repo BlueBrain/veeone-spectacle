@@ -17,8 +17,6 @@ export default function SpectacleWorkspace({
   useEffect(() => {
     if (workspaceRef.current) {
       const { width, height } = workspaceRef.current.getBoundingClientRect()
-      const aspectRatio = width / height
-      console.debug("workspaceRef", width, height, aspectRatio)
       setWorkspaceSize({ width, height })
     }
   }, [setWorkspaceSize])

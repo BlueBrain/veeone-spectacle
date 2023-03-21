@@ -15,12 +15,6 @@ const ScreenGridOverlay: React.FC = () => {
     [presentationStore.targetEnvironment]
   )
 
-  console.debug(
-    "presentationStore.targetEnvironment",
-    presentationStore.targetEnvironment,
-    targetConfig
-  )
-
   const gridBoxes = useMemo(() => {
     return (
       <Box
