@@ -15,6 +15,7 @@ import SceneContextProvider from "../scenes/SceneContextProvider"
 import { RunningEnvironment } from "../config/types"
 import SpectacleUserInterface from "./SpectacleUserInterface"
 import SpectacleUserInterfaceContextProvider from "./SpectacleUserInterfaceContextProvider"
+import ScreenGridOverlay from "./sui/ScreenGridOverlay"
 
 export const Spectacle = () => {
   const config = useConfig()
@@ -30,6 +31,7 @@ export const Spectacle = () => {
         <SpectacleUserInterfaceContextProvider>
           <SpectacleUserInterface>
             <SpectacleScreen />
+            <ScreenGridOverlay />
           </SpectacleUserInterface>
         </SpectacleUserInterfaceContextProvider>
       )

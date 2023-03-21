@@ -10,6 +10,8 @@ interface SpectacleUserInterfaceContextProps {
   setWorkspaceSize(newSize: Size): void
   isLive: boolean
   setIsLive(newValue: boolean): void
+  isGridVisible: boolean
+  setIsGridVisible(newValue: boolean): void
 }
 
 const SpectacleUserInterfaceContext = createContext<SpectacleUserInterfaceContextProps>(
@@ -20,6 +22,10 @@ const SpectacleUserInterfaceContext = createContext<SpectacleUserInterfaceContex
     },
     isLive: false,
     setIsLive(newValue: boolean) {
+      throw new Error("Not implemented")
+    },
+    isGridVisible: false,
+    setIsGridVisible(newValue: boolean) {
       throw new Error("Not implemented")
     },
   }
@@ -38,14 +44,18 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
 
   const [isLive, setIsLive] = useState(false)
 
+  const [isGridVisible, setIsGridVisible] = useState(true)
+
   const providerValue = useMemo<SpectacleUserInterfaceContextProps>(
     () => ({
       workspaceSize,
       setWorkspaceSize,
       isLive,
       setIsLive,
+      isGridVisible,
+      setIsGridVisible,
     }),
-    [workspaceSize, isLive]
+    [workspaceSize, isLive, isGridVisible]
   )
 
   return (

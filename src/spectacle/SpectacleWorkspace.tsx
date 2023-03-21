@@ -29,7 +29,6 @@ export default function SpectacleWorkspace({
         position: "absolute",
         left: "60px",
         right: "0",
-        padding: "2rem",
         boxSizing: "border-box",
         background: "#303030",
         overflow: "hidden",

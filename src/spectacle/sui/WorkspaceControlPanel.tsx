@@ -1,11 +1,22 @@
-import { Box, IconButton, Switch, Theme } from "@mui/material"
-import React, { useCallback, useMemo } from "react"
-import { ZoomIn, ZoomOut, ZoomOutMap } from "@mui/icons-material"
+import { Box, IconButton, Switch, Theme, Tooltip } from "@mui/material"
+import React, { MouseEvent, useCallback, useMemo } from "react"
+import {
+  GridOff,
+  GridOn,
+  ZoomIn,
+  ZoomOut,
+  ZoomOutMap,
+} from "@mui/icons-material"
 import { useSpectacleUserInterface } from "../SpectacleUserInterfaceContextProvider"
 import { SxProps } from "@mui/system"
 
 const WorkspaceControlPanel: React.FC = () => {
-  const { isLive, setIsLive } = useSpectacleUserInterface()
+  const {
+    isLive,
+    setIsLive,
+    isGridVisible,
+    setIsGridVisible,
+  } = useSpectacleUserInterface()
   const onSwitchChange = useCallback(
     (event: React.ChangeEvent, checked: boolean) => {
       setIsLive(checked)
@@ -36,6 +47,13 @@ const WorkspaceControlPanel: React.FC = () => {
             opacity: "0.3",
           },
     [isLive]
+  )
+
+  const onIconButtonClick = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      setIsGridVisible(!isGridVisible)
+    },
+    [isGridVisible]
   )
 
   return (
@@ -86,6 +104,16 @@ const WorkspaceControlPanel: React.FC = () => {
         <IconButton>
           <ZoomOut />
         </IconButton>
+      </Box>
+
+      <Box sx={{ width: "2rem" }} />
+
+      <Box>
+        <Tooltip title={"Display or hide individual screen bevels"}>
+          <IconButton onClick={onIconButtonClick}>
+            {isGridVisible ? <GridOff /> : <GridOn />}
+          </IconButton>
+        </Tooltip>
       </Box>
     </Box>
   )

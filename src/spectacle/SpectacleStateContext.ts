@@ -11,6 +11,7 @@ import {
   SendFrameToBackPayload,
   UpdateFrameDataPayload,
 } from "./types"
+import { RunningEnvironment } from "../config/types"
 
 export interface SavePresentationOpenModalProps {
   position: Position

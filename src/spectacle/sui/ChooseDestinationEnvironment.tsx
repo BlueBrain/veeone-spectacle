@@ -67,6 +67,7 @@ export default function ChooseDestinationEnvironment() {
           height: config.FILE_BROWSER_HEIGHT,
         }
       )
+      sizeAdjustedPresentationStore.targetEnvironment = targetEnvironment
       loadPresentationStore(sizeAdjustedPresentationStore)
     },
     [

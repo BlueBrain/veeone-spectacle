@@ -1,10 +1,9 @@
 import * as React from "react"
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react"
+import { ReactNode, useCallback, useState } from "react"
 import { Box, IconButton } from "@mui/material"
 import { CastConnected } from "@mui/icons-material"
 import ChooseDestinationEnvironment from "./sui/ChooseDestinationEnvironment"
 import SpectacleWorkspace from "./SpectacleWorkspace"
-import { Size } from "../common/types"
 
 interface SpectacleUserInterfaceProps {
   children: ReactNode
