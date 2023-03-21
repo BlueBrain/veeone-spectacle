@@ -132,11 +132,25 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
           maxWidth: "xs",
         })
       }
-      const freshPresentation = getFreshPresentation({ config })
+      const targetEnvironment = presentationStore.targetEnvironment
+      const freshPresentation = getFreshPresentation({
+        config,
+        defaultStore: {
+          targetEnvironment,
+          meta: { viewport: { ...presentationStore.meta.viewport } },
+        },
+      })
       loadPresentationStore(freshPresentation)
       return freshPresentation
     },
-    [config, dialogs, isPresentationClean, loadPresentationStore]
+    [
+      config,
+      dialogs,
+      isPresentationClean,
+      loadPresentationStore,
+      presentationStore.targetEnvironment,
+      presentationStore.meta.viewport,
+    ]
   )
 
   const loadFolderList = useCallback(async () => {

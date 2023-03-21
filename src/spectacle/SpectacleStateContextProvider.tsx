@@ -21,7 +21,12 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
 }) => {
   const config = useConfig()
 
-  const freshPresentation = useMemo(() => getFreshPresentation({ config }), [])
+  const [targetEnvironment, setTargetEnvironment] = useState(null)
+
+  const freshPresentation = useMemo(() => {
+    console.debug("new freshPresentation", targetEnvironment)
+    return getFreshPresentation({ config, defaultStore: { targetEnvironment } })
+  }, [targetEnvironment])
 
   const veeDriveService = useMemo(
     () => new VeeDriveService(config.VEEDRIVE_WS_PATH),
@@ -39,6 +44,16 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
     isPresentationClean,
     savePresentationStore,
   } = usePresentationStateManager({ freshPresentation })
+
+  useEffect(() => {
+    if (presentationStore.targetEnvironment) {
+      console.debug(
+        "presentationStore.targetEnvironment",
+        presentationStore.targetEnvironment
+      )
+      setTargetEnvironment(presentationStore.targetEnvironment)
+    }
+  }, [presentationStore.targetEnvironment])
 
   const {
     addFrame,
