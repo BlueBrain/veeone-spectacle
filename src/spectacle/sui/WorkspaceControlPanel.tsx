@@ -7,7 +7,7 @@ import {
   ZoomOut,
   ZoomOutMap,
 } from "@mui/icons-material"
-import { useSpectacleUserInterface } from "../SpectacleUserInterfaceContextProvider"
+import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
 import { SxProps } from "@mui/system"
 
 const WorkspaceControlPanel: React.FC = () => {

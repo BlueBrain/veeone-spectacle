@@ -13,8 +13,8 @@ import DialogsPlaceholder from "../dialogs/DialogsPlaceholder"
 import VisualKeyboardContextProvider from "../visualkeyboard/VisualKeyboardContextProvider"
 import SceneContextProvider from "../scenes/SceneContextProvider"
 import { RunningEnvironment } from "../config/types"
-import SpectacleUserInterface from "./SpectacleUserInterface"
-import SpectacleUserInterfaceContextProvider from "./SpectacleUserInterfaceContextProvider"
+import SpectacleUserInterface from "./sui/SpectacleUserInterface"
+import SpectacleUserInterfaceContextProvider from "./sui/SpectacleUserInterfaceContextProvider"
 import ScreenGridOverlay from "./sui/ScreenGridOverlay"
 
 export const Spectacle = () => {

@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import React, { useMemo } from "react"
 import { useSpectacle } from "../SpectacleStateContext"
-import { useSpectacleUserInterface } from "../SpectacleUserInterfaceContextProvider"
+import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
 import ENVIRONMENT_CONFIGS from "../../config/environmentConfigs"
 
 const ScreenGridOverlay: React.FC = () => {

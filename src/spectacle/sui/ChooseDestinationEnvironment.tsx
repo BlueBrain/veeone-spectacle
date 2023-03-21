@@ -7,7 +7,7 @@ import { useCallback } from "react"
 import { resizePresentationStore } from "../../presentations/resizing"
 import { RunningEnvironment } from "../../config/types"
 import ENVIRONMENT_CONFIGS from "../../config/environmentConfigs"
-import { useSpectacleUserInterface } from "../SpectacleUserInterfaceContextProvider"
+import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
 
 interface ChooserButtonProps {
   label: string

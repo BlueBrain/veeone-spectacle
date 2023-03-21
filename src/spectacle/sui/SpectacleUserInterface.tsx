@@ -2,7 +2,7 @@ import * as React from "react"
 import { ReactNode, useCallback, useState } from "react"
 import { Box, IconButton } from "@mui/material"
 import { CastConnected } from "@mui/icons-material"
-import ChooseDestinationEnvironment from "./sui/ChooseDestinationEnvironment"
+import ChooseDestinationEnvironment from "./ChooseDestinationEnvironment"
 import SpectacleWorkspace from "./SpectacleWorkspace"
 
 interface SpectacleUserInterfaceProps {

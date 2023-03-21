@@ -2,7 +2,7 @@ import { Box } from "@mui/material"
 import * as React from "react"
 import { ReactNode, useEffect, useRef } from "react"
 import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
-import WorkspaceControlPanel from "./sui/WorkspaceControlPanel"
+import WorkspaceControlPanel from "./WorkspaceControlPanel"
 
 interface SpectacleWorkspaceProps {
   children: ReactNode

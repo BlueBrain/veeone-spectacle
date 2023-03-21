@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useMemo, useState } from "react"
-import { Size } from "../common/types"
+import { Size } from "../../common/types"
 
 interface SpectacleUserInterfaceContextProviderProps {
   children: ReactNode
