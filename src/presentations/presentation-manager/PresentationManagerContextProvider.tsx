@@ -93,19 +93,21 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
         position,
       })
       const store = await veeDriveService.getPresentation(presentationId)
-      const sizeAdjustedPresentationStore = resizePresentationStore(
-        store,
-        {
-          width: config.VIEWPORT_WIDTH,
-          height: config.VIEWPORT_HEIGHT,
-        },
-        config.MINIMUM_FRAME_LONG_SIDE,
-        config.MAXIMUM_FRAME_LONG_SIDE,
-        {
-          width: config.FILE_BROWSER_WIDTH,
-          height: config.FILE_BROWSER_HEIGHT,
-        }
-      )
+      const sizeAdjustedPresentationStore = store.targetEnvironment
+        ? store
+        : resizePresentationStore(
+            store,
+            {
+              width: config.VIEWPORT_WIDTH,
+              height: config.VIEWPORT_HEIGHT,
+            },
+            config.MINIMUM_FRAME_LONG_SIDE,
+            config.MAXIMUM_FRAME_LONG_SIDE,
+            {
+              width: config.FILE_BROWSER_WIDTH,
+              height: config.FILE_BROWSER_HEIGHT,
+            }
+          )
       loadPresentationStore(sizeAdjustedPresentationStore)
       return sizeAdjustedPresentationStore
     },
