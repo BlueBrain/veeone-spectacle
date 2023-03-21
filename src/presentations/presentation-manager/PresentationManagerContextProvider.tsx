@@ -49,8 +49,19 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
         storeToSave.id = generateRandomPresentationId()
       }
 
-      savePresentationStore(storeToSave)
-      await veeDriveService.savePresentation(storeToSave)
+      const originalPresentation = await veeDriveService.getPresentation(
+        storeToSave.id
+      )
+
+      if (
+        !originalPresentation.targetEnvironment ||
+        originalPresentation.targetEnvironment === storeToSave.targetEnvironment
+      ) {
+        savePresentationStore(storeToSave)
+        await veeDriveService.savePresentation(storeToSave)
+      } else {
+        await savePresentationAs({ position: null })
+      }
 
       return storeToSave
     },
@@ -76,10 +87,10 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
   )
 
   const savePresentation = useCallback(
-    async (args: SavePresentationOpenModalProps) => {
+    async ({ position }: SavePresentationOpenModalProps) => {
       if (!presentationStore.name) {
         // Open a "Save as" dialog if the presentation hasn't been saved yet
-        return await savePresentationAs(args)
+        return await savePresentationAs({ position })
       } else {
         return await performPresentationSave()
       }
