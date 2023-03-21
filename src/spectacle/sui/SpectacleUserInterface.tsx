@@ -46,7 +46,11 @@ export default function SpectacleUserInterface({
 
       <SpectacleWorkspace>{children}</SpectacleWorkspace>
 
-      {isEnvironmentPickerVisible ? <ChooseDestinationEnvironment /> : null}
+      {isEnvironmentPickerVisible ? (
+        <ChooseDestinationEnvironment
+          onEnvironmentSelected={() => setIsEnvironmentPickerVisible(false)}
+        />
+      ) : null}
     </Box>
   )
 }

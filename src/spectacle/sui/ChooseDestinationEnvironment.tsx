@@ -36,7 +36,13 @@ function ChooserButton({ label, onClick }: ChooserButtonProps) {
   )
 }
 
-export default function ChooseDestinationEnvironment() {
+interface ChooseDestinationEnvironmentProps {
+  onEnvironmentSelected(env: RunningEnvironment): void
+}
+
+export default function ChooseDestinationEnvironment({
+  onEnvironmentSelected,
+}: ChooseDestinationEnvironmentProps) {
   const config = useConfig()
   const { workspaceSize } = useSpectacleUserInterface()
   const { presentationStore, loadPresentationStore } = useSpectacle()
@@ -69,6 +75,7 @@ export default function ChooseDestinationEnvironment() {
       )
       sizeAdjustedPresentationStore.targetEnvironment = targetEnvironment
       loadPresentationStore(sizeAdjustedPresentationStore)
+      onEnvironmentSelected(targetEnvironment)
     },
     [
       config.FILE_BROWSER_HEIGHT,
