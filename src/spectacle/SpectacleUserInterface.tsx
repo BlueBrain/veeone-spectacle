@@ -14,7 +14,7 @@ export default function SpectacleUserInterface({
   children,
 }: SpectacleUserInterfaceProps) {
   const [isEnvironmentPickerVisible, setIsEnvironmentPickerVisible] = useState(
-    true
+    false
   )
 
   const toggleEnvironmentPickerVisible = useCallback(

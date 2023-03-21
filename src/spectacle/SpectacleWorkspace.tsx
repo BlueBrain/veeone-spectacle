@@ -1,8 +1,8 @@
 import { Box } from "@mui/material"
 import * as React from "react"
 import { ReactNode, useEffect, useRef } from "react"
-import { Size } from "../common/types"
 import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
+import WorkspaceControlPanel from "./sui/WorkspaceControlPanel"
 
 interface SpectacleWorkspaceProps {
   children: ReactNode
@@ -42,6 +42,7 @@ export default function SpectacleWorkspace({
       ref={workspaceRef}
     >
       {children}
+      <WorkspaceControlPanel />
     </Box>
   )
 }

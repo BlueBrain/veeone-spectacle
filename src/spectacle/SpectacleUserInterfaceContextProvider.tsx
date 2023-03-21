@@ -8,12 +8,18 @@ interface SpectacleUserInterfaceContextProviderProps {
 interface SpectacleUserInterfaceContextProps {
   workspaceSize: Size
   setWorkspaceSize(newSize: Size): void
+  isLive: boolean
+  setIsLive(newValue: boolean): void
 }
 
 const SpectacleUserInterfaceContext = createContext<SpectacleUserInterfaceContextProps>(
   {
     workspaceSize: { width: 0, height: 0 },
     setWorkspaceSize(newSize: Size) {
+      throw new Error("Not implemented")
+    },
+    isLive: false,
+    setIsLive(newValue: boolean) {
       throw new Error("Not implemented")
     },
   }
@@ -30,12 +36,16 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
     height: 0,
   })
 
-  const providerValue = useMemo(
+  const [isLive, setIsLive] = useState(false)
+
+  const providerValue = useMemo<SpectacleUserInterfaceContextProps>(
     () => ({
       workspaceSize,
       setWorkspaceSize,
+      isLive,
+      setIsLive,
     }),
-    [workspaceSize]
+    [workspaceSize, isLive]
   )
 
   return (

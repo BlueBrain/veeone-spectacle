@@ -9,6 +9,8 @@ interface EnvironmentConfig {
   place: string
   placeUrl: string
   active: boolean
+  gridCols: number
+  gridRows: number
 }
 
 const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
@@ -21,6 +23,8 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     placeUrl: "",
     place: "",
     active: true,
+    gridCols: 1,
+    gridRows: 1,
   },
   [RunningEnvironment.CLIENT]: {
     title: "Web Client",
@@ -31,6 +35,8 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     placeUrl: "",
     place: "",
     active: false,
+    gridCols: 1,
+    gridRows: 1,
   },
   [RunningEnvironment.THIRD_FLOOR_LEFT_DISPLAY]: {
     title: "3rd Floor Display Wall (left)",
@@ -41,6 +47,8 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     placeUrl: "https://plan.epfl.ch/?room==B1%203%20254.045",
     place: "B1 3 254.045",
     active: true,
+    gridCols: 1,
+    gridRows: 1,
   },
   [RunningEnvironment.THIRD_FLOOR_RIGHT_DISPLAY]: {
     title: "3rd Floor Display Wall (right)",
@@ -51,6 +59,8 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     placeUrl: "https://plan.epfl.ch/?room==B1%203%20254.045",
     place: "B1 3 254.045",
     active: false,
+    gridCols: 1,
+    gridRows: 1,
   },
   [RunningEnvironment.FIFTH_FLOOR_DISPLAY_WALL]: {
     title: "5th Floor Display Wall",
@@ -61,6 +71,8 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     placeUrl: "https://plan.epfl.ch/?room==B1%205%20254.045",
     place: "B1 5 254.045",
     active: true,
+    gridCols: 3,
+    gridRows: 3,
   },
   [RunningEnvironment.SIXTH_FLOOR_DISPLAY_WALL]: {
     title: "6th Floor Display Wall",
@@ -71,6 +83,8 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     placeUrl: "https://plan.epfl.ch/?room==B1%206%20259.054",
     place: "B1 6 259.054",
     active: true,
+    gridCols: 4,
+    gridRows: 3,
   },
   [RunningEnvironment.OPENDECK]: {
     title: "Opendeck",
@@ -81,6 +95,8 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     placeUrl: "https://plan.epfl.ch/?room==B1%204%20265.052",
     place: "B1 4 265.052",
     active: true,
+    gridCols: 1,
+    gridRows: 1,
   },
 }
 
