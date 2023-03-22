@@ -17,10 +17,13 @@ import { useConfig } from "../../config/AppConfigContext"
 import { getFreshPresentation } from "../fresh-presentation"
 import UnsavedChangesWarning from "../presentation-loader/UnsavedChangesWarning"
 import { generateRandomPresentationId } from "../utils"
+import { useNotifications } from "../../spectacle/notifications/NotificationContextProvider"
 
 const PresentationManagerContextProvider: React.FC = ({ children }) => {
   const config = useConfig()
   const dialogs = useDialogs()
+  const notifications = useNotifications()
+
   const {
     presentationStore,
     veeDriveService,
@@ -60,6 +63,7 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
         savePresentationStore(storeToSave)
         await veeDriveService.savePresentation(storeToSave)
       } else {
+        notifications.info("You need to save it as a new presentation.")
         await savePresentationAs({ position: null })
       }
 

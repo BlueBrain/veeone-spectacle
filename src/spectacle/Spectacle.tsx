@@ -16,6 +16,7 @@ import { RunningEnvironment } from "../config/types"
 import SpectacleUserInterface from "./sui/SpectacleUserInterface"
 import SpectacleUserInterfaceContextProvider from "./sui/SpectacleUserInterfaceContextProvider"
 import ScreenGridOverlay from "./sui/ScreenGridOverlay"
+import NotificationContextProvider from "./notifications/NotificationContextProvider"
 
 export const Spectacle = () => {
   const config = useConfig()
@@ -43,20 +44,22 @@ export const Spectacle = () => {
     <ThemeProvider theme={blueBrainTheme}>
       <CssBaseline />
       <ThemeGradients />
-      <VisualKeyboardContextProvider>
-        <SpectacleStateContextProvider>
-          <SceneContextProvider>
-            <DialogsContextProvider>
-              <PresentationManagerContextProvider>
-                <ImageKeeperContextProvider>
-                  {userInterface}
-                </ImageKeeperContextProvider>
-                <DialogsPlaceholder />
-              </PresentationManagerContextProvider>
-            </DialogsContextProvider>
-          </SceneContextProvider>
-        </SpectacleStateContextProvider>
-      </VisualKeyboardContextProvider>
+      <NotificationContextProvider>
+        <VisualKeyboardContextProvider>
+          <SpectacleStateContextProvider>
+            <SceneContextProvider>
+              <DialogsContextProvider>
+                <PresentationManagerContextProvider>
+                  <ImageKeeperContextProvider>
+                    {userInterface}
+                  </ImageKeeperContextProvider>
+                  <DialogsPlaceholder />
+                </PresentationManagerContextProvider>
+              </DialogsContextProvider>
+            </SceneContextProvider>
+          </SpectacleStateContextProvider>
+        </VisualKeyboardContextProvider>
+      </NotificationContextProvider>
     </ThemeProvider>
   )
 }
