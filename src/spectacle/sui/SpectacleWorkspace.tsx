@@ -31,7 +31,7 @@ export default function SpectacleWorkspace({
         background: "#303030",
         overflow: "hidden",
         height: "100vh",
-        maxWidth: "100vw",
+        width: "calc(100vw - 60px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react"
 import { Box } from "@mui/material"
 import SceneCarouselNavigator from "../scenes/scene-carousel-navigator"
 import SceneDeskNavigation from "../scenes/SceneDeskNavigation"
-import { useConfig } from "../config/AppConfigContext"
 import { useSpectacle } from "./SpectacleStateContext"
 
 export const systemStats = {
@@ -10,7 +9,6 @@ export const systemStats = {
 }
 
 const SpectacleScreen: React.FC = () => {
-  const config = useConfig()
   const ref = useRef()
   const { isOnline, presentationStore } = useSpectacle()
 
@@ -33,6 +31,10 @@ const SpectacleScreen: React.FC = () => {
       ref={ref}
       sx={{
         background: theme => theme.palette.screen.main,
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
         width: `${presentationStore.meta.viewport.width}px`,
         height: `${presentationStore.meta.viewport.height}px`,
         overflow: "hidden",
