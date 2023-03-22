@@ -8,6 +8,7 @@ In progress
 - Target screen bevel preview ("grid")
 - Scale launcher menu
 - Pause movies by default in web client
+- Notification snackbar
 
 ## 1.1.1
 
