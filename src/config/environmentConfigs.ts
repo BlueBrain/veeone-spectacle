@@ -1,6 +1,6 @@
 import { RunningEnvironment } from "./types"
 
-interface EnvironmentConfig {
+export interface EnvironmentConfig {
   title: string
   shortTitle: string
   pxWidth: number

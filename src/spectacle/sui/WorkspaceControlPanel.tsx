@@ -1,5 +1,5 @@
-import { Box, IconButton, Switch, Theme, Tooltip } from "@mui/material"
-import React, { MouseEvent, useCallback, useMemo } from "react"
+import { Box, IconButton, Tooltip } from "@mui/material"
+import React, { MouseEvent, useCallback } from "react"
 import {
   GridOff,
   GridOn,
@@ -8,15 +8,15 @@ import {
   ZoomOutMap,
 } from "@mui/icons-material"
 import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
-import { SxProps } from "@mui/system"
-import LiveSwitch from "./LiveSwitch"
 
 const WorkspaceControlPanel: React.FC = () => {
   const {
-    isLive,
-    setIsLive,
     isGridVisible,
     setIsGridVisible,
+    viewZoomPercent,
+    setViewZoomPercent,
+    workspaceSize,
+    targetEnvironmentConfig,
   } = useSpectacleUserInterface()
 
   const onIconButtonClick = useCallback(
@@ -25,6 +25,30 @@ const WorkspaceControlPanel: React.FC = () => {
     },
     [isGridVisible]
   )
+
+  const increaseZoom = useCallback(() => {
+    setViewZoomPercent(prev => {
+      console.debug("prev", prev)
+      return prev < 100 ? prev + 10 - (prev % 10) : 100
+    })
+  }, [setViewZoomPercent])
+
+  const decreaseZoom = useCallback(() => {
+    setViewZoomPercent(prev => {
+      console.debug("prev", prev)
+      return prev >= 10 ? prev - 10 - (prev % 10) : 100
+    })
+  }, [setViewZoomPercent])
+
+  const resetZoom = useCallback(() => {
+    setViewZoomPercent(
+      Math.round((100 * workspaceSize.width) / targetEnvironmentConfig.pxWidth)
+    )
+  }, [
+    setViewZoomPercent,
+    targetEnvironmentConfig?.pxWidth,
+    workspaceSize.width,
+  ])
 
   return (
     <Box
@@ -47,19 +71,24 @@ const WorkspaceControlPanel: React.FC = () => {
       {/*<Box sx={{ width: "2rem" }} />*/}
 
       <Box>
-        <IconButton>
-          <ZoomIn />
-        </IconButton>
+        <Tooltip title={"Zoom out"} onClick={decreaseZoom}>
+          <IconButton>
+            <ZoomOut />
+          </IconButton>
+        </Tooltip>
       </Box>
+      <Box>{viewZoomPercent}%</Box>
       <Box>
-        <IconButton>
+        <IconButton onClick={resetZoom}>
           <ZoomOutMap />
         </IconButton>
       </Box>
       <Box>
-        <IconButton>
-          <ZoomOut />
-        </IconButton>
+        <Tooltip title={"Zoom in"} onClick={increaseZoom}>
+          <IconButton>
+            <ZoomIn />
+          </IconButton>
+        </Tooltip>
       </Box>
 
       <Box sx={{ width: "2rem" }} />

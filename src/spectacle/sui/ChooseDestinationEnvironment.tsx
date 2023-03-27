@@ -37,56 +37,13 @@ function ChooserButton({ label, onClick }: ChooserButtonProps) {
 }
 
 interface ChooseDestinationEnvironmentProps {
-  onEnvironmentSelected(env: RunningEnvironment): void
+  onEnvironmentSelected(): void
 }
 
 export default function ChooseDestinationEnvironment({
   onEnvironmentSelected,
 }: ChooseDestinationEnvironmentProps) {
-  const config = useConfig()
-  const { workspaceSize } = useSpectacleUserInterface()
-  const { presentationStore, loadPresentationStore } = useSpectacle()
-
-  const activateEnvironment = useCallback(
-    (targetEnvironment: RunningEnvironment) => {
-      const targetConfig = { ...ENVIRONMENT_CONFIGS[targetEnvironment] }
-      if (targetConfig.aspectRatio === "auto") {
-        targetConfig.aspectRatio = targetConfig.pxWidth / targetConfig.pxHeight
-      }
-      console.debug("targetConfig", targetConfig)
-
-      // todo scale should be configurable ("zoom")
-      const scale = 1.0
-      const width = scale * workspaceSize.width
-      const height = scale * (width / targetConfig.aspectRatio)
-
-      const sizeAdjustedPresentationStore = resizePresentationStore(
-        presentationStore,
-        {
-          width,
-          height,
-        },
-        config.MINIMUM_FRAME_LONG_SIDE,
-        config.MAXIMUM_FRAME_LONG_SIDE,
-        {
-          width: config.FILE_BROWSER_WIDTH,
-          height: config.FILE_BROWSER_HEIGHT,
-        }
-      )
-      sizeAdjustedPresentationStore.targetEnvironment = targetEnvironment
-      loadPresentationStore(sizeAdjustedPresentationStore)
-      onEnvironmentSelected(targetEnvironment)
-    },
-    [
-      config.FILE_BROWSER_HEIGHT,
-      config.FILE_BROWSER_WIDTH,
-      config.MAXIMUM_FRAME_LONG_SIDE,
-      config.MINIMUM_FRAME_LONG_SIDE,
-      loadPresentationStore,
-      presentationStore,
-      workspaceSize.width,
-    ]
-  )
+  const { activateEnvironment } = useSpectacleUserInterface()
 
   return (
     <Box
@@ -109,25 +66,31 @@ export default function ChooseDestinationEnvironment({
         Choose destination environment:
       </Box>
       <ChooserButton
-        onClick={() =>
+        onClick={() => {
           activateEnvironment(RunningEnvironment.THIRD_FLOOR_LEFT_DISPLAY)
-        }
+          onEnvironmentSelected()
+        }}
         label={"Third floor display wall"}
       />
       <ChooserButton
-        onClick={() =>
+        onClick={() => {
           activateEnvironment(RunningEnvironment.FIFTH_FLOOR_DISPLAY_WALL)
-        }
+          onEnvironmentSelected()
+        }}
         label={"Fifth floor display wall"}
       />
       <ChooserButton
-        onClick={() =>
+        onClick={() => {
           activateEnvironment(RunningEnvironment.SIXTH_FLOOR_DISPLAY_WALL)
-        }
+          onEnvironmentSelected()
+        }}
         label={"Sixth floor display wall"}
       />
       <ChooserButton
-        onClick={() => activateEnvironment(RunningEnvironment.OPENDECK)}
+        onClick={() => {
+          activateEnvironment(RunningEnvironment.OPENDECK)
+          onEnvironmentSelected()
+        }}
         label={"Opendeck"}
       />
     </Box>
