@@ -22,7 +22,7 @@ export default function SpectacleUserInterface({
   )
 
   return (
-    <Box sx={{ position: "relative" }}>
+    <Box sx={{ position: "relative", fontSize: "10px" }}>
       <Box
         sx={{
           background: "#1E1E1E",

@@ -9,6 +9,7 @@ import {
 } from "@mui/icons-material"
 import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
 import { SxProps } from "@mui/system"
+import LiveSwitch from "./LiveSwitch"
 
 const WorkspaceControlPanel: React.FC = () => {
   const {
@@ -17,37 +18,6 @@ const WorkspaceControlPanel: React.FC = () => {
     isGridVisible,
     setIsGridVisible,
   } = useSpectacleUserInterface()
-  const onSwitchChange = useCallback(
-    (event: React.ChangeEvent, checked: boolean) => {
-      setIsLive(checked)
-    },
-    [setIsLive]
-  )
-
-  const liveLabelSx = useMemo<SxProps>(
-    () => (theme: Theme) =>
-      isLive
-        ? {
-            color: theme.palette.success.main,
-            fontWeight: "bold",
-          }
-        : {
-            opacity: "0.3",
-          },
-    [isLive]
-  )
-  const offlineLabelSx = useMemo<SxProps>(
-    () => (theme: Theme) =>
-      !isLive
-        ? {
-            color: theme.palette.error.main,
-            fontWeight: "bold",
-          }
-        : {
-            opacity: "0.3",
-          },
-    [isLive]
-  )
 
   const onIconButtonClick = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
@@ -72,23 +42,9 @@ const WorkspaceControlPanel: React.FC = () => {
         padding: "1rem",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <Box sx={offlineLabelSx} onClick={() => setIsLive(false)}>
-          Offline
-        </Box>
-        <Switch color={"success"} checked={isLive} onChange={onSwitchChange} />
-        <Box sx={liveLabelSx} onClick={() => setIsLive(true)}>
-          Live
-        </Box>
-      </Box>
-
-      <Box sx={{ width: "2rem" }} />
+      {/* todo unlock it for remote control later */}
+      {/*<LiveSwitch />*/}
+      {/*<Box sx={{ width: "2rem" }} />*/}
 
       <Box>
         <IconButton>

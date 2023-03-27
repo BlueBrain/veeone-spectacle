@@ -66,7 +66,7 @@ const ScreenGridOverlay: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         flexGrow: 1,
-        opacity: isGridVisible ? 1.0 : 0,
+        opacity: isGridVisible ? 0.8 : 0,
         transition: "opacity ease 500ms",
       }}
     >
