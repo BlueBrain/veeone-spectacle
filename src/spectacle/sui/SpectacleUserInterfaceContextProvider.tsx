@@ -2,16 +2,14 @@ import React, {
   createContext,
   ReactNode,
   useCallback,
-  useEffect,
   useMemo,
   useState,
 } from "react"
 import { Size } from "../../common/types"
 import { RunningEnvironment } from "../../config/types"
-import EnvironmentConfigs, {
+import ENVIRONMENT_CONFIGS, {
   EnvironmentConfig,
 } from "../../config/environmentConfigs"
-import ENVIRONMENT_CONFIGS from "../../config/environmentConfigs"
 import { resizePresentationStore } from "../../presentations/resizing"
 import { useConfig } from "../../config/AppConfigContext"
 import { useSpectacle } from "../SpectacleStateContext"
@@ -28,7 +26,9 @@ interface SpectacleUserInterfaceContextProps {
   isGridVisible: boolean
   setIsGridVisible(newValue: boolean): void
   viewZoomPercent: number
-  setViewZoomPercent(newValue: any): void
+  zoomIn(): void
+  zoomOut(): void
+  zoomFit(): void
   targetEnvironment: RunningEnvironment
   targetEnvironmentConfig: EnvironmentConfig
   activateEnvironment(newValue: RunningEnvironment): void
@@ -49,7 +49,13 @@ const SpectacleUserInterfaceContext = createContext<SpectacleUserInterfaceContex
       throw new Error("Not implemented")
     },
     viewZoomPercent: 100,
-    setViewZoomPercent() {
+    zoomIn() {
+      throw new Error("Not implemented")
+    },
+    zoomOut() {
+      throw new Error("Not implemented")
+    },
+    zoomFit() {
       throw new Error("Not implemented")
     },
     targetEnvironment: RunningEnvironment.DEV,
@@ -98,7 +104,11 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
   ] = useState<RunningEnvironment>()
 
   const targetEnvironmentConfig = useMemo(() => {
-    return ENVIRONMENT_CONFIGS[targetEnvironment]
+    const targetConfig = { ...ENVIRONMENT_CONFIGS[targetEnvironment] }
+    if (targetConfig.aspectRatio === "auto") {
+      targetConfig.aspectRatio = targetConfig.pxWidth / targetConfig.pxHeight
+    }
+    return targetConfig
   }, [targetEnvironment])
 
   const activateEnvironment = useCallback(
@@ -107,11 +117,22 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
       if (targetConfig.aspectRatio === "auto") {
         targetConfig.aspectRatio = targetConfig.pxWidth / targetConfig.pxHeight
       }
-      console.debug("targetConfig", targetConfig)
 
-      const width = workspaceSize.width
-      const height = width / targetConfig.aspectRatio
-      const initialZoom = Math.round((100 * width) / targetConfig.pxWidth)
+      const width = targetConfig.pxWidth
+      const height = targetConfig.pxHeight
+      const initialZoom = Math.round(
+        (100 * workspaceSize.width) / targetConfig.pxWidth
+      )
+
+      console.debug("ACTIVATE ENVIRONMENT", {
+        targetConfig,
+        presentationStore,
+        width,
+        height,
+      })
+
+      setViewZoomPercent(initialZoom)
+      setTargetEnvironment(env)
 
       const sizeAdjustedPresentationStore = resizePresentationStore(
         presentationStore,
@@ -126,21 +147,32 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
           height: config.FILE_BROWSER_HEIGHT,
         }
       )
-      sizeAdjustedPresentationStore.targetEnvironment = env
+
+      sizeAdjustedPresentationStore.targetEnvironment = targetEnvironment
       loadPresentationStore(sizeAdjustedPresentationStore)
-      setViewZoomPercent(initialZoom)
-      setTargetEnvironment(env)
     },
-    [
-      config.FILE_BROWSER_HEIGHT,
-      config.FILE_BROWSER_WIDTH,
-      config.MAXIMUM_FRAME_LONG_SIDE,
-      config.MINIMUM_FRAME_LONG_SIDE,
-      loadPresentationStore,
-      presentationStore,
-      workspaceSize.width,
-    ]
+    [workspaceSize, presentationStore, loadPresentationStore]
   )
+
+  const zoomIn = useCallback(() => {
+    const newZoomPercent = viewZoomPercent + 10 - (viewZoomPercent % 10)
+    setViewZoomPercent(newZoomPercent)
+  }, [viewZoomPercent, targetEnvironmentConfig])
+
+  const zoomOut = useCallback(() => {
+    let newZoomPercent = viewZoomPercent - 10 - (viewZoomPercent % 10)
+    if (newZoomPercent < 10) {
+      newZoomPercent = 10
+    }
+    setViewZoomPercent(newZoomPercent)
+  }, [viewZoomPercent])
+
+  const zoomFit = useCallback(() => {
+    const originalZoom = Math.round(
+      (100 * workspaceSize.width) / targetEnvironmentConfig.pxWidth
+    )
+    setViewZoomPercent(originalZoom)
+  }, [workspaceSize, targetEnvironmentConfig])
 
   const providerValue = useMemo<SpectacleUserInterfaceContextProps>(
     () => ({
@@ -151,7 +183,9 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
       isGridVisible,
       setIsGridVisible,
       viewZoomPercent,
-      setViewZoomPercent,
+      zoomIn,
+      zoomOut,
+      zoomFit,
       targetEnvironment,
       targetEnvironmentConfig,
       activateEnvironment,
@@ -163,6 +197,9 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
       viewZoomPercent,
       targetEnvironment,
       targetEnvironmentConfig,
+      zoomIn,
+      zoomOut,
+      zoomFit,
     ]
   )
 

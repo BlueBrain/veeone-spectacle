@@ -14,9 +14,9 @@ const WorkspaceControlPanel: React.FC = () => {
     isGridVisible,
     setIsGridVisible,
     viewZoomPercent,
-    setViewZoomPercent,
-    workspaceSize,
-    targetEnvironmentConfig,
+    zoomIn,
+    zoomOut,
+    zoomFit,
   } = useSpectacleUserInterface()
 
   const onIconButtonClick = useCallback(
@@ -25,30 +25,6 @@ const WorkspaceControlPanel: React.FC = () => {
     },
     [isGridVisible]
   )
-
-  const increaseZoom = useCallback(() => {
-    setViewZoomPercent(prev => {
-      console.debug("prev", prev)
-      return prev < 100 ? prev + 10 - (prev % 10) : 100
-    })
-  }, [setViewZoomPercent])
-
-  const decreaseZoom = useCallback(() => {
-    setViewZoomPercent(prev => {
-      console.debug("prev", prev)
-      return prev >= 10 ? prev - 10 - (prev % 10) : 100
-    })
-  }, [setViewZoomPercent])
-
-  const resetZoom = useCallback(() => {
-    setViewZoomPercent(
-      Math.round((100 * workspaceSize.width) / targetEnvironmentConfig.pxWidth)
-    )
-  }, [
-    setViewZoomPercent,
-    targetEnvironmentConfig?.pxWidth,
-    workspaceSize.width,
-  ])
 
   return (
     <Box
@@ -71,7 +47,7 @@ const WorkspaceControlPanel: React.FC = () => {
       {/*<Box sx={{ width: "2rem" }} />*/}
 
       <Box>
-        <Tooltip title={"Zoom out"} onClick={decreaseZoom}>
+        <Tooltip title={"Zoom out"} onClick={zoomOut}>
           <IconButton>
             <ZoomOut />
           </IconButton>
@@ -79,12 +55,12 @@ const WorkspaceControlPanel: React.FC = () => {
       </Box>
       <Box>{viewZoomPercent}%</Box>
       <Box>
-        <IconButton onClick={resetZoom}>
+        <IconButton onClick={zoomFit}>
           <ZoomOutMap />
         </IconButton>
       </Box>
       <Box>
-        <Tooltip title={"Zoom in"} onClick={increaseZoom}>
+        <Tooltip title={"Zoom in"} onClick={zoomIn}>
           <IconButton>
             <ZoomIn />
           </IconButton>

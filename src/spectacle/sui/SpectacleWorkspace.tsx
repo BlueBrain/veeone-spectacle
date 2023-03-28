@@ -39,11 +39,9 @@ export default function SpectacleWorkspace({
       ref={workspaceRef}
     >
       <Box
-        sx={
-          {
-            // transform: `scale(${viewZoomPercent}%)`
-          }
-        }
+        sx={{
+          transform: `scale(${viewZoomPercent}%)`,
+        }}
       >
         {children}
       </Box>
