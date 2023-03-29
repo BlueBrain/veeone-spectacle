@@ -77,7 +77,7 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
   [RunningEnvironment.SIXTH_FLOOR_DISPLAY_WALL]: {
     title: "6th Floor Display Wall",
     shortTitle: "6th Floor",
-    pxWidth: 7715,
+    pxWidth: 7718,
     pxHeight: 3265,
     aspectRatio: "auto",
     placeUrl: "https://plan.epfl.ch/?room==B1%206%20259.054",
