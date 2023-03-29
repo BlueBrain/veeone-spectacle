@@ -151,13 +151,22 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
       sizeAdjustedPresentationStore.targetEnvironment = targetEnvironment
       loadPresentationStore(sizeAdjustedPresentationStore)
     },
-    [workspaceSize, presentationStore, loadPresentationStore]
+    [
+      workspaceSize.width,
+      presentationStore,
+      config.MINIMUM_FRAME_LONG_SIDE,
+      config.MAXIMUM_FRAME_LONG_SIDE,
+      config.FILE_BROWSER_WIDTH,
+      config.FILE_BROWSER_HEIGHT,
+      targetEnvironment,
+      loadPresentationStore,
+    ]
   )
 
   const zoomIn = useCallback(() => {
     const newZoomPercent = viewZoomPercent + 10 - (viewZoomPercent % 10)
     setViewZoomPercent(newZoomPercent)
-  }, [viewZoomPercent, targetEnvironmentConfig])
+  }, [viewZoomPercent])
 
   const zoomOut = useCallback(() => {
     let newZoomPercent = viewZoomPercent - 10 - (viewZoomPercent % 10)
@@ -195,11 +204,12 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
       isLive,
       isGridVisible,
       viewZoomPercent,
-      targetEnvironment,
-      targetEnvironmentConfig,
       zoomIn,
       zoomOut,
       zoomFit,
+      targetEnvironment,
+      targetEnvironmentConfig,
+      activateEnvironment,
     ]
   )
 
