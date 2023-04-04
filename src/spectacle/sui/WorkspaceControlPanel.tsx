@@ -8,12 +8,13 @@ import {
   ZoomOutMap,
 } from "@mui/icons-material"
 import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
+import { useSpectacle } from "../SpectacleStateContext"
 
 const WorkspaceControlPanel: React.FC = () => {
+  const { viewZoomPercent } = useSpectacle()
   const {
     isGridVisible,
     setIsGridVisible,
-    viewZoomPercent,
     zoomIn,
     zoomOut,
     zoomFit,
@@ -23,7 +24,7 @@ const WorkspaceControlPanel: React.FC = () => {
     (event: MouseEvent<HTMLButtonElement>) => {
       setIsGridVisible(!isGridVisible)
     },
-    [isGridVisible]
+    [isGridVisible, setIsGridVisible]
   )
 
   return (

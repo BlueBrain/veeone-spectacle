@@ -21,12 +21,14 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
 }) => {
   const config = useConfig()
 
+  const [viewZoomPercent, setViewZoomPercent] = useState(100)
+
   const [targetEnvironment, setTargetEnvironment] = useState(null)
 
   const freshPresentation = useMemo(() => {
     console.debug("new freshPresentation", targetEnvironment)
     return getFreshPresentation({ config, defaultStore: { targetEnvironment } })
-  }, [targetEnvironment])
+  }, [config, targetEnvironment])
 
   const veeDriveService = useMemo(
     () => new VeeDriveService(config.VEEDRIVE_WS_PATH),
@@ -186,6 +188,8 @@ Went offline from ${offlineSince.toISOString()} to ${now.toISOString()}`
       loadPresentationStore,
       savePresentationStore,
       resizePresentation,
+      viewZoomPercent,
+      setViewZoomPercent,
     }),
     [
       presentationName,
@@ -208,6 +212,8 @@ Went offline from ${offlineSince.toISOString()} to ${now.toISOString()}`
       savePresentationStore,
       resizePresentation,
       closeAllFrames,
+      viewZoomPercent,
+      setViewZoomPercent,
     ]
   )
 

@@ -51,6 +51,8 @@ export interface SpectacleStateContextProps {
   loadPresentationStore: (newStore: SpectaclePresentation) => void
   savePresentationStore: (newStore: SpectaclePresentation) => void
   resizePresentation: (payload: ResizePresentationPayload) => void
+  viewZoomPercent: number
+  setViewZoomPercent: (value: number) => void
 }
 
 const SpectacleStateContext = React.createContext<SpectacleStateContextProps>(

@@ -31,7 +31,7 @@ const useInteractable = (
     return () => {
       interact(target).unset()
     }
-  }, [onHold, onPointerUp, onTap, ref])
+  }, [onHold, onPointerDown, onPointerUp, onTap, ref])
 }
 
 export default useInteractable

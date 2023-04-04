@@ -3,6 +3,7 @@ import * as React from "react"
 import { ReactNode, useEffect, useRef } from "react"
 import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
 import WorkspaceControlPanel from "./WorkspaceControlPanel"
+import { useSpectacle } from "../SpectacleStateContext"
 
 interface SpectacleWorkspaceProps {
   children: ReactNode
@@ -11,7 +12,8 @@ interface SpectacleWorkspaceProps {
 export default function SpectacleWorkspace({
   children,
 }: SpectacleWorkspaceProps) {
-  const { setWorkspaceSize, viewZoomPercent } = useSpectacleUserInterface()
+  const { viewZoomPercent } = useSpectacle()
+  const { setWorkspaceSize } = useSpectacleUserInterface()
   const workspaceRef = useRef<HTMLDivElement>()
 
   useEffect(() => {

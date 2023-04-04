@@ -19,6 +19,7 @@ interface UseInteractJsProps {
   bringToFront
   manipulate: (newSituation: FrameSituationUpdate) => void
   toggleFullscreen
+  viewZoomPercent: number
 }
 
 export const useInteractiveFrame = ({
@@ -34,6 +35,7 @@ export const useInteractiveFrame = ({
   bringToFront,
   manipulate,
   toggleFullscreen,
+  viewZoomPercent,
 }: UseInteractJsProps) => {
   const config = useConfig()
   const frameRef = useRef(null)
@@ -320,8 +322,9 @@ export const useInteractiveFrame = ({
           },
           onmove: event => {
             const { dx, dy } = event
-            nodeLeft += dx
-            nodeTop += dy
+            console.debug("onmove", { dx, dy })
+            nodeLeft += dx * (100 / viewZoomPercent)
+            nodeTop += dy * (100 / viewZoomPercent)
             node.style.transform = `
               translateX(${nodeLeft}px)
               translateY(${nodeTop}px)
@@ -363,6 +366,7 @@ export const useInteractiveFrame = ({
       debouncedManipulate,
       manipulate,
       debouncedResetStyle,
+      viewZoomPercent,
     ]
   )
   return [frameRefReceiver]
