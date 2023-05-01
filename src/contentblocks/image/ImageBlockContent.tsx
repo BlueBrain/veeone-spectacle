@@ -3,8 +3,6 @@ import { Box, CircularProgress, Grid } from "@mui/material"
 import { useImageKeeper } from "../../image-keeper/ImageKeeperContext"
 import { ImageKeeperResponse, KeeperImage } from "../../image-keeper/types"
 import { useConfig } from "../../config/AppConfigContext"
-import { useSpectacle } from "../../spectacle/SpectacleStateContext"
-import BlurredImageBackground from "./BlurredImageBackground"
 import ImageLoadingWarning from "./ImageLoadingWarning"
 
 export interface ImageBlockParams {
@@ -20,7 +18,6 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
   contentData,
   onImageLoad,
 }) => {
-  const { thumbnailRegistry } = useSpectacle()
   const { requestImage } = useImageKeeper()
   const { path: imagePath } = contentData
   const [keeperImage, setKeeperImage] = useState<KeeperImage>(null)
@@ -87,9 +84,6 @@ const ImageBlockContent: React.FC<ImageBlockContentProps> = ({
 
   return (
     <>
-      <BlurredImageBackground
-        imageUrl={thumbnailRegistry[imagePath]?.objectUrl}
-      />
       {shouldDisplayWarning ? (
         <ImageLoadingWarning />
       ) : keeperImage ? (
