@@ -67,7 +67,7 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
       config.VISUAL_KEYBOARD_REPEAT_INTERVAL_MS
     )
     setTriggeringInterval(timeout)
-  }, [triggerButton])
+  }, [config.VISUAL_KEYBOARD_REPEAT_INTERVAL_MS, triggerButton])
 
   const stopTriggering = useCallback(() => {
     if (triggeringInterval !== null) {

@@ -322,7 +322,6 @@ export const useInteractiveFrame = ({
           },
           onmove: event => {
             const { dx, dy } = event
-            console.debug("onmove", { dx, dy })
             nodeLeft += dx * (100 / viewZoomPercent)
             nodeTop += dy * (100 / viewZoomPercent)
             node.style.transform = `

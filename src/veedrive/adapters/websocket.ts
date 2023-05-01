@@ -63,6 +63,7 @@ export default class WebsocketAdapter implements CommunicationAdapterBase {
         throw error
       })
       this.connection.addEventListener("close", (event: CloseEvent) => {
+        console.error("Websocket close event", { event })
         throw new Error(
           `Websocket connection to ${this.hostname} has been closed. Reason ${event.reason}, ${event.code}`
         )

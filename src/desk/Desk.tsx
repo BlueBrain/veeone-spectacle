@@ -42,7 +42,11 @@ const Desk: React.FC = () => {
   const config = useConfig()
   const deskRef = useRef()
   const { scene } = useDesk()
-  const { presentationStore, deactivateAllFrames } = useSpectacle()
+  const {
+    presentationStore,
+    deactivateAllFrames,
+    viewZoomPercent,
+  } = useSpectacle()
   const meta = presentationStore.meta
   const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])
 
@@ -57,11 +61,25 @@ const Desk: React.FC = () => {
         (config.LAUNCHER_MENU_SAFETY_MARGIN_REM * baseFontSize) / 2
       const maxLeft = config.VIEWPORT_WIDTH - minLeft
 
+      const deskRect = (deskRef.current as HTMLDivElement).getBoundingClientRect()
+
+      const relativeLeft = ((left - deskRect.left) * 100) / viewZoomPercent
+      const relativeTop = ((top - deskRect.top) * 100) / viewZoomPercent
+
+      console.debug("openLauncherMenu", {
+        left,
+        top,
+        relativeLeft,
+        relativeTop,
+      })
+
       const newLauncherMenu: LauncherMenuData = {
         menuId: generateRandomId(4),
         position: {
-          left: Math.min(maxLeft, Math.max(left, minLeft)),
-          top: Math.min(maxTop, Math.max(top, minTop)),
+          // left: Math.min(maxLeft, Math.max(left, minLeft)),
+          // top: Math.min(maxTop, Math.max(top, minTop)),
+          left: relativeLeft,
+          top: relativeTop,
         },
         isFullyOpen: false,
       }
@@ -79,6 +97,7 @@ const Desk: React.FC = () => {
       config.VIEWPORT_HEIGHT,
       config.VIEWPORT_WIDTH,
       launcherMenus,
+      viewZoomPercent,
     ]
   )
 
