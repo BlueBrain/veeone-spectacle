@@ -49,6 +49,7 @@ const Desk: React.FC = () => {
   } = useSpectacle()
   const meta = presentationStore.meta
   const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])
+  const [launcherMenuOpenedAt, setLauncherMenuOpenedAt] = useState(0)
 
   const openLauncherMenu = useCallback(
     ({ top, left }: Position) => {
@@ -66,13 +67,6 @@ const Desk: React.FC = () => {
       const relativeLeft = ((left - deskRect.left) * 100) / viewZoomPercent
       const relativeTop = ((top - deskRect.top) * 100) / viewZoomPercent
 
-      console.debug("openLauncherMenu", {
-        left,
-        top,
-        relativeLeft,
-        relativeTop,
-      })
-
       const newLauncherMenu: LauncherMenuData = {
         menuId: generateRandomId(4),
         position: {
@@ -89,6 +83,7 @@ const Desk: React.FC = () => {
         ),
         newLauncherMenu,
       ])
+      setLauncherMenuOpenedAt(new Date().getTime())
     },
     [
       config.ALLOW_MAX_LAUNCHER_MENUS,
@@ -123,14 +118,19 @@ const Desk: React.FC = () => {
 
   const handleDeskClick = useCallback(
     event => {
-      if (event.target === deskRef.current) {
+      const now = new Date().getTime()
+      console.debug("handleDeskClick", { now, launcherMenuOpenedAt })
+      if (
+        event.target === deskRef.current &&
+        now - launcherMenuOpenedAt > 2000
+      ) {
         const newLauncherMenus = launcherMenus.filter(menu => !menu.isFullyOpen)
         if (newLauncherMenus.length !== launcherMenus.length) {
           setLauncherMenus(newLauncherMenus)
         }
       }
     },
-    [launcherMenus]
+    [launcherMenuOpenedAt, launcherMenus]
   )
 
   const handleDeskTap = useCallback(
