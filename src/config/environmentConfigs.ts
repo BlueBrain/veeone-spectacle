@@ -1,6 +1,7 @@
 import { RunningEnvironment } from "./types"
 
 export interface EnvironmentConfig {
+  code: RunningEnvironment
   title: string
   shortTitle: string
   pxWidth: number
@@ -15,6 +16,7 @@ export interface EnvironmentConfig {
 
 const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
   [RunningEnvironment.DEV]: {
+    code: RunningEnvironment.DEV,
     title: "Development Environment",
     shortTitle: "Dev",
     pxWidth: 1000,
@@ -27,6 +29,7 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     gridRows: 1,
   },
   [RunningEnvironment.CLIENT]: {
+    code: RunningEnvironment.CLIENT,
     title: "Web Client",
     shortTitle: "Web",
     pxWidth: 1000,
@@ -39,6 +42,7 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     gridRows: 1,
   },
   [RunningEnvironment.THIRD_FLOOR_LEFT_DISPLAY]: {
+    code: RunningEnvironment.THIRD_FLOOR_LEFT_DISPLAY,
     title: "3rd Floor Display Wall (left)",
     shortTitle: "3rd Floor Left",
     pxWidth: 3840,
@@ -51,6 +55,7 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     gridRows: 1,
   },
   [RunningEnvironment.THIRD_FLOOR_RIGHT_DISPLAY]: {
+    code: RunningEnvironment.THIRD_FLOOR_RIGHT_DISPLAY,
     title: "3rd Floor Display Wall (right)",
     shortTitle: "3rd Floor Right",
     pxWidth: 3840,
@@ -63,6 +68,7 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     gridRows: 1,
   },
   [RunningEnvironment.FIFTH_FLOOR_DISPLAY_WALL]: {
+    code: RunningEnvironment.FIFTH_FLOOR_DISPLAY_WALL,
     title: "5th Floor Display Wall",
     shortTitle: "5th Floor",
     pxWidth: 5785,
@@ -75,6 +81,7 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     gridRows: 3,
   },
   [RunningEnvironment.SIXTH_FLOOR_DISPLAY_WALL]: {
+    code: RunningEnvironment.SIXTH_FLOOR_DISPLAY_WALL,
     title: "6th Floor Display Wall",
     shortTitle: "6th Floor",
     pxWidth: 7718,
@@ -87,6 +94,7 @@ const ENVIRONMENT_CONFIGS: Record<RunningEnvironment, EnvironmentConfig> = {
     gridRows: 3,
   },
   [RunningEnvironment.OPENDECK]: {
+    code: RunningEnvironment.OPENDECK,
     title: "Opendeck",
     shortTitle: "Opendeck",
     pxWidth: 7642,

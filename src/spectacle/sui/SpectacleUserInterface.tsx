@@ -4,6 +4,7 @@ import { Box, IconButton } from "@mui/material"
 import { CastConnected } from "@mui/icons-material"
 import ChooseDestinationEnvironment from "./ChooseDestinationEnvironment"
 import SpectacleWorkspace from "./SpectacleWorkspace"
+import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
 
 interface SpectacleUserInterfaceProps {
   children: ReactNode
@@ -20,6 +21,8 @@ export default function SpectacleUserInterface({
     () => setIsEnvironmentPickerVisible(value => !value),
     []
   )
+
+  const { targetEnvironmentConfig } = useSpectacleUserInterface()
 
   return (
     <Box sx={{ position: "relative" }}>
@@ -39,6 +42,16 @@ export default function SpectacleUserInterface({
           alignItems: "center",
         }}
       >
+        <Box
+          sx={{
+            textOrientation: "mixed",
+            writingMode: "vertical-lr",
+            color: "white",
+            transform: "rotate(180deg)",
+          }}
+        >
+          {targetEnvironmentConfig.title}
+        </Box>
         <IconButton onClick={toggleEnvironmentPickerVisible}>
           <CastConnected sx={{ color: "white" }} />
         </IconButton>

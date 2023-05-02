@@ -28,7 +28,6 @@ interface SpectacleUserInterfaceContextProps {
   zoomIn(): void
   zoomOut(): void
   zoomFit(): void
-  targetEnvironment: RunningEnvironment
   targetEnvironmentConfig: EnvironmentConfig
   activateEnvironment(newValue: RunningEnvironment): void
 }
@@ -56,11 +55,11 @@ const SpectacleUserInterfaceContext = createContext<SpectacleUserInterfaceContex
     zoomFit() {
       throw new Error("Not implemented")
     },
-    targetEnvironment: RunningEnvironment.DEV,
     activateEnvironment() {
       throw new Error("Not implemented")
     },
     targetEnvironmentConfig: {
+      code: RunningEnvironment.DEV,
       title: "Development Environment",
       shortTitle: "Dev",
       pxWidth: 1000,
@@ -99,22 +98,15 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
 
   const [isGridVisible, setIsGridVisible] = useState(true)
 
-  const [
-    targetEnvironment,
-    setTargetEnvironment,
-  ] = useState<RunningEnvironment>()
-
   const targetEnvironmentConfig = useMemo(() => {
-    const targetConfig = { ...ENVIRONMENT_CONFIGS[targetEnvironment] }
-    if (targetConfig.aspectRatio === "auto") {
-      targetConfig.aspectRatio = targetConfig.pxWidth / targetConfig.pxHeight
+    return {
+      ...ENVIRONMENT_CONFIGS[presentationStore.targetEnvironment],
     }
-    return targetConfig
-  }, [targetEnvironment])
+  }, [presentationStore.targetEnvironment])
 
   const activateEnvironment = useCallback(
-    (env: RunningEnvironment) => {
-      const targetConfig = { ...ENVIRONMENT_CONFIGS[env] }
+    (newEnvironmentCode: RunningEnvironment) => {
+      const targetConfig = { ...ENVIRONMENT_CONFIGS[newEnvironmentCode] }
       if (targetConfig.aspectRatio === "auto") {
         targetConfig.aspectRatio = targetConfig.pxWidth / targetConfig.pxHeight
       }
@@ -125,15 +117,7 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
         (100 * workspaceSize.width) / targetConfig.pxWidth
       )
 
-      console.debug("ACTIVATE ENVIRONMENT", {
-        targetConfig,
-        presentationStore,
-        width,
-        height,
-      })
-
       setViewZoomPercent(initialZoom)
-      setTargetEnvironment(env)
 
       const sizeAdjustedPresentationStore = resizePresentationStore(
         presentationStore,
@@ -148,20 +132,18 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
           height: config.FILE_BROWSER_HEIGHT,
         }
       )
-
-      sizeAdjustedPresentationStore.targetEnvironment = targetEnvironment
+      sizeAdjustedPresentationStore.targetEnvironment = newEnvironmentCode
       loadPresentationStore(sizeAdjustedPresentationStore)
     },
     [
-      workspaceSize.width,
+      config.FILE_BROWSER_HEIGHT,
+      config.FILE_BROWSER_WIDTH,
+      config.MAXIMUM_FRAME_LONG_SIDE,
+      config.MINIMUM_FRAME_LONG_SIDE,
+      loadPresentationStore,
       presentationStore,
       setViewZoomPercent,
-      config.MINIMUM_FRAME_LONG_SIDE,
-      config.MAXIMUM_FRAME_LONG_SIDE,
-      config.FILE_BROWSER_WIDTH,
-      config.FILE_BROWSER_HEIGHT,
-      targetEnvironment,
-      loadPresentationStore,
+      workspaceSize.width,
     ]
   )
 
@@ -196,7 +178,6 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
       zoomIn,
       zoomOut,
       zoomFit,
-      targetEnvironment,
       targetEnvironmentConfig,
       activateEnvironment,
     }),
@@ -207,7 +188,6 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
       zoomIn,
       zoomOut,
       zoomFit,
-      targetEnvironment,
       targetEnvironmentConfig,
       activateEnvironment,
     ]
