@@ -4,6 +4,9 @@ import { useSpectacle } from "../SpectacleStateContext"
 import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
 import ENVIRONMENT_CONFIGS from "../../config/environmentConfigs"
 
+const GRID_BORDER = "0.3rem solid #000"
+const GRID_OPACITY = 0.8
+
 const ScreenGridOverlay: React.FC = () => {
   const { presentationStore } = useSpectacle()
   const { isGridVisible } = useSpectacleUserInterface()
@@ -38,7 +41,7 @@ const ScreenGridOverlay: React.FC = () => {
               <Box
                 key={`${i}_${j}`}
                 sx={{
-                  border: "0.1rem solid #1e1e1e",
+                  border: GRID_BORDER,
                   boxSizing: "border-box",
                   display: "flex",
                   flexGrow: "1",
@@ -60,13 +63,13 @@ const ScreenGridOverlay: React.FC = () => {
         left: "50%",
         top: "50%",
         transform: "translate(-50%, -50%)",
-        border: "0.3rem solid #1e1e1e",
+        border: GRID_BORDER,
         boxSizing: "content-box",
         pointerEvents: "none",
         display: "flex",
         flexDirection: "column",
         flexGrow: 1,
-        opacity: isGridVisible ? 0.8 : 0,
+        opacity: isGridVisible ? GRID_OPACITY : 0,
         transition: "opacity ease 500ms",
       }}
     >
