@@ -5,6 +5,7 @@ import interact from "interactjs"
 import { FrameSituation, FrameSituationUpdate } from "../types"
 import { GestureEvent } from "@interactjs/types"
 import { useConfig } from "../config/AppConfigContext"
+import { ApplicationConfig, RunningEnvironment } from "../config/types"
 
 interface UseInteractJsProps {
   angle
@@ -20,6 +21,16 @@ interface UseInteractJsProps {
   manipulate: (newSituation: FrameSituationUpdate) => void
   toggleFullscreen
   viewZoomPercent: number
+}
+
+function isOnDisplayWall(config: ApplicationConfig) {
+  return [
+    RunningEnvironment.SIXTH_FLOOR_DISPLAY_WALL,
+    RunningEnvironment.FIFTH_FLOOR_DISPLAY_WALL,
+    RunningEnvironment.OPENDECK,
+    RunningEnvironment.THIRD_FLOOR_RIGHT_DISPLAY,
+    RunningEnvironment.THIRD_FLOOR_LEFT_DISPLAY,
+  ].includes(config.RUNNING_ENVIRONMENT)
 }
 
 export const useInteractiveFrame = ({
@@ -135,7 +146,10 @@ export const useInteractiveFrame = ({
                   diffHorizontal -= nodeWidth - nodeHeight * aspectRatio
                   nodeWidth = nodeHeight * aspectRatio
                 }
-              } else if (isFrameTooBig(nodeWidth, nodeHeight)) {
+              } else if (
+                isFrameTooBig(nodeWidth, nodeHeight) &&
+                isOnDisplayWall(config)
+              ) {
                 if (aspectRatio >= 1) {
                   diffHorizontal -= nodeWidth - config.MAXIMUM_FRAME_LONG_SIDE
                   nodeWidth = config.MAXIMUM_FRAME_LONG_SIDE

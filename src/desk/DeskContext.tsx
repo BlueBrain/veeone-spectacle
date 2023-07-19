@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react"
+import { createContext, RefObject, useContext } from "react"
 import { FrameEntry, FrameId, SceneId, SpectacleScene } from "../types"
 
 export interface FullscreenFrame {
@@ -13,6 +13,7 @@ export interface DeskContextProps {
   getFrame: (frameId: FrameId) => FrameEntry
   setFullscreenFrame(fullscreenFrame: FullscreenFrame): void
   fullscreenFrame: FullscreenFrame
+  deskRef: RefObject<any>
 }
 
 const DeskContext = createContext<DeskContextProps>(null)

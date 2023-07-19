@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Frame } from "../frames"
 import { LauncherMenu } from "../launcher-menu"
 import interact from "interactjs"
@@ -40,8 +40,7 @@ function isAnyLauncherNearby(
 
 const Desk: React.FC = () => {
   const config = useConfig()
-  const deskRef = useRef()
-  const { scene } = useDesk()
+  const { scene, deskRef } = useDesk()
   const {
     presentationStore,
     deactivateAllFrames,
@@ -91,6 +90,7 @@ const Desk: React.FC = () => {
       config.LAUNCHER_MENU_SAFETY_MARGIN_REM,
       config.VIEWPORT_HEIGHT,
       config.VIEWPORT_WIDTH,
+      deskRef,
       launcherMenus,
       viewZoomPercent,
     ]
@@ -130,7 +130,7 @@ const Desk: React.FC = () => {
         }
       }
     },
-    [launcherMenuOpenedAt, launcherMenus]
+    [deskRef, launcherMenuOpenedAt, launcherMenus]
   )
 
   const handleDeskTap = useCallback(
@@ -139,7 +139,7 @@ const Desk: React.FC = () => {
         deactivateAllFrames()
       }
     },
-    [deactivateAllFrames]
+    [deactivateAllFrames, deskRef]
   )
 
   const handleDeskHold = useCallback(
@@ -153,7 +153,7 @@ const Desk: React.FC = () => {
         }
       }
     },
-    [launcherMenus, openLauncherMenu]
+    [deskRef, launcherMenus, openLauncherMenu]
   )
 
   useEffect(() => {
@@ -168,7 +168,7 @@ const Desk: React.FC = () => {
     return () => {
       interact(refElement ?? ((refElement as unknown) as Target)).unset()
     }
-  }, [config.TOUCH_HOLD_DURATION_MS, handleDeskHold, handleDeskTap])
+  }, [config.TOUCH_HOLD_DURATION_MS, deskRef, handleDeskHold, handleDeskTap])
 
   const frames = useMemo(() => {
     const sortedFrames = [...scene.frameStack]
