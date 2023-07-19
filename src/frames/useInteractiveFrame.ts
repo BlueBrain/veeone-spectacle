@@ -244,8 +244,11 @@ export const useInteractiveFrame = ({
               deltaLeft = 0
             }
 
-            nodeLeft += deltaLeft
-            nodeTop += deltaTop
+            nodeLeft += (deltaLeft * 100) / viewZoomPercent
+            nodeTop += (deltaTop * 100) / viewZoomPercent
+            nodeWidth *= 100 / viewZoomPercent
+            nodeHeight *= 100 / viewZoomPercent
+
             node.style.transform = `translateX(${nodeLeft}px) translateY(${nodeTop}px)`
             node.style.width = `${nodeWidth}px`
             node.style.height = `${nodeHeight}px`
@@ -368,9 +371,7 @@ export const useInteractiveFrame = ({
       bringToFront,
       isResizingAllowed,
       isResizingWithWheelAllowed,
-      config.ALLOW_SCALE_WITH_MOUSEWHEEL,
-      config.MINIMUM_FRAME_LONG_SIDE,
-      config.MAXIMUM_FRAME_LONG_SIDE,
+      config,
       isMovingAllowed,
       isFullscreenAllowed,
       toggleFullscreen,
