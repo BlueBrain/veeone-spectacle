@@ -1,5 +1,5 @@
 import { Desk } from "../desk"
-import React, { useRef } from "react"
+import React from "react"
 import DeskContextProvider from "../desk/DeskContextProvider"
 import { SceneId } from "../types"
 
@@ -8,10 +8,8 @@ interface SceneProps {
 }
 
 const Scene: React.FC<SceneProps> = ({ sceneId }) => {
-  const deskRef = useRef()
-
   return (
-    <DeskContextProvider sceneId={sceneId} deskRef={deskRef}>
+    <DeskContextProvider sceneId={sceneId}>
       <Desk />
     </DeskContextProvider>
   )
