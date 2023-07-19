@@ -46,6 +46,5 @@ export const getFreshPresentation: GetFreshPresentationArgs = ({
     },
     ...defaultStore,
   }
-  console.debug("newStore", newStore.targetEnvironment)
   return newStore
 }

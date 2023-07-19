@@ -16,6 +16,7 @@ import _ from "lodash"
 import VersionLabel from "./VersionLabel"
 import { FullscreenLayer } from "./fullscreen"
 import { useDesk } from "./DeskContext"
+import { convertLocalPosition } from "../bound-view/utils"
 
 interact.pointerMoveTolerance(4)
 
@@ -52,30 +53,12 @@ const Desk: React.FC = () => {
 
   const openLauncherMenu = useCallback(
     ({ top, left }: Position) => {
-      const baseFontSize = config.BASE_FONT_SIZE
-
-      const minTop = (config.LAUNCHER_MENU_SAFETY_MARGIN_REM * baseFontSize) / 2
-      const maxTop = config.VIEWPORT_HEIGHT - minTop
-
-      const minLeft =
-        (config.LAUNCHER_MENU_SAFETY_MARGIN_REM * baseFontSize) / 2
-      const maxLeft = config.VIEWPORT_WIDTH - minLeft
-
-      const deskRect = (deskRef.current as HTMLDivElement).getBoundingClientRect()
-
-      const relativeLeft = ((left - deskRect.left) * 100) / viewZoomPercent
-      const relativeTop = ((top - deskRect.top) * 100) / viewZoomPercent
-
       const newLauncherMenu: LauncherMenuData = {
         menuId: generateRandomId(4),
-        position: {
-          // left: Math.min(maxLeft, Math.max(left, minLeft)),
-          // top: Math.min(maxTop, Math.max(top, minTop)),
-          left: relativeLeft,
-          top: relativeTop,
-        },
+        position: convertLocalPosition({ left, top }, viewZoomPercent, deskRef),
         isFullyOpen: false,
       }
+
       setLauncherMenus([
         ...launcherMenus.slice(
           launcherMenus.length - config.ALLOW_MAX_LAUNCHER_MENUS + 1
@@ -84,16 +67,7 @@ const Desk: React.FC = () => {
       ])
       setLauncherMenuOpenedAt(new Date().getTime())
     },
-    [
-      config.ALLOW_MAX_LAUNCHER_MENUS,
-      config.BASE_FONT_SIZE,
-      config.LAUNCHER_MENU_SAFETY_MARGIN_REM,
-      config.VIEWPORT_HEIGHT,
-      config.VIEWPORT_WIDTH,
-      deskRef,
-      launcherMenus,
-      viewZoomPercent,
-    ]
+    [config.ALLOW_MAX_LAUNCHER_MENUS, deskRef, launcherMenus, viewZoomPercent]
   )
 
   const closeLauncherMenu = useCallback(
@@ -119,7 +93,6 @@ const Desk: React.FC = () => {
   const handleDeskClick = useCallback(
     event => {
       const now = new Date().getTime()
-      console.debug("handleDeskClick", { now, launcherMenuOpenedAt })
       if (
         event.target === deskRef.current &&
         now - launcherMenuOpenedAt > 2000
@@ -148,8 +121,6 @@ const Desk: React.FC = () => {
       if (event.target === deskRef.current) {
         if (!isAnyLauncherNearby(position, launcherMenus)) {
           openLauncherMenu(position)
-        } else {
-          // todo any feedback to the user that the launcher couldn't have been opened?
         }
       }
     },

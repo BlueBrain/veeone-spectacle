@@ -26,7 +26,6 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
   const [targetEnvironment, setTargetEnvironment] = useState(null)
 
   const freshPresentation = useMemo(() => {
-    console.debug("new freshPresentation", targetEnvironment)
     return getFreshPresentation({ config, defaultStore: { targetEnvironment } })
   }, [config, targetEnvironment])
 
@@ -49,10 +48,6 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
 
   useEffect(() => {
     if (presentationStore.targetEnvironment) {
-      console.debug(
-        "presentationStore.targetEnvironment",
-        presentationStore.targetEnvironment
-      )
       setTargetEnvironment(presentationStore.targetEnvironment)
     }
   }, [presentationStore.targetEnvironment])

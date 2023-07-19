@@ -75,10 +75,10 @@ const useFrameManager = ({
           [payload.frameId]: {
             type: payload.type,
             situation: {
-              left: left,
-              top: top,
-              width: width,
-              height: height,
+              left,
+              top,
+              width,
+              height,
               angle: 0,
             },
             data: payload.contentData,

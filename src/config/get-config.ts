@@ -5,6 +5,4 @@ const getConfig = (): ApplicationConfig => {
   return globalConfig
 }
 
-console.debug("globalConfig=", globalConfig)
-
 export default getConfig

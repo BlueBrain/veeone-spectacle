@@ -16,7 +16,6 @@ import LauncherMenuContext, {
 } from "./LauncherMenuContext"
 import React, { useCallback, useMemo, useState } from "react"
 import { useSpectacle, ViewMode } from "../spectacle/SpectacleStateContext"
-import { makeFramePositionSafe } from "../frames/makeFramePositionSafe"
 import { generateFrameId } from "../frames/utils"
 import { Position, Size } from "../common/types"
 import { CloseLauncherMenuArgs } from "./LauncherMenu"
@@ -56,28 +55,16 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
     ({ type, size, contentData = null }: OpenNewFrameArgs) => {
       close()
 
-      const safePosition = makeFramePositionSafe(position, size, {
-        width: (config.VIEWPORT_WIDTH * 100) / viewZoomPercent,
-        height: (config.VIEWPORT_HEIGHT * 100) / viewZoomPercent,
-      })
-
       const addFramePayload = {
         frameId: generateFrameId(),
-        position: safePosition,
+        position: { ...position },
         size,
         type,
         contentData,
       }
       addFrame(addFramePayload)
     },
-    [
-      addFrame,
-      close,
-      config.VIEWPORT_HEIGHT,
-      config.VIEWPORT_WIDTH,
-      position,
-      viewZoomPercent,
-    ]
+    [addFrame, close, position]
   )
 
   const openMedia = useCallback(() => {
