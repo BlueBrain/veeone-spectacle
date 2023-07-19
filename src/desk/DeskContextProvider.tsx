@@ -1,16 +1,14 @@
-import React, { RefObject, useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import DeskContext, { DeskContextProps } from "./DeskContext"
 import { FrameId, SceneId } from "../types"
 import { useScenes } from "../scenes/SceneContext"
 
 interface DeskContextProviderProps {
   sceneId: SceneId
-  deskRef: RefObject<any>
 }
 
 const DeskContextProvider: React.FC<DeskContextProviderProps> = ({
   sceneId,
-  deskRef,
   children,
 }) => {
   const [fullscreenFrame, setFullscreenFrame] = useState(null)
@@ -30,9 +28,8 @@ const DeskContextProvider: React.FC<DeskContextProviderProps> = ({
       getFrame,
       setFullscreenFrame,
       fullscreenFrame,
-      deskRef,
     }),
-    [sceneId, scene, getFrame, fullscreenFrame, deskRef]
+    [sceneId, scene, getFrame, fullscreenFrame]
   )
 
   return (

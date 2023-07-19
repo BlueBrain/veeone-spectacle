@@ -41,11 +41,12 @@ function isAnyLauncherNearby(
 
 const Desk: React.FC = () => {
   const config = useConfig()
-  const { scene, deskRef } = useDesk()
+  const { scene } = useDesk()
   const {
     presentationStore,
     deactivateAllFrames,
     viewZoomPercent,
+    deskRef,
   } = useSpectacle()
   const meta = presentationStore.meta
   const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])

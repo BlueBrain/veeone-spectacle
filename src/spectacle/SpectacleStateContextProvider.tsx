@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import SpectacleStateContext, {
   SpectacleStateContextProps,
   ThumbnailRegistryItem,
@@ -20,6 +20,8 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
   children,
 }) => {
   const config = useConfig()
+
+  const deskRef = useRef<HTMLDivElement>(null)
 
   const [viewZoomPercent, setViewZoomPercent] = useState(100)
 
@@ -185,6 +187,7 @@ Went offline from ${offlineSince.toISOString()} to ${now.toISOString()}`
       resizePresentation,
       viewZoomPercent,
       setViewZoomPercent,
+      deskRef,
     }),
     [
       presentationName,
@@ -209,6 +212,7 @@ Went offline from ${offlineSince.toISOString()} to ${now.toISOString()}`
       closeAllFrames,
       viewZoomPercent,
       setViewZoomPercent,
+      deskRef,
     ]
   )
 

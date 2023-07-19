@@ -4,6 +4,7 @@ import { ReactNode, useEffect, useRef } from "react"
 import { useSpectacleUserInterface } from "./SpectacleUserInterfaceContextProvider"
 import WorkspaceControlPanel from "./WorkspaceControlPanel"
 import { useSpectacle } from "../SpectacleStateContext"
+import WorkspaceNavigator from "./workspace-navigator/WorkspaceNavigator"
 
 interface SpectacleWorkspaceProps {
   children: ReactNode
@@ -48,6 +49,7 @@ export default function SpectacleWorkspace({
         {children}
       </Box>
       <WorkspaceControlPanel />
+      <WorkspaceNavigator />
     </Box>
   )
 }
