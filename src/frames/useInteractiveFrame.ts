@@ -220,7 +220,10 @@ export const useInteractiveFrame = ({
                 nodeHeight = config.MINIMUM_FRAME_LONG_SIDE
                 nodeWidth = nodeHeight * aspectRatio
               }
-            } else if (isFrameTooBig(nodeWidth, nodeHeight)) {
+            } else if (
+              isFrameTooBig(nodeWidth, nodeHeight) &&
+              isOnDisplayWall(config)
+            ) {
               if (aspectRatio >= 1) {
                 nodeWidth = config.MAXIMUM_FRAME_LONG_SIDE
                 nodeHeight = nodeWidth / aspectRatio
