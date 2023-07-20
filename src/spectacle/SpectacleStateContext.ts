@@ -53,6 +53,7 @@ export interface SpectacleStateContextProps {
   resizePresentation: (payload: ResizePresentationPayload) => void
   viewZoomPercent: number
   setViewZoomPercent: (value: number) => void
+  screenRef: RefObject<any>
   deskRef: RefObject<any>
 }
 

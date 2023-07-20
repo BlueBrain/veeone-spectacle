@@ -1,9 +1,10 @@
 import { Box } from "@mui/material"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useConfig } from "../../../config/AppConfigContext"
 import { Position, Size } from "../../../common/types"
 import { useSpectacle } from "../../SpectacleStateContext"
 import { useSpectacleUserInterface } from "../SpectacleUserInterfaceContextProvider"
+import interact from "interactjs"
 
 function getVisiblePartOfDiv(div: HTMLDivElement) {
   const rect = div.getBoundingClientRect()
@@ -29,19 +30,55 @@ function getVisiblePartOfDiv(div: HTMLDivElement) {
   }
 }
 
+function determineElementPosition({
+  deskDiv,
+  dimensions,
+  targetEnvironmentConfig,
+  viewZoomPercent,
+}) {
+  const visibleDeskRect = getVisiblePartOfDiv(deskDiv as HTMLDivElement)
+
+  const percentWidth = visibleDeskRect.width / targetEnvironmentConfig.pxWidth
+  const percentHeight =
+    visibleDeskRect.height / targetEnvironmentConfig.pxHeight
+
+  const size: Size = {
+    width: (dimensions.width * percentWidth * 100) / viewZoomPercent,
+    height: (dimensions.height * percentHeight * 100) / viewZoomPercent,
+  }
+
+  const position: Position = {
+    left:
+      (((dimensions.width * -Math.min(0, visibleDeskRect.x)) /
+        targetEnvironmentConfig.pxWidth) *
+        100) /
+      viewZoomPercent,
+    top:
+      (((dimensions.height * -Math.min(0, visibleDeskRect.y)) /
+        targetEnvironmentConfig.pxHeight) *
+        100) /
+      viewZoomPercent,
+  }
+  return { position, size }
+}
+
 const NAV_HEIGHT = 200
+const NAV_SPEED_FACTOR = 50
 
 const WorkspaceNavigator: React.FC = () => {
-  const config = useConfig()
+  const previewBoxRef = useRef<HTMLDivElement>()
   const { viewZoomPercent, deskRef } = useSpectacle()
-  const { targetEnvironmentConfig } = useSpectacleUserInterface()
+  const {
+    targetEnvironmentConfig,
+    uiRef,
+    initialPosition,
+    setInitialPosition,
+    previewBoxPosition,
+    setPreviewBoxPosition,
+  } = useSpectacleUserInterface()
   const [previewBoxSize, setPreviewBoxSize] = useState<Size>({
     width: 0,
     height: 0,
-  })
-  const [previewBoxPosition, setPreviewBoxPosition] = useState<Position>({
-    left: 0,
-    top: 0,
   })
 
   const dimensions = useMemo<Size>(() => {
@@ -54,39 +91,14 @@ const WorkspaceNavigator: React.FC = () => {
     if (deskRef.current === null) {
       return
     }
-    const visibleDeskRect = getVisiblePartOfDiv(
-      deskRef.current as HTMLDivElement
-    )
-    const percentWidth = visibleDeskRect.width / targetEnvironmentConfig.pxWidth
-    const percentHeight =
-      visibleDeskRect.height / targetEnvironmentConfig.pxHeight
-    const size: Size = {
-      width: (dimensions.width * percentWidth * 100) / viewZoomPercent,
-      height: (dimensions.height * percentHeight * 100) / viewZoomPercent,
-    }
 
-    const position: Position = {
-      left:
-        (((dimensions.width * -Math.min(0, visibleDeskRect.x)) /
-          targetEnvironmentConfig.pxWidth) *
-          100) /
-        viewZoomPercent,
-      top:
-        (((dimensions.height * -Math.min(0, visibleDeskRect.y)) /
-          targetEnvironmentConfig.pxHeight) *
-          100) /
-        viewZoomPercent,
-    }
+    const { position, size } = determineElementPosition({
+      deskDiv: deskRef.current,
+      dimensions,
+      targetEnvironmentConfig,
+      viewZoomPercent,
+    })
 
-    console.debug(
-      "viewportDimensions",
-      {
-        targetEnvironmentConfig,
-        visibleDeskRect,
-        size,
-      },
-      position
-    )
     setPreviewBoxSize(size)
     setPreviewBoxPosition(position)
   }, [
@@ -97,6 +109,56 @@ const WorkspaceNavigator: React.FC = () => {
     viewZoomPercent,
     setPreviewBoxSize,
     setPreviewBoxPosition,
+    dimensions,
+  ])
+
+  useEffect(() => {
+    if (initialPosition === null) {
+      setInitialPosition(previewBoxPosition)
+    }
+  }, [initialPosition, previewBoxPosition, setInitialPosition])
+
+  useEffect(() => {
+    const box = previewBoxRef.current
+    const uiScreen = uiRef.current as HTMLDivElement
+
+    if (box !== null && uiScreen !== null) {
+      const uiRect = uiScreen.getBoundingClientRect()
+      let x = uiRect.x
+      let y = uiRect.y
+
+      interact(box).draggable({
+        onmove: event => {
+          const { dx, dy } = event
+          x += -NAV_SPEED_FACTOR * dx
+          y += -NAV_SPEED_FACTOR * dy
+          uiScreen.style.transform = `translateX(${x}px) translateY(${y}px)`
+
+          // update the red rectangle
+          const { position, size } = determineElementPosition({
+            deskDiv: deskRef.current,
+            dimensions,
+            targetEnvironmentConfig,
+            viewZoomPercent,
+          })
+
+          setPreviewBoxSize(size)
+          setPreviewBoxPosition(position)
+        },
+      })
+    }
+    return () => {
+      if (previewBoxRef.current) {
+        interact(previewBoxRef.current).unset()
+      }
+    }
+  }, [
+    deskRef,
+    dimensions,
+    setPreviewBoxPosition,
+    targetEnvironmentConfig,
+    uiRef,
+    viewZoomPercent,
   ])
 
   return (
@@ -109,9 +171,11 @@ const WorkspaceNavigator: React.FC = () => {
         opacity: 0.8,
         right: 0,
         top: 0,
+        color: "white",
       }}
     >
       <Box
+        ref={previewBoxRef}
         sx={{
           position: "absolute",
           border: "1px red solid",

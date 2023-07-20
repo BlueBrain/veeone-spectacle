@@ -43,10 +43,6 @@ const WorkspaceControlPanel: React.FC = () => {
         padding: "1rem",
       }}
     >
-      {/* todo unlock it for remote control later */}
-      {/*<LiveSwitch />*/}
-      {/*<Box sx={{ width: "2rem" }} />*/}
-
       <Box>
         <Tooltip title={"Zoom out"} onClick={zoomOut}>
           <IconButton>

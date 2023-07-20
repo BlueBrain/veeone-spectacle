@@ -9,11 +9,10 @@ export const systemStats = {
 }
 
 const SpectacleScreen: React.FC = () => {
-  const ref = useRef()
-  const { isOnline, presentationStore } = useSpectacle()
+  const { isOnline, presentationStore, screenRef } = useSpectacle()
 
   useEffect(() => {
-    const currentRef = ref.current as HTMLElement
+    const currentRef = screenRef.current as HTMLElement
     const tapHandler = () => {
       systemStats.lastUserActivityAt = Date.now()
     }
@@ -23,12 +22,12 @@ const SpectacleScreen: React.FC = () => {
     return () => {
       currentRef.removeEventListener("pointerdown", tapHandler)
     }
-  }, [])
+  }, [screenRef])
 
   return (
     <Box
       className={"SpectacleScreen"}
-      ref={ref}
+      ref={screenRef}
       sx={{
         background: theme => theme.palette.screen.main,
         position: "absolute",

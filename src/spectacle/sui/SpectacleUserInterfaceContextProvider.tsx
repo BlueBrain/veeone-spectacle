@@ -1,11 +1,13 @@
 import React, {
   createContext,
   ReactNode,
+  RefObject,
   useCallback,
   useMemo,
+  useRef,
   useState,
 } from "react"
-import { Size } from "../../common/types"
+import { Position, Size } from "../../common/types"
 import { RunningEnvironment } from "../../config/types"
 import ENVIRONMENT_CONFIGS, {
   EnvironmentConfig,
@@ -30,6 +32,11 @@ interface SpectacleUserInterfaceContextProps {
   zoomFit(): void
   targetEnvironmentConfig: EnvironmentConfig
   activateEnvironment(newValue: RunningEnvironment): void
+  uiRef: RefObject<HTMLDivElement>
+  previewBoxPosition: Position
+  setPreviewBoxPosition(newValue: Position): void
+  initialPosition: Position
+  setInitialPosition(newValue: Position): void
 }
 
 const SpectacleUserInterfaceContext = createContext<SpectacleUserInterfaceContextProps>(
@@ -71,6 +78,15 @@ const SpectacleUserInterfaceContext = createContext<SpectacleUserInterfaceContex
       gridCols: 1,
       gridRows: 1,
     },
+    uiRef: null,
+    previewBoxPosition: null,
+    setPreviewBoxPosition() {
+      throw new Error("Not implemented")
+    },
+    initialPosition: null,
+    setInitialPosition() {
+      throw new Error("Not implemented")
+    },
   }
 )
 
@@ -81,6 +97,8 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
   children,
 }) => {
   const config = useConfig()
+
+  const uiRef = useRef()
 
   const {
     presentationStore,
@@ -97,6 +115,13 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
   const [isLive, setIsLive] = useState(false)
 
   const [isGridVisible, setIsGridVisible] = useState(true)
+
+  const [previewBoxPosition, setPreviewBoxPosition] = useState<Position>({
+    left: 0,
+    top: 0,
+  })
+
+  const [initialPosition, setInitialPosition] = useState<Position>(null)
 
   const targetEnvironmentConfig = useMemo(() => {
     return {
@@ -164,8 +189,14 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
     const originalZoom = Math.round(
       (100 * workspaceSize.width) / targetEnvironmentConfig.pxWidth
     )
+    setPreviewBoxPosition({ ...initialPosition })
     setViewZoomPercent(originalZoom)
-  }, [workspaceSize.width, targetEnvironmentConfig.pxWidth, setViewZoomPercent])
+  }, [
+    workspaceSize.width,
+    targetEnvironmentConfig.pxWidth,
+    initialPosition,
+    setViewZoomPercent,
+  ])
 
   const providerValue = useMemo<SpectacleUserInterfaceContextProps>(
     () => ({
@@ -180,6 +211,11 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
       zoomFit,
       targetEnvironmentConfig,
       activateEnvironment,
+      uiRef,
+      previewBoxPosition,
+      setPreviewBoxPosition,
+      initialPosition,
+      setInitialPosition,
     }),
     [
       workspaceSize,
@@ -190,6 +226,11 @@ const SpectacleUserInterfaceContextProvider: React.FC<SpectacleUserInterfaceCont
       zoomFit,
       targetEnvironmentConfig,
       activateEnvironment,
+      uiRef,
+      previewBoxPosition,
+      setPreviewBoxPosition,
+      initialPosition,
+      setInitialPosition,
     ]
   )
 

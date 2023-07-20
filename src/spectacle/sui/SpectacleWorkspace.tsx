@@ -14,7 +14,7 @@ export default function SpectacleWorkspace({
   children,
 }: SpectacleWorkspaceProps) {
   const { viewZoomPercent } = useSpectacle()
-  const { setWorkspaceSize } = useSpectacleUserInterface()
+  const { setWorkspaceSize, uiRef } = useSpectacleUserInterface()
   const workspaceRef = useRef<HTMLDivElement>()
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function SpectacleWorkspace({
           transform: `scale(${viewZoomPercent}%)`,
         }}
       >
-        {children}
+        <Box ref={uiRef}>{children}</Box>
       </Box>
       <WorkspaceControlPanel />
       <WorkspaceNavigator />

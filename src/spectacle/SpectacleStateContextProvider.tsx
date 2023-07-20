@@ -23,6 +23,8 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
 
   const deskRef = useRef<HTMLDivElement>(null)
 
+  const screenRef = useRef<HTMLDivElement>(null)
+
   const [viewZoomPercent, setViewZoomPercent] = useState(100)
 
   const [targetEnvironment, setTargetEnvironment] = useState(null)
@@ -188,6 +190,7 @@ Went offline from ${offlineSince.toISOString()} to ${now.toISOString()}`
       viewZoomPercent,
       setViewZoomPercent,
       deskRef,
+      screenRef,
     }),
     [
       presentationName,
@@ -213,6 +216,7 @@ Went offline from ${offlineSince.toISOString()} to ${now.toISOString()}`
       viewZoomPercent,
       setViewZoomPercent,
       deskRef,
+      screenRef,
     ]
   )
 

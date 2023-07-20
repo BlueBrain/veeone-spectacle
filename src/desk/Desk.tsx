@@ -130,13 +130,15 @@ const Desk: React.FC = () => {
 
   useEffect(() => {
     const refElement = deskRef.current
-    interact((deskRef.current as unknown) as Target).unset()
-    interact((deskRef.current as unknown) as Target)
-      .pointerEvents({
-        holdDuration: config.TOUCH_HOLD_DURATION_MS,
-      })
-      .on("hold", handleDeskHold)
-      .on("tap", handleDeskTap)
+    if (refElement !== null) {
+      interact((refElement as unknown) as Target).unset()
+      interact((refElement as unknown) as Target)
+        .pointerEvents({
+          holdDuration: config.TOUCH_HOLD_DURATION_MS,
+        })
+        .on("hold", handleDeskHold)
+        .on("tap", handleDeskTap)
+    }
     return () => {
       interact(refElement ?? ((refElement as unknown) as Target)).unset()
     }
