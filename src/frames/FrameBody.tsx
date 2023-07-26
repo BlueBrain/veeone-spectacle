@@ -2,6 +2,7 @@ import { Box } from "@mui/material"
 import * as React from "react"
 import { useInteractiveFrame } from "./useInteractiveFrame"
 import { useFrame } from "./FrameContext"
+import { useSpectacle } from "../spectacle/SpectacleStateContext"
 
 const FrameBody: React.FC = () => {
   const {
@@ -21,6 +22,8 @@ const FrameBody: React.FC = () => {
     stackIndex,
   } = useFrame()
 
+  const { viewZoomPercent } = useSpectacle()
+
   const [frameRefReceiver] = useInteractiveFrame({
     width,
     height,
@@ -34,6 +37,7 @@ const FrameBody: React.FC = () => {
     manipulate,
     toggleFullscreen,
     bringToFront,
+    viewZoomPercent,
   })
 
   return (

@@ -17,7 +17,7 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
   mainRotationAngle,
   totalSubitemCount,
 }) => {
-  const { LAUNCHER_SUBWEDGE_ANGLE } = useConfig()
+  const { LAUNCHER_SUBWEDGE_ANGLE, LAUNCHER_MENU_SIZE_REM } = useConfig()
   const { label, icon } = menuItem
   const anglePerMainItem = LAUNCHER_SUBWEDGE_ANGLE * totalSubitemCount
   const animationId = useMemo(() => generateRandomId(), [])
@@ -65,7 +65,7 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
             transform: `
               translate(-50%, -50%)
               rotate(${rotateAngle}deg)
-              translateX(13.6rem)
+              translateX(${LAUNCHER_MENU_SIZE_REM / 1.654411765}rem)
               rotate(${-rotateAngle}deg)
               `,
           },
@@ -73,11 +73,11 @@ const SubWedgeLabelItem: React.FC<SubWedgeLabelItemProps> = ({
       }}
     >
       <Box sx={{}} className={"MenuItemIcon"}>
-        <IconComponent sx={{ fontSize: `1.4rem` }} />
+        <IconComponent sx={{ fontSize: `${LAUNCHER_MENU_SIZE_REM / 15}rem` }} />
       </Box>
       <Box
         sx={{
-          fontSize: `0.75rem`,
+          fontSize: `${Math.max(0.65, LAUNCHER_MENU_SIZE_REM / 28.0)}rem`,
         }}
         className={"MenuItemLabel"}
       >

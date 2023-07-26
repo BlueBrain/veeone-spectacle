@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Frame } from "../frames"
 import { LauncherMenu } from "../launcher-menu"
 import interact from "interactjs"
@@ -16,6 +16,7 @@ import _ from "lodash"
 import VersionLabel from "./VersionLabel"
 import { FullscreenLayer } from "./fullscreen"
 import { useDesk } from "./DeskContext"
+import { convertLocalPosition } from "../bound-view/utils"
 
 interact.pointerMoveTolerance(4)
 
@@ -40,46 +41,34 @@ function isAnyLauncherNearby(
 
 const Desk: React.FC = () => {
   const config = useConfig()
-  const deskRef = useRef()
   const { scene } = useDesk()
-  const { presentationStore, deactivateAllFrames } = useSpectacle()
+  const {
+    presentationStore,
+    deactivateAllFrames,
+    viewZoomPercent,
+    deskRef,
+  } = useSpectacle()
   const meta = presentationStore.meta
   const [launcherMenus, setLauncherMenus] = useState<LauncherMenuData[]>([])
+  const [launcherMenuOpenedAt, setLauncherMenuOpenedAt] = useState(0)
 
   const openLauncherMenu = useCallback(
     ({ top, left }: Position) => {
-      const baseFontSize = config.BASE_FONT_SIZE
-
-      const minTop = (config.LAUNCHER_MENU_SAFETY_MARGIN_REM * baseFontSize) / 2
-      const maxTop = config.VIEWPORT_HEIGHT - minTop
-
-      const minLeft =
-        (config.LAUNCHER_MENU_SAFETY_MARGIN_REM * baseFontSize) / 2
-      const maxLeft = config.VIEWPORT_WIDTH - minLeft
-
       const newLauncherMenu: LauncherMenuData = {
         menuId: generateRandomId(4),
-        position: {
-          left: Math.min(maxLeft, Math.max(left, minLeft)),
-          top: Math.min(maxTop, Math.max(top, minTop)),
-        },
+        position: convertLocalPosition({ left, top }, viewZoomPercent, deskRef),
         isFullyOpen: false,
       }
+
       setLauncherMenus([
         ...launcherMenus.slice(
           launcherMenus.length - config.ALLOW_MAX_LAUNCHER_MENUS + 1
         ),
         newLauncherMenu,
       ])
+      setLauncherMenuOpenedAt(new Date().getTime())
     },
-    [
-      config.ALLOW_MAX_LAUNCHER_MENUS,
-      config.BASE_FONT_SIZE,
-      config.LAUNCHER_MENU_SAFETY_MARGIN_REM,
-      config.VIEWPORT_HEIGHT,
-      config.VIEWPORT_WIDTH,
-      launcherMenus,
-    ]
+    [config.ALLOW_MAX_LAUNCHER_MENUS, deskRef, launcherMenus, viewZoomPercent]
   )
 
   const closeLauncherMenu = useCallback(
@@ -104,14 +93,18 @@ const Desk: React.FC = () => {
 
   const handleDeskClick = useCallback(
     event => {
-      if (event.target === deskRef.current) {
+      const now = new Date().getTime()
+      if (
+        event.target === deskRef.current &&
+        now - launcherMenuOpenedAt > 2000
+      ) {
         const newLauncherMenus = launcherMenus.filter(menu => !menu.isFullyOpen)
         if (newLauncherMenus.length !== launcherMenus.length) {
           setLauncherMenus(newLauncherMenus)
         }
       }
     },
-    [launcherMenus]
+    [deskRef, launcherMenuOpenedAt, launcherMenus]
   )
 
   const handleDeskTap = useCallback(
@@ -120,7 +113,7 @@ const Desk: React.FC = () => {
         deactivateAllFrames()
       }
     },
-    [deactivateAllFrames]
+    [deactivateAllFrames, deskRef]
   )
 
   const handleDeskHold = useCallback(
@@ -129,27 +122,27 @@ const Desk: React.FC = () => {
       if (event.target === deskRef.current) {
         if (!isAnyLauncherNearby(position, launcherMenus)) {
           openLauncherMenu(position)
-        } else {
-          // todo any feedback to the user that the launcher couldn't have been opened?
         }
       }
     },
-    [launcherMenus, openLauncherMenu]
+    [deskRef, launcherMenus, openLauncherMenu]
   )
 
   useEffect(() => {
     const refElement = deskRef.current
-    interact((deskRef.current as unknown) as Target).unset()
-    interact((deskRef.current as unknown) as Target)
-      .pointerEvents({
-        holdDuration: config.TOUCH_HOLD_DURATION_MS,
-      })
-      .on("hold", handleDeskHold)
-      .on("tap", handleDeskTap)
+    if (refElement !== null) {
+      interact((refElement as unknown) as Target).unset()
+      interact((refElement as unknown) as Target)
+        .pointerEvents({
+          holdDuration: config.TOUCH_HOLD_DURATION_MS,
+        })
+        .on("hold", handleDeskHold)
+        .on("tap", handleDeskTap)
+    }
     return () => {
       interact(refElement ?? ((refElement as unknown) as Target)).unset()
     }
-  }, [config.TOUCH_HOLD_DURATION_MS, handleDeskHold, handleDeskTap])
+  }, [config.TOUCH_HOLD_DURATION_MS, deskRef, handleDeskHold, handleDeskTap])
 
   const frames = useMemo(() => {
     const sortedFrames = [...scene.frameStack]

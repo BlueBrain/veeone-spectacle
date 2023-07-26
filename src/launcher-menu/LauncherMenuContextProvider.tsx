@@ -16,7 +16,6 @@ import LauncherMenuContext, {
 } from "./LauncherMenuContext"
 import React, { useCallback, useMemo, useState } from "react"
 import { useSpectacle, ViewMode } from "../spectacle/SpectacleStateContext"
-import { makeFramePositionSafe } from "../frames/makeFramePositionSafe"
 import { generateFrameId } from "../frames/utils"
 import { Position, Size } from "../common/types"
 import { CloseLauncherMenuArgs } from "./LauncherMenu"
@@ -45,7 +44,7 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   children,
 }) => {
   const config = useConfig()
-  const { addFrame, setViewMode } = useSpectacle()
+  const { addFrame, setViewMode, viewZoomPercent } = useSpectacle()
   const presentationManager = usePresentationManager()
 
   const close = useCallback(() => {
@@ -55,20 +54,17 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
   const openNewFrameFromLauncher = useCallback(
     ({ type, size, contentData = null }: OpenNewFrameArgs) => {
       close()
-      position = makeFramePositionSafe(position, size, {
-        width: config.VIEWPORT_WIDTH,
-        height: config.VIEWPORT_HEIGHT,
-      })
 
-      addFrame({
+      const addFramePayload = {
         frameId: generateFrameId(),
-        position,
+        position: { ...position },
         size,
         type,
         contentData,
-      })
+      }
+      addFrame(addFramePayload)
     },
-    []
+    [addFrame, close, position]
   )
 
   const openMedia = useCallback(() => {
@@ -216,21 +212,19 @@ const LauncherMenuContextProvider: React.FC<LauncherMenuContextProviderProps> = 
             icon: Language,
             action: () => openWebsite("https://bbp.epfl.ch/nexus/cell-atlas/"),
           }),
-          // new LauncherMenuItem({
-          //   label: "EPFL",
-          //   icon: Language,
-          //   action: () => openWebsite("https://epfl.ch"),
-          // }),
+          new LauncherMenuItem({
+            label: "Protein Atlas",
+            icon: Language,
+            action: () =>
+              openWebsite(
+                "https://bbpteam.epfl.ch/public/protein-atlas/index.html"
+              ),
+          }),
           new LauncherMenuItem({
             label: "BBP",
             icon: Language,
             action: () => openWebsite("https://bluebrain.epfl.ch/"),
           }),
-
-          // new LauncherMenuItem({
-          //   label: "Browser",
-          //   icon: Language,
-          // }),
         ],
       }),
     ],

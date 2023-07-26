@@ -12,29 +12,54 @@ import PresentationManagerContextProvider from "../presentations/presentation-ma
 import DialogsPlaceholder from "../dialogs/DialogsPlaceholder"
 import VisualKeyboardContextProvider from "../visualkeyboard/VisualKeyboardContextProvider"
 import SceneContextProvider from "../scenes/SceneContextProvider"
+import { RunningEnvironment } from "../config/types"
+import SpectacleUserInterface from "./sui/SpectacleUserInterface"
+import SpectacleUserInterfaceContextProvider from "./sui/SpectacleUserInterfaceContextProvider"
+import ScreenGridOverlay from "./sui/ScreenGridOverlay"
+import NotificationContextProvider from "./notifications/NotificationContextProvider"
 
 export const Spectacle = () => {
   const config = useConfig()
   const blueBrainTheme = useMemo(() => getBlueBrainTheme(config), [config])
 
+  const userInterface = useMemo(() => {
+    if (
+      [RunningEnvironment.DEV, RunningEnvironment.CLIENT].includes(
+        config.RUNNING_ENVIRONMENT
+      )
+    ) {
+      return (
+        <SpectacleUserInterfaceContextProvider>
+          <SpectacleUserInterface>
+            <SpectacleScreen />
+            <ScreenGridOverlay />
+          </SpectacleUserInterface>
+        </SpectacleUserInterfaceContextProvider>
+      )
+    }
+    return <SpectacleScreen />
+  }, [config.RUNNING_ENVIRONMENT])
+
   return (
     <ThemeProvider theme={blueBrainTheme}>
       <CssBaseline />
       <ThemeGradients />
-      <VisualKeyboardContextProvider>
-        <SpectacleStateContextProvider>
-          <SceneContextProvider>
-            <DialogsContextProvider>
-              <PresentationManagerContextProvider>
-                <ImageKeeperContextProvider>
-                  <SpectacleScreen />
-                </ImageKeeperContextProvider>
-                <DialogsPlaceholder />
-              </PresentationManagerContextProvider>
-            </DialogsContextProvider>
-          </SceneContextProvider>
-        </SpectacleStateContextProvider>
-      </VisualKeyboardContextProvider>
+      <NotificationContextProvider>
+        <VisualKeyboardContextProvider>
+          <SpectacleStateContextProvider>
+            <SceneContextProvider>
+              <DialogsContextProvider>
+                <PresentationManagerContextProvider>
+                  <ImageKeeperContextProvider>
+                    {userInterface}
+                  </ImageKeeperContextProvider>
+                  <DialogsPlaceholder />
+                </PresentationManagerContextProvider>
+              </DialogsContextProvider>
+            </SceneContextProvider>
+          </SpectacleStateContextProvider>
+        </VisualKeyboardContextProvider>
+      </NotificationContextProvider>
     </ThemeProvider>
   )
 }

@@ -5,6 +5,7 @@ import interact from "interactjs"
 import { FrameSituation, FrameSituationUpdate } from "../types"
 import { GestureEvent } from "@interactjs/types"
 import { useConfig } from "../config/AppConfigContext"
+import { ApplicationConfig, RunningEnvironment } from "../config/types"
 
 interface UseInteractJsProps {
   angle
@@ -19,6 +20,17 @@ interface UseInteractJsProps {
   bringToFront
   manipulate: (newSituation: FrameSituationUpdate) => void
   toggleFullscreen
+  viewZoomPercent: number
+}
+
+function isOnDisplayWall(config: ApplicationConfig) {
+  return [
+    RunningEnvironment.SIXTH_FLOOR_DISPLAY_WALL,
+    RunningEnvironment.FIFTH_FLOOR_DISPLAY_WALL,
+    RunningEnvironment.OPENDECK,
+    RunningEnvironment.THIRD_FLOOR_RIGHT_DISPLAY,
+    RunningEnvironment.THIRD_FLOOR_LEFT_DISPLAY,
+  ].includes(config.RUNNING_ENVIRONMENT)
 }
 
 export const useInteractiveFrame = ({
@@ -34,6 +46,7 @@ export const useInteractiveFrame = ({
   bringToFront,
   manipulate,
   toggleFullscreen,
+  viewZoomPercent,
 }: UseInteractJsProps) => {
   const config = useConfig()
   const frameRef = useRef(null)
@@ -133,7 +146,10 @@ export const useInteractiveFrame = ({
                   diffHorizontal -= nodeWidth - nodeHeight * aspectRatio
                   nodeWidth = nodeHeight * aspectRatio
                 }
-              } else if (isFrameTooBig(nodeWidth, nodeHeight)) {
+              } else if (
+                isFrameTooBig(nodeWidth, nodeHeight) &&
+                isOnDisplayWall(config)
+              ) {
                 if (aspectRatio >= 1) {
                   diffHorizontal -= nodeWidth - config.MAXIMUM_FRAME_LONG_SIDE
                   nodeWidth = config.MAXIMUM_FRAME_LONG_SIDE
@@ -204,7 +220,10 @@ export const useInteractiveFrame = ({
                 nodeHeight = config.MINIMUM_FRAME_LONG_SIDE
                 nodeWidth = nodeHeight * aspectRatio
               }
-            } else if (isFrameTooBig(nodeWidth, nodeHeight)) {
+            } else if (
+              isFrameTooBig(nodeWidth, nodeHeight) &&
+              isOnDisplayWall(config)
+            ) {
               if (aspectRatio >= 1) {
                 nodeWidth = config.MAXIMUM_FRAME_LONG_SIDE
                 nodeHeight = nodeWidth / aspectRatio
@@ -228,8 +247,11 @@ export const useInteractiveFrame = ({
               deltaLeft = 0
             }
 
-            nodeLeft += deltaLeft
-            nodeTop += deltaTop
+            nodeLeft += (deltaLeft * 100) / viewZoomPercent
+            nodeTop += (deltaTop * 100) / viewZoomPercent
+            nodeWidth *= 100 / viewZoomPercent
+            nodeHeight *= 100 / viewZoomPercent
+
             node.style.transform = `translateX(${nodeLeft}px) translateY(${nodeTop}px)`
             node.style.width = `${nodeWidth}px`
             node.style.height = `${nodeHeight}px`
@@ -320,8 +342,8 @@ export const useInteractiveFrame = ({
           },
           onmove: event => {
             const { dx, dy } = event
-            nodeLeft += dx
-            nodeTop += dy
+            nodeLeft += dx * (100 / viewZoomPercent)
+            nodeTop += dy * (100 / viewZoomPercent)
             node.style.transform = `
               translateX(${nodeLeft}px)
               translateY(${nodeTop}px)
@@ -352,9 +374,7 @@ export const useInteractiveFrame = ({
       bringToFront,
       isResizingAllowed,
       isResizingWithWheelAllowed,
-      config.ALLOW_SCALE_WITH_MOUSEWHEEL,
-      config.MINIMUM_FRAME_LONG_SIDE,
-      config.MAXIMUM_FRAME_LONG_SIDE,
+      config,
       isMovingAllowed,
       isFullscreenAllowed,
       toggleFullscreen,
@@ -363,6 +383,7 @@ export const useInteractiveFrame = ({
       debouncedManipulate,
       manipulate,
       debouncedResetStyle,
+      viewZoomPercent,
     ]
   )
   return [frameRefReceiver]

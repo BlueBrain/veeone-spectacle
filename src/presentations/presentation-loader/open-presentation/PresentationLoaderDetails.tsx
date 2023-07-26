@@ -13,6 +13,9 @@ import SpectacleStateContext from "../../../spectacle/SpectacleStateContext"
 import { SpectaclePresentation } from "../../../types"
 import { friendlyDisplayDateTime } from "../../../common/datetime"
 import { ArrowBackRounded, Crop32Rounded } from "@mui/icons-material"
+import ENVIRONMENT_CONFIGS, {
+  EnvironmentConfig,
+} from "../../../config/environmentConfigs"
 
 interface PresentationLoaderDetailsProps {
   presentationId: string
@@ -62,6 +65,10 @@ export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
     [presentationData]
   )
 
+  const envConfig: EnvironmentConfig | null = useMemo(() => {
+    return ENVIRONMENT_CONFIGS[presentationData?.targetEnvironment] ?? null
+  }, [presentationData?.targetEnvironment])
+
   return isLoading || !presentationData ? (
     <CircularProgress />
   ) : (
@@ -109,6 +116,19 @@ export const PresentationLoaderDetails: FC<PresentationLoaderDetailsProps> = ({
                 })}
               </Box>
             </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Target</TableCell>
+            {envConfig ? (
+              <TableCell>
+                <Box sx={{ fontWeight: "bold" }}>{envConfig.title}</Box>
+                <div>
+                  {envConfig.pxWidth}&times;{envConfig.pxHeight}
+                </div>
+              </TableCell>
+            ) : (
+              <TableCell>Not assigned</TableCell>
+            )}
           </TableRow>
           <TableRow>
             <TableCell>Screen size</TableCell>

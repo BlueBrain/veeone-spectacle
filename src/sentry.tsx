@@ -22,10 +22,12 @@ config.RUNNING_ENVIRONMENT=${config.RUNNING_ENVIRONMENT}`
   console.info("Sentry initialization...")
   Sentry.init({
     dsn: config.SENTRY_DSN,
-    integrations: [new BrowserTracing()],
+    integrations: [new BrowserTracing(), new Sentry.Replay()],
     tracesSampleRate: 1.0,
     environment: config.RUNNING_ENVIRONMENT,
     release: config.REVISION,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
   })
 }
 

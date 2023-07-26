@@ -1,10 +1,16 @@
 import queryParamOverrides from "./query-param-overrides"
 import { ApplicationConfig, RunningEnvironment } from "./types"
 
-const viewportWidth = window.visualViewport?.width
-const viewportHeight = window.visualViewport?.height
-const viewportLongSide = Math.max(viewportWidth, viewportHeight) || 3600
-const viewportShortSide = Math.min(viewportWidth, viewportHeight) || 1200
+const VIEWPORT_WIDTH = window.visualViewport?.width
+const VIEWPORT_HEIGHT = window.visualViewport?.height
+const DEVICE_PIXEL_RATIO = window.devicePixelRatio
+const VIEWPORT_REAL_WIDTH = Math.round(VIEWPORT_WIDTH * DEVICE_PIXEL_RATIO)
+const VIEWPORT_REAL_HEIGHT = Math.round(VIEWPORT_HEIGHT * DEVICE_PIXEL_RATIO)
+const VIEWPORT_ASPECT_RATIO =
+  Math.round((100 * VIEWPORT_REAL_WIDTH) / VIEWPORT_REAL_HEIGHT) / 100
+
+const viewportLongSide = Math.max(VIEWPORT_WIDTH, VIEWPORT_HEIGHT) || 3600
+const viewportShortSide = Math.min(VIEWPORT_WIDTH, VIEWPORT_HEIGHT) || 1200
 
 declare const ENV_VARIABLES: any
 
@@ -24,8 +30,12 @@ let defaultConfig: ApplicationConfig = {
     "https://a091d41e9df94ce787371864e96e7301@o224246.ingest.sentry.io/6367583",
   SENTRY_EXCLUDE_ENVIRONMENTS: [RunningEnvironment.DEV],
   IS_SENTRY_ENABLED: true,
-  VIEWPORT_WIDTH: viewportWidth,
-  VIEWPORT_HEIGHT: viewportHeight,
+  VIEWPORT_WIDTH,
+  VIEWPORT_HEIGHT,
+  DEVICE_PIXEL_RATIO,
+  VIEWPORT_REAL_WIDTH,
+  VIEWPORT_REAL_HEIGHT,
+  VIEWPORT_ASPECT_RATIO,
   LAUNCHER_MENU_SIZE_REM: 22.5,
   LAUNCHER_SUBWEDGE_ANGLE: 22,
   LAUNCHER_MENU_SAFETY_MARGIN_REM: 35,
