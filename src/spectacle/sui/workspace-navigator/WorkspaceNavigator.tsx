@@ -1,6 +1,5 @@
 import { Box } from "@mui/material"
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { useConfig } from "../../../config/AppConfigContext"
 import { Position, Size } from "../../../common/types"
 import { useSpectacle } from "../../SpectacleStateContext"
 import { useSpectacleUserInterface } from "../SpectacleUserInterfaceContextProvider"
@@ -8,7 +7,6 @@ import interact from "interactjs"
 
 function getVisiblePartOfDiv(div: HTMLDivElement) {
   const rect = div.getBoundingClientRect()
-  console.debug("getVisiblePartOfDiv", rect)
 
   // Viewport dimensions
   const viewportWidth =

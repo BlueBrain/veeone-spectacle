@@ -47,29 +47,46 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
         ...extraData,
       }
 
+      let originalPresentation = null
+
+      try {
+        originalPresentation = await veeDriveService.getPresentation(
+          storeToSave.id
+        )
+      } catch {
+        console.debug(
+          `originalPresentation has not been found - create a new one: ${storeToSave.id}`,
+          storeToSave,
+          originalPresentation
+        )
+      }
+
       // Assign a unique random ID for new presentations
-      if (storeToSave.id === null) {
+      if (storeToSave.id === null || originalPresentation === null) {
         storeToSave.id = generateRandomPresentationId()
       }
 
-      const originalPresentation = await veeDriveService.getPresentation(
-        storeToSave.id
-      )
-
-      if (
+      const canSavePresentation =
+        originalPresentation === null ||
         !originalPresentation.targetEnvironment ||
         originalPresentation.targetEnvironment === storeToSave.targetEnvironment
-      ) {
+
+      if (canSavePresentation) {
         savePresentationStore(storeToSave)
         await veeDriveService.savePresentation(storeToSave)
+        notifications.success("Presentation has been saved")
       } else {
-        notifications.info("You need to save it as a new presentation.")
-        await savePresentationAs({ position: null })
+        console.warn(
+          "Target environment mismatch",
+          originalPresentation?.targetEnvironment,
+          storeToSave.targetEnvironment
+        )
+        throw new Error("Target environment mismatch")
       }
 
       return storeToSave
     },
-    [presentationStore, savePresentationStore, veeDriveService]
+    [notifications, presentationStore, savePresentationStore, veeDriveService]
   )
 
   const savePresentationAs = useCallback(
@@ -96,10 +113,21 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
         // Open a "Save as" dialog if the presentation hasn't been saved yet
         return await savePresentationAs({ position })
       } else {
-        return await performPresentationSave()
+        try {
+          return await performPresentationSave()
+        } catch {
+          console.warn("Target environment mismatch")
+          notifications.info("You need to save it as a new presentation.")
+          await savePresentationAs({ position: null })
+        }
       }
     },
-    [performPresentationSave, presentationStore, savePresentationAs]
+    [
+      notifications,
+      performPresentationSave,
+      presentationStore.name,
+      savePresentationAs,
+    ]
   )
 
   const openPresentation = useCallback(
