@@ -22,6 +22,8 @@ import { useSpectacle, ViewMode } from "../../spectacle/SpectacleStateContext"
 import { useDesk } from "../../desk/DeskContext"
 import { useScenes } from "../../scenes/SceneContext"
 import { useFrame } from "../../frames/FrameContext"
+import { useConfig } from "../../config/AppConfigContext"
+import { RunningEnvironment } from "../../config/types"
 
 const CONTROLS_FADING_TIME_MS = 500
 const CONTROLS_AUTO_HIDE_AFTER_MS = 5000
@@ -117,9 +119,16 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 }) => {
   const controlsRef = useRef(null)
   const sliderRef = useRef(null)
+
+  const { RUNNING_ENVIRONMENT } = useConfig()
+  const shouldAutoPlayByDefault = ![
+    RunningEnvironment.CLIENT,
+    RunningEnvironment.DEV,
+  ].includes(RUNNING_ENVIRONMENT)
+
   const [currentTime, setCurrentTime] = useState<number>(null)
   const [totalTime, setTotalTime] = useState<number>(null)
-  const [isPlaying, setIsPlaying] = useState(true)
+  const [isPlaying, setIsPlaying] = useState(shouldAutoPlayByDefault)
   const [active, setActive] = useState(true)
   const [activeCssDisplay, setActiveCssDisplay] = useState(active)
   const { viewMode } = useSpectacle()

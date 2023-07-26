@@ -7,7 +7,6 @@ const WebsiteBlockNavigationButtons: React.FC = () => {
   const { navigateHome, navigateBack, navigateForward } = useWebsiteBlock()
   return (
     <Grid container alignItems="center" data-drag-handle={true}>
-      {/* todo implement nav buttons */}
       <Grid item sx={{ display: `none` }}>
         <Tooltip title="Back" enterDelay={1000}>
           <span>

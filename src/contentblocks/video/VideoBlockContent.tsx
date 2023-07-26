@@ -104,7 +104,7 @@ const VideoBlockContent: React.FC<VideoBlockContentProps> = (
     return () => {
       videoSource?.removeEventListener("error", errorHandler)
     }
-  }, [videoRef.current])
+  }, [videoRef])
 
   return (
     <>

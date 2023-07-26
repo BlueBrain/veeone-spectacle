@@ -1,8 +1,9 @@
 import { Dialog, Paper, PaperProps } from "@mui/material"
-import React, { useCallback, useEffect, useRef } from "react"
+import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { DialogOptions } from "./DialogsContext"
 import ActiveDialogContextProvider from "./ActiveDialogContextProvider"
 import { useConfig } from "../config/AppConfigContext"
+import { useSpectacle } from "../spectacle/SpectacleStateContext"
 
 interface SpectacleDialogProps {
   component: React.FC | React.NamedExoticComponent
@@ -69,8 +70,17 @@ const SpectacleDialog: React.FC<SpectacleDialogProps> = ({
   component,
   options,
 }) => {
+  const { presentationStore } = useSpectacle()
   const { fullWidth = true, maxWidth = "sm", position } = options
   const DialogComponent = component
+
+  const { left, top } = useMemo(
+    () =>
+      position !== null
+        ? { left: position.left, top: position.top }
+        : { left: "50%", top: "50%" },
+    [position]
+  )
 
   return (
     <ActiveDialogContextProvider
@@ -88,8 +98,8 @@ const SpectacleDialog: React.FC<SpectacleDialogProps> = ({
           sx: {
             position: "absolute",
             transform: `translate(-50%, -50%)`,
-            left: position.left,
-            top: position.top,
+            left,
+            top,
           },
         }}
       >

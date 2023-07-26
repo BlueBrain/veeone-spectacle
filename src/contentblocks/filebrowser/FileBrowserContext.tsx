@@ -49,7 +49,6 @@ const fetchDirectoryContents = async (
     )
     dirs = _.sortBy(dirsList, "name")
   } catch (err) {
-    // todo this error should be logged/reported
     return { dirs: [], files: [] }
   }
   const files = response.files.map(

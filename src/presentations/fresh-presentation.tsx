@@ -1,16 +1,19 @@
-import { generateRandomPresentationId } from "./utils"
 import { ApplicationConfig } from "../config/types"
 import { SpectaclePresentation } from "../types"
 
 interface Args {
   config: ApplicationConfig
+  defaultStore?: Partial<SpectaclePresentation>
 }
 
 interface GetFreshPresentationArgs {
   (args: Args): SpectaclePresentation
 }
 
-export const getFreshPresentation: GetFreshPresentationArgs = ({ config }) => {
+export const getFreshPresentation: GetFreshPresentationArgs = ({
+  config,
+  defaultStore = {},
+}) => {
   /**
    * This functions provides a base structure for a freshly created presentation.
    * It's used when starting up the application or selecting "New" option from
@@ -19,6 +22,7 @@ export const getFreshPresentation: GetFreshPresentationArgs = ({ config }) => {
   const now = Date.now()
   const newStore: SpectaclePresentation = {
     id: null,
+    targetEnvironment: null,
     name: "",
     folder: null,
     createdAt: now,
@@ -40,6 +44,7 @@ export const getFreshPresentation: GetFreshPresentationArgs = ({ config }) => {
         },
       },
     },
+    ...defaultStore,
   }
   return newStore
 }

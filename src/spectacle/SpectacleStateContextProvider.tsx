@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import SpectacleStateContext, {
   SpectacleStateContextProps,
   ThumbnailRegistryItem,
@@ -21,7 +21,17 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
 }) => {
   const config = useConfig()
 
-  const freshPresentation = useMemo(() => getFreshPresentation({ config }), [])
+  const deskRef = useRef<HTMLDivElement>(null)
+
+  const screenRef = useRef<HTMLDivElement>(null)
+
+  const [viewZoomPercent, setViewZoomPercent] = useState(100)
+
+  const [targetEnvironment, setTargetEnvironment] = useState(null)
+
+  const freshPresentation = useMemo(() => {
+    return getFreshPresentation({ config, defaultStore: { targetEnvironment } })
+  }, [config, targetEnvironment])
 
   const veeDriveService = useMemo(
     () => new VeeDriveService(config.VEEDRIVE_WS_PATH),
@@ -39,6 +49,12 @@ const SpectacleStateContextProvider: React.FC<SpectacleContextProviderProps> = (
     isPresentationClean,
     savePresentationStore,
   } = usePresentationStateManager({ freshPresentation })
+
+  useEffect(() => {
+    if (presentationStore.targetEnvironment) {
+      setTargetEnvironment(presentationStore.targetEnvironment)
+    }
+  }, [presentationStore.targetEnvironment])
 
   const {
     addFrame,
@@ -171,6 +187,10 @@ Went offline from ${offlineSince.toISOString()} to ${now.toISOString()}`
       loadPresentationStore,
       savePresentationStore,
       resizePresentation,
+      viewZoomPercent,
+      setViewZoomPercent,
+      deskRef,
+      screenRef,
     }),
     [
       presentationName,
@@ -193,6 +213,10 @@ Went offline from ${offlineSince.toISOString()} to ${now.toISOString()}`
       savePresentationStore,
       resizePresentation,
       closeAllFrames,
+      viewZoomPercent,
+      setViewZoomPercent,
+      deskRef,
+      screenRef,
     ]
   )
 

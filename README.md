@@ -47,9 +47,9 @@ sudo supervisorctl restart spectacle
 
 ### How to pull new image version to the sandbox?
 
-Push the code to your feature branch. Then, run a pipeline with
-a variable `SANDBOX=1`. After a new image has been built,
-restart the respective deployment on Kubernetes:
+Push the code to your feature branch with a tag being either of `sandbox-1`, `sandbox-2` or `sandbox-3`.
+Once you push it to the `origin`, it will trigger a pipeline. After the image has been built
+you can restart the deployment for the respective sandbox:
 
 ```
 kubectl rollout restart deployment veeone-spectacle-sandbox-1

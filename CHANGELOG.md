@@ -1,12 +1,22 @@
 # Changelog
 
+## 1.2.0
+
+2023-07-26
+
+- Bound view: enable preparing presentations with given aspect ratio
+- Target screen bevel preview ("grid")
+- Scale launcher menu
+- Pause movies by default in web client
+- Notification snackbar
+
 ## 1.1.1
 
 2023-02-06
 
 - Fix for movies playing in the fullscreen mode
 
-## 1.1
+## 1.1.0
 
 2023-01-31
 
@@ -15,7 +25,7 @@
 - Improve visual keyboard experience
 - Minor fixes
 
-## 1.0
+## 1.0.0
 
 2022-09-06
 

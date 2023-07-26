@@ -1,5 +1,6 @@
 import { Json } from "../common/types"
 import { ContentBlockTypes } from "../contentblocks/types"
+import { RunningEnvironment } from "../config/types"
 
 export type FrameId = string
 
@@ -66,6 +67,7 @@ export interface SpectaclePresentationMeta {
 export interface SpectaclePresentation {
   id: string | null
   name: string
+  targetEnvironment: RunningEnvironment | null
   folder: string | null
   createdAt: number
   updatedAt: number

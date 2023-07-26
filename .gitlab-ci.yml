@@ -84,21 +84,45 @@ publish-sandbox:
   rules:
     - if: $CI_COMMIT_TAG =~ /^sandbox-[1-3]$/
 
-# Once a version tag is appended and commit goes into master - we create a version tag for the image.
-publish-version:
-  extends: .publish-spectacle
-  before_script:
-    # Git tags should be in "v0.0.0" format, but versions are without "v", so "0.0.0" is used
-    - SPECTACLE_VERSION=$(echo $CI_COMMIT_TAG | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)?$')
-    - echo "SPECTACLE_VERSION = $SPECTACLE_VERSION"
-    - REGISTRY_IMAGE_TAG=$SPECTACLE_VERSION
-    - echo "REGISTRY_IMAGE_TAG = $REGISTRY_IMAGE_TAG"
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+(\.[0-9]+)?$/
-
 publish-stable:
   extends: .publish-spectacle
   variables:
     REGISTRY_IMAGE_TAG: stable
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
+
+
+publish-version:
+  extends: .kaniko
+  stage: publish
+  tags:
+    - kubernetes
+  variables:
+    KUBERNETES_MEMORY_LIMIT: 2Gi
+    KUBERNETES_MEMORY_REQUEST: 2Gi
+    CI_REGISTRY_IMAGE: bbpgitlab.epfl.ch:5050/viz/veeone/spectacle
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "master"'
+  script:
+    - |-
+      #!/bin/bash
+      
+      # Here we extract the version of the app based on the package.json
+      NPM_PACKAGE_VERSION=$(cat package.json | grep \"version\" | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
+      echo "Package version: '$NPM_PACKAGE_VERSION'"
+      
+      # If it doesn't get the version string (or it's empty), the job will fail
+      if [[ -z "${NPM_PACKAGE_VERSION}" ]]; then
+        echo "No NPM_PACKAGE_VERSION found in package.json or the string is empty" &
+        exit 1
+      fi
+      
+      # We build the image based on the parsed NPM package version
+      KANIKOPROXYBUILDARGS="--build-arg http_proxy=${http_proxy} --build-arg https_proxy=${https_proxy} --build-arg no_proxy=${no_proxy}"
+      KANIKO_PUSH_ARGS="--destination $CI_REGISTRY_IMAGE:$NPM_PACKAGE_VERSION"
+      echo "KANIKO_PUSH_ARGS: $KANIKO_PUSH_ARGS"
+      
+      if [[ -z "$DOCKERFILE_PATH" ]]; then DOCKERFILE_PATH="${BUILD_PATH}/Dockerfile"; fi
+      echo DOCKERFILE_PATH=$DOCKERFILE_PATH
+      /kaniko/executor --context $BUILD_PATH --dockerfile $DOCKERFILE_PATH $KANIKOPROXYBUILDARGS $DOCKER_BUILD_ARGS $KANIKO_PUSH_ARGS --skip-tls-verify --snapshotMode=redo
+

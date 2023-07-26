@@ -17,10 +17,13 @@ import { useConfig } from "../../config/AppConfigContext"
 import { getFreshPresentation } from "../fresh-presentation"
 import UnsavedChangesWarning from "../presentation-loader/UnsavedChangesWarning"
 import { generateRandomPresentationId } from "../utils"
+import { useNotifications } from "../../spectacle/notifications/NotificationContextProvider"
 
 const PresentationManagerContextProvider: React.FC = ({ children }) => {
   const config = useConfig()
   const dialogs = useDialogs()
+  const notifications = useNotifications()
+
   const {
     presentationStore,
     veeDriveService,
@@ -44,17 +47,46 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
         ...extraData,
       }
 
+      let originalPresentation = null
+
+      try {
+        originalPresentation = await veeDriveService.getPresentation(
+          storeToSave.id
+        )
+      } catch {
+        console.debug(
+          `originalPresentation has not been found - create a new one: ${storeToSave.id}`,
+          storeToSave,
+          originalPresentation
+        )
+      }
+
       // Assign a unique random ID for new presentations
-      if (storeToSave.id === null) {
+      if (storeToSave.id === null || originalPresentation === null) {
         storeToSave.id = generateRandomPresentationId()
       }
 
-      savePresentationStore(storeToSave)
-      await veeDriveService.savePresentation(storeToSave)
+      const canSavePresentation =
+        originalPresentation === null ||
+        !originalPresentation.targetEnvironment ||
+        originalPresentation.targetEnvironment === storeToSave.targetEnvironment
+
+      if (canSavePresentation) {
+        savePresentationStore(storeToSave)
+        await veeDriveService.savePresentation(storeToSave)
+        notifications.success("Presentation has been saved")
+      } else {
+        console.warn(
+          "Target environment mismatch",
+          originalPresentation?.targetEnvironment,
+          storeToSave.targetEnvironment
+        )
+        throw new Error("Target environment mismatch")
+      }
 
       return storeToSave
     },
-    [presentationStore, savePresentationStore, veeDriveService]
+    [notifications, presentationStore, savePresentationStore, veeDriveService]
   )
 
   const savePresentationAs = useCallback(
@@ -76,15 +108,26 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
   )
 
   const savePresentation = useCallback(
-    async (args: SavePresentationOpenModalProps) => {
+    async ({ position }: SavePresentationOpenModalProps) => {
       if (!presentationStore.name) {
         // Open a "Save as" dialog if the presentation hasn't been saved yet
-        return await savePresentationAs(args)
+        return await savePresentationAs({ position })
       } else {
-        return await performPresentationSave()
+        try {
+          return await performPresentationSave()
+        } catch {
+          console.warn("Target environment mismatch")
+          notifications.info("You need to save it as a new presentation.")
+          await savePresentationAs({ position: null })
+        }
       }
     },
-    [performPresentationSave, presentationStore, savePresentationAs]
+    [
+      notifications,
+      performPresentationSave,
+      presentationStore.name,
+      savePresentationAs,
+    ]
   )
 
   const openPresentation = useCallback(
@@ -93,19 +136,21 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
         position,
       })
       const store = await veeDriveService.getPresentation(presentationId)
-      const sizeAdjustedPresentationStore = resizePresentationStore(
-        store,
-        {
-          width: config.VIEWPORT_WIDTH,
-          height: config.VIEWPORT_HEIGHT,
-        },
-        config.MINIMUM_FRAME_LONG_SIDE,
-        config.MAXIMUM_FRAME_LONG_SIDE,
-        {
-          width: config.FILE_BROWSER_WIDTH,
-          height: config.FILE_BROWSER_HEIGHT,
-        }
-      )
+      const sizeAdjustedPresentationStore = store.targetEnvironment
+        ? store
+        : resizePresentationStore(
+            store,
+            {
+              width: config.VIEWPORT_WIDTH,
+              height: config.VIEWPORT_HEIGHT,
+            },
+            config.MINIMUM_FRAME_LONG_SIDE,
+            config.MAXIMUM_FRAME_LONG_SIDE,
+            {
+              width: config.FILE_BROWSER_WIDTH,
+              height: config.FILE_BROWSER_HEIGHT,
+            }
+          )
       loadPresentationStore(sizeAdjustedPresentationStore)
       return sizeAdjustedPresentationStore
     },
@@ -130,11 +175,25 @@ const PresentationManagerContextProvider: React.FC = ({ children }) => {
           maxWidth: "xs",
         })
       }
-      const freshPresentation = getFreshPresentation({ config })
+      const targetEnvironment = presentationStore.targetEnvironment
+      const freshPresentation = getFreshPresentation({
+        config,
+        defaultStore: {
+          targetEnvironment,
+          meta: { viewport: { ...presentationStore.meta.viewport } },
+        },
+      })
       loadPresentationStore(freshPresentation)
       return freshPresentation
     },
-    [config, dialogs, isPresentationClean, loadPresentationStore]
+    [
+      config,
+      dialogs,
+      isPresentationClean,
+      loadPresentationStore,
+      presentationStore.targetEnvironment,
+      presentationStore.meta.viewport,
+    ]
   )
 
   const loadFolderList = useCallback(async () => {

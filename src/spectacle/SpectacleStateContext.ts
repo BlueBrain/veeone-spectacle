@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { RefObject, useContext } from "react"
 import { SpectaclePresentation } from "../types"
 import { Position, Size } from "../common/types"
 import VeeDriveService from "../veedrive"
@@ -11,6 +11,7 @@ import {
   SendFrameToBackPayload,
   UpdateFrameDataPayload,
 } from "./types"
+import { RunningEnvironment } from "../config/types"
 
 export interface SavePresentationOpenModalProps {
   position: Position
@@ -50,6 +51,10 @@ export interface SpectacleStateContextProps {
   loadPresentationStore: (newStore: SpectaclePresentation) => void
   savePresentationStore: (newStore: SpectaclePresentation) => void
   resizePresentation: (payload: ResizePresentationPayload) => void
+  viewZoomPercent: number
+  setViewZoomPercent: (value: number) => void
+  screenRef: RefObject<any>
+  deskRef: RefObject<any>
 }
 
 const SpectacleStateContext = React.createContext<SpectacleStateContextProps>(

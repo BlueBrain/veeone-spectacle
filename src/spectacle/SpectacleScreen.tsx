@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react"
 import { Box } from "@mui/material"
 import SceneCarouselNavigator from "../scenes/scene-carousel-navigator"
 import SceneDeskNavigation from "../scenes/SceneDeskNavigation"
-import { useConfig } from "../config/AppConfigContext"
 import { useSpectacle } from "./SpectacleStateContext"
 
 export const systemStats = {
@@ -10,12 +9,10 @@ export const systemStats = {
 }
 
 const SpectacleScreen: React.FC = () => {
-  const config = useConfig()
-  const ref = useRef()
-  const { isOnline } = useSpectacle()
+  const { isOnline, presentationStore, screenRef } = useSpectacle()
 
   useEffect(() => {
-    const currentRef = ref.current as HTMLElement
+    const currentRef = screenRef.current as HTMLElement
     const tapHandler = () => {
       systemStats.lastUserActivityAt = Date.now()
     }
@@ -25,16 +22,20 @@ const SpectacleScreen: React.FC = () => {
     return () => {
       currentRef.removeEventListener("pointerdown", tapHandler)
     }
-  }, [])
+  }, [screenRef])
 
   return (
     <Box
       className={"SpectacleScreen"}
-      ref={ref}
+      ref={screenRef}
       sx={{
         background: theme => theme.palette.screen.main,
-        width: `${config.VIEWPORT_WIDTH}px`,
-        height: `${config.VIEWPORT_HEIGHT}px`,
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: `${presentationStore.meta.viewport.width}px`,
+        height: `${presentationStore.meta.viewport.height}px`,
         overflow: "hidden",
         contain: `content`,
         filter: isOnline ? "" : "grayscale(100%)",
