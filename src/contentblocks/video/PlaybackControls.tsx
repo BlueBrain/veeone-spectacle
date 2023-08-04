@@ -203,13 +203,16 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
     }
 
     async function handlePlaybackState() {
-      if (isPlaying && isPlaybackAllowed) {
-        const playPromise = videoRef.current.play()
-        if (playPromise !== undefined) {
+      const playPromise = videoRef.current.play()
+
+      if (playPromise !== undefined) {
+        if (isPlaying && isPlaybackAllowed) {
           await playPromise
+        } else {
+          playPromise.then(() => {
+            videoRef.current.pause()
+          })
         }
-      } else {
-        await videoRef.current.pause()
       }
     }
 
