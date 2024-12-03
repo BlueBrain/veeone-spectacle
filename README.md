@@ -1,5 +1,25 @@
 # Spectacle
 
+Spectacle is a collaborative software platform designed to power large-scale screen installations, such as display walls and interactive touch panels. It enables users to seamlessly present diverse types of content, including images, videos, PDFs, and web pages, in a visually engaging and interactive manner.
+
+## Key Features
+
+- **Multi-Screen Integration**  
+  Supports complex installations involving multiple screens.
+
+- **Collaborative Presentation**  
+  Allows multiple users to interact with the system simultaneously, enabling the addition, modification, or navigation of content in real time.
+
+- **Rich Media Support**  
+  Handles a variety of media formats, facilitating dynamic presentations that combine videos, high-resolution images, and documents.
+
+- **Interactive Touch Capability**  
+  Offers intuitive and user-friendly controls for navigating and manipulating content on interactive touch panels.
+
+- **Web Content Display**  
+  Supports live or static web content, extending the range of information that can be displayed and shared.
+
+
 ## Versions
 
 Refer to [CHANGELOG](CHANGELOG.md)
@@ -9,7 +29,7 @@ Refer to [CHANGELOG](CHANGELOG.md)
 Clone the repository code:
 
 ```
-git clone git@bbpgitlab.epfl.ch:viz/veeone/spectacle.git
+git clone git@github.com:BlueBrain/veeone-spectacle.git
 ```
 
 Install dependencies:
@@ -30,32 +50,8 @@ npm run dev
 google-chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
 ```
 
-## How to
-
-### How to restart Spectacle deployment
-
-Log as `bbpvizuser` into one of the instances:
-
-- bbpav04 (third floor)
-- bbpav05 (fifth floor)
-
-and restart supervisor:
-
-```
-sudo supervisorctl restart spectacle
-```
-
-### How to pull new image version to the sandbox?
-
-Push the code to your feature branch. Then, run a pipeline with
-a variable `SANDBOX=1`. After a new image has been built,
-restart the respective deployment on Kubernetes:
-
-```
-kubectl rollout restart deployment veeone-spectacle-sandbox-1
-```
-
-
 # Funding & Acknowledgment
 
 The development of this software was supported by funding to the Blue Brain Project, a research center of the École polytechnique fédérale de Lausanne (EPFL), from the Swiss government's ETH Board of the Swiss Federal Institutes of Technology.
+
+Copyright (c) 2024 Blue Brain Project/EPFL
